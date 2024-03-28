@@ -1,13 +1,11 @@
 {
-  "name": "src",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "ui",
+  "description": "TaDeX UI",
   "scripts": {
-    "dev": "cd src && npx vite --port ${UI_PORT:=7200}"
+    "dev": "cd src && npx vite --port ${UI_PORT:=7300}"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dataplug Oy",
   "license": "UNLICENSED",
   "dependencies": {
     "@emotion/styled": "^11.11.0",

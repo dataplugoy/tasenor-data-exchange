@@ -1,0 +1,102 @@
+import { PrismaClient } from '@prisma/client'
+import { Constructor, error } from '@tasenor/common'
+
+export interface MinimalModel {
+  id: number
+}
+
+/**
+ * Base class for all data models used.
+ */
+export class BaseModel<T extends MinimalModel> {
+
+  /// Name of the table.
+  protected static table: string
+  /// Constructor function for the model.
+  protected static construct: Constructor<any>
+  /// A reference to the Prisma client shared by models.
+  protected static prismaClient: PrismaClient
+
+  /// A data loaded for this database row if any.
+  public data: T
+
+  constructor(data: T) {
+    this.data = data
+  }
+
+  /**
+   * Get the numeric ID of the model instance.
+   */
+  get id(): number {
+    return this.data.id
+  }
+
+  /**
+   * Get the name of this type.
+   */
+  get typeName(): string {
+    return this.constructor.name.replace(/Model$/, '')
+  }
+
+  /**
+   * Get the model specific (mostly) unique name for the model instance.
+   */
+  get name(): string {
+    throw new Error(`A model ${this.typeName} does not implement name().`)
+  }
+
+  /**
+   * Construct an informative string presentation mainly for logging purposes.
+   * @returns
+   */
+  toString(): string {
+    return `${this.typeName} #${this.id} ${this.name}`
+  }
+
+  /**
+   * Get the Prisma client.
+   */
+  get client(): PrismaClient {
+    return BaseModel.prismaClient
+  }
+
+  /**
+   * Set the shared Prisma client reference.
+   * @param db
+   */
+  static setDb(db: PrismaClient) {
+    BaseModel.prismaClient = db
+  }
+
+  /**
+   * Instantiate a model with the given initial data from Prisma model.
+   * @param data
+   * @returns
+   */
+  static instantiate<T extends MinimalModel, C extends BaseModel<T>>(data: T): C {
+    const Ctor = this.construct as Constructor<C>
+    if (!Ctor) error('Unable to instantiate bare BaseModel without construcor.')
+    return new Ctor(data)
+  }
+
+  /**
+   * Get the Prisma model for this data model.
+   */
+  static get db() {
+    return BaseModel.prismaClient[this.table]
+  }
+
+  /**
+   * Find a model if it exist according to given fields and create it if not found.
+   * @param where Fields to search for.
+   * @param data Additional data to use if not found.
+   * @returns
+   */
+  static async findOrCreate<T extends MinimalModel, C extends BaseModel<T>>(where: Partial<T>, data: Partial<T> = {}): Promise<C> {
+    let item = await this.db.findUnique({ where })
+    if (!item) {
+      item = await this.db.create({ data: { ...where, ...data } })
+    }
+    return this.instantiate<T, C>(item)
+  }
+}

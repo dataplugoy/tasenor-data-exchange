@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "description": "TaDeX backend",
+  "scripts": {
+    "dev": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex npx tsx watch --clear-screen=false src/Server.ts",
+    "migrate": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex prisma db push --accept-data-loss"
+  },
+  "keywords": [],
+  "author": "Dataplug Oy",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@prisma/client": "^5.11.0",
+    "@tasenor/common": "^1.13.0",
+    "express": "^4.19.2",
+    "prisma": "^5.11.0",
+    "tsx": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30"
+  }
+}
