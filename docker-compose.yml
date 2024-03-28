@@ -40,6 +40,7 @@ services:
     ports:
       - 7301:7301
     environment:
+      PORT: 7301
       VIRTUAL_HOST: tadex.localhost
       VIRTUAL_PORT: 7301
     command: pnpm run docker
@@ -51,6 +52,7 @@ services:
     ports:
       - 7302:7302
     environment:
+      PORT: 7302
       VIRTUAL_HOST: tadex-api.localhost
       VIRTUAL_PORT: 7302
     command: pnpm run docker
