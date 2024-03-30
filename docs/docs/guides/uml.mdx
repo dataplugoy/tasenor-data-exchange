@@ -7,6 +7,8 @@ sidebar_position: 100
 ```mermaid
 classDiagram
 
+  note "All classes include `created` and `updated` timestamps."
+
     class User{
       +projects. Project[]
     }
@@ -16,67 +18,88 @@ classDiagram
       +user: User
       +plans: FlowPlan[]
     }
-    User <-- Project
+    User "1" <-- "0..*" Project
 
 
     class FlowPlan{
+      +project: Project
       +title: string
+      +source: InputSource
+      +destination: OutputDestination
     }
-    Project *-- FlowPlan
+    Project "1" *-- "0..*" FlowPlan
 
 
     class InputSource{
       +type: enum
       +url: string
     }
-    FlowPlan o-- InputSource
+    FlowPlan "1" o-- "1" InputSource
 
 
     class InputSettings{
+      +settings: json
     }
-    InputSource o-- InputSettings
+    InputSource "1" o-- "1" InputSettings
 
 
     class OutputDestination{
       +type: enum
       +url: string
     }
-    FlowPlan o-- OutputDestination
+    FlowPlan "1" o-- "1" OutputDestination
 
 
     class OutputSettings{
+      +settings: json
     }
-    OutputDestination o-- OutputSettings
+    OutputDestination "1" o-- "1" OutputSettings
 
 
-    class Rules{
+    class Rule{
     }
-    InputSource o-- Rules
+    InputSource o-- Rule
 
 
-    class Process{
+    class Batch{
       +flowPlan: FlowPlan
-      +input: Input
-      +output: Output
+      +number: integer
+      +state: enum
+      +retrieved: string
       +runs: Run[]
+      +parsed: InputItem[]
+      +generated: OutputItem[]
     }
-    FlowPlan <-- Process
+    FlowPlan "1" *-- "0..*" Batch
 
 
-    class Input{
+    class InputItem{
+      +batch: Batch
+      +run: Run
       +data: json
+      +processed: boolean
+      +success: boolean
     }
-    Process *-- Input
+    Batch "1" *-- "0..*" InputItem
 
 
-    class Output{
+    class OutputItem{
+      +batch: Batch
+      +run: Run
+      +input: InputItem
       +data: json
+      +delivered: boolean
     }
-    Process *-- Output
-
+    Batch "1" *-- "0..*" OutputItem
+    InputItem "1" o-- "0..1" OutputItem
 
     class Run{
+      +batch: Batch
+      +initialState: enum
+      +finalState: enum
     }
-    Process *-- Run
+    Batch "1" *-- "1..*" Run
+    Run "1" *-- "0..*" InputItem
+    Run "1" *-- "0..*" OutputItem
 
 ```
