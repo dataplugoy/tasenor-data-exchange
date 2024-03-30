@@ -416,6 +416,7 @@ COPY public.batches (id, created, updated, number, state, retrieved, "flowPlanId
 --
 
 COPY public.flow_plans (id, title, created, updated) FROM stdin;
+1	Test Files	2024-03-30 14:39:53.161	2024-03-30 14:39:28.263
 \.
 
 
@@ -432,6 +433,7 @@ COPY public.input_items (id, created, updated, data, processed, success, "batchI
 --
 
 COPY public.input_sources (id, type, url, "flowPlanId", created, updated) FROM stdin;
+1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-03-30 14:40:44.577
 \.
 
 
@@ -440,6 +442,7 @@ COPY public.input_sources (id, type, url, "flowPlanId", created, updated) FROM s
 --
 
 COPY public.projects (id, name, created, updated, "userId") FROM stdin;
+1	Testing	2024-03-30 14:39:17.243	2024-03-30 14:39:03.459	1
 \.
 
 
@@ -456,6 +459,7 @@ COPY public.runs (id, created, updated, "initialState", "finalState", "batchId")
 --
 
 COPY public.users (id, email, name, address, zip, city, country, last_seen, created, updated) FROM stdin;
+1	tommi.ronkainen@gmail.com	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	2024-03-30 14:38:56.726	2024-03-30 14:38:12.548
 \.
 
 
@@ -470,7 +474,7 @@ SELECT pg_catalog.setval('public.batches_id_seq', 1, false);
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 1, false);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 1, true);
 
 
 --
@@ -484,14 +488,14 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 1, false);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 1, false);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 1, true);
 
 
 --
 -- Name: projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
+SELECT pg_catalog.setval('public.projects_id_seq', 1, true);
 
 
 --
@@ -505,7 +509,7 @@ SELECT pg_catalog.setval('public.runs_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+SELECT pg_catalog.setval('public.users_id_seq', 1, true);
 
 
 --
