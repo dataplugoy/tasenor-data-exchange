@@ -8,6 +8,7 @@ sidebar_position: 100
 classDiagram
 
   note "All classes include `created` and `updated` timestamps."
+  note "All classes include `id` integer field."
 
     class User{
       +projects. Project[]
@@ -16,6 +17,7 @@ classDiagram
 
     class Project{
       +user: User
+      +name: string
       +plans: FlowPlan[]
     }
     User "1" <-- "0..*" Project
@@ -97,6 +99,8 @@ classDiagram
       +batch: Batch
       +initialState: enum
       +finalState: enum
+      +inputs: InputItem[]
+      +outputs: OutputItem[]
     }
     Batch "1" *-- "1..*" Run
     Run "1" *-- "0..*" InputItem

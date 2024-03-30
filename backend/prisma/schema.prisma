@@ -9,6 +9,9 @@ generator client {
 
 model User {
   id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
   email       String          @unique
   name        String
   address     String?
@@ -18,8 +21,108 @@ model User {
 
   last_seen   DateTime?
 
+  projects    Project[]
+
+  @@map(name: "users")
+}
+
+model Project {
+  id          Int             @id @default(autoincrement())
   created     DateTime        @default(now())
   updated     DateTime        @updatedAt
 
-  @@map(name: "users")
+  name        String
+
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map(name: "projects")
+}
+
+model FlowPlan {
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  title       String
+
+  source      InputSource?
+  batches     Batch[]
+
+  @@map(name: "flow_plans")
+}
+
+enum InputSourceType {
+  TEST_MOCK_INPUT
+}
+
+model InputSource {
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  type        InputSourceType
+  url         String
+
+  flowPlanId  Int             @unique
+  flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
+
+  @@map(name: "input_sources")
+}
+
+enum BatchState {
+  BATCH_CREATED
+  DATA_FETCHED
+  DATA_PARSED
+  OUTPUT_CREATED
+  OUTPUT_DELIVERED
+}
+
+model Batch{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  number      Int
+  state       BatchState
+  retrieved   String
+
+  flowPlanId  Int
+  flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
+  runs        Run[]
+  parsed      InputItem[]
+
+  @@map(name: "batches")
+}
+
+model Run{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  initialState BatchState
+  finalState  BatchState
+
+  batchId     Int
+  batch       Batch?          @relation(fields: [batchId], references: [id])
+  inputs      InputItem[]
+
+  @@map(name: "runs")
+}
+
+model InputItem{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  data        Json
+  processed   Boolean
+  success     Boolean
+
+  batchId     Int
+  batch       Batch?          @relation(fields: [batchId], references: [id])
+  runId       Int
+  run         Run?            @relation(fields: [runId], references: [id])
+
+  @@map(name: "input_items")
 }
