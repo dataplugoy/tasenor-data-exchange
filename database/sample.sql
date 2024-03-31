@@ -20,6 +20,7 @@ ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS "runs_batchId_f
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS "projects_userId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS "input_sources_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_runId_fkey";
+ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
@@ -171,7 +172,8 @@ CREATE TABLE public.input_items (
     processed boolean NOT NULL,
     success boolean NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL
+    "runId" integer NOT NULL,
+    "flowPlanId" integer NOT NULL
 );
 
 
@@ -326,7 +328,8 @@ CREATE TABLE public.users (
     country text,
     last_seen timestamp(3) without time zone,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated timestamp(3) without time zone NOT NULL
+    updated timestamp(3) without time zone NOT NULL,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -424,7 +427,7 @@ COPY public.flow_plans (id, title, created, updated) FROM stdin;
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, success, "batchId", "runId") FROM stdin;
+COPY public.input_items (id, created, updated, data, processed, success, "batchId", "runId", "flowPlanId") FROM stdin;
 \.
 
 
@@ -458,8 +461,8 @@ COPY public.runs (id, created, updated, "initialState", "finalState", "batchId")
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.users (id, email, name, address, zip, city, country, last_seen, created, updated) FROM stdin;
-1	tommi.ronkainen@gmail.com	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	2024-03-30 14:38:56.726	2024-03-30 14:38:12.548
+COPY public.users (id, email, name, address, zip, city, country, last_seen, created, updated, settings) FROM stdin;
+1	tommi.ronkainen@gmail.com	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	2024-03-30 14:38:56.726	2024-03-30 14:38:12.548	{}
 \.
 
 
@@ -596,6 +599,14 @@ ALTER TABLE ONLY public.batches
 
 ALTER TABLE ONLY public.input_items
     ADD CONSTRAINT "input_items_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES public.batches(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: input_items input_items_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.input_items
+    ADD CONSTRAINT "input_items_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

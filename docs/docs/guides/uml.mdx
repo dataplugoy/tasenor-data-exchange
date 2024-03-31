@@ -78,6 +78,7 @@ classDiagram
     class InputItem{
       +batch: Batch
       +run: Run
+      +number: integer
       +data: json
       +processed: boolean
       +success: boolean
@@ -88,6 +89,7 @@ classDiagram
     class OutputItem{
       +batch: Batch
       +run: Run
+      +number: integer
       +input: InputItem
       +data: json
       +delivered: boolean

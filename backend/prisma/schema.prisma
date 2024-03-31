@@ -20,6 +20,7 @@ model User {
   country     String?
 
   last_seen   DateTime?
+  settings    Json            @default("{}")
 
   projects    Project[]
 
@@ -48,6 +49,7 @@ model FlowPlan {
 
   source      InputSource?
   batches     Batch[]
+  inputItems  InputItem[]
 
   @@map(name: "flow_plans")
 }
@@ -90,7 +92,7 @@ model Batch{
   flowPlanId  Int
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
   runs        Run[]
-  parsed      InputItem[]
+  inputItems  InputItem[]
 
   @@map(name: "batches")
 }
@@ -119,6 +121,8 @@ model InputItem{
   processed   Boolean
   success     Boolean
 
+  flowPlanId  Int
+  flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
   batchId     Int
   batch       Batch?          @relation(fields: [batchId], references: [id])
   runId       Int
