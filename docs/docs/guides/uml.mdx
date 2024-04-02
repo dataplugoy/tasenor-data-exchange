@@ -27,41 +27,29 @@ classDiagram
       +title: string
       +source: InputSource
       +destination: OutputDestination
-
-      run()
     }
     Project "1" *-- "0..*" FlowPlan
 
 
     class InputSource{
+      +flowPlan: FlowPlan
       +type: enum
-      +url: string
+      +settings: json
     }
     FlowPlan "1" o-- "1" InputSource
 
 
-    class InputSettings{
-      +settings: json
-    }
-    InputSource "1" o-- "1" InputSettings
-
-
     class OutputDestination{
+      +flowPlan: FlowPlan
       +type: enum
-      +url: string
+      +settings: json
     }
     FlowPlan "1" o-- "1" OutputDestination
 
 
-    class OutputSettings{
-      +settings: json
-    }
-    OutputDestination "1" o-- "1" OutputSettings
-
-
     class Rule{
     }
-    InputSource o-- Rule
+    FlowPlan "1" *-- "0..*" Rule
 
 
     class Batch{

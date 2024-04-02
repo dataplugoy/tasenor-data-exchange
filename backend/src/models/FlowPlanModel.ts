@@ -3,6 +3,7 @@ import prisma from '@prisma/client'
 import { UserModel } from './UserModel'
 import { BatchModel } from './BatchModel'
 import { error } from '@tasenor/common'
+import { InputSourceModel } from './InputSourceModel'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -12,8 +13,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * A table of functions how to proceed from each step.
    */
-  functions: Record<prisma.BatchState, () => Promise<void>> = {
-    BATCH_CREATED: () => this.notImplemented(),
+  functions: Record<prisma.BatchState, (batch: BatchModel) => Promise<'OK' | 'FAIL'>> = {
+    BATCH_CREATED: (batch) => this.fetchData(batch),
     DATA_FETCHED: () => this.notImplemented(),
     DATA_PARSED: () => this.notImplemented(),
     OUTPUT_CREATED: () => this.notImplemented(),
@@ -31,9 +32,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
     try {
+      // Execute state transition.
+      const result = await this.functions[batch.state](batch)
+      if (result === 'FAIL') {
+        throw new Error(`Execution for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
+      }
+      if (result !== 'OK') {
+        throw new Error(`Execution for state '${batch.state}' did not return OK (perhaps incomplete implementation).`)
+      }
+
+      // Mark the new state.
       const idx = Object.keys(this.functions).indexOf(batch.state)
       const nextState = Object.keys(this.functions)[idx + 1] as prisma.BatchState
-
       await BatchModel.update<prisma.Batch, BatchModel>(batch, { state: nextState })
       await run.success(nextState)
 
@@ -48,7 +58,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       error(`Run failed: ${err.stack}`)
       await run.fail(err)
     }
-
   }
 
   /**
@@ -56,6 +65,28 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async notImplemented(): Promise<never> {
     throw new Error(`Function not yet implemented.`)
+  }
+
+  /**
+   * Set up the transport and fetch the data.
+   */
+  private async fetchData(batch: BatchModel): Promise<'OK' | 'FAIL'> {
+    const source = await this.getSource()
+    const driver = source.getDriver()
+    // TODO: Some hint when did we get the latest batch.
+    const data = await driver.fetchData()
+    console.log(data)
+  }
+
+  /**
+   * Get the input data source.
+   */
+  async getSource(): Promise<InputSourceModel> {
+    const source = await InputSourceModel.findForFlow(this)
+    if (!source) {
+      throw new Error(`Cannot find input source for '${this}'.`)
+    }
+    return source
   }
 
   /**

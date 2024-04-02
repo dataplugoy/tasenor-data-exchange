@@ -214,7 +214,8 @@ CREATE TABLE public.input_sources (
     url text NOT NULL,
     "flowPlanId" integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated timestamp(3) without time zone NOT NULL
+    updated timestamp(3) without time zone NOT NULL,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -415,7 +416,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, retrieved, "flowPlanId", completed) FROM stdin;
-22	2024-04-02 16:14:38.601	2024-04-02 16:22:49.912	1	OUTPUT_DELIVERED	\N	1	\N
+33	2024-04-02 16:53:11.371	2024-04-02 16:53:11.371	1	BATCH_CREATED	\N	1	\N
 \.
 
 
@@ -440,8 +441,8 @@ COPY public.input_items (id, created, updated, data, processed, success, "batchI
 -- Data for Name: input_sources; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_sources (id, type, url, "flowPlanId", created, updated) FROM stdin;
-1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-03-30 14:40:44.577
+COPY public.input_sources (id, type, url, "flowPlanId", created, updated, settings) FROM stdin;
+1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-03-30 14:40:44.577	{}
 \.
 
 
@@ -459,15 +460,14 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-21	2024-04-02 16:21:14.148	2024-04-02 16:21:14.162	BATCH_CREATED	DATA_FETCHED	22	\N
-22	2024-04-02 16:21:16.259	2024-04-02 16:21:16.262	BATCH_CREATED	DATA_FETCHED	22	\N
-23	2024-04-02 16:21:18.442	2024-04-02 16:21:18.457	BATCH_CREATED	DATA_FETCHED	22	\N
-24	2024-04-02 16:22:43.649	2024-04-02 16:22:43.666	BATCH_CREATED	DATA_FETCHED	22	\N
-25	2024-04-02 16:22:45.668	2024-04-02 16:22:45.685	DATA_FETCHED	DATA_PARSED	22	\N
-26	2024-04-02 16:22:47.779	2024-04-02 16:22:47.798	DATA_PARSED	OUTPUT_CREATED	22	\N
-27	2024-04-02 16:22:49.897	2024-04-02 16:22:49.916	OUTPUT_CREATED	OUTPUT_DELIVERED	22	\N
-28	2024-04-02 16:22:52.237	2024-04-02 16:22:52.237	OUTPUT_DELIVERED	OUTPUT_DELIVERED	22	\N
-29	2024-04-02 16:22:54.696	2024-04-02 16:22:54.696	OUTPUT_DELIVERED	OUTPUT_DELIVERED	22	\N
+63	2024-04-02 17:03:33.827	2024-04-02 17:03:33.851	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:41:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+64	2024-04-02 17:03:47.445	2024-04-02 17:03:47.469	BATCH_CREATED	BATCH_CREATED	33	Error: Cannot find driver for input source type 'TEST_MOCK_INPUT'.\n    at InputSourceModel.getDriver (/home/wigy/project/tasenor-data-exchange/backend/src/models/InputSourceModel.ts:30:13)\n    at FlowPlanModel.fetchData (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:75:24)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:36:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+65	2024-04-02 17:04:21.933	2024-04-02 17:04:21.958	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:41:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+58	2024-04-02 16:53:11.383	2024-04-02 16:53:11.4	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' returned FAIL.\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:38:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+59	2024-04-02 16:54:30.16	2024-04-02 16:54:30.185	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:41:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+60	2024-04-02 16:55:59.658	2024-04-02 16:55:59.684	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:41:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+61	2024-04-02 16:56:03.031	2024-04-02 16:56:03.05	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:41:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+62	2024-04-02 17:02:40.805	2024-04-02 17:02:40.831	BATCH_CREATED	BATCH_CREATED	33	Error: Execution for state 'BATCH_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:41:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:21:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:46:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
 \.
 
 
@@ -484,7 +484,7 @@ COPY public.users (id, email, name, address, zip, city, country, last_seen, crea
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 22, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 33, true);
 
 
 --
@@ -519,7 +519,7 @@ SELECT pg_catalog.setval('public.projects_id_seq', 1, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 29, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 65, true);
 
 
 --

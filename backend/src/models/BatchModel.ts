@@ -2,7 +2,6 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
-import { error } from '@tasenor/common'
 
 export class BatchModel extends BaseModel<prisma.Batch> {
 
