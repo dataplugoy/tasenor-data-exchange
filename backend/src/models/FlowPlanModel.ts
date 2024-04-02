@@ -15,14 +15,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   functions: Record<prisma.BatchState, (batch: BatchModel) => Promise<'OK' | 'FAIL'>> = {
     BATCH_CREATED: (batch) => this.fetchData(batch),
-    DATA_FETCHED: () => this.notImplemented(),
-    DATA_PARSED: () => this.notImplemented(),
-    OUTPUT_CREATED: () => this.notImplemented(),
-    OUTPUT_DELIVERED: () => this.notImplemented(),
+    DATA_FETCHED: (batch) => this.notImplemented(batch),
+    DATA_PARSED: (batch) => this.notImplemented(batch),
+    OUTPUT_CREATED: (batch) => this.notImplemented(batch),
+    OUTPUT_DELIVERED: (batch) => this.notImplemented(batch),
   }
 
   get name(): string {
     return this.data.title
+  }
+
+  get lastStamp(): Date | null {
+    return this.data.lastStamp
   }
 
   /**
@@ -63,8 +67,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Helper to mark handler function as not implemented.
    */
-  private async notImplemented(): Promise<never> {
-    throw new Error(`Function not yet implemented.`)
+  private async notImplemented(batch: BatchModel): Promise<never> {
+    throw new Error(`Function not yet implemented for state ${batch.state}.`)
   }
 
   /**
@@ -73,9 +77,15 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   private async fetchData(batch: BatchModel): Promise<'OK' | 'FAIL'> {
     const source = await this.getSource()
     const driver = source.getDriver()
-    // TODO: Some hint when did we get the latest batch.
-    const data = await driver.fetchData()
-    console.log(data)
+    const data = await driver.fetchData(this.lastStamp)
+
+    if (typeof data !== 'string') {
+      throw new Error(`Bad data type '${typeof data}' received from ${driver.type} driver.`)
+    }
+    await batch.setData(data)
+    // TODO: Update lastStamp when parsing is completed.
+
+    return 'OK'
   }
 
   /**
