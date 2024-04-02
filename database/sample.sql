@@ -65,7 +65,8 @@ CREATE TYPE public."BatchState" AS ENUM (
     'DATA_FETCHED',
     'DATA_PARSED',
     'OUTPUT_CREATED',
-    'OUTPUT_DELIVERED'
+    'OUTPUT_DELIVERED',
+    'NOT_STARTED'
 );
 
 
@@ -96,7 +97,7 @@ CREATE TABLE public.batches (
     updated timestamp(3) without time zone NOT NULL,
     number integer NOT NULL,
     state public."BatchState" NOT NULL,
-    retrieved text NOT NULL,
+    retrieved text,
     "flowPlanId" integer NOT NULL
 );
 
