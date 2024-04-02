@@ -65,8 +65,7 @@ CREATE TYPE public."BatchState" AS ENUM (
     'DATA_FETCHED',
     'DATA_PARSED',
     'OUTPUT_CREATED',
-    'OUTPUT_DELIVERED',
-    'NOT_STARTED'
+    'OUTPUT_DELIVERED'
 );
 
 
@@ -98,7 +97,8 @@ CREATE TABLE public.batches (
     number integer NOT NULL,
     state public."BatchState" NOT NULL,
     retrieved text,
-    "flowPlanId" integer NOT NULL
+    "flowPlanId" integer NOT NULL,
+    completed timestamp(3) without time zone
 );
 
 
@@ -289,7 +289,8 @@ CREATE TABLE public.runs (
     updated timestamp(3) without time zone NOT NULL,
     "initialState" public."BatchState" NOT NULL,
     "finalState" public."BatchState" NOT NULL,
-    "batchId" integer NOT NULL
+    "batchId" integer NOT NULL,
+    error text
 );
 
 
@@ -413,7 +414,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.batches (id, created, updated, number, state, retrieved, "flowPlanId") FROM stdin;
+COPY public.batches (id, created, updated, number, state, retrieved, "flowPlanId", completed) FROM stdin;
+22	2024-04-02 16:14:38.601	2024-04-02 16:22:49.912	1	OUTPUT_DELIVERED	\N	1	\N
 \.
 
 
@@ -456,7 +458,16 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 -- Data for Name: runs; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.runs (id, created, updated, "initialState", "finalState", "batchId") FROM stdin;
+COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
+21	2024-04-02 16:21:14.148	2024-04-02 16:21:14.162	BATCH_CREATED	DATA_FETCHED	22	\N
+22	2024-04-02 16:21:16.259	2024-04-02 16:21:16.262	BATCH_CREATED	DATA_FETCHED	22	\N
+23	2024-04-02 16:21:18.442	2024-04-02 16:21:18.457	BATCH_CREATED	DATA_FETCHED	22	\N
+24	2024-04-02 16:22:43.649	2024-04-02 16:22:43.666	BATCH_CREATED	DATA_FETCHED	22	\N
+25	2024-04-02 16:22:45.668	2024-04-02 16:22:45.685	DATA_FETCHED	DATA_PARSED	22	\N
+26	2024-04-02 16:22:47.779	2024-04-02 16:22:47.798	DATA_PARSED	OUTPUT_CREATED	22	\N
+27	2024-04-02 16:22:49.897	2024-04-02 16:22:49.916	OUTPUT_CREATED	OUTPUT_DELIVERED	22	\N
+28	2024-04-02 16:22:52.237	2024-04-02 16:22:52.237	OUTPUT_DELIVERED	OUTPUT_DELIVERED	22	\N
+29	2024-04-02 16:22:54.696	2024-04-02 16:22:54.696	OUTPUT_DELIVERED	OUTPUT_DELIVERED	22	\N
 \.
 
 
@@ -473,7 +484,7 @@ COPY public.users (id, email, name, address, zip, city, country, last_seen, crea
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 1, false);
+SELECT pg_catalog.setval('public.batches_id_seq', 22, true);
 
 
 --
@@ -508,7 +519,7 @@ SELECT pg_catalog.setval('public.projects_id_seq', 1, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 1, false);
+SELECT pg_catalog.setval('public.runs_id_seq', 29, true);
 
 
 --

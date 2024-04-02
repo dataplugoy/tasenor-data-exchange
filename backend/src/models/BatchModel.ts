@@ -13,17 +13,16 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     return `Batch ${this.data.number}`
   }
 
+  get state(): prisma.BatchState {
+    return this.data.state
+  }
+
   /**
    * Initialize running.
    */
-  async startRun(): Promise<void> {
+  async startRun(): Promise<RunModel> {
     const run = await RunModel.getNew(this)
-    try {
-      console.log('TODO: running')
-    } catch(err) {
-      error(`Run failed: ${err.stack}`)
-      run.fail(err)
-    }
+    return run
   }
 
   /**
@@ -33,10 +32,11 @@ export class BatchModel extends BaseModel<prisma.Batch> {
    */
   static async getNext(plan: FlowPlanModel): Promise<BatchModel> {
     const latest = await this.db.findMany({ where: { flowPlanId: plan.id }, orderBy: { number: 'desc' }, take: 1 })
-    if (!latest.length) {
+
+    if (latest.length === 0 || latest[0].completed) {
       const newBatch = await this.db.create({
         data: {
-          number: 1,
+          number: latest.length ? latest[0].number + 1 : 1,
           state: 'BATCH_CREATED',
           retrieved: null,
           flowPlanId: plan.id,

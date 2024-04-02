@@ -14,6 +14,19 @@ export class RunModel extends BaseModel<prisma.Run> {
     await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message })
   }
 
+  /**
+   * Mark this run as success.
+   * @param state
+   */
+  async success(state: prisma.BatchState): Promise<void> {
+    await RunModel.update<prisma.Run, RunModel>(this, { finalState: state })
+  }
+
+  /**
+   * Initialize a run for a batch.
+   * @param batch
+   * @returns
+   */
   static async getNew(batch: BatchModel): Promise<RunModel> {
     return this.create<prisma.Run, RunModel>({
       batchId: batch.id,
