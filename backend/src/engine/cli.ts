@@ -12,8 +12,10 @@ async function run(email: string, name: string) {
   if (!user) {
     throw new Error(`User '${email}' not found.`)
   }
-  const projects = await user.getProjects()
-
+  const plan = await user.findFlowPlan(name)
+  if (!plan) {
+    throw new Error(`Flow plan '${name}' not found.`)
+  }
 }
 
 /**

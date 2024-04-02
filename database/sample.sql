@@ -22,6 +22,7 @@ ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS "input
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_batchId_fkey";
+ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS "flow_plans_projectId_fkey";
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
@@ -132,7 +133,8 @@ CREATE TABLE public.flow_plans (
     id integer NOT NULL,
     title text NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated timestamp(3) without time zone NOT NULL
+    updated timestamp(3) without time zone NOT NULL,
+    "projectId" integer NOT NULL
 );
 
 
@@ -418,8 +420,8 @@ COPY public.batches (id, created, updated, number, state, retrieved, "flowPlanId
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, title, created, updated) FROM stdin;
-1	Test Files	2024-03-30 14:39:53.161	2024-03-30 14:39:28.263
+COPY public.flow_plans (id, title, created, updated, "projectId") FROM stdin;
+1	Test Files	2024-03-30 14:39:53.161	2024-04-02 12:46:43.93	1
 \.
 
 
@@ -591,6 +593,14 @@ CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email);
 
 ALTER TABLE ONLY public.batches
     ADD CONSTRAINT "batches_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: flow_plans flow_plans_projectId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.flow_plans
+    ADD CONSTRAINT "flow_plans_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public.projects(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

@@ -36,6 +36,7 @@ model Project {
 
   userId      Int
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flowPlans   FlowPlan[]
 
   @@map(name: "projects")
 }
@@ -46,6 +47,9 @@ model FlowPlan {
   updated     DateTime        @updatedAt
 
   title       String
+
+  projectId   Int
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   source      InputSource?
   batches     Batch[]

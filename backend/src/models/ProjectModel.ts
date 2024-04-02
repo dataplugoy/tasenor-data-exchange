@@ -7,6 +7,10 @@ export class ProjectModel extends BaseModel<prisma.Project> {
   static table = 'project'
   static construct = ProjectModel
 
+  get name(): string {
+    return this.data.name
+  }
+
   /**
    * Get a list of all projects the user has.
    */
