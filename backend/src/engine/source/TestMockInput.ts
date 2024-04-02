@@ -1,5 +1,6 @@
-import fs from "fs"
-import path from "path"
+import fs from 'fs'
+import path from 'path'
+import { DateTime } from 'luxon'
 import { InputSource } from './InputSource'
 
 /**
@@ -11,16 +12,21 @@ export class TestMockInput extends InputSource {
     super('TEST_MOCK_INPUT', settings)
   }
 
-  async fetchData(_lastStamp: Date | null): Promise<string> {
-    // TODO: Obey lastStamp.
+  async fetchData(lastStamp: Date | null): Promise<string> {
+
     const url = this.getURL()
     if (url.protocol !== 'file:') {
       throw new Error(`Bad protocol in URL '${this.settings.url}'.`)
     }
 
     const filePath = path.join(this.root, url.pathname)
-    const data = fs.readFileSync(filePath)
+    const data = fs.readFileSync(filePath).toString('utf-8')
 
-    return data.toString('utf-8')
+    if (lastStamp) {
+      const stamp = DateTime.fromJSDate(lastStamp).toISO()
+      return data.split('\n').filter(line => line === '' || line >= stamp).join('\n')
+    }
+
+    return data
   }
 }

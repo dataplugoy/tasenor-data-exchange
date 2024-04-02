@@ -17,6 +17,7 @@
     "@tasenor/config": "^1.13.0",
     "argparse": "^2.0.1",
     "express": "^4.19.2",
+    "luxon": "^3.4.4",
     "prisma": "^5.11.0",
     "tsx": "^4.7.1"
   },
