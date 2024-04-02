@@ -1,6 +1,6 @@
 import express from 'express'
 import config, { Config } from './config'
-import { connect } from './database'
+import { connect } from './connect'
 import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
 import { log } from '@tasenor/common'

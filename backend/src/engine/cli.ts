@@ -1,6 +1,6 @@
 import { ArgumentParser } from 'argparse'
 import { BaseModel } from '../models/BaseModel'
-import { connect } from '../database'
+import { connect } from '../connect'
 import { UserModel } from '../models/UserModel'
 
 /**
