@@ -106,10 +106,20 @@ export class BaseModel<T extends MinimalModel> {
    * @returns An entry instance or `null` if not found.
    */
   static async findUnique<T extends MinimalModel, C extends BaseModel<T>>(condition: Partial<T>): Promise<C | null> {
-    let item = await this.db.findUnique({ where: condition })
+    const item = await this.db.findUnique({ where: condition })
     if (!item) {
       return null
     }
     return this.instantiate<T, C>(item)
+  }
+
+  /**
+   * Find an unique instance from database.
+   * @param condition Fields to search.
+   * @returns An entry instance or `null` if not found.
+   */
+  static async findMany<T extends MinimalModel, C extends BaseModel<T>>(condition: Partial<T>): Promise<C[]> {
+    const items = await this.db.findMany({ where: condition })
+    return items.map(item => this.instantiate<T, C>(item))
   }
 }

@@ -12,6 +12,8 @@ async function run(email: string, name: string) {
   if (!user) {
     throw new Error(`User '${email}' not found.`)
   }
+  const projects = await user.getProjects()
+
 }
 
 /**
