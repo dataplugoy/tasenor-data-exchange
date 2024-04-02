@@ -75,7 +75,7 @@ export class BaseModel<T extends MinimalModel> {
    */
   static instantiate<T extends MinimalModel, C extends BaseModel<T>>(data: T): C {
     const Ctor = this.construct as Constructor<C>
-    if (!Ctor) error('Unable to instantiate bare BaseModel without construcor.')
+    if (!Ctor) error('Unable to instantiate bare BaseModel without constructor.')
     return new Ctor(data)
   }
 

@@ -1,18 +1,24 @@
 import { ArgumentParser } from 'argparse'
+import { BaseModel } from '../models/BaseModel'
+import { connect } from '../database'
+import { UserModel } from '../models/UserModel'
 
 /**
  * Execute one step of the named flow.
  * @param name Title of the flow to execute.
  */
-function run(name: string) {
-
+async function run(email: string, name: string) {
+  const user = await UserModel.find(email)
+  if (!user) {
+    throw new Error(`User '${email}' not found.`)
+  }
 }
 
 /**
  * Main entry point to the CLI.
  * @param args Command arguments.
  */
-export function execute(...args: string[]) {
+export async function execute(...args: string[]): Promise<void> {
   const commands = {
     run
   }
@@ -20,10 +26,15 @@ export function execute(...args: string[]) {
     description: 'Tasenor Data Exchange command line tool'
   })
 
+  parser.add_argument('--db', { help: 'Database URL.' })
+  parser.add_argument('--user', { help: 'Email of the user.' })
   parser.add_argument('command', { help: 'Command to execute', choices: Object.keys(commands) })
   parser.add_argument('name', { help: 'Name of the flow' })
 
-
   const commandArgs = parser.parse_args(args)
-  commands[commandArgs.command](commandArgs.name)
+
+  const db = await connect(commandArgs.db)
+  BaseModel.setDb(db)
+
+  await commands[commandArgs.command](commandArgs.user, commandArgs.name)
 }
