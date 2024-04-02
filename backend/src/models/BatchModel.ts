@@ -1,6 +1,8 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
+import { RunModel } from './RunModel'
+import { error } from '@tasenor/common'
 
 export class BatchModel extends BaseModel<prisma.Batch> {
 
@@ -8,21 +10,41 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   static construct = BatchModel
 
   get name(): string {
-    return `Barhch ${this.data.number}`
+    return `Batch ${this.data.number}`
   }
 
+  /**
+   * Initialize running.
+   */
+  async startRun(): Promise<void> {
+    const run = await RunModel.getNew(this)
+    try {
+      console.log('TODO: running')
+    } catch(err) {
+      error(`Run failed: ${err.stack}`)
+      run.fail(err)
+    }
+  }
+
+  /**
+   * Either create a new batch or find the last incomplete batch.
+   * @param plan Flow plan.
+   * @returns
+   */
   static async getNext(plan: FlowPlanModel): Promise<BatchModel> {
     const latest = await this.db.findMany({ where: { flowPlanId: plan.id }, orderBy: { number: 'desc' }, take: 1 })
     if (!latest.length) {
       const newBatch = await this.db.create({
-        number: 1,
-        state: 'NOT_STARTED',
-        retrieved: null,
-        flowPlanId: plan.id,
+        data: {
+          number: 1,
+          state: 'BATCH_CREATED',
+          retrieved: null,
+          flowPlanId: plan.id,
+        }
       })
-      console.log(newBatch)
       return new BatchModel(newBatch)
     }
-    throw new Error('Continuing not implemented.')
+
+    return new BatchModel(latest[0])
   }
 }

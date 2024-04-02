@@ -17,7 +17,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   async run(): Promise<void> {
     const batch = await this.getNextBatch()
-    console.log(batch)
+    const run = await batch.startRun()
   }
 
   /**

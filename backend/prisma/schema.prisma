@@ -77,7 +77,6 @@ model InputSource {
 }
 
 enum BatchState {
-  NOT_STARTED
   BATCH_CREATED
   DATA_FETCHED
   DATA_PARSED
@@ -109,6 +108,8 @@ model Run{
 
   initialState BatchState
   finalState  BatchState
+
+  error       String?
 
   batchId     Int
   batch       Batch?          @relation(fields: [batchId], references: [id])

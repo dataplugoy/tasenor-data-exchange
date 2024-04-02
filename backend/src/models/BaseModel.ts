@@ -87,6 +87,25 @@ export class BaseModel<T extends MinimalModel> {
   }
 
   /**
+   * Create new instance of the model.
+   * @param data Initial values.
+   * @returns New instance.
+   */
+  static async create<T extends MinimalModel, C extends BaseModel<T>>(data: Partial<T>): Promise<C> {
+    const item = await this.db.create({ data })
+    return this.instantiate<T, C>(item)
+  }
+
+  /**
+   * Update some fields of the model in DB.
+   * @param data Fields to update.
+   */
+  static async update<T extends MinimalModel, C extends BaseModel<T>>(item: C, data: Partial<T>) {
+    await this.db.update({ data, where: { id: item.id } })
+    Object.assign(item.data, data)
+  }
+
+  /**
    * Find a model if it exist according to given fields and create it if not found.
    * @param where Fields to search for.
    * @param data Additional data to use if not found.
