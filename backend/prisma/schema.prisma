@@ -7,6 +7,17 @@ generator client {
   provider      = "prisma-client-js"
 }
 
+model Settings {
+  id          Int             @id @default(autoincrement())
+  type        InputSourceType
+  url         String?
+  certificate String?
+  user        String?
+  password    String?
+  options     Json            @default("{}")
+  @@map(name: "settings")
+}
+
 model User {
   id          Int             @id @default(autoincrement())
   created     DateTime        @default(now())
@@ -47,6 +58,7 @@ model FlowPlan {
   updated     DateTime        @updatedAt
 
   title       String
+  settings    Json            @default("{}")
 
   projectId   Int
   project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -61,6 +73,7 @@ model FlowPlan {
 
 enum InputSourceType {
   TEST_MOCK_INPUT
+  ENABLE_BANKING
 }
 
 model InputSource {
