@@ -12,6 +12,9 @@ export class TestMockInput extends InputSource {
     super('TEST_MOCK_INPUT', settings)
   }
 
+  async autheticate(): Promise<void> {
+  }
+
   async fetchData(lastStamp: Date | null): Promise<string> {
 
     const url = this.getURL()

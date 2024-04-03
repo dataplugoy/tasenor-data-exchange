@@ -2,12 +2,13 @@ import { ArgumentParser } from 'argparse'
 import { BaseModel } from '../models/BaseModel'
 import { connect } from '../connect'
 import { UserModel } from '../models/UserModel'
+import { InputOptions } from '../types/InputOptions'
 
 /**
  * Execute one step of the named flow.
  * @param name Title of the flow to execute.
  */
-async function run(email: string, name: string) {
+async function run(email: string, name: string, options: InputOptions) {
   const user = await UserModel.find(email)
   if (!user) {
     throw new Error(`User '${email}' not found.`)
@@ -18,7 +19,7 @@ async function run(email: string, name: string) {
     throw new Error(`Flow plan '${name}' not found.`)
   }
 
-  await plan.run()
+  await plan.run(options)
 }
 
 /**
@@ -33,6 +34,7 @@ export async function execute(...args: string[]): Promise<void> {
     description: 'Tasenor Data Exchange command line tool'
   })
 
+  parser.add_argument('--track', { help: 'Store all data fetched for easy replication.', action: 'store_true', required: false })
   parser.add_argument('--db', { help: 'Database URL.' })
   parser.add_argument('--user', { help: 'Email of the user.' })
   parser.add_argument('command', { help: 'Command to execute', choices: Object.keys(commands) })
@@ -42,6 +44,9 @@ export async function execute(...args: string[]): Promise<void> {
 
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
+  const options: InputOptions = {
+    tracking: !!commandArgs.track
+  }
 
-  await commands[commandArgs.command](commandArgs.user, commandArgs.name)
+  await commands[commandArgs.command](commandArgs.user, commandArgs.name, options)
 }

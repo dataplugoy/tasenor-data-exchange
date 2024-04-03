@@ -9,8 +9,17 @@ classDiagram
 
   note "All classes include `created` and `updated` timestamps.\nAll classes include `id` integer field."
 
+    class Settings{
+      +type: InputSourceType
+      +url: string
+      +certificate: string
+      +user: string
+      +password: string
+      +options: json
+    }
+
     class User{
-      +projects. Project[]
+      +projects: Project[]
     }
 
 
@@ -27,6 +36,7 @@ classDiagram
       +title: string
       +source: InputSource
       +destination: OutputDestination
+      +settings: json
     }
     Project "1" *-- "0..*" FlowPlan
 

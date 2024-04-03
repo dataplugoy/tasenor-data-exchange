@@ -23,7 +23,9 @@ const jwt = ((exp = 3600) => {
     alg: "RS256",
     kid: "cfb2671e-6788-4d9b-878f-cb4fd7ab1077" // your application's ID
   })
+
   const body = jsonBase64(jwtBody)
+
   const signature = jwa("RS256").sign(`${header}.${body}`, privateKey)
   return `${header}.${body}.${signature}`
 })()
@@ -95,7 +97,7 @@ async function txs(accountId) {
   console.dir(json, { depth: null });
 }
 
-async function app(accountId) {
+async function app() {
   const resp = await fetch(`https://api.enablebanking.com/application`, {
     headers: baseHeaders,
   })

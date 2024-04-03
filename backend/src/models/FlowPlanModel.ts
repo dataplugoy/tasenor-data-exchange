@@ -4,6 +4,7 @@ import { UserModel } from './UserModel'
 import { BatchModel } from './BatchModel'
 import { error } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
+import { InputOptions } from '../types/InputOptions'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -13,12 +14,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * A table of functions how to proceed from each step.
    */
-  functions: Record<prisma.BatchState, (batch: BatchModel) => Promise<'OK' | 'FAIL'>> = {
-    BATCH_CREATED: (batch) => this.fetchData(batch),
-    DATA_FETCHED: (batch) => this.notImplemented(batch),
-    DATA_PARSED: (batch) => this.notImplemented(batch),
-    OUTPUT_CREATED: (batch) => this.notImplemented(batch),
-    OUTPUT_DELIVERED: (batch) => this.notImplemented(batch),
+  functions: Record<prisma.BatchState, (options: InputOptions, batch: BatchModel) => Promise<'OK' | 'FAIL'>> = {
+    BATCH_CREATED: (options, batch) => this.fetchData(options, batch),
+    DATA_FETCHED: (options, batch) => this.notImplemented(options, batch),
+    DATA_PARSED: (options, batch) => this.notImplemented(options, batch),
+    OUTPUT_CREATED: (options, batch) => this.notImplemented(options, batch),
+    OUTPUT_DELIVERED: (options, batch) => this.notImplemented(options, batch),
   }
 
   get name(): string {
@@ -32,12 +33,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Execute the next step of running the current or new batch.
    */
-  async run(): Promise<void> {
+  async run(options: InputOptions): Promise<void> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
     try {
       // Execute state transition.
-      const result = await this.functions[batch.state](batch)
+      const result = await this.functions[batch.state](options, batch)
       if (result === 'FAIL') {
         throw new Error(`Execution for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
       }
@@ -67,16 +68,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Helper to mark handler function as not implemented.
    */
-  private async notImplemented(batch: BatchModel): Promise<never> {
+  private async notImplemented(_options: InputOptions, batch: BatchModel): Promise<never> {
     throw new Error(`Function not yet implemented for state ${batch.state}.`)
   }
 
   /**
    * Set up the transport and fetch the data.
    */
-  private async fetchData(batch: BatchModel): Promise<'OK' | 'FAIL'> {
+  private async fetchData(options: InputOptions, batch: BatchModel): Promise<'OK' | 'FAIL'> {
     const source = await this.getSource()
     const driver = source.getDriver()
+
+    await driver.initialize()
+    await driver.autheticate()
     const data = await driver.fetchData(this.lastStamp)
 
     if (typeof data !== 'string') {

@@ -9,9 +9,10 @@ generator client {
 
 model Settings {
   id          Int             @id @default(autoincrement())
-  type        InputSourceType
+  type        InputSourceType @unique
   url         String?
   certificate String?
+  apikey      String?
   user        String?
   password    String?
   options     Json            @default("{}")

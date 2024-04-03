@@ -4,6 +4,7 @@ import { FlowPlanModel } from './FlowPlanModel'
 import { Constructor } from '@tasenor/common'
 import { InputSource } from '../engine/source/InputSource'
 import { TestMockInput } from '../engine/source/TestMockInput'
+import { EnableBankingInput } from '../engine/source/EnableBankingInput'
 
 export class InputSourceModel extends BaseModel<prisma.InputSource> {
 
@@ -14,7 +15,8 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
    * Drivers implemented.
    */
   private static drivers: Record<prisma.InputSourceType, Constructor<InputSource>> = {
-    TEST_MOCK_INPUT: TestMockInput
+    TEST_MOCK_INPUT: TestMockInput,
+    ENABLE_BANKING: EnableBankingInput,
   }
 
   get type(): prisma.InputSourceType {
