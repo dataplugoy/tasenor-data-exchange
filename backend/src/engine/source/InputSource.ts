@@ -3,6 +3,8 @@ import axios, { AxiosRequestConfig } from 'axios'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../../models/SettingsModel'
 import { HttpMethod, error, log } from '@tasenor/common'
+import { InputSettings } from '../../types/InputSettings'
+import { InputOptions } from '../../types/InputOptions'
 
 /**
  * Base class for different input sources supported.
@@ -10,10 +12,11 @@ import { HttpMethod, error, log } from '@tasenor/common'
 export class InputSource {
 
   type: prisma.InputSourceType
-  settings: Record<string, unknown> // TODO: Define types per input model.
+  settings: InputSettings
   systemSettings: SettingsModel
+  options: InputOptions
 
-  constructor(type: prisma.InputSourceType, settings: Record<string, unknown>) {
+  constructor(type: prisma.InputSourceType, settings: InputSettings) {
     this.type = type
     this.settings = settings
   }
@@ -72,13 +75,14 @@ export class InputSource {
    * Executor for HTTP requests.
    * @param method
    */
-  private async request(method: HttpMethod, url: string) {
+  private async request(method: HttpMethod, url: string, data: unknown = undefined) {
     log(`Requesting ${method} ${url}`)
 
     const conf: AxiosRequestConfig = {
       method,
       url,
-      headers: this.headers()
+      headers: this.headers(),
+      data,
     }
 
     return axios(conf).catch(err => {
@@ -90,15 +94,32 @@ export class InputSource {
   /**
    * Execute GET request.
    */
-  async GET(url): Promise<unknown> {
+  async GET<T>(url): Promise<T> {
     const resp = await this.request('GET', this.makeUrl(url))
+    return resp.data
+  }
+
+  /**
+   * Execute DELETE request.
+   */
+  async DELETE<T>(url): Promise<T> {
+    const resp = await this.request('DELETE', this.makeUrl(url))
+    return resp.data
+  }
+
+  /**
+   * Execute POST request.
+   */
+  async POST<T>(url, data): Promise<T> {
+    const resp = await this.request('POST', this.makeUrl(url), data)
     return resp.data
   }
 
   /**
    * A hook to perform initialization before use.
    */
-  async initialize(): Promise<void> {
+  async initialize(options: InputOptions): Promise<void> {
+    this.options = options
     this.systemSettings = await SettingsModel.get(this.type)
   }
 

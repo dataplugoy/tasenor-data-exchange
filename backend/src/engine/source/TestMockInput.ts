@@ -2,13 +2,16 @@ import fs from 'fs'
 import path from 'path'
 import { DateTime } from 'luxon'
 import { InputSource } from './InputSource'
+import { TestMockInputSettings } from '../../types/InputSettings'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
 export class TestMockInput extends InputSource {
 
-  constructor(settings: Record<string, unknown>) {
+  declare settings: TestMockInputSettings
+
+  constructor(settings: TestMockInputSettings) {
     super('TEST_MOCK_INPUT', settings)
   }
 

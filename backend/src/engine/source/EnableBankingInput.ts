@@ -1,5 +1,8 @@
 import jwa from 'jwa'
 import { InputSource } from './InputSource'
+import { EnableBankingInputSettings } from '../../types/InputSettings'
+import config from '../../config'
+import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../../types/EnableBanking'
 
 /**
  * Helper to encode JSON as base64.
@@ -13,7 +16,9 @@ const jsonBase64 = (data) => {
  */
 export class EnableBankingInput extends InputSource {
 
-  constructor(settings: Record<string, unknown>) {
+  declare settings: EnableBankingInputSettings
+
+  constructor(settings: EnableBankingInputSettings) {
     super('ENABLE_BANKING', settings)
   }
 
@@ -22,7 +27,7 @@ export class EnableBankingInput extends InputSource {
    */
   protected bearerToken() {
     const iat = Math.floor((new Date()).getTime() / 1000)
-    const expire = 60 * 60 // 1 hour
+    const expire = 60 // 1 minute
 
     const jwtBody = {
       iss: 'enablebanking.com',
@@ -45,11 +50,49 @@ export class EnableBankingInput extends InputSource {
   }
 
   async autheticate(): Promise<void> {
-    await this.GET('/application')
+    if (!this.options.auth) {
+
+      const validUntil = new Date(new Date().getTime() + this.settings.sessionInDays * 24 * 60 * 60 * 1000)
+      const startAuthorizationRequest = {
+        access: {
+          valid_until: validUntil.toISOString()
+        },
+        aspsp: {
+          name: this.settings.bankName,
+          country: this.settings.country,
+        },
+        state: "NOT-YET-IN-TADEX-USE", // Pass any info here.
+        redirect_url: config.SITE_URL, // TODO: Need proper redirect URL.
+        psu_type: this.settings.psuType,
+      }
+
+      // TODO: Need to handle cleanly when using UI.
+      const resp: EnableBankingStartAuthorizationResponse = await this.POST('/auth', startAuthorizationRequest)
+      console.log()
+      console.log('PLEASE SIGN IN TO THE FOLLOWING URL AND RETRY USING --auth <code>.')
+      console.log()
+      console.log(resp.url)
+      console.log()
+      // TODO: Throw instead? Need separate AborError not to mark run yet?
+      process.exit()
+    }
+
+    const resp: EnableBankingAuthorizeSessionResponse = await this.POST('/sessions', { code: this.options.auth })
+
+    this.options.sessionId = resp.session_id
+    const account = resp.accounts.filter(acc => acc.account_id && acc.account_id.iban === this.settings.iban)
+    if (account.length < 1) {
+      throw new Error(`Unable to find account ${this.settings.iban}.`)
+    }
+    this.options.accountId = account[0].uid
   }
 
   async fetchData(lastStamp: Date | null): Promise<string> {
+    const out = await this.GET(`/accounts/${this.options.accountId}/transactions`)
+    console.dir(out, {depth: null})
 
     throw new Error('TODO: FETCH')
   }
 }
+
+// TODO: Planning of re-usable session and account UID.

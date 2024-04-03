@@ -79,8 +79,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const source = await this.getSource()
     const driver = source.getDriver()
 
-    await driver.initialize()
+    await driver.initialize(options)
     await driver.autheticate()
+
     const data = await driver.fetchData(this.lastStamp)
 
     if (typeof data !== 'string') {

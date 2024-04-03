@@ -55,7 +55,7 @@ async function auth() {
       name: "Nordea", // BANK_NAME
       country: "FI" // BANK_COUNTRY
     },
-    state: "123e4567-e89b-12d3-a456-426614174000",
+    state: "will-see-this-in-url",
     redirect_url: "https://bookkeeper.stg.tasenor.com/", // application's redirect URL
     psu_type: "personal"
   }

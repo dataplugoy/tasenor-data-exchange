@@ -59,7 +59,7 @@ model FlowPlan {
   updated     DateTime        @updatedAt
 
   title       String
-  settings    Json            @default("{}")
+  state       Json            @default("{}")
 
   projectId   Int
   project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)

@@ -35,8 +35,9 @@ export async function execute(...args: string[]): Promise<void> {
   })
 
   parser.add_argument('--track', { help: 'Store all data fetched for easy replication.', action: 'store_true', required: false })
+  parser.add_argument('--auth', { help: 'Authorization code given by the 3rd party.', required: false })
   parser.add_argument('--db', { help: 'Database URL.' })
-  parser.add_argument('--user', { help: 'Email of the user.' })
+  parser.add_argument('--user', { help: 'Email of the TaDeX user.' })
   parser.add_argument('command', { help: 'Command to execute', choices: Object.keys(commands) })
   parser.add_argument('name', { help: 'Name of the flow' })
 
@@ -44,8 +45,10 @@ export async function execute(...args: string[]): Promise<void> {
 
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
+
   const options: InputOptions = {
-    tracking: !!commandArgs.track
+    tracking: !!commandArgs.track,
+    auth: commandArgs.auth || null,
   }
 
   await commands[commandArgs.command](commandArgs.user, commandArgs.name, options)
