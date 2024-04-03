@@ -5,6 +5,7 @@ import { SettingsModel } from '../../models/SettingsModel'
 import { HttpMethod, error, log } from '@tasenor/common'
 import { InputSettings } from '../../types/InputSettings'
 import { InputOptions } from '../../types/InputOptions'
+import { FlowState } from '../../types/FlowState'
 
 /**
  * Base class for different input sources supported.
@@ -15,6 +16,7 @@ export class InputSource {
   settings: InputSettings
   systemSettings: SettingsModel
   options: InputOptions
+  state: FlowState
 
   constructor(type: prisma.InputSourceType, settings: InputSettings) {
     this.type = type
@@ -115,18 +117,23 @@ export class InputSource {
     return resp.data
   }
 
+  /* ACTUAL FLOW STEPS */
+
   /**
    * A hook to perform initialization before use.
    */
-  async initialize(options: InputOptions): Promise<void> {
+  async initialize(state: FlowState, options: InputOptions): Promise<FlowState> {
     this.options = options
+    this.state = state
     this.systemSettings = await SettingsModel.get(this.type)
+
+    return this.state
   }
 
   /**
    * Handle authentication to the remote.
    */
-  async autheticate(): Promise<void> {
+  async autheticate(): Promise<FlowState> {
     throw new Error(`Input source ${this.type} does not implement autheticate().`)
   }
 

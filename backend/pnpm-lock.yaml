@@ -40,6 +40,9 @@ devDependencies:
   '@types/jwa':
     specifier: ^2.0.3
     version: 2.0.3
+  '@types/luxon':
+    specifier: ^3.4.2
+    version: 3.4.2
   '@types/node':
     specifier: ^20.11.30
     version: 20.11.30
@@ -433,6 +436,10 @@ packages:
 
   /@types/jwa@2.0.3:
     resolution: {integrity: sha512-M0bhziNgCZ/YtTQvejzxxg95u+oBe2VATnqnDgaS4JUcS6JVsAjFaHfGb9RzMJwEXwCxzYxKibHOu+71Kv4p6A==}
+    dev: true
+
+  /@types/luxon@3.4.2:
+    resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
     dev: true
 
   /@types/node@20.11.30:

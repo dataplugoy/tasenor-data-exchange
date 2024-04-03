@@ -3,11 +3,13 @@ import { InputSource } from './InputSource'
 import { EnableBankingInputSettings } from '../../types/InputSettings'
 import config from '../../config'
 import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../../types/EnableBanking'
+import { EnableBankingFlowState } from '../../types/FlowState'
+import { DateTime } from 'luxon'
 
 /**
  * Helper to encode JSON as base64.
  */
-const jsonBase64 = (data) => {
+const jsonBase64 = (data: Record<string, any>) => {
   return Buffer.from(JSON.stringify(data)).toString("base64").replace("=", "")
 }
 
@@ -17,6 +19,7 @@ const jsonBase64 = (data) => {
 export class EnableBankingInput extends InputSource {
 
   declare settings: EnableBankingInputSettings
+  declare state: EnableBankingFlowState
 
   constructor(settings: EnableBankingInputSettings) {
     super('ENABLE_BANKING', settings)
@@ -49,7 +52,16 @@ export class EnableBankingInput extends InputSource {
     return `${header}.${body}.${signature}`
   }
 
-  async autheticate(): Promise<void> {
+  async autheticate(): Promise<EnableBankingFlowState> {
+    // Check if old credentials are valid.
+    if (this.state.validUntil) {
+      const validUntil = DateTime.fromISO(this.state.validUntil)
+      if (DateTime.now() < validUntil) {
+        return this.state
+      }
+    }
+
+    // Start new authentication if not continuing.
     if (!this.options.auth) {
 
       const validUntil = new Date(new Date().getTime() + this.settings.sessionInDays * 24 * 60 * 60 * 1000)
@@ -73,26 +85,31 @@ export class EnableBankingInput extends InputSource {
       console.log()
       console.log(resp.url)
       console.log()
-      // TODO: Throw instead? Need separate AborError not to mark run yet?
+      // TODO: Throw instead? Need separate AborError to have special handling for this?
       process.exit()
     }
 
+    // Establish the session.
     const resp: EnableBankingAuthorizeSessionResponse = await this.POST('/sessions', { code: this.options.auth })
 
-    this.options.sessionId = resp.session_id
     const account = resp.accounts.filter(acc => acc.account_id && acc.account_id.iban === this.settings.iban)
     if (account.length < 1) {
       throw new Error(`Unable to find account ${this.settings.iban}.`)
     }
-    this.options.accountId = account[0].uid
+
+    this.state = {
+      sessionId: resp.session_id,
+      accountId: account[0].uid,
+      validUntil: resp.access.valid_until
+    }
+
+    return this.state
   }
 
   async fetchData(lastStamp: Date | null): Promise<string> {
-    const out = await this.GET(`/accounts/${this.options.accountId}/transactions`)
-    console.dir(out, {depth: null})
-
-    throw new Error('TODO: FETCH')
+    const output = await this.GET(`/accounts/${this.state.accountId}/transactions`)
+    // TODO: Handle continuation key.
+    // console.dir(out, {depth: null})
+    return JSON.stringify(output)
   }
 }
-
-// TODO: Planning of re-usable session and account UID.

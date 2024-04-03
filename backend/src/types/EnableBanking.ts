@@ -1,4 +1,4 @@
-import { Currency } from "@tasenor/common"
+import { Currency, Timestring } from "@tasenor/common"
 
 export interface EnableBankingStartAuthorizationResponse {
   url: string
@@ -23,5 +23,8 @@ export interface EnableBankingAuthorizeSessionResponse {
   aspsp: {
     name: string
     country: string
+  }
+  access: {
+    valid_until: Timestring
   }
 }

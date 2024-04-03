@@ -5,6 +5,7 @@ import { BatchModel } from './BatchModel'
 import { error } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
+import { FlowState } from '../types/FlowState'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -28,6 +29,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
   get lastStamp(): Date | null {
     return this.data.lastStamp
+  }
+
+  get state(): FlowState {
+    return this.data.state as FlowState
+  }
+
+  /**
+   * Store the current plan state to DB.
+   * @param state
+   */
+  async saveState(state: FlowState): Promise<void> {
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { state })
   }
 
   /**
@@ -79,9 +92,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const source = await this.getSource()
     const driver = source.getDriver()
 
-    await driver.initialize(options)
-    await driver.autheticate()
-
+    await driver.initialize(this.state, options)
+    const state = await driver.autheticate()
+    await this.saveState(state)
     const data = await driver.fetchData(this.lastStamp)
 
     if (typeof data !== 'string') {

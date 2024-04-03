@@ -36,7 +36,7 @@ export class SettingsModel extends BaseModel<prisma.Settings> {
   static async get(type: prisma.InputSourceType): Promise<SettingsModel> {
     const settings = await this.findUnique<prisma.Settings, SettingsModel>({ type })
     if (!settings) {
-      throw new Error(`Cannot find settings for ${type}.`)
+      throw new Error(`Cannot find system level settings for ${type}.`)
     }
     return settings
   }
