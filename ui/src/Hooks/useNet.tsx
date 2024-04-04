@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosHeaders } from 'axios'
 import { AppContextProps, useApp } from "./useApp"
 import { HttpMethod } from '@tasenor/common'
 import { useTranslation } from 'react-i18next'
@@ -9,10 +9,18 @@ import { useTranslation } from 'react-i18next'
  * Helper to run HTTP requests.
  */
 async function request<T>(t, app: AppContextProps, method: HttpMethod, url: string, data: Record<string, unknown> | undefined = undefined): Promise<T> {
+
+  const headers: { Authorization?: string } = {}
+
+  if (app.token) {
+    headers.Authorization = `Bearer ${app.token}`
+  }
+
   return axios({
     method,
     url,
-    data
+    data,
+    headers,
   })
   .then(res => res.data)
   .catch(err => {

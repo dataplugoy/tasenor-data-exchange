@@ -1,14 +1,17 @@
 import express from 'express'
+import { authorize } from '../lib/authorize'
 
 const router = express.Router()
+
 
 /**
  * List of all projects for user.
  */
 router.get('/',
-  // TODO: Authorize.
+  authorize(),
   async (req, res) => {
-    res.send([])
+    const userId = res.locals.id
+    res.send(['TODO: projects for user', userId])
   }
 )
 
