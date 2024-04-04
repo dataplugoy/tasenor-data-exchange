@@ -1,35 +1,60 @@
 import express from 'express'
 import { UserModel } from '../models/UserModel'
 import { compare, sign } from '../lib/crypt'
+import { AllowedSchema, Validator } from 'express-json-validator-middleware'
+
+/**
+ * Login request.
+ */
+const AuthRequest: AllowedSchema = {
+  type: 'object',
+  required: ['email', 'password'],
+  properties: {
+    email: {
+      type: "string"
+    },
+    password: {
+      type: "string"
+    }
+  },
+  additionalProperties: false
+}
+
+const { validate } = new Validator({})
 
 const router = express.Router()
 
-// TODO: Validate body.
-router.post('/', async (req, res) => {
-  const { email, password } = req.body
-  const user = await UserModel.find(email)
-  if (user) {
-    if (await compare(password, user.data.password)) {
+/**
+ * Login attempt returns token if successful.
+ */
+router.post('/',
+  validate({ body: AuthRequest }),
+  async (req, res) => {
+    const { email, password } = req.body
+    const user = await UserModel.find(email)
+    if (user) {
+      if (await compare(password, user.data.password)) {
 
-      const token = await sign({ id: user.id }, 'tadex-api')
+        const token = await sign({ id: user.id }, 'tadex-api')
 
-      return res.send({
-        token,
-        user: {
-          id: user.id,
-          email: user.data.email,
-          name: user.data.name,
-          address: user.data.address,
-          zip: user.data.zip,
-          city: user.data.city,
-          country: user.data.country,
-          settings: user.data.settings,
-        }
-      })
+        return res.send({
+          token,
+          user: {
+            id: user.id,
+            email: user.data.email,
+            name: user.data.name,
+            address: user.data.address,
+            zip: user.data.zip,
+            city: user.data.city,
+            country: user.data.country,
+            settings: user.data.settings,
+          }
+        })
+      }
     }
-  }
 
-  res.status(401).send({ message: 'Invalid user or password.' })
-})
+    res.status(401).send({ message: 'Invalid user or password.' })
+  }
+)
 
 export default router

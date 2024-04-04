@@ -5,8 +5,9 @@ import config, { Config } from './config'
 import { connect } from './connect'
 import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
-import { log } from '@tasenor/common'
+import { error, log } from '@tasenor/common'
 import routes from './routes'
+import { ValidationError } from 'express-json-validator-middleware'
 
 class TasenorDataExchangeServer {
   public app = express()
@@ -22,15 +23,18 @@ class TasenorDataExchangeServer {
     this.db = await connect()
     BaseModel.setDb(this.db)
 
+    // Log requests.
     this.app.use((req, res, next) => {
       log(req.method, req.originalUrl)
       next()
     })
 
+    // Basics.
     this.app.use(express.urlencoded({ extended: true }))
     this.app.use(express.json())
 
-    // TODO: Configure.
+    // Security.
+    // TODO: Configure origin.
     const origin = 'localhost'
     const apiOrigin = 'localhost'
     this.app.use(cors({ origin }))
@@ -45,9 +49,21 @@ class TasenorDataExchangeServer {
     }
     this.app.use(helmet({ contentSecurityPolicy }))
 
-
     this.app.use('/api', routes)
     // TODO: 404 for everything else.
+
+    // Validation catcher.
+    this.app.use((err, req, res, next) => {
+      if (err instanceof ValidationError) {
+        error(`Validation error: ${req.method} ${req.originalUrl}`, JSON.stringify(err.validationErrors))
+        res.status(400).send({
+          message: 'Invalid request parameters.'
+        })
+        next()
+      } else {
+        next(err)
+      }
+    })
 
     this.app.listen(this.config.PORT, () => {
       log(`Server started on port ${this.config.PORT}.`)
