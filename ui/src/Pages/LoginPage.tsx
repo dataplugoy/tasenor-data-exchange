@@ -26,7 +26,7 @@ export const LoginPage = (): React.JSX.Element =>  {
 
   return <Box sx={{ p: 4, textAlign: 'center' }}>
     <img src="/Images/logo.jpeg"/>
-    <Box>
+    <Box sx={{ mt: 2 }}>
       <TextField onChange={e => setEmail(e.target.value)} value={email} name="email" label={t('Email')}/>
       <TextField onChange={e => setPassword(e.target.value)} value={password} name="password" type="password" label={t('Password')}/>
       <Box sx={{ mt: 2 }}>
