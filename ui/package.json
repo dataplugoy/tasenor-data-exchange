@@ -15,12 +15,18 @@
     "@mui/material": "^5.15.14",
     "@tasenor/common": "^1.13.0",
     "@tasenor/config": "^1.13.0",
+    "i18next": "^23.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-i18next": "^14.1.0",
+    "react-router-dom": "^6.22.3",
+    "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
+    "@types/react": "^18.2.74",
+    "@types/react-dom": "^18.2.24",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "@vitejs/plugin-react": "^4.2.1",
