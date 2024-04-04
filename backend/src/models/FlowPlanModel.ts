@@ -49,6 +49,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   async run(options: InputOptions): Promise<void> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
+    // TODO: More logging here.
     try {
       // Execute state transition.
       const result = await this.functions[batch.state](options, batch)

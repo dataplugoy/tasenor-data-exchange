@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import axios, { AxiosRequestConfig } from 'axios'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../../models/SettingsModel'
@@ -77,8 +78,13 @@ export class InputSource {
    * Executor for HTTP requests.
    * @param method
    */
-  private async request(method: HttpMethod, url: string, data: unknown = undefined) {
-    log(`Requesting ${method} ${url}`)
+  private async request<T>(method: HttpMethod, url: string, data: unknown = undefined): Promise<T> {
+    log(`Requesting '${method} ${url}'.`)
+
+    const storePath = this.options.tracking ? path.join(this.root, this.options.tracking, url.replace(this.systemSettings.url, '')) : null
+    const storeDir = storePath ? path.dirname(storePath) : null
+    const storeFile = storePath ? `${method}-${path.basename(storePath)}` : null
+    const savePath = storeDir && storeFile ? path.join(storeDir, storeFile) : null
 
     const conf: AxiosRequestConfig = {
       method,
@@ -87,34 +93,52 @@ export class InputSource {
       data,
     }
 
-    return axios(conf).catch(err => {
+    if (savePath && fs.existsSync(savePath)) {
+      log(`Reading result from '${savePath}'.`)
+      // Supporting UTF-8 responeses for now.
+      const data = fs.readFileSync(savePath).toString('utf-8')
+      if (conf.headers && conf.headers['Content-Type'] === 'application/json') {
+        return JSON.parse(data)
+      }
+      return data as T
+    }
+
+    const result = await axios(conf).catch(err => {
       error('Request failed: ' + JSON.stringify(err.response.data))
       throw err
     })
+
+    if (storeDir && savePath) {
+      log(`Saving result to '${savePath}'.`)
+      fs.mkdirSync(storeDir, { recursive: true })
+      fs.writeFileSync(savePath, typeof result.data === 'string' ? result.data : JSON.stringify(result.data))
+    }
+
+    return result.data
   }
 
   /**
    * Execute GET request.
    */
   async GET<T>(url): Promise<T> {
-    const resp = await this.request('GET', this.makeUrl(url))
-    return resp.data
+    const resp = await this.request<T>('GET', this.makeUrl(url))
+    return resp
   }
 
   /**
    * Execute DELETE request.
    */
   async DELETE<T>(url): Promise<T> {
-    const resp = await this.request('DELETE', this.makeUrl(url))
-    return resp.data
+    const resp = await this.request<T>('DELETE', this.makeUrl(url))
+    return resp
   }
 
   /**
    * Execute POST request.
    */
   async POST<T>(url, data): Promise<T> {
-    const resp = await this.request('POST', this.makeUrl(url), data)
-    return resp.data
+    const resp = await this.request<T>('POST', this.makeUrl(url), data)
+    return resp
   }
 
   /* ACTUAL FLOW STEPS */

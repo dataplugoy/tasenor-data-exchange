@@ -34,7 +34,7 @@ export async function execute(...args: string[]): Promise<void> {
     description: 'Tasenor Data Exchange command line tool'
   })
 
-  parser.add_argument('--track', { help: 'Store all data fetched for easy replication.', action: 'store_true', required: false })
+  parser.add_argument('--track', { help: 'Store all data fetched to the given directory for easy replication.', required: false })
   parser.add_argument('--auth', { help: 'Authorization code given by the 3rd party.', required: false })
   parser.add_argument('--db', { help: 'Database URL.' })
   parser.add_argument('--user', { help: 'Email of the TaDeX user.' })
@@ -47,7 +47,7 @@ export async function execute(...args: string[]): Promise<void> {
   BaseModel.setDb(db)
 
   const options: InputOptions = {
-    tracking: !!commandArgs.track,
+    tracking: commandArgs.track || null,
     auth: commandArgs.auth || null,
   }
 
