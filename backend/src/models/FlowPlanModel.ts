@@ -2,7 +2,7 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { UserModel } from './UserModel'
 import { BatchModel } from './BatchModel'
-import { error } from '@tasenor/common'
+import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'
@@ -49,15 +49,16 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   async run(options: InputOptions): Promise<void> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
-    // TODO: More logging here.
+    log(`${run} for ${batch} starting from state ${batch.state}.`)
+
     try {
       // Execute state transition.
       const result = await this.functions[batch.state](options, batch)
       if (result === 'FAIL') {
-        throw new Error(`Execution for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
+        throw new Error(`Execution of ${run} for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
       }
       if (result !== 'OK') {
-        throw new Error(`Execution for state '${batch.state}' did not return OK (perhaps incomplete implementation).`)
+        throw new Error(`Execution of ${run} for state '${batch.state}' did not return OK (perhaps incomplete implementation).`)
       }
 
       // Mark the new state.
@@ -69,12 +70,15 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Check for completion.
       const futureState = Object.keys(this.functions)[idx + 2]
       if (futureState === undefined) {
+        log(`${batch} completed.`)
         await BatchModel.update<prisma.Batch, BatchModel>(batch, { completed: new Date() })
+      } else {
+        log(`${run} for ${batch} success.`)
       }
 
     } catch(err) {
 
-      error(`Run failed: ${err.stack}`)
+      error(`${run} failed: ${err.stack}`)
       await run.fail(err)
     }
   }

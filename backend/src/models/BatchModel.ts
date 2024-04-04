@@ -8,10 +8,6 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   static table = 'batch'
   static construct = BatchModel
 
-  get name(): string {
-    return `Batch ${this.data.number}`
-  }
-
   get state(): prisma.BatchState {
     return this.data.state
   }

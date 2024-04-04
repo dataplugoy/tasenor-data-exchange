@@ -50,7 +50,7 @@ export class BaseModel<T extends MinimalModel> {
    * @returns
    */
   toString(): string {
-    return `${this.typeName} #${this.id} ${this.name}`
+    return `${this.typeName} #${this.id}`
   }
 
   /**
