@@ -49,7 +49,7 @@ class TasenorDataExchangeServer {
     }
     this.app.use(helmet({ contentSecurityPolicy }))
 
-    this.app.use('/api', routes)
+    this.app.use('/api/v1', routes)
 
     // Validation catcher.
     this.app.use((err, req, res, next) => {

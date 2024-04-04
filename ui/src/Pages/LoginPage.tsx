@@ -17,7 +17,7 @@ export const LoginPage = (): React.JSX.Element =>  {
   const POST = usePOST<AuthResponse>()
 
   const onLogin = () => {
-    POST('/api/auth', { email, password }).then((res) => {
+    POST('/auth', { email, password }).then((res) => {
       if (res) {
         app.setToken(res.token as Token)
         navigate('/')

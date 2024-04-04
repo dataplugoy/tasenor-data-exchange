@@ -11,7 +11,7 @@ export const HomePage = (): React.JSX.Element =>  {
   const GET = useGET<ProjectsResponse>()
 
   useEffect(() => {
-    GET('/api/projects').then(res => {
+    GET('/projects').then(res => {
       res && setProjects(res)
     })
   }, [])

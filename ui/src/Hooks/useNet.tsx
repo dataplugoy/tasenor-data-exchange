@@ -3,7 +3,7 @@ import { AppContextProps, useApp } from "./useApp"
 import { HttpMethod } from '@tasenor/common'
 import { useTranslation } from 'react-i18next'
 
-// TODO: Add '/api/v1' here. Handle 'v1' in backend.
+const API_VERSION = 'v1'
 
 /**
  * Helper to run HTTP requests.
@@ -18,7 +18,7 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
 
   return axios({
     method,
-    url,
+    url: `/api/${API_VERSION}${url}`,
     data,
     headers,
   })
