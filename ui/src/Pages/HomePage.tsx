@@ -26,12 +26,12 @@ export const HomePage = (): React.JSX.Element =>  {
     </Card>
     <Card>
       <CardContent>
-        TODO
+        TODO: Remove dummy example
       </CardContent>
     </Card>
     <Card>
       <CardContent>
-        TODO
+        TODO: Remove dummy example
       </CardContent>
     </Card>
   </Box>

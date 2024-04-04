@@ -50,7 +50,6 @@ class TasenorDataExchangeServer {
     this.app.use(helmet({ contentSecurityPolicy }))
 
     this.app.use('/api', routes)
-    // TODO: 404 for everything else.
 
     // Validation catcher.
     this.app.use((err, req, res, next) => {

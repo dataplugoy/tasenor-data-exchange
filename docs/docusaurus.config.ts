@@ -18,7 +18,7 @@ const config: Config = {
   organizationName: 'dataplugoy',
   projectName: 'tasenor-data-exchange',
 
-  onBrokenLinks: 'warn', // TODO: Should be 'throw' once things are working.
+  onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
