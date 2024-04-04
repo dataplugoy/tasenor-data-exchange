@@ -18,7 +18,7 @@ export const LoginPage = (): React.JSX.Element =>  {
         email, password
       }
     }).then(res => {
-      console.log(res);
+      console.log(res.data);
     }).catch(err => {
       console.log(err);
     })

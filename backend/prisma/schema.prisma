@@ -32,7 +32,7 @@ model User {
   city        String?
   country     String?
 
-  last_seen   DateTime?
+  lastSeen    DateTime?
   settings    Json            @default("{}")
 
   projects    Project[]
