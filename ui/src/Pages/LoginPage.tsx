@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
+import axios from 'axios'
 
 export const LoginPage = (): React.JSX.Element =>  {
 
@@ -9,7 +10,18 @@ export const LoginPage = (): React.JSX.Element =>  {
   const [password, setPassword] = useState('')
 
   const onLogin = () => {
-    console.log('TODO: Login')
+    // TODO: Make common HTTP-service.
+    axios({
+      method: 'POST',
+      url: '/api/auth',
+      data: {
+        email, password
+      }
+    }).then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   return <Box sx={{ p: 4, textAlign: 'center' }}>

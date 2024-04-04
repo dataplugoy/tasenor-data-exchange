@@ -1,9 +1,12 @@
 import express from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
 import config, { Config } from './config'
 import { connect } from './connect'
 import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
 import { log } from '@tasenor/common'
+import routes from './routes'
 
 class TasenorDataExchangeServer {
   public app = express()
@@ -18,6 +21,33 @@ class TasenorDataExchangeServer {
 
     this.db = await connect()
     BaseModel.setDb(this.db)
+
+    this.app.use((req, res, next) => {
+      log(req.method, req.originalUrl)
+      next()
+    })
+
+    this.app.use(express.urlencoded({ extended: true }))
+    this.app.use(express.json())
+
+    // TODO: Configure.
+    const origin = 'localhost'
+    const apiOrigin = 'localhost'
+    this.app.use(cors({ origin }))
+    const contentSecurityPolicy = {
+      useDefaults: true,
+      crossOriginResourcePolicy: { policy: 'same-site' },
+      directives: {
+        defaultSrc: ["'self'", apiOrigin],
+        imgSrc: ["'self'", 'data:', apiOrigin],
+        scriptSrc: ["'self'", "'unsafe-eval'"]
+      }
+    }
+    this.app.use(helmet({ contentSecurityPolicy }))
+
+
+    this.app.use('/api', routes)
+    // TODO: 404 for everything else.
 
     this.app.listen(this.config.PORT, () => {
       log(`Server started on port ${this.config.PORT}.`)
