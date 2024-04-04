@@ -16,7 +16,7 @@ export class UserModel extends BaseModel<prisma.User> {
    * Get a list of all projects the user has.
    */
   getProjects(): Promise<ProjectModel[]> {
-    return ProjectModel.findForUser(this)
+    return ProjectModel.findForUser(this.id)
   }
 
   /**
@@ -24,7 +24,7 @@ export class UserModel extends BaseModel<prisma.User> {
    * @param name
    */
   findFlowPlan(name: string) {
-    return FlowPlanModel.findForUser(this, name)
+    return FlowPlanModel.findForUser(this.id, name)
   }
 
   /**

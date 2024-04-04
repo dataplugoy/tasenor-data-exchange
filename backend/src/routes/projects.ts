@@ -1,5 +1,6 @@
 import express from 'express'
 import { authorize } from '../lib/authorize'
+import { ProjectModel } from '../models/ProjectModel'
 
 const router = express.Router()
 
@@ -11,7 +12,8 @@ router.get('/',
   authorize(),
   async (req, res) => {
     const userId = res.locals.id
-    res.send(['TODO: projects for user', userId])
+    const projects = await ProjectModel.findForUser(userId)
+    res.send(projects.map(project => project.data))
   }
 )
 

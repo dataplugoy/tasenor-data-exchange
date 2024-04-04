@@ -14,7 +14,7 @@ export class ProjectModel extends BaseModel<prisma.Project> {
   /**
    * Get a list of all projects the user has.
    */
-  static async findForUser(user: UserModel): Promise<ProjectModel[]> {
-    return this.findMany<prisma.Project, ProjectModel>({ userId: user.id })
+  static async findForUser(userId: number): Promise<ProjectModel[]> {
+    return this.findMany<prisma.Project, ProjectModel>({ userId })
   }
 }
