@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "exit 1"
+    "build": "pnpm build-schema",
+    "build-schema": "json2ts -i backend/src/schema/ -o ui/src/Types/API/"
   },
   "keywords": [],
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "json-schema-to-typescript": "^13.1.2",
     "jwa": "^2.0.0",
     "tsx": "^4.7.1"
   }

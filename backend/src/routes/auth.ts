@@ -2,23 +2,7 @@ import express from 'express'
 import { UserModel } from '../models/UserModel'
 import { compare, sign } from '../lib/crypt'
 import { AllowedSchema, Validator } from 'express-json-validator-middleware'
-
-/**
- * Login request.
- */
-const AuthRequest: AllowedSchema = {
-  type: 'object',
-  required: ['email', 'password'],
-  properties: {
-    email: {
-      type: "string"
-    },
-    password: {
-      type: "string"
-    }
-  },
-  additionalProperties: false
-}
+import AuthRequest from '../schema/auth/AuthRequest.json'
 
 const { validate } = new Validator({})
 
@@ -28,7 +12,7 @@ const router = express.Router()
  * Login attempt returns token if successful.
  */
 router.post('/',
-  validate({ body: AuthRequest }),
+  validate({ body: AuthRequest as AllowedSchema}),
   async (req, res) => {
     const { email, password } = req.body
     const user = await UserModel.find(email)

@@ -4,7 +4,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
 import { useNavigate } from 'react-router-dom'
 import { usePOST } from '../Hooks/useNet'
-import { LoginData } from '../Types/api'
+import { AuthResponse } from '../Types/API/auth/AuthResponse'
+import { Token } from '@tasenor/common'
 
 export const LoginPage = (): React.JSX.Element =>  {
 
@@ -13,12 +14,12 @@ export const LoginPage = (): React.JSX.Element =>  {
   const [password, setPassword] = useState('')
   const app = useApp()
   const navigate = useNavigate()
-  const POST = usePOST<LoginData>()
+  const POST = usePOST<AuthResponse>()
 
   const onLogin = () => {
     POST('/api/auth', { email, password }).then((res) => {
       if (res) {
-        app.setToken(res.token)
+        app.setToken(res.token as Token)
         navigate('/')
       }
     })
