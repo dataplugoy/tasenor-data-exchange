@@ -19,6 +19,15 @@ classDiagram
     }
 
     class User{
+      +email: string
+      +password: string
+      +name: string
+      +address: string
+      +zip: string
+      +city: string
+      +country: string
+      +last_seen: DateTime
+      +settings: json
       +projects: Project[]
     }
 

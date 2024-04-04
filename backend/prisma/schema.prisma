@@ -25,6 +25,7 @@ model User {
   updated     DateTime        @updatedAt
 
   email       String          @unique
+  password    String
   name        String
   address     String?
   zip         String?
