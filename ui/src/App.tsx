@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { LoginPage } from './Pages/LoginPage'
 import { Messages } from './Components/Messages'
 import { HomePage } from './Pages/HomePage'
+import { Menu } from './Components/Menu'
+
 
 export const App = (): React.JSX.Element => {
 
@@ -18,12 +20,15 @@ export const App = (): React.JSX.Element => {
     <BrowserRouter basename="app">
       <Container component="main" maxWidth="lg">
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <Menu/>
           <Messages/>
-          <Routes>
-            <Route path="/" element={<IndexPage/>}/>
-            <Route path="/login" element={<LoginPage/>}/>
-            <Route path="/home" element={<HomePage/>}/>
-          </Routes>
+          <Box sx={{ pt: 2 }}>
+            <Routes>
+              <Route path="/" element={<IndexPage/>}/>
+              <Route path="/login" element={<LoginPage/>}/>
+              <Route path="/home" element={<HomePage/>}/>
+            </Routes>
+          </Box>
         </Box>
       </Container>
     </BrowserRouter>
