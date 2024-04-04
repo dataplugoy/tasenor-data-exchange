@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
-import axios from 'axios'
 import { useApp } from '../Hooks/useApp'
 import { useNavigate } from 'react-router-dom'
+import { usePOST } from '../Hooks/useNet'
+import { LoginData } from '../Types/api'
 
 export const LoginPage = (): React.JSX.Element =>  {
 
@@ -12,21 +13,14 @@ export const LoginPage = (): React.JSX.Element =>  {
   const [password, setPassword] = useState('')
   const app = useApp()
   const navigate = useNavigate()
+  const POST = usePOST<LoginData>()
 
   const onLogin = () => {
-    // TODO: Make common HTTP-service.
-    // TODO: Define login response as type.
-    axios({
-      method: 'POST',
-      url: '/api/auth',
-      data: {
-        email, password
+    POST({ email, password }).then((res) => {
+      if (res) {
+        app.setToken(res.token)
+        navigate('/')
       }
-    }).then(res => {
-      app.setToken(res.data.token)
-      navigate('/')
-    }).catch(err => {
-      app.addError(t('Invalid user or password.'))
     })
   }
 
