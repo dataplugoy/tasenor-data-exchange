@@ -10,11 +10,11 @@ export const Menu = (): React.JSX.Element => {
   const navigate = useNavigate()
 
   const onLogout = () => {
-    app.setToken(null)
+    app.setAuth({ token: null, user: { id: 0, email: '' } })
     navigate('/')
   }
 
-  if (!app.token) {
+  if (!app.auth.token) {
     return <></>
   }
 

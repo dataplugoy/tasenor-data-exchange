@@ -1,5 +1,4 @@
 import React, { ReactNode, useContext, useState } from 'react'
-import { Token } from '@tasenor/common'
 import useLocalStorage from 'use-local-storage'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
@@ -22,34 +21,30 @@ export type Message = {
  */
 export interface AppContextProps {
   // Data
-  token: Token | null // TODO: Get rid off.
   messages: Message[]
   project: ProjectResponse
-  user: AuthResponse // TODO: Rename 'auth'.
+  auth: AuthResponse
 
   // Functions
-  setToken: (token: Token | null) => void
   addInfo: (text: string) => void
   addWarning: (text: string) => void
   addError: (text: string) => void
   setProject: (project: ProjectResponse) => void
-  setUser: (user: AuthResponse) => void
+  setAuth: (user: AuthResponse) => void
 }
 
 /**
  * An instance of the global context.
  */
 export const AppContext = React.createContext<AppContextProps>({
-  token: null,
   messages: [],
   project: {},
-  user: { token: null, user: { id: 0, email: '' }},
-  setToken: () => {},
+  auth: { token: null, user: { id: 0, email: '' } },
   addInfo: () => {},
   addWarning: () => {},
   addError: () => {},
   setProject: () => {},
-  setUser: () => {},
+  setAuth: () => {},
 })
 
 /**
@@ -60,12 +55,11 @@ export const useApp = () => useContext(AppContext)
 /**
  * Provider for the global context.
  */
-export const AppProvider = (props: { children: ReactNode }): JSX.Element => {
-  const [token, setToken] = useLocalStorage<Token | null>('token', null)
+export const AppProvider = (props: { children: ReactNode }): React.ReactNode => {
   const [messages, setMessages] = useState<Message[]>([])
   const [timer, setTimer] = useState<null|NodeJS.Timeout>(null)
-  const [project, setProject] = useState<ProjectResponse>({})
-  const [user, setUser] = useState<AuthResponse>({ token: null, user: { id: 0, email: '' }})
+  const [project, setProject] = useLocalStorage<ProjectResponse>('project', {})
+  const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', { token: null, user: { id: 0, email: '' } })
 
   const addMessage = (type: MessageType, text: string) => {
     if (timer) clearTimeout(timer)
@@ -91,16 +85,14 @@ export const AppProvider = (props: { children: ReactNode }): JSX.Element => {
 
   return (
     <AppContext.Provider value={{
-      token,
       messages,
       project,
-      user,
-      setToken,
+      auth,
       addInfo,
       addWarning,
       addError,
       setProject,
-      setUser,
+      setAuth,
     }}>
       {props.children}
     </AppContext.Provider>

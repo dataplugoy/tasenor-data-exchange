@@ -1,4 +1,4 @@
-import React, {  } from 'react'
+import React, { } from 'react'
 import { Card, CardContent, CardHeader, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { ProjectsResponse } from '../Types/API/projects/ProjectsResponse'
 import { Trans } from 'react-i18next'
@@ -9,7 +9,7 @@ interface ProjectsCardProps {
   projects: ProjectsResponse
 }
 
-export const ProjectsCard = (props: ProjectsCardProps): React.JSX.Element =>  {
+export const ProjectsCard = (props: ProjectsCardProps): React.JSX.Element => {
   const { projects } = props
   const app = useApp()
 
@@ -30,9 +30,9 @@ export const ProjectsCard = (props: ProjectsCardProps): React.JSX.Element =>  {
           <TableBody>
           {
             projects.map(project =>
-              <TableRow key={project.id} hover selected={app.user.user.settings?.projectId === project.id}>
+              <TableRow key={project.id} hover selected={app.auth.user.settings?.projectId === project.id}>
                 <TableCell>{project.name}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{app.user.user.settings?.projectId === project.id && <Check sx={{ color: 'success.main' }}/>}</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{app.auth.user.settings?.projectId === project.id && <Check sx={{ color: 'success.main' }}/>}</TableCell>
               </TableRow>
             )
           }

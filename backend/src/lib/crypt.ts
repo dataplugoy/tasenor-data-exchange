@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import { TokenAudience, TokenPayload } from '../types/TokenPayload'
 import { Token, error } from '@tasenor/common'
-import jwt, { Jwt } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import config from '../config'
 
 const TOKEN_DEFAULT_EXPIRY_TIME = 6000
@@ -97,7 +97,7 @@ export function verify(token: Token, audience: TokenAudience | TokenAudience[], 
       }
       if (!decoded.data) {
         fail(`Cannot find proper payload from the token ${token}.`)
-        const data = decoded.data as TokenPayload
+        return null
       } else {
         return decoded.data
       }

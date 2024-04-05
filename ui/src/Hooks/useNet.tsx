@@ -1,5 +1,5 @@
-import axios, { AxiosHeaders } from 'axios'
-import { AppContextProps, useApp } from "./useApp"
+import axios from 'axios'
+import { AppContextProps, useApp } from './useApp'
 import { HttpMethod } from '@tasenor/common'
 import { useTranslation } from 'react-i18next'
 
@@ -12,8 +12,8 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
 
   const headers: { Authorization?: string } = {}
 
-  if (app.token) {
-    headers.Authorization = `Bearer ${app.token}`
+  if (app.auth.token) {
+    headers.Authorization = `Bearer ${app.auth.token}`
   }
 
   return axios({
@@ -22,12 +22,12 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
     data,
     headers,
   })
-  .then(res => res.data)
-  .catch(err => {
-    const msg = err.response && err.response.data && err.response.data.message ? t(err.response.data.message) : err.message
-    app.addError(msg)
-    return null
-  }) as T
+    .then(res => res.data)
+    .catch(err => {
+      const msg = err.response && err.response.data && err.response.data.message ? t(err.response.data.message) : err.message
+      app.addError(msg)
+      return null
+    }) as T
 }
 
 /**

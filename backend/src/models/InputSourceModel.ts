@@ -27,11 +27,11 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
    * Get the driver for this input source.
    */
   getDriver(): InputSource {
-    const driver = InputSourceModel.drivers[this.type]
-    if (!driver) {
+    const Driver = InputSourceModel.drivers[this.type]
+    if (!Driver) {
       throw new Error(`Cannot find driver for input source type '${this.type}'.`)
     }
-    return new driver(this.data.settings)
+    return new Driver(this.data.settings)
   }
 
   /**

@@ -12,7 +12,7 @@ const router = express.Router()
  * Login attempt returns token if successful.
  */
 router.post('/',
-  validate({ body: AuthRequest as AllowedSchema}),
+  validate({ body: AuthRequest as AllowedSchema }),
   async (req, res) => {
     const { email, password } = req.body
     const user = await UserModel.find(email)

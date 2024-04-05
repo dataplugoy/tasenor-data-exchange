@@ -1,6 +1,5 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { UserModel } from './UserModel'
 
 export class ProjectModel extends BaseModel<prisma.Project> {
 

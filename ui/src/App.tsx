@@ -7,7 +7,6 @@ import { Messages } from './Components/Messages'
 import { HomePage } from './Pages/HomePage'
 import { Menu } from './Components/Menu'
 
-
 export const App = (): React.JSX.Element => {
 
   useEffect(() => {

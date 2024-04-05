@@ -4,7 +4,7 @@ import { useGET } from '../Hooks/useNet'
 import { ProjectsResponse } from '../Types/API/projects/ProjectsResponse'
 import { ProjectsCard } from '../Components/ProjectsCard'
 
-export const HomePage = (): React.JSX.Element =>  {
+export const HomePage = (): React.JSX.Element => {
 
   const [projects, setProjects] = useState<ProjectsResponse>([])
   const GET = useGET<ProjectsResponse>()

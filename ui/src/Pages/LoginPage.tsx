@@ -5,9 +5,8 @@ import { useApp } from '../Hooks/useApp'
 import { useNavigate } from 'react-router-dom'
 import { usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
-import { Token } from '@tasenor/common'
 
-export const LoginPage = (): React.JSX.Element =>  {
+export const LoginPage = (): React.JSX.Element => {
 
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
@@ -19,8 +18,7 @@ export const LoginPage = (): React.JSX.Element =>  {
   const onLogin = () => {
     POST('/auth', { email, password }).then((res) => {
       if (res) {
-        app.setUser(res)
-        app.setToken(res.token as Token)
+        app.setAuth(res)
         // TODO: Fetch default project.
         navigate('/')
       }

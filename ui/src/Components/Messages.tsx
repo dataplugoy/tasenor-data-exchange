@@ -5,7 +5,7 @@ import { useApp } from '../Hooks/useApp'
 /**
  * Display for UI messages.
  */
-export const Messages = (): JSX.Element => {
+export const Messages = (): React.ReactNode => {
 
   const app = useApp()
 

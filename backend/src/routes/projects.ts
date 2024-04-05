@@ -4,7 +4,6 @@ import { ProjectModel } from '../models/ProjectModel'
 
 const router = express.Router()
 
-
 /**
  * List of all projects for user.
  */

@@ -1,4 +1,4 @@
-import { Currency, Timestring } from "@tasenor/common"
+import { Currency, Timestring } from '@tasenor/common'
 
 export interface EnableBankingStartAuthorizationResponse {
   url: string

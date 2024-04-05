@@ -1,6 +1,5 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { UserModel } from './UserModel'
 import { BatchModel } from './BatchModel'
 import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
@@ -76,7 +75,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         log(`${run} for ${batch} success.`)
       }
 
-    } catch(err) {
+    } catch (err) {
 
       error(`${run} failed: ${err.stack}`)
       await run.fail(err)
@@ -133,7 +132,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * Get a list of all projects the user has.
    */
   static async findForUser(userId: number, name: string): Promise<FlowPlanModel | null> {
-    const plans = await this.db.findMany({ where: { title: name, project: { userId } }})
+    const plans = await this.db.findMany({ where: { title: name, project: { userId } } })
     if (plans.length > 1) {
       throw new Error(`Too many flows named as '${name}' for user ${userId}.`)
     }

@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm build-schema",
-    "build-schema": "json2ts -i backend/src/schema/ -o ui/src/Types/API/"
+    "build-schema": "json2ts -i backend/src/schema/ -o ui/src/Types/API/",
+    "lint": "pnpm lint-ui && pnpm lint-backend",
+    "lint-ui": "cd ui && pnpm lint",
+    "lint-backend": "cd backend && pnpm lint",
+    "fix": "pnpm fix-ui && pnpm fix-backend",
+    "fix-ui": "cd ui && pnpm fix",
+    "fix-backend": "cd backend && pnpm fix"
   },
   "keywords": [],
   "author": "",
