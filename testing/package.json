@@ -9,5 +9,8 @@
   "keywords": [],
   "devDependencies": {
     "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    "@tasenor/common": "^1.13.1"
   }
 }
