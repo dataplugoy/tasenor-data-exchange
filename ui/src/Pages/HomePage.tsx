@@ -3,6 +3,7 @@ import { Box, Card, CardContent } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useGET } from '../Hooks/useNet'
 import { ProjectsResponse } from '../Types/API/projects/ProjectsResponse'
+import { ProjectsCard } from '../Components/ProjectsCard'
 
 export const HomePage = (): React.JSX.Element =>  {
 
@@ -17,13 +18,7 @@ export const HomePage = (): React.JSX.Element =>  {
   }, [])
 
   return <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-    <Card>
-      <CardContent>
-        {
-          JSON.stringify(projects)
-        }
-      </CardContent>
-    </Card>
+    <ProjectsCard projects={projects}/>
     <Card>
       <CardContent>
         TODO: Remove dummy example
