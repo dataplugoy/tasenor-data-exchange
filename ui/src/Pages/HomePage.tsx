@@ -19,15 +19,5 @@ export const HomePage = (): React.JSX.Element =>  {
 
   return <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
     <ProjectsCard projects={projects}/>
-    <Card>
-      <CardContent>
-        TODO: Remove dummy example
-      </CardContent>
-    </Card>
-    <Card>
-      <CardContent>
-        TODO: Remove dummy example
-      </CardContent>
-    </Card>
   </Box>
 }

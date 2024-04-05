@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": ["email", "password"],
+  "properties": {
+    "id": {
+      "type": "number",
+      "multipleOf": 1
+    },
+    "userId": {
+      "type": "number",
+      "multipleOf": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  },
+  "additionalProperties": false
+}
