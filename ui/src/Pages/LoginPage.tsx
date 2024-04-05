@@ -19,7 +19,9 @@ export const LoginPage = (): React.JSX.Element =>  {
   const onLogin = () => {
     POST('/auth', { email, password }).then((res) => {
       if (res) {
+        app.setUser(res)
         app.setToken(res.token as Token)
+        // TODO: Fetch default project.
         navigate('/')
       }
     })

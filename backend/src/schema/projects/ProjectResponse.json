@@ -3,8 +3,7 @@
   "required": ["email", "password"],
   "properties": {
     "id": {
-      "type": "number",
-      "multipleOf": 1
+      "type": "integer"
     },
     "userId": {
       "type": "number",

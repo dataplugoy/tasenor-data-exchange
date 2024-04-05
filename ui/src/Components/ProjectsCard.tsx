@@ -30,9 +30,9 @@ export const ProjectsCard = (props: ProjectsCardProps): React.JSX.Element =>  {
           <TableBody>
           {
             projects.map(project =>
-              <TableRow key={project.id} hover selected={app.project.id === project.id}>
+              <TableRow key={project.id} hover selected={app.user.user.settings?.projectId === project.id}>
                 <TableCell>{project.name}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{app.project.id === project.id && <Check sx={{ color: 'success.main' }}/>}</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{app.user.user.settings?.projectId === project.id && <Check sx={{ color: 'success.main' }}/>}</TableCell>
               </TableRow>
             )
           }
