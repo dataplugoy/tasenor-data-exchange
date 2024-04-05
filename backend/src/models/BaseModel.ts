@@ -83,6 +83,9 @@ export class BaseModel<T extends MinimalModel> {
    * Get the Prisma model for this data model.
    */
   static get db() {
+    if (!BaseModel.prismaClient) {
+      throw new Error('Cannot use BaseModel.db befre it is initialized with BaseModel.setDb().')
+    }
     return BaseModel.prismaClient[this.table]
   }
 

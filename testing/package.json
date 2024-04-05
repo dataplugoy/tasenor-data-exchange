@@ -1,0 +1,11 @@
+{
+  "name": "@tasenor/tadex-testing",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex vitest"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "vitest": "^1.4.0"
+  }
+}

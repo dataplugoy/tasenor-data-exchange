@@ -20,8 +20,7 @@ class TasenorDataExchangeServer {
 
   public start = async () => {
 
-    this.db = await connect()
-    BaseModel.setDb(this.db)
+    BaseModel.setDb(await connect())
 
     // Log requests.
     this.app.use((req, res, next) => {

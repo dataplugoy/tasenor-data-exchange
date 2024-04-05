@@ -4,7 +4,9 @@
     "dbui": "DATABASE_URL=postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex npx prisma studio --schema ../backend/prisma/schema.prisma",
     "dev": "docker compose -f ../docker-compose.yml up --build --force-recreate tadex-db",
     "load": "docker exec -i tadex-db psql -b -q -E postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < sample.sql",
-    "save": "docker exec tadex-db pg_dump --clean --if-exists postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex > sample.sql"
+    "save": "docker exec tadex-db pg_dump --clean --if-exists postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex > sample.sql",
+    "load-unit-testing": "docker exec -i tadex-db psql -b -q -E postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < unit-testing.sql",
+    "save-unit-testing": "docker exec tadex-db pg_dump --clean --if-exists postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex > unit-testing.sql"
   },
   "dependencies": {
     "prisma": "^5.11.0"
