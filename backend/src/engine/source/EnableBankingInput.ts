@@ -108,7 +108,7 @@ export class EnableBankingInput extends InputSource {
 
   async fetchData(lastStamp: Date | null): Promise<string> {
     const output = await this.GET(`/accounts/${this.state.accountId}/transactions`)
-    // TODO: Handle continuation key.
+    // TODO: Handle continuation_key.
     // console.dir(out, {depth: null})
     return JSON.stringify(output)
   }
