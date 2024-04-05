@@ -219,7 +219,6 @@ ALTER SEQUENCE public.input_items_id_seq OWNED BY public.input_items.id;
 CREATE TABLE public.input_sources (
     id integer NOT NULL,
     type public."InputSourceType" NOT NULL,
-    url text NOT NULL,
     "flowPlanId" integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
@@ -472,7 +471,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
-61	2024-04-04 20:07:30.526	2024-04-04 20:07:30.571	1	DATA_FETCHED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
+63	2024-04-05 10:56:52.963	2024-04-05 10:56:52.963	1	BATCH_CREATED	1	\N	\N
 \.
 
 
@@ -481,8 +480,7 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 --
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
-2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-04 20:07:30.561	1	\N	{}
+1	Unit Testing	2024-03-30 14:39:53.161	2024-04-05 10:56:52.99	1	\N	{}
 \.
 
 
@@ -498,9 +496,8 @@ COPY public.input_items (id, created, updated, data, processed, success, "batchI
 -- Data for Name: input_sources; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_sources (id, type, url, "flowPlanId", created, updated, settings) FROM stdin;
-1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	{"url": "file:///test/data/test.csv"}
-2	ENABLE_BANKING		2	2024-04-03 09:43:29.481	2024-04-03 13:48:13.014	{"iban": "FI7473834510057469", "country": "FI", "psuType": "personal", "bankName": "Nordea", "sessionInDays": 10}
+COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) FROM stdin;
+1	TEST_MOCK_INPUT	1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	{"url": "file:///testing/data/test.csv"}
 \.
 
 
@@ -519,9 +516,6 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-284	2024-04-04 20:07:30.541	2024-04-04 20:07:30.576	BATCH_CREATED	DATA_FETCHED	61	\N
-285	2024-04-04 20:07:33.572	2024-04-04 20:07:33.594	DATA_FETCHED	DATA_FETCHED	61	Error: Function not yet implemented for state DATA_FETCHED.\n    at FlowPlanModel.notImplemented (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:90:11)\n    at Object.DATA_FETCHED (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:20:44)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:56:54)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
-286	2024-04-04 20:27:58.661	2024-04-04 20:27:58.67	DATA_FETCHED	DATA_FETCHED	61	Error: Function not yet implemented for state DATA_FETCHED.\n    at FlowPlanModel.notImplemented (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:90:11)\n    at Object.DATA_FETCHED (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:20:44)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:56:54)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
 \.
 
 
@@ -530,7 +524,6 @@ COPY public.runs (id, created, updated, "initialState", "finalState", "batchId",
 --
 
 COPY public.settings (id, type, url, certificate, "user", password, options, apikey) FROM stdin;
-1	ENABLE_BANKING	https://api.enablebanking.com/	-----BEGIN PRIVATE KEY-----\n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\ntOrma5H37YRxwdnXa84c0rcvFc6UXA==\n-----END PRIVATE KEY-----	\N	\N	{}	cfb2671e-6788-4d9b-878f-cb4fd7ab1077
 2	TEST_MOCK_INPUT	\N	\N	\N	\N	{}	\N
 \.
 
@@ -540,7 +533,7 @@ COPY public.settings (id, type, url, certificate, "user", password, options, api
 --
 
 COPY public.users (id, email, name, address, zip, city, country, created, updated, settings, password, "lastSeen") FROM stdin;
-1	tommi.ronkainen@gmail.com	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	{"projectId": 1}	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	\N
+1	test@localhost	Test User	Road 66	12345-FI	Tampere	Finland	2024-03-30 14:38:56.726	2024-04-05 10:46:46.293	{"projectId": 1}	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	\N
 \.
 
 
@@ -548,7 +541,7 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 61, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 63, true);
 
 
 --
@@ -583,7 +576,7 @@ SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 286, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 289, true);
 
 
 --

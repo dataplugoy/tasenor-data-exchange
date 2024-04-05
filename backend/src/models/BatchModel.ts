@@ -46,4 +46,11 @@ export class BatchModel extends BaseModel<prisma.Batch> {
 
     return new BatchModel(latest[0])
   }
+
+  /**
+   * Retrieve all batches.
+   */
+  static getAll(filter={}): Promise<BatchModel[]> {
+    return BatchModel.findMany<prisma.Batch, BatchModel>(filter)
+  }
 }

@@ -84,7 +84,6 @@ model InputSource {
   updated     DateTime        @updatedAt
 
   type        InputSourceType
-  url         String
   settings    Json            @default("{}")
 
   flowPlanId  Int             @unique
