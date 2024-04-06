@@ -89,9 +89,25 @@ classDiagram
       +number: integer
       +data: json
       +processed: boolean
-      +success: boolean
+      +converted: boolean
     }
     Batch "1" *-- "0..*" InputItem
+    Run "1" *-- "0..*" InputItem
+
+
+    class UnifiedItem{
+      +batch: Batch
+      +run: Run
+
+      +number: integer
+      +input: InputItem
+      +data: json
+      +processed: boolean
+      +converted: boolean
+    }
+    Batch "1" *-- "0..*" UnifiedItem
+    Run "1" *-- "0..*" UnifiedItem
+    InputItem "1" o-- "0..1" UnifiedItem
 
 
     class OutputItem{
@@ -103,7 +119,7 @@ classDiagram
       +delivered: boolean
     }
     Batch "1" *-- "0..*" OutputItem
-    InputItem "1" o-- "0..1" OutputItem
+    UnifiedItem "1" o-- "0..1" OutputItem
 
     class Run{
       +batch: Batch

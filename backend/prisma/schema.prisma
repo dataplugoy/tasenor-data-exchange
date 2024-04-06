@@ -142,7 +142,7 @@ model InputItem{
 
   data        Json
   processed   Boolean
-  success     Boolean
+  converted   Boolean
 
   flowPlanId  Int
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
