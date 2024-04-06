@@ -1,10 +1,6 @@
 describe('Login screen', () => {
   it('Log in to the system', () => {
-    cy.visit('/')
-
-    cy.get('input[name="email"]').type('test@localhost')
-    cy.get('input[name="password"]').type('pass')
-    cy.get('button').contains('Login').click()
+    cy.login()
 
     cy.get('body').should('contain', 'Dashboard')
     cy.get('body').should('contain', 'Projects')
