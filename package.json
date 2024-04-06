@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm build-schema",
-    "build-schema": "json2ts -i backend/src/schema/ -o ui/src/Types/API/",
+    "build-schema": "json2ts -i backend/src/schema/ -o ui/src/Types/API/ && cp -r backend/src/schema/ testing/cypress/e2e/api/",
     "lint": "pnpm lint-ui && pnpm lint-backend",
     "lint-ui": "cd ui && pnpm lint",
     "lint-backend": "cd backend && pnpm lint",
