@@ -163,7 +163,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async unifyItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const source = await this.getSource()
     const driver = await this.getDriver(options)
     const inputs = await InputItemModel.findForBatch(batch, false)
     let rules = await RuleModel.findForFlowByKey(this)
@@ -176,6 +175,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     for (const input of inputs) {
       try {
         await driver.unifyItem(this, run, input, rules)
+        await input.success()
       } catch (err) {
         result = 'FAIL'
         error(`Handling of ${input} failed: ${err}`)

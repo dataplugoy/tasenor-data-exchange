@@ -211,9 +211,9 @@ export class InputSource {
         type: 'INPUT_SOURCE',
         ownerId: source?.id
       })
-      log(`Created ${rule} called '${ruleItem.name}'.`)
+      log(`Created ${rule} called '${ruleItem.name}' for ${flow}.`)
 
-      rules[ruleItem.key].push()
+      rules[ruleItem.key].push(rule)
     }
 
     return rules

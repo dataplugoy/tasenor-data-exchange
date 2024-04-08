@@ -45,6 +45,14 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   }
 
   /**
+   * Mark this nput as successfully handled.
+   * @param state
+   */
+  async success(): Promise<void> {
+    await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { processed: true })
+  }
+
+  /**
    * Save item to the DB.
    * @param data
    * @returns
