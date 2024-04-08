@@ -472,7 +472,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
-61	2024-04-04 20:07:30.526	2024-04-04 20:07:30.571	1	DATA_FETCHED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
+62	2024-04-08 09:20:54.672	2024-04-08 09:20:54.672	1	BATCH_CREATED	1	\N	\N
 \.
 
 
@@ -482,7 +482,7 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
 2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-04 20:07:30.561	1	\N	{}
+1	Test Files	2024-03-30 14:39:53.161	2024-04-08 09:20:54.696	1	\N	{}
 \.
 
 
@@ -499,8 +499,8 @@ COPY public.input_items (id, created, updated, data, processed, success, "batchI
 --
 
 COPY public.input_sources (id, type, url, "flowPlanId", created, updated, settings) FROM stdin;
-1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	{"url": "file:///test/data/test.csv"}
 2	ENABLE_BANKING		2	2024-04-03 09:43:29.481	2024-04-03 13:48:13.014	{"iban": "FI7473834510057469", "country": "FI", "psuType": "personal", "bankName": "Nordea", "sessionInDays": 10}
+1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-04-08 09:21:37.735	{"url": "file:///testing/data/test.csv"}
 \.
 
 
@@ -519,9 +519,7 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-284	2024-04-04 20:07:30.541	2024-04-04 20:07:30.576	BATCH_CREATED	DATA_FETCHED	61	\N
-285	2024-04-04 20:07:33.572	2024-04-04 20:07:33.594	DATA_FETCHED	DATA_FETCHED	61	Error: Function not yet implemented for state DATA_FETCHED.\n    at FlowPlanModel.notImplemented (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:90:11)\n    at Object.DATA_FETCHED (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:20:44)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:56:54)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
-286	2024-04-04 20:27:58.661	2024-04-04 20:27:58.67	DATA_FETCHED	DATA_FETCHED	61	Error: Function not yet implemented for state DATA_FETCHED.\n    at FlowPlanModel.notImplemented (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:90:11)\n    at Object.DATA_FETCHED (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:20:44)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:56:54)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+287	2024-04-08 09:20:54.678	2024-04-08 09:20:54.708	BATCH_CREATED	BATCH_CREATED	62	Error: ENOENT: no such file or directory, open '/home/wigy/project/tasenor-data-exchange/test/data/test.csv'\n    at Object.openSync (node:fs:596:3)\n    at Object.readFileSync (node:fs:464:35)\n    at TestMockInput.fetchData (/home/wigy/project/tasenor-data-exchange/backend/src/engine/source/TestMockInput.ts:32:21)\n    at FlowPlanModel.fetchData (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:102:31)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:55:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
 \.
 
 
@@ -548,7 +546,7 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 61, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 62, true);
 
 
 --
@@ -583,7 +581,7 @@ SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 286, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 287, true);
 
 
 --

@@ -75,10 +75,11 @@ classDiagram
       +flowPlan: FlowPlan
       +number: integer
       +state: enum
-      +retrieved: string
+      +data: string
       +runs: Run[]
       +parsed: InputItem[]
       +generated: OutputItem[]
+      +completed: DateTime
     }
     FlowPlan "1" *-- "0..*" Batch
 

@@ -8,7 +8,7 @@ export interface EnableBankingStartAuthorizationResponse {
 
 export interface EnableBankingAccount {
   account_id: {
-    iban: 'FI7473834510057469'
+    iban: string
     other: null
   }
   uid: string
