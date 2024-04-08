@@ -97,6 +97,7 @@ enum BatchState {
   BATCH_CREATED
   DATA_FETCHED
   DATA_PARSED
+  ITEMS_UNIFIED
   OUTPUT_CREATED
   OUTPUT_DELIVERED
 }
@@ -147,6 +148,7 @@ model InputItem{
   processed   Boolean
   skipped     Boolean
 
+  error       String?
   unifiedItem UnifiedItem?
 
   flowPlanId  Int
@@ -194,6 +196,7 @@ model Rule{
   ownerId     Int
 
   name        String
+  key         String
   priority    Int             @default(50)
   filter      String
   result      String

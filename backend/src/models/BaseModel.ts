@@ -143,8 +143,8 @@ export class BaseModel<T extends MinimalModel> {
    * @param condition Fields to search.
    * @returns An entry instance or `null` if not found.
    */
-  static async findMany<T extends MinimalModel, C extends BaseModel<T>>(condition: Partial<T>): Promise<C[]> {
-    const items = await this.db.findMany({ where: condition })
+  static async findMany<T extends MinimalModel, C extends BaseModel<T>>(condition: Partial<T>, order = [{ id: 'asc' }]): Promise<C[]> {
+    const items = await this.db.findMany({ where: condition, orderBy: order })
     return items.map(item => this.instantiate<T, C>(item))
   }
 }

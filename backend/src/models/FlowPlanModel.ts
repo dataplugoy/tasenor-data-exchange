@@ -9,6 +9,7 @@ import { InputSource } from '../engine/source/InputSource'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
+import { RuleModel } from './RuleModel'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -21,7 +22,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   functions: Record<prisma.BatchState, (options: InputOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>> = {
     BATCH_CREATED: (options, batch, run) => this.fetchData(options, batch, run),
     DATA_FETCHED: (options, batch, run) => this.itemizeInput(options, batch, run),
-    DATA_PARSED: (options, batch, run) => this.notImplemented(options, batch, run),
+    DATA_PARSED: (options, batch, run) => this.unifyItems(options, batch, run),
+    ITEMS_UNIFIED: (options, batch, run) => this.notImplemented(options, batch, run),
     OUTPUT_CREATED: (options, batch, run) => this.notImplemented(options, batch, run),
     OUTPUT_DELIVERED: (options, batch, run) => this.notImplemented(options, batch, run),
   }
@@ -107,6 +109,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
   /**
    * Set up the transport and fetch the data.
+   * @param options
+   * @param batch
+   * @param run
    */
   private async fetchData(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getDriver(options)
@@ -126,6 +131,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
   /**
    * Take the data received and split it to the pieces presenting an single processable entity.
+   * @param options
+   * @param batch
+   * @param run
    */
   private async itemizeInput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getDriver(options)
@@ -144,6 +152,36 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
 
     return 'OK'
+  }
+
+  /**
+   * Go through input items and convert them to the unified format using rules.
+   * @param options
+   * @param batch
+   * @param run
+   */
+  private async unifyItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const driver = await this.getDriver(options)
+    const inputs = await InputItemModel.findForBatch(batch, false)
+    const rules = await RuleModel.findForFlow(this)
+
+    let result: 'OK' | 'FAIL' = 'OK'
+
+    for (const input of inputs) {
+      try {
+        console.log(input.data.data)
+        const unified = await driver.unifyItem(this, input, rules)
+        // TODO: How to save and update input source rules?
+        // TODO: Default handler loads rules and sorts them by key. Then pass them to rule engine.
+        console.log('=>', unified)
+      } catch (err) {
+        result = 'FAIL'
+        error(`Handling of ${input} failed: ${err}`)
+        await input.fail(err)
+      }
+    }
+
+    return result
   }
 
   /**

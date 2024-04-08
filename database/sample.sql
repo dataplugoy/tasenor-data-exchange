@@ -86,7 +86,8 @@ CREATE TYPE public."BatchState" AS ENUM (
     'DATA_FETCHED',
     'DATA_PARSED',
     'OUTPUT_CREATED',
-    'OUTPUT_DELIVERED'
+    'OUTPUT_DELIVERED',
+    'ITEMS_UNIFIED'
 );
 
 
@@ -212,7 +213,8 @@ CREATE TABLE public.input_items (
     "runId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     skipped boolean NOT NULL,
-    processed boolean NOT NULL
+    processed boolean NOT NULL,
+    error text
 );
 
 
@@ -330,7 +332,8 @@ CREATE TABLE public.rules (
     result text NOT NULL,
     "filterView" jsonb NOT NULL,
     "resultView" jsonb NOT NULL,
-    "ownerId" integer NOT NULL
+    "ownerId" integer NOT NULL,
+    key text NOT NULL
 );
 
 
@@ -598,7 +601,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
-64	2024-04-08 12:11:26.868	2024-04-08 12:11:29.733	1	DATA_PARSED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
+65	2024-04-08 13:36:43.301	2024-04-08 13:36:45.466	1	DATA_PARSED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
 \.
 
 
@@ -608,7 +611,7 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
 2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-08 12:11:26.902	1	\N	{}
+1	Test Files	2024-03-30 14:39:53.161	2024-04-08 13:36:43.36	1	\N	{}
 \.
 
 
@@ -616,9 +619,9 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", skipped, processed) FROM stdin;
-5	2024-04-08 12:11:29.723	2024-04-08 12:11:29.723	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	64	314	1	f	f
-6	2024-04-08 12:11:29.729	2024-04-08 12:11:29.729	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	64	314	1	f	f
+COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", skipped, processed, error) FROM stdin;
+7	2024-04-08 13:36:45.457	2024-04-08 13:36:45.457	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {"word1": "Buy"}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	65	320	1	f	f	\N
+8	2024-04-08 13:36:45.462	2024-04-08 13:36:45.462	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {"word1": "Sell"}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	65	320	1	f	f	\N
 \.
 
 
@@ -646,7 +649,7 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 -- Data for Name: rules; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.rules (id, created, updated, priority, type, name, filter, result, "filterView", "resultView", "ownerId") FROM stdin;
+COPY public.rules (id, created, updated, priority, type, name, filter, result, "filterView", "resultView", "ownerId", key) FROM stdin;
 \.
 
 
@@ -655,9 +658,8 @@ COPY public.rules (id, created, updated, priority, type, name, filter, result, "
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-313	2024-04-08 12:11:26.883	2024-04-08 12:11:26.915	BATCH_CREATED	DATA_FETCHED	64	\N
-314	2024-04-08 12:11:29.656	2024-04-08 12:11:29.737	DATA_FETCHED	DATA_PARSED	64	\N
-315	2024-04-08 12:11:32.859	2024-04-08 12:11:32.882	DATA_PARSED	DATA_PARSED	64	Error: Function not yet implemented for state DATA_PARSED.\n    at FlowPlanModel.notImplemented (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:93:11)\n    at Object.DATA_PARSED (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:24:48)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:59:54)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
+319	2024-04-08 13:36:43.343	2024-04-08 13:36:43.372	BATCH_CREATED	DATA_FETCHED	65	\N
+320	2024-04-08 13:36:45.42	2024-04-08 13:36:45.47	DATA_FETCHED	DATA_PARSED	65	\N
 \.
 
 
@@ -692,7 +694,7 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 64, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 65, true);
 
 
 --
@@ -706,7 +708,7 @@ SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, true);
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 6, true);
+SELECT pg_catalog.setval('public.input_items_id_seq', 8, true);
 
 
 --
@@ -734,7 +736,7 @@ SELECT pg_catalog.setval('public.rules_id_seq', 1, false);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 315, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 320, true);
 
 
 --

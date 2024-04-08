@@ -9,6 +9,9 @@ import { InputOptions } from '../../types/InputOptions'
 import { FlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
 import { PreprocessedInput } from '../../types/PreprocessedInput'
+import { InputItemModel } from '../../models/InputItemModel'
+import { FlowPlanModel } from '../../models/FlowPlanModel'
+import { RuleModel } from '../../models/RuleModel'
 
 /**
  * Base class for different input sources supported.
@@ -176,5 +179,12 @@ export class InputSource {
    */
   async itemizeInput(batch: BatchModel): Promise<PreprocessedInput[]> {
     throw new Error(`Input source ${this.type} does not implement itemizeInput().`)
+  }
+
+  /**
+   * Take an input item and convert it to the unified model.
+   */
+  async unifyItem(flow: FlowPlanModel, input: InputItemModel, rules: RuleModel[]) {
+    throw new Error(`Input source ${this.type} does not implement unifyItem().`)
   }
 }
