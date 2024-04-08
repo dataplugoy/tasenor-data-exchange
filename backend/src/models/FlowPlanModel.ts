@@ -140,7 +140,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         processed: false,
         skipped: false,
       })
-      log(`Created ${item} for ${batch}.`)
+      log(`${this} created ${item} for ${batch}.`)
     }
 
     return 'OK'

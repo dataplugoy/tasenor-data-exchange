@@ -67,8 +67,17 @@ classDiagram
 
 
     class Rule{
+      +type: enum
+      +ownerId: integer
+      +name: string
+      +priority: integer
+      +filter: string
+      +result: string
+      +filterView: json
+      +resultView: json
     }
     FlowPlan "1" *-- "0..*" Rule
+    InputSource "1" *-- "0..*" Rule
 
 
     class Batch{

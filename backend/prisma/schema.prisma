@@ -168,8 +168,8 @@ model UnifiedItem{
   converted   Boolean
   skipped     Boolean
 
-  inputItemId Int             @unique
-  inputItem   InputItem       @relation(fields: [inputItemId], references: [id])
+  inputId     Int             @unique
+  input       InputItem       @relation(fields: [inputId], references: [id])
   flowPlanId  Int
   flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
   batchId     Int
@@ -178,4 +178,31 @@ model UnifiedItem{
   run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "unified_items")
+}
+
+enum RuleType {
+  INPUT_SOURCE
+  FLOW
+}
+
+model Rule{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  type        RuleType
+  ownerId     Int
+
+  name        String
+  priority    Int             @default(50)
+  filter      String
+  result      String
+  filterView  Json
+  resultView  Json
+
+
+  @@unique([type, ownerId])
+  @@unique([type, name])
+
+  @@map(name: "rules")
 }

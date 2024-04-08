@@ -16,6 +16,10 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_runId_fkey";
+ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_inputId_fkey";
+ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_flowPlanId_fkey";
+ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS "runs_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS "projects_userId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS "input_sources_flowPlanId_fkey";
@@ -25,9 +29,11 @@ ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_i
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS "flow_plans_projectId_fkey";
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
+DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
+ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS unified_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.settings DROP CONSTRAINT IF EXISTS settings_pkey;
 ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS runs_pkey;
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS projects_pkey;
@@ -36,6 +42,7 @@ ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS input_it
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS flow_plans_pkey;
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS batches_pkey;
 ALTER TABLE IF EXISTS public.users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.unified_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.settings ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.runs ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.projects ALTER COLUMN id DROP DEFAULT;
@@ -45,6 +52,8 @@ ALTER TABLE IF EXISTS public.flow_plans ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.batches ALTER COLUMN id DROP DEFAULT;
 DROP SEQUENCE IF EXISTS public.users_id_seq;
 DROP TABLE IF EXISTS public.users;
+DROP SEQUENCE IF EXISTS public.unified_items_id_seq;
+DROP TABLE IF EXISTS public.unified_items;
 DROP SEQUENCE IF EXISTS public.settings_id_seq;
 DROP TABLE IF EXISTS public.settings;
 DROP SEQUENCE IF EXISTS public.runs_id_seq;
@@ -180,11 +189,11 @@ CREATE TABLE public.input_items (
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
     data jsonb NOT NULL,
-    processed boolean NOT NULL,
-    success boolean NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
-    "flowPlanId" integer NOT NULL
+    "flowPlanId" integer NOT NULL,
+    skipped boolean NOT NULL,
+    processed boolean NOT NULL
 );
 
 
@@ -367,6 +376,48 @@ ALTER SEQUENCE public.settings_id_seq OWNED BY public.settings.id;
 
 
 --
+-- Name: unified_items; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.unified_items (
+    id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
+    data jsonb NOT NULL,
+    converted boolean NOT NULL,
+    skipped boolean NOT NULL,
+    "flowPlanId" integer NOT NULL,
+    "batchId" integer NOT NULL,
+    "runId" integer NOT NULL,
+    "inputId" integer NOT NULL
+);
+
+
+ALTER TABLE public.unified_items OWNER TO dev;
+
+--
+-- Name: unified_items_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.unified_items_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.unified_items_id_seq OWNER TO dev;
+
+--
+-- Name: unified_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.unified_items_id_seq OWNED BY public.unified_items.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -460,6 +511,13 @@ ALTER TABLE ONLY public.settings ALTER COLUMN id SET DEFAULT nextval('public.set
 
 
 --
+-- Name: unified_items id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items ALTER COLUMN id SET DEFAULT nextval('public.unified_items_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -480,7 +538,8 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 --
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
-1	Unit Testing	2024-03-30 14:39:53.161	2024-04-05 10:56:52.99	1	\N	{}
+2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
+1	Test Files	2024-03-30 14:39:53.161	2024-04-08 10:52:39.02	1	\N	{}
 \.
 
 
@@ -488,7 +547,7 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, success, "batchId", "runId", "flowPlanId") FROM stdin;
+COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", skipped, processed) FROM stdin;
 \.
 
 
@@ -525,6 +584,14 @@ COPY public.runs (id, created, updated, "initialState", "finalState", "batchId",
 
 COPY public.settings (id, type, url, certificate, "user", password, options, apikey) FROM stdin;
 2	TEST_MOCK_INPUT	\N	\N	\N	\N	{}	\N
+\.
+
+
+--
+-- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.unified_items (id, created, updated, data, converted, skipped, "flowPlanId", "batchId", "runId", "inputId") FROM stdin;
 \.
 
 
@@ -584,6 +651,13 @@ SELECT pg_catalog.setval('public.runs_id_seq', 289, true);
 --
 
 SELECT pg_catalog.setval('public.settings_id_seq', 2, true);
+
+
+--
+-- Name: unified_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.unified_items_id_seq', 1, false);
 
 
 --
@@ -650,6 +724,14 @@ ALTER TABLE ONLY public.settings
 
 
 --
+-- Name: unified_items unified_items_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items
+    ADD CONSTRAINT unified_items_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -669,6 +751,13 @@ CREATE UNIQUE INDEX "input_sources_flowPlanId_key" ON public.input_sources USING
 --
 
 CREATE UNIQUE INDEX settings_type_key ON public.settings USING btree (type);
+
+
+--
+-- Name: unified_items_inputId_key; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE UNIQUE INDEX "unified_items_inputId_key" ON public.unified_items USING btree ("inputId");
 
 
 --
@@ -740,6 +829,38 @@ ALTER TABLE ONLY public.projects
 
 ALTER TABLE ONLY public.runs
     ADD CONSTRAINT "runs_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES public.batches(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: unified_items unified_items_batchId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items
+    ADD CONSTRAINT "unified_items_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES public.batches(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: unified_items unified_items_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items
+    ADD CONSTRAINT "unified_items_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: unified_items unified_items_inputId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items
+    ADD CONSTRAINT "unified_items_inputId_fkey" FOREIGN KEY ("inputId") REFERENCES public.input_items(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: unified_items unified_items_runId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items
+    ADD CONSTRAINT "unified_items_runId_fkey" FOREIGN KEY ("runId") REFERENCES public.runs(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
