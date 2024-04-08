@@ -4,6 +4,9 @@ import { DateTime } from 'luxon'
 import { InputSource } from './InputSource'
 import { TestMockInputSettings } from '../../types/InputSettings'
 import { TestMockFlowState } from '../../types/FlowState'
+import { BatchModel } from '../../models/BatchModel'
+import { PreprocessedInput } from '../../types/PreprocessedInput'
+import { num } from '@tasenor/common'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -37,5 +40,25 @@ export class TestMockInput extends InputSource {
     }
 
     return data
+  }
+
+  async itemizeInput(batch: BatchModel): Promise<PreprocessedInput[]> {
+    const lines = batch.parseCsv()
+    let lineNumber = 1
+    const items: PreprocessedInput[] = []
+
+    for (const line of lines) {
+      const item: PreprocessedInput = {
+        original: line.join(','),
+        line: lineNumber++,
+        time: line[0],
+        text: line[1],
+        total: num(line[2]),
+        fields: {}
+      }
+      items.push(item)
+    }
+
+    return items
   }
 }

@@ -141,7 +141,6 @@ model InputItem{
   updated     DateTime        @updatedAt
 
   data        Json
-  processed   Boolean
   converted   Boolean
 
   flowPlanId  Int

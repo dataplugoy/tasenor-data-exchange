@@ -84,7 +84,10 @@ export class BaseModel<T extends MinimalModel> {
    */
   static get db() {
     if (!BaseModel.prismaClient) {
-      throw new Error('Cannot use BaseModel.db befre it is initialized with BaseModel.setDb().')
+      throw new Error('Cannot use BaseModel.db before it is initialized with BaseModel.setDb().')
+    }
+    if (!BaseModel.prismaClient[this.table]) {
+      throw new Error(`Cannot find table '${this.table}' (it must be one of the ${Object.keys(this.prismaClient).filter(k => k.substring(0, 1) !== '_')}).`)
     }
     return BaseModel.prismaClient[this.table]
   }

@@ -1,3 +1,4 @@
+import { Options, parse } from 'csv-parse'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
@@ -22,6 +23,30 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   async startRun(): Promise<RunModel> {
     const run = await RunModel.getNew(this)
     return run
+  }
+
+  /**
+   * Get the CSV presentation of the data.
+   */
+  parseCsv(options: Options = {}): string[][] {
+    const records: string[][] =  []
+    const parser = parse(options)
+
+    parser.on('readable', function(){
+      let record;
+      while ((record = parser.read()) !== null) {
+        records.push(record);
+      }
+    })
+
+    parser.on('error', function(err){
+      throw new Error(`CSV Parser failed: ${err.message}`)
+    })
+
+    parser.write(this.data.data)
+    parser.end()
+
+    return records
   }
 
   /**

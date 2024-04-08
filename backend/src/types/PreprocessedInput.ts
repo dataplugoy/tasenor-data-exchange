@@ -5,8 +5,9 @@ import { ShortDate, Timestring } from "@tasenor/common"
  */
 export interface PreprocessedInput {
   original: string
+  line: number | null
   time: Timestring | ShortDate
   text: string | null
-  amount: number | null
+  total: number | null
   fields: {[k: string] : any}
 }

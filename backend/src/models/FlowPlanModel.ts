@@ -5,6 +5,10 @@ import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'
+import { InputSource } from '../engine/source/InputSource'
+import { InputItemModel } from './InputItemModel'
+import { RunModel } from './RunModel'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -14,12 +18,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * A table of functions how to proceed from each step.
    */
-  functions: Record<prisma.BatchState, (options: InputOptions, batch: BatchModel) => Promise<'OK' | 'FAIL'>> = {
-    BATCH_CREATED: (options, batch) => this.fetchData(options, batch),
-    DATA_FETCHED: (options, batch) => this.notImplemented(options, batch),
-    DATA_PARSED: (options, batch) => this.notImplemented(options, batch),
-    OUTPUT_CREATED: (options, batch) => this.notImplemented(options, batch),
-    OUTPUT_DELIVERED: (options, batch) => this.notImplemented(options, batch),
+  functions: Record<prisma.BatchState, (options: InputOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>> = {
+    BATCH_CREATED: (options, batch, run) => this.fetchData(options, batch, run),
+    DATA_FETCHED: (options, batch, run) => this.itemizeInput(options, batch, run),
+    DATA_PARSED: (options, batch, run) => this.notImplemented(options, batch, run),
+    OUTPUT_CREATED: (options, batch, run) => this.notImplemented(options, batch, run),
+    OUTPUT_DELIVERED: (options, batch, run) => this.notImplemented(options, batch, run),
   }
 
   get name(): string {
@@ -52,7 +56,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     try {
       // Execute state transition.
-      const result = await this.functions[batch.state](options, batch)
+      const result = await this.functions[batch.state](options, batch, run)
       if (result === 'FAIL') {
         throw new Error(`Execution of ${run} for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
       }
@@ -85,18 +89,28 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Helper to mark handler function as not implemented.
    */
-  private async notImplemented(_options: InputOptions, batch: BatchModel): Promise<never> {
+  private async notImplemented(_options: InputOptions, batch: BatchModel, run: RunModel): Promise<never> {
     throw new Error(`Function not yet implemented for state ${batch.state}.`)
+  }
+
+  /**
+   * Create and initialize driver.
+   */
+  private async getDriver(options: InputOptions): Promise<InputSource> {
+    const source = await this.getSource()
+    const driver = source.getDriver()
+
+    await driver.initialize(this.state, options)
+
+    return driver
   }
 
   /**
    * Set up the transport and fetch the data.
    */
-  private async fetchData(options: InputOptions, batch: BatchModel): Promise<'OK' | 'FAIL'> {
-    const source = await this.getSource()
-    const driver = source.getDriver()
+  private async fetchData(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const driver = await this.getDriver(options)
 
-    await driver.initialize(this.state, options)
     const state = await driver.autheticate()
     await this.saveState(state)
     const data = await driver.fetchData(this.lastStamp)
@@ -106,6 +120,27 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
     await batch.setData(data)
     // TODO: Update lastStamp when parsing is completed.
+
+    return 'OK'
+  }
+
+  /**
+   * Take the data received and split it to the pieces presenting an single processable entity.
+   */
+  private async itemizeInput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const driver = await this.getDriver(options)
+    const items = await driver.itemizeInput(batch)
+
+    for (const data of items) {
+      const item = await InputItemModel.save({
+        data: data as unknown as JsonValue,
+        flowPlanId: this.id,
+        batchId: batch.id,
+        runId: run.id,
+        converted: false,
+      })
+      log(`Created ${item} for ${batch}.`)
+    }
 
     return 'OK'
   }

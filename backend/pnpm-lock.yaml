@@ -35,6 +35,9 @@ dependencies:
   cors:
     specifier: ^2.8.5
     version: 2.8.5
+  csv-parse:
+    specifier: ^5.5.5
+    version: 5.5.5
   express:
     specifier: ^4.19.2
     version: 4.19.2
@@ -1070,6 +1073,10 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /csv-parse@5.5.5:
+    resolution: {integrity: sha512-erCk7tyU3yLWAhk6wvKxnyPtftuy/6Ak622gOO7BCJ05+TYffnPCJF905wmOQm+BpkX54OdAl8pveJwUdpnCXQ==}
+    dev: false
 
   /data-view-buffer@1.0.1:
     resolution: {integrity: sha512-0lht7OugA5x3iJLOWFhWK/5ehONdprk0ISXqVFn/NFrDu+cuc8iADFrGQz5BnRK7LLU3JmkbXSxaqX+/mXYtUA==}

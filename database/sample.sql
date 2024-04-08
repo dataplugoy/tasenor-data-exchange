@@ -180,11 +180,10 @@ CREATE TABLE public.input_items (
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
     data jsonb NOT NULL,
-    processed boolean NOT NULL,
-    success boolean NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
-    "flowPlanId" integer NOT NULL
+    "flowPlanId" integer NOT NULL,
+    converted boolean NOT NULL
 );
 
 
@@ -219,7 +218,6 @@ ALTER SEQUENCE public.input_items_id_seq OWNED BY public.input_items.id;
 CREATE TABLE public.input_sources (
     id integer NOT NULL,
     type public."InputSourceType" NOT NULL,
-    url text NOT NULL,
     "flowPlanId" integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
@@ -472,7 +470,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
-62	2024-04-08 09:20:54.672	2024-04-08 09:20:54.672	1	BATCH_CREATED	1	\N	\N
 \.
 
 
@@ -482,7 +479,7 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
 2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-08 09:20:54.696	1	\N	{}
+1	Test Files	2024-03-30 14:39:53.161	2024-04-08 09:21:48.854	1	\N	{}
 \.
 
 
@@ -490,7 +487,7 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, success, "batchId", "runId", "flowPlanId") FROM stdin;
+COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", converted) FROM stdin;
 \.
 
 
@@ -498,9 +495,9 @@ COPY public.input_items (id, created, updated, data, processed, success, "batchI
 -- Data for Name: input_sources; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_sources (id, type, url, "flowPlanId", created, updated, settings) FROM stdin;
-2	ENABLE_BANKING		2	2024-04-03 09:43:29.481	2024-04-03 13:48:13.014	{"iban": "FI7473834510057469", "country": "FI", "psuType": "personal", "bankName": "Nordea", "sessionInDays": 10}
-1	TEST_MOCK_INPUT	file:///test/data/test.csv	1	2024-03-30 14:41:15.195	2024-04-08 09:21:37.735	{"url": "file:///testing/data/test.csv"}
+COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) FROM stdin;
+2	ENABLE_BANKING	2	2024-04-03 09:43:29.481	2024-04-03 13:48:13.014	{"iban": "FI7473834510057469", "country": "FI", "psuType": "personal", "bankName": "Nordea", "sessionInDays": 10}
+1	TEST_MOCK_INPUT	1	2024-03-30 14:41:15.195	2024-04-08 09:21:37.735	{"url": "file:///testing/data/test.csv"}
 \.
 
 
@@ -519,7 +516,6 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-287	2024-04-08 09:20:54.678	2024-04-08 09:20:54.708	BATCH_CREATED	BATCH_CREATED	62	Error: ENOENT: no such file or directory, open '/home/wigy/project/tasenor-data-exchange/test/data/test.csv'\n    at Object.openSync (node:fs:596:3)\n    at Object.readFileSync (node:fs:464:35)\n    at TestMockInput.fetchData (/home/wigy/project/tasenor-data-exchange/backend/src/engine/source/TestMockInput.ts:32:21)\n    at FlowPlanModel.fetchData (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:102:31)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:55:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
 \.
 
 
@@ -560,7 +556,7 @@ SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, true);
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 1, false);
+SELECT pg_catalog.setval('public.input_items_id_seq', 2, true);
 
 
 --
@@ -581,7 +577,7 @@ SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 287, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 309, true);
 
 
 --

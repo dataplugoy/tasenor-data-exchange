@@ -7,6 +7,8 @@ import { HttpMethod, error, log } from '@tasenor/common'
 import { InputSettings } from '../../types/InputSettings'
 import { InputOptions } from '../../types/InputOptions'
 import { FlowState } from '../../types/FlowState'
+import { BatchModel } from '../../models/BatchModel'
+import { PreprocessedInput } from '../../types/PreprocessedInput'
 
 /**
  * Base class for different input sources supported.
@@ -167,5 +169,12 @@ export class InputSource {
    */
   async fetchData(_lastStamp: Date | null): Promise<string> {
     throw new Error(`Input source ${this.type} does not implement fetchData().`)
+  }
+
+  /**
+   * Take the input batch fetched and provide a list of processable input items.
+   */
+  async itemizeInput(batch: BatchModel): Promise<PreprocessedInput[]> {
+    throw new Error(`Input source ${this.type} does not implement itemizeInput().`)
   }
 }
