@@ -12,6 +12,13 @@ import { PreprocessedInput } from '../../types/PreprocessedInput'
 import { InputItemModel } from '../../models/InputItemModel'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { RuleModel } from '../../models/RuleModel'
+import { InputSourceModel } from '../../models/InputSourceModel'
+import { applyRules } from '../../lib/rules'
+import { UnifiedItemModel } from '../../models/UnifiedItemModel'
+import { JsonValue } from '@prisma/client/runtime/library'
+import { RunModel } from '../../models/RunModel'
+
+// TODO: All classes should be renamed as *Driver.
 
 /**
  * Base class for different input sources supported.
@@ -182,9 +189,75 @@ export class InputSource {
   }
 
   /**
+   * Load rules to the database.
+   */
+  async initializeRules(flow: FlowPlanModel): Promise<Record<string, RuleModel[]>> {
+    const source = await InputSourceModel.findForFlow(flow)
+    log(`Initializing rules for ${source}.`)
+
+    const rulePath = path.join(__dirname, 'rules', `${this.constructor.name}.json`)
+    const rulesData = JSON.parse(fs.readFileSync(rulePath, 'utf-8'))
+    const rules: Record<string, RuleModel[]> = {}
+
+    for (const ruleItem of rulesData) {
+      if (!rules[ruleItem.key]) {
+        rules[ruleItem.key] = []
+      }
+
+      const rule = await RuleModel.save({
+        filterView: {},
+        resultView: {},
+        ...ruleItem,
+        type: 'INPUT_SOURCE',
+        ownerId: source?.id
+      })
+      log(`Created ${rule} called '${ruleItem.name}'.`)
+
+      rules[ruleItem.key].push()
+    }
+
+    return rules
+  }
+
+  /**
+   * Helper to implement rule based handling for unifying input items.
+   * @param flow
+   * @param input
+   * @param rules
+   */
+  protected async applyUnifyRules(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>, ruleKey: string | null = null): Promise<UnifiedItemModel> {
+    if (RuleModel.count(rules) === 0) {
+      throw new Error(`There are no rules available in ${flow} for unifying input.`)
+    }
+
+    const variables = {
+      text: input.text,
+      line: input.line,
+      time: input.time,
+      total: input.total,
+      original: input.original,
+      ...input.fields
+    }
+
+    const data: JsonValue = applyRules(variables, rules, ruleKey) as JsonValue
+
+    const unified = await UnifiedItemModel.save({
+      data,
+      processed: false,
+      skipped: false,
+      flowPlanId: input.data.flowPlanId,
+      batchId: input.data.batchId,
+      runId: run.id,
+      inputId: input.id,
+    })
+
+    return unified
+  }
+
+  /**
    * Take an input item and convert it to the unified model.
    */
-  async unifyItem(flow: FlowPlanModel, input: InputItemModel, rules: RuleModel[]) {
+  async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItemModel> {
     throw new Error(`Input source ${this.type} does not implement unifyItem().`)
   }
 }

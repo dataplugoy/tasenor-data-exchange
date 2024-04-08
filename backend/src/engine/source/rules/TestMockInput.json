@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Buying",
+    "key": "Buy",
+    "filter": "word1 == 'Buy'",
+    "result": {
+      "type": "'buy'",
+      "assetIn": "'TODO'",
+      "assetAmountIn": "'TODO'",
+      "value": "total"
+    }
+  },
+  {
+    "name": "Selling",
+    "key": "Sell",
+    "filter": "word1 == 'Sell'",
+    "result": {
+      "type": "'sell'",
+      "assetIn": "'TODO'",
+      "assetAmountIn": "'TODO'",
+      "value": "total"
+    }
+  }
+]

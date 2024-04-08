@@ -328,12 +328,12 @@ CREATE TABLE public.rules (
     priority integer DEFAULT 50 NOT NULL,
     type public."RuleType" NOT NULL,
     name text NOT NULL,
-    filter text NOT NULL,
-    result text NOT NULL,
     "filterView" jsonb NOT NULL,
     "resultView" jsonb NOT NULL,
     "ownerId" integer NOT NULL,
-    key text NOT NULL
+    key text NOT NULL,
+    filter jsonb NOT NULL,
+    result jsonb NOT NULL
 );
 
 
@@ -449,12 +449,13 @@ CREATE TABLE public.unified_items (
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
     data jsonb NOT NULL,
-    converted boolean NOT NULL,
     skipped boolean NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
-    "inputId" integer NOT NULL
+    "inputId" integer NOT NULL,
+    error text,
+    processed boolean NOT NULL
 );
 
 
@@ -601,7 +602,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
-65	2024-04-08 13:36:43.301	2024-04-08 13:36:45.466	1	DATA_PARSED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
+67	2024-04-08 15:13:52.536	2024-04-08 15:13:54.597	1	DATA_PARSED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
 \.
 
 
@@ -611,7 +612,7 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
 2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-08 13:36:43.36	1	\N	{}
+1	Test Files	2024-03-30 14:39:53.161	2024-04-08 15:13:52.557	1	\N	{}
 \.
 
 
@@ -620,8 +621,8 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 --
 
 COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", skipped, processed, error) FROM stdin;
-7	2024-04-08 13:36:45.457	2024-04-08 13:36:45.457	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {"word1": "Buy"}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	65	320	1	f	f	\N
-8	2024-04-08 13:36:45.462	2024-04-08 13:36:45.462	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {"word1": "Sell"}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	65	320	1	f	f	\N
+11	2024-04-08 15:13:54.588	2024-04-08 15:13:54.588	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {"word1": "Buy"}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	67	336	1	f	f	\N
+12	2024-04-08 15:13:54.593	2024-04-08 15:13:54.593	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {"word1": "Sell"}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	67	336	1	f	f	\N
 \.
 
 
@@ -649,7 +650,8 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 -- Data for Name: rules; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.rules (id, created, updated, priority, type, name, filter, result, "filterView", "resultView", "ownerId", key) FROM stdin;
+COPY public.rules (id, created, updated, priority, type, name, "filterView", "resultView", "ownerId", key, filter, result) FROM stdin;
+15	2024-04-08 15:09:17.915	2024-04-08 15:09:17.915	50	INPUT_SOURCE	Buying	{}	{}	1	Buy	"true"	{"type": "buy", "value": "total", "assetIn": "TODO", "assetAmountIn": "TODO"}
 \.
 
 
@@ -658,8 +660,8 @@ COPY public.rules (id, created, updated, priority, type, name, filter, result, "
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-319	2024-04-08 13:36:43.343	2024-04-08 13:36:43.372	BATCH_CREATED	DATA_FETCHED	65	\N
-320	2024-04-08 13:36:45.42	2024-04-08 13:36:45.47	DATA_FETCHED	DATA_PARSED	65	\N
+335	2024-04-08 15:13:52.548	2024-04-08 15:13:52.566	BATCH_CREATED	DATA_FETCHED	67	\N
+336	2024-04-08 15:13:54.551	2024-04-08 15:13:54.601	DATA_FETCHED	DATA_PARSED	67	\N
 \.
 
 
@@ -677,7 +679,7 @@ COPY public.settings (id, type, url, certificate, "user", password, options, api
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, data, converted, skipped, "flowPlanId", "batchId", "runId", "inputId") FROM stdin;
+COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "batchId", "runId", "inputId", error, processed) FROM stdin;
 \.
 
 
@@ -694,7 +696,7 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 65, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 67, true);
 
 
 --
@@ -708,7 +710,7 @@ SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, true);
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 8, true);
+SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
 
 
 --
@@ -729,14 +731,14 @@ SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 1, false);
+SELECT pg_catalog.setval('public.rules_id_seq', 16, true);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 320, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 336, true);
 
 
 --

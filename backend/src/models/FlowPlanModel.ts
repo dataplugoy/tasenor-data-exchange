@@ -10,6 +10,8 @@ import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { RuleModel } from './RuleModel'
+import path from 'path'
+import fs from 'fs'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -161,19 +163,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async unifyItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const source = await this.getSource()
     const driver = await this.getDriver(options)
     const inputs = await InputItemModel.findForBatch(batch, false)
-    const rules = await RuleModel.findForFlow(this)
+    let rules = await RuleModel.findForFlowByKey(this)
+    if (RuleModel.count(rules) === 0) {
+      rules = await driver.initializeRules(this)
+    }
 
     let result: 'OK' | 'FAIL' = 'OK'
 
     for (const input of inputs) {
       try {
-        console.log(input.data.data)
-        const unified = await driver.unifyItem(this, input, rules)
-        // TODO: How to save and update input source rules?
-        // TODO: Default handler loads rules and sorts them by key. Then pass them to rule engine.
-        console.log('=>', unified)
+        await driver.unifyItem(this, run, input, rules)
       } catch (err) {
         result = 'FAIL'
         error(`Handling of ${input} failed: ${err}`)

@@ -167,8 +167,10 @@ model UnifiedItem{
   updated     DateTime        @updatedAt
 
   data        Json
-  converted   Boolean
+  processed   Boolean
   skipped     Boolean
+
+  error       String?
 
   inputId     Int             @unique
   input       InputItem       @relation(fields: [inputId], references: [id])
@@ -198,14 +200,13 @@ model Rule{
   name        String
   key         String
   priority    Int             @default(50)
-  filter      String
-  result      String
+  filter      Json
+  result      Json
   filterView  Json
   resultView  Json
 
 
-  @@unique([type, ownerId])
-  @@unique([type, name])
+  @@unique([type, ownerId, name])
 
   @@map(name: "rules")
 }

@@ -9,15 +9,6 @@ classDiagram
 
   note "All classes include `created` and `updated` timestamps.\nAll classes include `id` integer field."
 
-    class Settings{
-      +type: InputSourceType
-      +url: string
-      +certificate: string
-      +user: string
-      +password: string
-      +options: json
-    }
-
     class User{
       +email: string
       +password: string
@@ -72,8 +63,8 @@ classDiagram
       +name: string
       +key: string
       +priority: integer
-      +filter: string
-      +result: string
+      +filter: json
+      +result: json
       +filterView: json
       +resultView: json
     }
@@ -143,4 +134,14 @@ classDiagram
     Run "1" *-- "0..*" InputItem
     Run "1" *-- "0..*" OutputItem
 
+    class Settings{
+      +type: InputSourceType
+      +url: string
+      +certificate: string
+      +user: string
+      +password: string
+      +options: json
+    }
+
+    Settings "1" -- "1" InputSource
 ```
