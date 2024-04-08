@@ -197,8 +197,13 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   private async analyzeItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const unified = await UnifiedItemModel.findForBatch(batch, false)
 
-    // Unified items must be processed in order.
+    // Unified items must be processed in order and batch must stop if one fails.
     console.dir(unified, {depth: null})
+
+    // TODO: Sort by timestamp.
+    // TODO: Add initialStock and endStock to batch.
+    // TODO: Create separate analyzer lib. Perhaps one front function and sub-functions per unified item type.
+    // TODO: Add unit test for every case handled in analyzer (perhaps provide quick JSON API for it).
   }
 
   /**
