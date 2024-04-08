@@ -69,6 +69,7 @@ model FlowPlan {
   source      InputSource?
   batches     Batch[]
   inputItems  InputItem[]
+  unifiedItems UnifiedItem[]
 
   @@map(name: "flow_plans")
 }
@@ -114,6 +115,7 @@ model Batch{
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
   runs        Run[]
   inputItems  InputItem[]
+  unifiedItems UnifiedItem[]
 
   @@map(name: "batches")
 }
@@ -130,7 +132,8 @@ model Run{
 
   batchId     Int
   batch       Batch?          @relation(fields: [batchId], references: [id])
-  inputs      InputItem[]
+  inputItems  InputItem[]
+  unifiedItems UnifiedItem[]
 
   @@map(name: "runs")
 }
@@ -141,14 +144,38 @@ model InputItem{
   updated     DateTime        @updatedAt
 
   data        Json
-  converted   Boolean
+  processed   Boolean
+  skipped     Boolean
+
+  unifiedItem UnifiedItem?
 
   flowPlanId  Int
-  flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
+  flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
   batchId     Int
-  batch       Batch?          @relation(fields: [batchId], references: [id])
+  batch       Batch           @relation(fields: [batchId], references: [id])
   runId       Int
-  run         Run?            @relation(fields: [runId], references: [id])
+  run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "input_items")
+}
+
+model UnifiedItem{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  data        Json
+  converted   Boolean
+  skipped     Boolean
+
+  inputItemId Int             @unique
+  inputItem   InputItem       @relation(fields: [inputItemId], references: [id])
+  flowPlanId  Int
+  flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
+  batchId     Int
+  batch       Batch           @relation(fields: [batchId], references: [id])
+  runId       Int
+  run         Run             @relation(fields: [runId], references: [id])
+
+  @@map(name: "unified_items")
 }

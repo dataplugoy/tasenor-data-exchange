@@ -89,8 +89,8 @@ classDiagram
       +run: Run
       +number: integer
       +data: json
-      +processed: boolean
       +converted: boolean
+      +skipped: boolean
     }
     Batch "1" *-- "0..*" InputItem
     Run "1" *-- "0..*" InputItem
@@ -103,8 +103,8 @@ classDiagram
       +number: integer
       +input: InputItem
       +data: json
+      +skipped: boolean
       +processed: boolean
-      +converted: boolean
     }
     Batch "1" *-- "0..*" UnifiedItem
     Run "1" *-- "0..*" UnifiedItem

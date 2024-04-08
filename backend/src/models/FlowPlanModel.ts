@@ -137,7 +137,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         flowPlanId: this.id,
         batchId: batch.id,
         runId: run.id,
-        converted: false,
+        processed: false,
+        skipped: false,
       })
       log(`Created ${item} for ${batch}.`)
     }
