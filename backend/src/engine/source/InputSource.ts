@@ -3,7 +3,7 @@ import fs from 'fs'
 import axios, { AxiosRequestConfig } from 'axios'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../../models/SettingsModel'
-import { HttpMethod, error, log } from '@tasenor/common'
+import { HttpMethod, error, isShortDate, log } from '@tasenor/common'
 import { InputSettings } from '../../types/InputSettings'
 import { InputOptions } from '../../types/InputOptions'
 import { FlowState } from '../../types/FlowState'
@@ -17,6 +17,7 @@ import { applyRules } from '../../lib/rules'
 import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { RunModel } from '../../models/RunModel'
+import { DateTime } from 'luxon'
 
 // TODO: All classes should be renamed as *Driver.
 
@@ -239,10 +240,14 @@ export class InputSource {
       ...input.fields
     }
 
-    const data: JsonValue = applyRules(variables, rules, ruleKey) as JsonValue
+    const data: Record<string, unknown> = applyRules(variables, rules, ruleKey) as Record<string, unknown>
+
+    const time = isShortDate(input.time) ?
+      DateTime.fromISO(`${input.time}T12:00:00Z`).toUTC().toISO() :
+      DateTime.fromISO(`${input.time}`).toUTC().toISO()
 
     const unified = await UnifiedItemModel.save({
-      data,
+      data: { time, ...data } as JsonValue,
       processed: false,
       skipped: false,
       flowPlanId: input.data.flowPlanId,

@@ -3,6 +3,13 @@ import { RuleModel } from '../models/RuleModel'
 
 // TODO: Debug mode to print every step.
 
+/**
+ * Get a set of variables and apply the first matching rule and get the result.
+ * @param variables
+ * @param rules
+ * @param key
+ * @returns
+ */
 export function applyRules(variables: Record<string, unknown>, rules: Record<string, RuleModel[]>, key: string | null): undefined | unknown {
   const engine = new RulesEngine(variables as RuleVariables)
   const unusedKeys = new Set(Object.keys(rules))

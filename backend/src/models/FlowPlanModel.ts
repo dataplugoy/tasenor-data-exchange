@@ -12,6 +12,7 @@ import { JsonValue } from '@prisma/client/runtime/library'
 import { RuleModel } from './RuleModel'
 import path from 'path'
 import fs from 'fs'
+import { UnifiedItemModel } from './UnifiedItemModel'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -25,7 +26,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     BATCH_CREATED: (options, batch, run) => this.fetchData(options, batch, run),
     DATA_FETCHED: (options, batch, run) => this.itemizeInput(options, batch, run),
     DATA_PARSED: (options, batch, run) => this.unifyItems(options, batch, run),
-    ITEMS_UNIFIED: (options, batch, run) => this.notImplemented(options, batch, run),
+    ITEMS_UNIFIED: (options, batch, run) => this.analyzeItems(options, batch, run),
     OUTPUT_CREATED: (options, batch, run) => this.notImplemented(options, batch, run),
     OUTPUT_DELIVERED: (options, batch, run) => this.notImplemented(options, batch, run),
   }
@@ -172,6 +173,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     let result: 'OK' | 'FAIL' = 'OK'
 
+    // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
     for (const input of inputs) {
       try {
         await driver.unifyItem(this, run, input, rules)
@@ -184,6 +186,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
 
     return result
+  }
+
+  /**
+   * Go through unified items and convert them to the output items.
+   * @param options
+   * @param batch
+   * @param run
+   */
+  private async analyzeItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const unified = await UnifiedItemModel.findForBatch(batch, false)
+
+    // Unified items must be processed in order.
+    console.dir(unified, {depth: null})
   }
 
   /**

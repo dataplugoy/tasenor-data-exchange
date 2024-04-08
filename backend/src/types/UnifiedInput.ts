@@ -1,4 +1,4 @@
-import { Asset } from "@tasenor/common"
+import { Asset, ShortDate, Timestring } from "@tasenor/common"
 
 
 /**
@@ -16,6 +16,7 @@ export type TaxType = 'vat'
  */
 export interface UnifiedInput {
   type: InputType
+  time: Timestring
   // In case of buying some asset, these may be filled in.
   assetIn?: Asset          // Asset that has been traded in.
   assetAmountIn?: number   // Number of assets received.
