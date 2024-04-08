@@ -7,6 +7,10 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
   static table = 'unifiedItem'
   static construct = UnifiedItemModel
 
+  get json(): Record<string, unknown> {
+    return this.data.data as Record<string, unknown>
+  }
+
   /**
    * Save item to the DB.
    * @param data

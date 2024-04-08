@@ -13,6 +13,8 @@ import { RuleModel } from '../../models/RuleModel'
 import { RunModel } from '../../models/RunModel'
 import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 
+// TODO: Could add first(), second(), third() functions for regex() rule.
+
 /**
  * A simple file based driver for providing mock data from the development tree.
  */

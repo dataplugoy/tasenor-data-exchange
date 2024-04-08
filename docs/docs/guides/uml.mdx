@@ -90,6 +90,7 @@ classDiagram
       +run: Run
       +number: integer
       +data: json
+      +error: String
       +converted: boolean
       +skipped: boolean
     }
@@ -100,10 +101,10 @@ classDiagram
     class UnifiedItem{
       +batch: Batch
       +run: Run
-
       +number: integer
       +input: InputItem
       +data: json
+      +error: String
       +skipped: boolean
       +processed: boolean
     }
@@ -118,7 +119,9 @@ classDiagram
       +number: integer
       +input: InputItem
       +data: json
-      +delivered: boolean
+      +error: String
+      +skipped: boolean
+      +processed: boolean
     }
     Batch "1" *-- "0..*" OutputItem
     UnifiedItem "1" o-- "0..1" OutputItem

@@ -70,6 +70,7 @@ model FlowPlan {
   batches     Batch[]
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
+  outputItems OutputItem[]
 
   @@map(name: "flow_plans")
 }
@@ -117,6 +118,7 @@ model Batch{
   runs        Run[]
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
+  outputItems OutputItem[]
 
   @@map(name: "batches")
 }
@@ -135,6 +137,7 @@ model Run{
   batch       Batch?          @relation(fields: [batchId], references: [id])
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
+  outputItems OutputItem[]
 
   @@map(name: "runs")
 }
@@ -171,6 +174,7 @@ model UnifiedItem{
   skipped     Boolean
 
   error       String?
+  outputItem  OutputItem?
 
   inputId     Int             @unique
   input       InputItem       @relation(fields: [inputId], references: [id])
@@ -182,6 +186,29 @@ model UnifiedItem{
   run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "unified_items")
+}
+
+model OutputItem{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  data        Json
+  processed   Boolean
+  skipped     Boolean
+
+  error       String?
+
+  unifiedId   Int             @unique
+  unified     UnifiedItem     @relation(fields: [unifiedId], references: [id])
+  flowPlanId  Int
+  flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
+  batchId     Int
+  batch       Batch           @relation(fields: [batchId], references: [id])
+  runId       Int
+  run         Run             @relation(fields: [runId], references: [id])
+
+  @@map(name: "output_items")
 }
 
 enum RuleType {
