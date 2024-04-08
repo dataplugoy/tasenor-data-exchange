@@ -31,8 +31,7 @@ ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flo
 DROP INDEX IF EXISTS public.users_email_key;
 DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
-DROP INDEX IF EXISTS public."rules_type_ownerId_key";
-DROP INDEX IF EXISTS public.rules_type_name_key;
+DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS unified_items_pkey;
@@ -651,7 +650,6 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 --
 
 COPY public.rules (id, created, updated, priority, type, name, "filterView", "resultView", "ownerId", key, filter, result) FROM stdin;
-15	2024-04-08 15:09:17.915	2024-04-08 15:09:17.915	50	INPUT_SOURCE	Buying	{}	{}	1	Buy	"true"	{"type": "buy", "value": "total", "assetIn": "TODO", "assetAmountIn": "TODO"}
 \.
 
 
@@ -662,6 +660,7 @@ COPY public.rules (id, created, updated, priority, type, name, "filterView", "re
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
 335	2024-04-08 15:13:52.548	2024-04-08 15:13:52.566	BATCH_CREATED	DATA_FETCHED	67	\N
 336	2024-04-08 15:13:54.551	2024-04-08 15:13:54.601	DATA_FETCHED	DATA_PARSED	67	\N
+337	2024-04-08 16:44:40.168	2024-04-08 16:44:40.23	DATA_PARSED	DATA_PARSED	67	PrismaClientKnownRequestError: \nInvalid `this.db.create()` invocation in\n/home/wigy/project/tasenor-data-exchange/backend/src/models/BaseModel.ts:101:32\n\n   98  * @returns New instance.\n   99  */\n  100 static async create<T extends MinimalModel, C extends BaseModel<T>>(data: Partial<T>): Promise<C> {\n→ 101   const item = await this.db.create(\nUnique constraint failed on the fields: (`type`,`ownerId`)\n    at In.handleRequestError (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:122:6854)\n    at In.handleAndLogRequestError (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:122:6188)\n    at In.request (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:122:5896)\n    at async l (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:127:10871)\n    at Function.create (/home/wigy/project/tasenor-data-exchange/backend/src/models/BaseModel.ts:101:18)\n    at TestMockInput.initializeRules (/home/wigy/project/tasenor-data-exchange/backend/src/engine/source/InputSource.ts:207:20)\n    at FlowPlanModel.unifyItems (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:171:15)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:63:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)
 \.
 
 
@@ -731,14 +730,14 @@ SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 16, true);
+SELECT pg_catalog.setval('public.rules_id_seq', 18, true);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 336, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 337, true);
 
 
 --
@@ -850,17 +849,10 @@ CREATE UNIQUE INDEX "input_sources_flowPlanId_key" ON public.input_sources USING
 
 
 --
--- Name: rules_type_name_key; Type: INDEX; Schema: public; Owner: dev
+-- Name: rules_type_ownerId_name_key; Type: INDEX; Schema: public; Owner: dev
 --
 
-CREATE UNIQUE INDEX rules_type_name_key ON public.rules USING btree (type, name);
-
-
---
--- Name: rules_type_ownerId_key; Type: INDEX; Schema: public; Owner: dev
---
-
-CREATE UNIQUE INDEX "rules_type_ownerId_key" ON public.rules USING btree (type, "ownerId");
+CREATE UNIQUE INDEX "rules_type_ownerId_name_key" ON public.rules USING btree (type, "ownerId", name);
 
 
 --

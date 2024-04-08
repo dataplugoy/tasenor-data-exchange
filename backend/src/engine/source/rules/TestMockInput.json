@@ -5,8 +5,8 @@
     "filter": "word1 == 'Buy'",
     "result": {
       "type": "'buy'",
-      "assetIn": "'TODO'",
-      "assetAmountIn": "'TODO'",
+      "assetIn": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]",
+      "assetAmountIn": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])",
       "value": "total"
     }
   },
@@ -16,8 +16,8 @@
     "filter": "word1 == 'Sell'",
     "result": {
       "type": "'sell'",
-      "assetIn": "'TODO'",
-      "assetAmountIn": "'TODO'",
+      "assetIn": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]",
+      "assetAmountIn": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])",
       "value": "total"
     }
   }

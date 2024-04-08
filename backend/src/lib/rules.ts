@@ -1,4 +1,4 @@
-import { RuleVariables, RulesEngine } from '@tasenor/common'
+import { RuleVariables, RulesEngine, error } from '@tasenor/common'
 import { RuleModel } from '../models/RuleModel'
 
 // TODO: Debug mode to print every step.
@@ -7,13 +7,20 @@ export function applyRules(variables: Record<string, unknown>, rules: Record<str
   const engine = new RulesEngine(variables as RuleVariables)
   const unusedKeys = new Set(Object.keys(rules))
 
-  let output = undefined
+  function evaluate(expr): unknown {
+    try {
+      return engine.eval(expr)
+    } catch (err) {
+      error(`Evaluation of expression ${JSON.stringify(expr)} failed: ${err}`)
+      throw err
+    }
+  }
 
   function applyRuleKey(key: string) {
     unusedKeys.delete(key)
     for (const rule of rules[key] || []) {
-      if (engine.eval(rule.filter)) {
-        return engine.eval(rule.result)
+      if (evaluate(rule.filter)) {
+        return evaluate(rule.result)
       }
     }
   }
