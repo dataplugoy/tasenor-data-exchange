@@ -1,8 +1,10 @@
+import Opaque from 'ts-opaque'
 import { Asset, Timestring } from '@tasenor/common'
 import Decimal from 'decimal.js'
-import { DateTime } from 'luxon'
 
-export type AccountCode = 'TODO'
+// TODO: Split this file.
+
+export type AccountCode = Opaque<string, 'AccountCode'>
 
 export interface TransactionExtras {
   asset?: Asset

@@ -40,4 +40,7 @@ export interface UnifiedInput {
   // Total value of the transaction in terms of an asset (usually default currency) if known.
   value?: number | Decimal // Total value of the underlying transaction.
   valueAsset?: Asset // Unit of the total (defaults to the default currency).
+
+  // Text for the transaction if known.
+  text?: string
 }

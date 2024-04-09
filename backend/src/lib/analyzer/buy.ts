@@ -20,7 +20,7 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
   // TODO: Handle fee.
   // TODO: Handle various cases of missing value.
 
-  const { value, assetIn, assetValueIn } = input
+  const { value, assetIn, assetAmountIn } = input
   // TODO: Basic checks to be done elsewhere commonly.
   if (!value) {
     throw new Error(`Asset valution not yet implemented for '${assetIn}'.`)
@@ -28,8 +28,16 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
   if (!assetIn) {
     throw new Error(`Buying has to define 'assetIn': ${JSON.stringify(input)}`)
   }
+  if (assetAmountIn === undefined) {
+    throw new Error(`Buying has to define 'assetAmountIn': ${JSON.stringify(input)}`)
+  }
   if (dec(value).isNegative()) {
     throw new Error(`Total 'value' cannot be negative: ${JSON.stringify(input)}`)
+  }
+  // TODO: Generate localized text if no text to be found.
+  const text = input.text
+  if (!text) {
+    throw new Error(`Text generation not yet implemented: ${JSON.stringify(input)}`)
   }
 
   return {
@@ -38,14 +46,17 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
       {
         account: `CURRENCY_${currency}` as AccountCode,
         amount: dec(value).negated(),
-        text: 'TODO: Text generation and/or reusing original texts',
+        text,
         extras: {},
       },
       {
         account: `ASSET_${assetIn}` as AccountCode,
         amount: dec(value),
-        text: 'TODO: Text generation and/or reusing original texts',
-        extras: {},
+        text,
+        extras: {
+          asset: assetIn,
+          assetChange: dec(assetAmountIn),
+        },
       },
     ]
   }
