@@ -14,6 +14,10 @@ import { UnifiedItemModel } from './UnifiedItemModel'
 import { Stock, StockData } from '../lib/Stock'
 import { Analyzer } from '../lib/analyzer/Analyzer'
 import { DateTime } from 'luxon'
+import { ProjectModel } from './ProjectModel'
+import { OutputItemModel } from './OutputItemModel'
+import { toJSON } from '../lib/utils'
+import { Transaction } from '../types/Transaction'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -58,6 +62,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   async run(options: InputOptions): Promise<void> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
+
     log(`${run} for ${batch} starting from state ${batch.state}.`)
 
     try {
@@ -196,15 +201,47 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async analyzeItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const unifieds = await UnifiedItemModel.findForBatch(batch, false)
+    const unifieds = await UnifiedItemModel.findForBatch(batch)
+    const project = await this.getProject()
+    Analyzer.configure(project.settings)
 
     // Unified items must be processed in order and batch must stop if one fails.
     const stock = new Stock(batch.data.initialStock as StockData)
     const analyzer = new Analyzer(stock)
     for (const unified of unifieds) {
-      const tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
-      analyzer.apply(tx)
+
+      // Skip processed.
+      if (unified.data.processed) {
+        // TODO: Handle stock changes for already processed unified items.
+        //       Add change to unified item and remove from output.
+        continue
+      }
+
+      // Analyze unprocessed.
+      let tx: Transaction
+      try {
+        tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+        analyzer.apply(tx)
+      } catch (err) {
+        await unified.fail(err)
+        throw err
+      }
+
+      // Save success.
+      await OutputItemModel.save({
+        data: toJSON(tx),
+        skipped: false,
+        delivered: false,
+        unifiedId: unified.id,
+        flowPlanId: this.id,
+        batchId: batch.id,
+        runId: run.id,
+      })
+
+      await unified.success()
     }
+
+    return 'OK'
   }
 
   /**
@@ -216,6 +253,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       throw new Error(`Cannot find input source for '${this}'.`)
     }
     return source
+  }
+
+  /**
+   * Get the project instance this flow belongs to.
+   * @returns
+   */
+  async getProject(): Promise<ProjectModel> {
+    return await ProjectModel.findForFlow(this)
   }
 
   /**

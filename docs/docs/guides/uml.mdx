@@ -26,6 +26,7 @@ classDiagram
     class Project{
       +user: User
       +name: string
+      +settings: json
       +plans: FlowPlan[]
     }
     User "1" <-- "0..*" Project

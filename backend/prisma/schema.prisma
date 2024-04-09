@@ -46,6 +46,7 @@ model Project {
   updated     DateTime        @updatedAt
 
   name        String
+  settings    Json            @default("{}")
 
   userId      Int
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -200,7 +201,6 @@ model OutputItem{
 
   data        Json
   stockChange Json            @default("{}")
-  processed   Boolean
   skipped     Boolean
   delivered   Boolean
 

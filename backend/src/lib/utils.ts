@@ -18,7 +18,7 @@ export function dec(value: string | number | Decimal | undefined): Decimal {
  * Convert decimals to strings.
  * @param value
  */
-export function toJSON(value: unknown): JsonValue {
+export function toJSON(value: unknown, decimalsToString = false): JsonValue {
   const type = typeof value
   if (value === null || type === 'string' || type === 'boolean' || type === 'number') {
     return value as JsonValue
@@ -28,7 +28,7 @@ export function toJSON(value: unknown): JsonValue {
       return value.map(e => toJSON(e))
     }
     if (value instanceof Decimal) {
-      return value.toNumber()
+      return decimalsToString ? value.toString() : value.toNumber()
     }
 
     return Object.keys(value as Object).reduce((prev, cur) => (

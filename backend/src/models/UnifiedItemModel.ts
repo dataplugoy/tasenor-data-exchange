@@ -17,6 +17,21 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
   }
 
   /**
+   * Mark this run as a failure.
+   */
+  async fail(err: Error): Promise<void> {
+    await UnifiedItemModel.update<prisma.InputItem, UnifiedItemModel>(this, { error: err.stack || err.message })
+  }
+
+  /**
+   * Mark this nput as successfully handled.
+   * @param state
+   */
+  async success(): Promise<void> {
+    await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { processed: true })
+  }
+
+  /**
    * Save item to the DB.
    * @param data
    * @returns

@@ -7,8 +7,9 @@ import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { toJSON } from '../utils'
-import { changeLanguage, initI18N, t } from '../i18n/t'
+import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
+import { AnalyzerConfig } from './AnalyzerConfig'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -16,14 +17,6 @@ import { validateBasics, validateError, validateInput, validateRate, validateReq
  * Running balances for accounts.
  */
 export type Balances = Partial<Record<AccountCode, Decimal>>
-
-/**
- * Configuration for analyzer.
- */
-export type AnalyzerConfig = {
-  currency: Currency
-  language: Language
-}
 
 /**
  * Core engine for tracking and calculating transactions from unified items.

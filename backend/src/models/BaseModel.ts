@@ -139,6 +139,19 @@ export class BaseModel<T extends MinimalModel> {
   }
 
   /**
+   * Find an unique instance from database by id or throw an error if cannot be found.
+   * @param condition Fields to search.
+   * @returns An entry instance or `null` if not found.
+   */
+  static async findById<T extends MinimalModel, C extends BaseModel<T>>(id: number): Promise<C> {
+    const item = await this.findUnique({ id })
+    if (!item) {
+      throw new Error(`Cannot find row with id ${id} from ${this.table}-table.`)
+    }
+    return item as C
+  }
+
+  /**
    * Find an unique instance from database.
    * @param condition Fields to search.
    * @returns An entry instance or `null` if not found.
