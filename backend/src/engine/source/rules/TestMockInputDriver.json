@@ -16,8 +16,8 @@
     "filter": "word1 == 'Sell'",
     "result": {
       "type": "'sell'",
-      "assetIn": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]",
-      "assetAmountIn": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])",
+      "assetOut": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]",
+      "assetAmountOut": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])",
       "value": "total"
     }
   }
