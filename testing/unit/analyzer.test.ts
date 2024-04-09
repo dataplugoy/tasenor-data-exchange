@@ -4,7 +4,7 @@ import { InputType } from '../../backend/src/types/UnifiedInput'
 import { Asset, Timestring } from '@tasenor/common'
 
 describe('Analyzer', () => {
-  it('buy simple case', async () => {
+  it('simple buying case', async () => {
 
     Analyzer.configure({
       currency: 'EUR',
@@ -49,7 +49,7 @@ describe('Analyzer', () => {
   })
 
 
-  it('buy default texts', async () => {
+  it('buying with default texts', async () => {
 
     Analyzer.configure({
       currency: 'EUR',
@@ -88,6 +88,51 @@ describe('Analyzer', () => {
         },
         balances: { CURRENCY_EUR: -15000, ASSET_ETH: 15000 },
         stock: { ETH: { amount: 10.5, value: 20000 } }
+      }
+    )
+  })
+
+
+  it('buying with implicit value in extras', async () => {
+
+    Analyzer.configure({
+      currency: 'EUR',
+      language: 'en'
+    })
+
+    const stock = {
+    }
+    const input = {
+      'type': 'buy' as InputType,
+      'assetIn': 'ETH' as Asset,
+      'assetAmountIn': 5,
+      'rates': {
+        'ETH': 1000
+      }
+    }
+
+    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+
+    expect(analyzer.toJSON()).toStrictEqual({
+        tx: {
+          time: '2000-01-01T00:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: -5000,
+              text: 'Bought +5 ETH',
+              extras: {}
+            },
+            {
+              account: 'ASSET_ETH',
+              amount: 5000,
+              text: 'Bought +5 ETH',
+              extras: { asset: 'ETH', assetChange: 5 }
+            }
+          ]
+        },
+        balances: { CURRENCY_EUR: -5000, ASSET_ETH: 5000 },
+        stock: { ETH: { amount: 5, value: 5000 } }
       }
     )
   })

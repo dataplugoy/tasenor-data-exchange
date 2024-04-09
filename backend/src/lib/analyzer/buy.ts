@@ -16,20 +16,13 @@ import { t } from '../i18n/t'
  * Requires fields `assetIn`, `assetAmountIn`.
  */
 export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInput): Promise<Transaction> {
-  // TODO: Resolve asset values at time stamp.
-  // TODO: Handle rates given in extras.
-  const rates = { ETH: 3351.86 }
   // TODO: Handle fee.
-  // TODO: Handle various cases of missing value.
+  const { assetIn, assetAmountIn } = input
 
-  const { value, assetIn, assetAmountIn } = input
-  // TODO: Basic checks to be done elsewhere commonly.
-  if (!value) {
-    throw new Error(`Asset valution not yet implemented for '${assetIn}'.`)
-  }
   analyzer.validateBasics()
   analyzer.validateRequired('assetIn', 'assetAmountIn')
   const text = analyzer.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
+  const value = await analyzer.validateValue(assetIn, assetAmountIn)
 
   return {
     time: time.toUTC().toISO() as Timestring,

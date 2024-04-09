@@ -42,6 +42,7 @@ export class Analyzer {
   private balances: Balances
   private clock: Timestring
   private lastInput: UnifiedInput | null
+  private lastTime: Timestring
   private lastResult: Transaction | null
 
   /**
@@ -65,6 +66,7 @@ export class Analyzer {
     this.balances = balances
     this.clock = '0000-00-00T00:00:00Z' as Timestring
     this.lastInput = null
+    this.lastTime = '0000-00-00T00:00:00Z' as Timestring
     this.lastResult = null
   }
 
@@ -163,6 +165,7 @@ export class Analyzer {
     }
   }
 
+  // TODO: Consider extracting validators to another file.
   /**
    * Throw a validation error.
    * @param msg
@@ -221,6 +224,44 @@ export class Analyzer {
       }
     })
     return t(text, values as Record<string, string>)
+  }
+
+  /**
+   * Resolve total value if not given explicitly.
+   */
+  async validateValue(asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined): Promise<Decimal> {
+    if (!this.lastInput) {
+      throw new Error('Cannot use validation before setting the last input.')
+    }
+    if (this.lastInput.value !== undefined) {
+      return dec(this.lastInput.value)
+    }
+    if (asset === undefined) {
+      this.validateError(`Cannot figure out value without any asset`)
+    }
+    if (amount === undefined) {
+      this.validateError(`Cannot figure out value without amount of the asset`)
+    }
+
+    const rate = await this.validateRate(asset)
+    return rate.mul(dec(amount))
+  }
+
+  /**
+   * Get the rate in the default currency for an asset.
+   * @param asset
+   */
+  async validateRate(asset: Asset): Promise<Decimal> {
+    // TODO: DRY. Add validateInput()
+    if (!this.lastInput) {
+      throw new Error('Cannot use validation before setting the last input.')
+    }
+
+    if (!this.lastInput.rates || !(asset in this.lastInput.rates)) {
+      this.validateError(`Cannot resolve rate for an asset ${asset}`)
+    }
+
+    return dec(this.lastInput.rates[asset])
   }
 
   /**

@@ -43,4 +43,6 @@ export interface UnifiedInput {
 
   // Text for the transaction if known.
   text?: string
+  // Asset rates in default currency if known.
+  rates?: Partial<Record<Asset, number>>
 }
