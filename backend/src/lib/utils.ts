@@ -11,7 +11,7 @@ export function dec(value: string | number | Decimal | undefined): Decimal {
   if (typeof value === 'string' || typeof value === 'number' ) {
     return new Decimal(value)
   }
-  throw new Error(`Invalud value ${JSON.stringify(value)} to convert into Decimal instance.`)
+  throw new Error(`Invalid value ${JSON.stringify(value)} to convert into Decimal instance.`)
 }
 
 /**

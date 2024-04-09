@@ -202,13 +202,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const stock = new Stock(batch.data.initialStock as StockData)
     const analyzer = new Analyzer(stock)
     for (const unified of unifieds) {
-      await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
-      // TODO: apply stock change to batch. Mark processed.
+      const tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+      analyzer.apply(tx)
     }
-
-
-    // TODO: Create separate analyzer lib. Perhaps one front function and sub-functions per unified item type.
-    // TODO: Add unit test for every case handled in analyzer (perhaps provide quick JSON API for it).
   }
 
   /**

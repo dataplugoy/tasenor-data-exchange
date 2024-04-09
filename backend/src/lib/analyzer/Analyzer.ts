@@ -1,4 +1,4 @@
-import { InputType, UnifiedInput } from '../../types/UnifiedInput'
+import { UnifiedInput } from '../../types/UnifiedInput'
 import { Stock, StockChangeData } from '../Stock'
 import { DateTime } from 'luxon'
 import { buy } from './buy'
@@ -8,7 +8,7 @@ import { Asset, Currency, Language, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { toJSON } from '../utils'
 import { changeLanguage, initI18N, t } from '../i18n/t'
-import { validateBasics, validateError, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
+import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -43,6 +43,7 @@ export class Analyzer {
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)
+  public validateInput: () => UnifiedInput = validateInput.bind(this)
   public validateBasics: () => void = validateBasics.bind(this)
   public validateRequirdeField: (field: keyof UnifiedInput) => void = validateRequirdeField.bind(this)
   public validateRequired: (...fields: Array<keyof UnifiedInput>) => void = validateRequired.bind(this)

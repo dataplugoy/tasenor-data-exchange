@@ -14,14 +14,24 @@ export function validateError(this: Analyzer, msg: string): never {
 }
 
 /**
- * Do standard validations for input.
+ * Ensure that input is set.
+ * @param this
  */
-export function validateBasics(this: Analyzer): void {
+export function validateInput(this: Analyzer): UnifiedInput {
   if (!this.lastInput) {
     throw new Error('Cannot use validation before setting the last input.')
   }
-  if (this.lastInput.value !== undefined && dec(this.lastInput.value).isNegative()) {
-    this.validateError(`Total value ${this.lastInput.value} cannot be negative.`)
+  return this.lastInput
+}
+
+/**
+ * Do standard validations for input.
+ */
+export function validateBasics(this: Analyzer): void {
+  const input = this.validateInput()
+
+  if (input.value !== undefined && dec(input.value).isNegative()) {
+    this.validateError(`Total value ${input.value} cannot be negative.`)
   }
 }
 
@@ -30,10 +40,8 @@ export function validateBasics(this: Analyzer): void {
  * @param field
  */
 export function validateRequirdeField(this: Analyzer, field: keyof UnifiedInput): void {
-  if (!this.lastInput) {
-    throw new Error('Cannot use validation before setting the last input.')
-  }
-  if (this.lastInput[field] === undefined) {
+  const input = this.validateInput()
+  if (input[field] === undefined) {
     this.validateError(`The field '${field}' is required`)
   }
 }
@@ -51,11 +59,9 @@ export function validateRequired(this: Analyzer, ...fields: Array<keyof UnifiedI
  * @param text
  */
 export function validateText(this: Analyzer, text: string, values: Record<string, string | undefined> = {}): string {
-  if (!this.lastInput) {
-    throw new Error('Cannot use validation before setting the last input.')
-  }
-  if (this.lastInput.text !== undefined) {
-    return this.lastInput.text
+  const input = this.validateInput()
+  if (input.text !== undefined) {
+    return input.text
   }
   Object.keys(values).forEach(k => {
     if (values[k] === undefined) {
@@ -71,27 +77,20 @@ export function validateText(this: Analyzer, text: string, values: Record<string
  * @param asset
  */
 export async function validateRate(asset: Asset): Promise<Decimal> {
-  // TODO: DRY. Add validateInput()
-  if (!this.lastInput) {
-    throw new Error('Cannot use validation before setting the last input.')
-  }
-
-  if (!this.lastInput.rates || !(asset in this.lastInput.rates)) {
+  const input = this.validateInput()
+  if (!input.rates || !(asset in input.rates)) {
     this.validateError(`Cannot resolve rate for an asset ${asset}`)
   }
-
-  return dec(this.lastInput.rates[asset])
+  return dec(input.rates[asset])
 }
 
 /**
  * Resolve total value if not given explicitly.
  */
 export async function validateValue(asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined): Promise<Decimal> {
-  if (!this.lastInput) {
-    throw new Error('Cannot use validation before setting the last input.')
-  }
-  if (this.lastInput.value !== undefined) {
-    return dec(this.lastInput.value)
+  const input = this.validateInput()
+  if (input.value !== undefined) {
+    return dec(input.value)
   }
   if (asset === undefined) {
     this.validateError(`Cannot figure out value without any asset`)
