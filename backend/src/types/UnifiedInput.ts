@@ -1,4 +1,4 @@
-import { Asset, Timestring } from '@tasenor/common'
+import { Asset } from '@tasenor/common'
 import Decimal from 'decimal.js'
 
 /**

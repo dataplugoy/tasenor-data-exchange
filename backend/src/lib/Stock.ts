@@ -1,7 +1,7 @@
-import { Asset } from "@tasenor/common";
-import Decimal from "decimal.js";
-import { toJSON } from "./utils";
-import { JsonValue } from "@prisma/client/runtime/library";
+import { Asset } from '@tasenor/common'
+import Decimal from 'decimal.js'
+import { toJSON } from './utils'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 export type AssetRecord = {
   amount: Decimal

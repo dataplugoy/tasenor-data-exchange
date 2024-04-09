@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
-import { Timestring, error, log } from '@tasenor/common'
+import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'

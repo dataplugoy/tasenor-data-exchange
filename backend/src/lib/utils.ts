@@ -8,7 +8,7 @@ export function dec(value: string | number | Decimal | undefined): Decimal {
   if (value instanceof Decimal) {
     return value
   }
-  if (typeof value === 'string' || typeof value === 'number' ) {
+  if (typeof value === 'string' || typeof value === 'number') {
     return new Decimal(value)
   }
   throw new Error(`Invalid value ${JSON.stringify(value)} to convert into Decimal instance.`)
@@ -32,12 +32,13 @@ export function toJSON(value: unknown): JsonValue {
     }
 
     return Object.keys(value as Object).reduce((prev, cur) => (
-      typeof (value as Object)[cur] === 'function' ? prev :
-      {
-        ...prev,
-        [cur]: toJSON((value as Object)[cur])
-      }),
-      {}
+      typeof (value as Object)[cur] === 'function'
+        ? prev
+        : {
+            ...prev,
+            [cur]: toJSON((value as Object)[cur])
+          }),
+    {}
     )
   }
   throw new Error(`Invalid type ${type}.`)
