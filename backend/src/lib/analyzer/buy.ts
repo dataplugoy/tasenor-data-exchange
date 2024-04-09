@@ -18,6 +18,7 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
   // TODO: Need to pass currency.
   const currency = 'EUR'
   // TODO: Handle fee.
+  // TODO: Handle various cases of missing value.
 
   const { value, assetIn, assetValueIn } = input
   // TODO: Basic checks to be done elsewhere commonly.
