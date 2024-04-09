@@ -14,7 +14,7 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   }
 
   get fields(): Record<string, unknown> {
-    return 'fields' in this.json ? this.json.fields as Record<string, unknown>: {}
+    return 'fields' in this.json ? this.json.fields as Record<string, unknown> : {}
   }
 
   get text(): string | null {

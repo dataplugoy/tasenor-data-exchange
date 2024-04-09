@@ -29,17 +29,17 @@ export class BatchModel extends BaseModel<prisma.Batch> {
    * Get the CSV presentation of the data.
    */
   parseCsv(options: Options = {}): string[][] {
-    const records: string[][] =  []
+    const records: string[][] = []
     const parser = parse(options)
 
-    parser.on('readable', function(){
-      let record;
+    parser.on('readable', function() {
+      let record
       while ((record = parser.read()) !== null) {
-        records.push(record);
+        records.push(record)
       }
     })
 
-    parser.on('error', function(err){
+    parser.on('error', function(err) {
       throw new Error(`CSV Parser failed: ${err.message}`)
     })
 
@@ -75,7 +75,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Retrieve all batches.
    */
-  static getAll(filter={}): Promise<BatchModel[]> {
+  static getAll(filter = {}): Promise<BatchModel[]> {
     return BatchModel.findMany<prisma.Batch, BatchModel>(filter)
   }
 }

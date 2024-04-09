@@ -37,6 +37,8 @@ classDiagram
       +source: InputSource
       +destination: OutputDestination
       +state: json
+      +lastStamp: DateTime
+      +stock: json
     }
     Project "1" *-- "0..*" FlowPlan
 
@@ -74,9 +76,10 @@ classDiagram
 
     class Batch{
       +flowPlan: FlowPlan
-      +number: integer
       +state: enum
       +data: string
+      +lastStamp: DateTime
+      +stock: json
       +runs: Run[]
       +parsed: InputItem[]
       +generated: OutputItem[]
@@ -88,7 +91,6 @@ classDiagram
     class InputItem{
       +batch: Batch
       +run: Run
-      +number: integer
       +data: json
       +error: String
       +converted: boolean
@@ -101,7 +103,6 @@ classDiagram
     class UnifiedItem{
       +batch: Batch
       +run: Run
-      +number: integer
       +input: InputItem
       +data: json
       +error: String

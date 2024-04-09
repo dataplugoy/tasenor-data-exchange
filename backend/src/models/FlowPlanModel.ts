@@ -10,8 +10,6 @@ import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { RuleModel } from './RuleModel'
-import path from 'path'
-import fs from 'fs'
 import { UnifiedItemModel } from './UnifiedItemModel'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
@@ -198,9 +196,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const unified = await UnifiedItemModel.findForBatch(batch, false)
 
     // Unified items must be processed in order and batch must stop if one fails.
-    console.dir(unified, {depth: null})
+    console.dir(unified, { depth: null })
 
     // TODO: Sort by timestamp.
+    // TODO: Add initialStock to flow plan.
     // TODO: Add initialStock and endStock to batch.
     // TODO: Create separate analyzer lib. Perhaps one front function and sub-functions per unified item type.
     // TODO: Add unit test for every case handled in analyzer (perhaps provide quick JSON API for it).

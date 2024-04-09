@@ -1,4 +1,4 @@
-import { ShortDate, Timestring } from "@tasenor/common"
+import { ShortDate, Timestring } from '@tasenor/common'
 
 /**
  * Parsed storage format for incoming data extracted as a single unit of future processing.

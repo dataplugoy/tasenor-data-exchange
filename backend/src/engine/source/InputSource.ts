@@ -247,7 +247,8 @@ export class InputSource {
       DateTime.fromISO(`${input.time}`).toUTC().toISO()
 
     const unified = await UnifiedItemModel.save({
-      data: { time, ...data } as JsonValue,
+      data: data as JsonValue,
+      time: new Date(time as string),
       processed: false,
       skipped: false,
       flowPlanId: input.data.flowPlanId,

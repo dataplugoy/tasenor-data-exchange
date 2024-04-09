@@ -65,6 +65,7 @@ model FlowPlan {
   projectId   Int
   project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   lastStamp   DateTime?
+  stock       Json            @default("{}")
 
   source      InputSource?
   batches     Batch[]
@@ -112,6 +113,8 @@ model Batch{
   number      Int
   state       BatchState
   data        String?
+  lastStamp   DateTime?
+  stock       Json            @default("{}")
 
   flowPlanId  Int
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
@@ -169,6 +172,7 @@ model UnifiedItem{
   created     DateTime        @default(now())
   updated     DateTime        @updatedAt
 
+  time        DateTime
   data        Json
   processed   Boolean
   skipped     Boolean
@@ -194,6 +198,7 @@ model OutputItem{
   updated     DateTime        @updatedAt
 
   data        Json
+  stock       Json            @default("{}")
   processed   Boolean
   skipped     Boolean
 
