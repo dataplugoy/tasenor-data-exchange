@@ -11,14 +11,6 @@ import { changeLanguage, initI18N, t } from '../i18n/t'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
-export type AnalyzeHandler = (analyzer: Analyzer, time: DateTime, input: UnifiedInput) => Promise<Transaction>
-
-function notImplemented(type): AnalyzeHandler {
-  return  () => {
-    throw new Error(`Handler function not implemented for type ${JSON.stringify(type)}.`)
-  }
-}
-
 /**
  * Running balances for accounts.
  */
@@ -45,17 +37,7 @@ export class Analyzer {
   private lastTime: Timestring
   private lastResult: Transaction | null
 
-  /**
-   * Handler functions per type.
-   */
-  private static handlers: Record<InputType, AnalyzeHandler> = {
-    buy,
-    dividend: notImplemented('dividend'),
-    expense: notImplemented('expense'),
-    income: notImplemented('income'),
-    sell: notImplemented('sell'),
-    trade: notImplemented('trade'),
-  }
+  public buyHandler = buy.bind(this)
 
   /**
    * Initialize
@@ -99,7 +81,14 @@ export class Analyzer {
     await initI18N()
     await changeLanguage(this.language)
     this.lastInput = input
-    this.lastResult = await Analyzer.handlers[input.type](this, time, input)
+    this.lastTime = time.toISO() as Timestring
+    if (!this[`${input.type}Handler`]) {
+      throw new Error(`Analyzer does not yet implement input type '${input.type}'.`)
+    }
+    this.lastResult = await this[`${input.type}Handler`](time, input)
+    if (!this.lastResult) {
+      throw new Error(`A function ${input.type} failed to produce the result.`)
+    }
     return this.lastResult
   }
 

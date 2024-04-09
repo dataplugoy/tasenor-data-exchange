@@ -15,20 +15,20 @@ import { t } from '../i18n/t'
  *
  * Requires fields `assetIn`, `assetAmountIn`.
  */
-export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInput): Promise<Transaction> {
+export async function buy(time: DateTime, input: UnifiedInput): Promise<Transaction> {
   // TODO: Handle fee.
   const { assetIn, assetAmountIn } = input
 
-  analyzer.validateBasics()
-  analyzer.validateRequired('assetIn', 'assetAmountIn')
-  const text = analyzer.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
-  const value = await analyzer.validateValue(assetIn, assetAmountIn)
+  this.validateBasics()
+  this.validateRequired('assetIn', 'assetAmountIn')
+  const text = this.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
+  const value = await this.validateValue(assetIn, assetAmountIn)
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `CURRENCY_${analyzer.currency}` as AccountCode,
+        account: `CURRENCY_${this.currency}` as AccountCode,
         amount: dec(value).negated(),
         text,
         extras: {},
