@@ -6,8 +6,9 @@ import { AccountCode, Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { dec, toJSON } from '../utils'
+import { toJSON } from '../utils'
 import { changeLanguage, initI18N, t } from '../i18n/t'
+import { validateBasics, validateError, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -30,14 +31,24 @@ export type AnalyzerConfig = {
 export class Analyzer {
   private static  config: AnalyzerConfig | null
 
-  private stock: Stock
-  private balances: Balances
-  private clock: Timestring
-  private lastInput: UnifiedInput | null
-  private lastTime: Timestring
-  private lastResult: Transaction | null
+  protected stock: Stock
+  protected balances: Balances
+  protected clock: Timestring
+  protected lastInput: UnifiedInput | null
+  protected lastTime: Timestring
+  protected lastResult: Transaction | null
 
+  // Bind handlers.
   public buyHandler = buy.bind(this)
+
+  // Bind validators.
+  public validateError: (msg: string) => never = validateError.bind(this)
+  public validateBasics: () => void = validateBasics.bind(this)
+  public validateRequirdeField: (field: keyof UnifiedInput) => void = validateRequirdeField.bind(this)
+  public validateRequired: (...fields: Array<keyof UnifiedInput>) => void = validateRequired.bind(this)
+  public validateText: (text: string, values: Record<string, string | undefined>) => string = validateText.bind(this)
+  public validateRate: (asset: Asset) => Promise<Decimal> = validateRate.bind(this)
+  public validateValue: (asset: Asset | undefined, amount: number | Decimal | undefined) => Promise<Decimal> = validateValue.bind(this)
 
   /**
    * Initialize
@@ -152,105 +163,6 @@ export class Analyzer {
       balances: toJSON(this.balances),
       stock: this.stock.toJSON()
     }
-  }
-
-  // TODO: Consider extracting validators to another file.
-  /**
-   * Throw a validation error.
-   * @param msg
-   */
-  validateError(msg: string): never {
-    throw new Error(`${msg}: ${JSON.stringify(this.lastInput)}`)
-  }
-
-  /**
-   * Do standard validations for input.
-   */
-  validateBasics(): void {
-    if (!this.lastInput) {
-      throw new Error('Cannot use validation before setting the last input.')
-    }
-    if (this.lastInput.value !== undefined && dec(this.lastInput.value).isNegative()) {
-      this.validateError(`Total value ${this.lastInput.value} cannot be negative.`)
-    }
-  }
-
-  /**
-   * Ensure the field exist in input.
-   * @param field
-   */
-  validateRequirdeField(field: keyof UnifiedInput): void {
-    if (!this.lastInput) {
-      throw new Error('Cannot use validation before setting the last input.')
-    }
-    if (this.lastInput[field] === undefined) {
-      this.validateError(`The field '${field}' is required`)
-    }
-  }
-
-  /**
-   * Ensure all fields exist in input.
-   * @param fields
-   */
-  validateRequired(...fields: Array<keyof UnifiedInput>): void {
-    fields.forEach(field => this.validateRequirdeField(field))
-  }
-
-  /**
-   * Use either explicit text or translate the given text.
-   * @param text
-   */
-  validateText(text: string, values: Record<string, string | undefined> = {}): string {
-    if (!this.lastInput) {
-      throw new Error('Cannot use validation before setting the last input.')
-    }
-    if (this.lastInput.text !== undefined) {
-      return this.lastInput.text
-    }
-    Object.keys(values).forEach(k => {
-      if (values[k] === undefined) {
-        this.validateError(`A value for key '${k}' is undefined.`)
-      }
-    })
-    return t(text, values as Record<string, string>)
-  }
-
-  /**
-   * Resolve total value if not given explicitly.
-   */
-  async validateValue(asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined): Promise<Decimal> {
-    if (!this.lastInput) {
-      throw new Error('Cannot use validation before setting the last input.')
-    }
-    if (this.lastInput.value !== undefined) {
-      return dec(this.lastInput.value)
-    }
-    if (asset === undefined) {
-      this.validateError(`Cannot figure out value without any asset`)
-    }
-    if (amount === undefined) {
-      this.validateError(`Cannot figure out value without amount of the asset`)
-    }
-
-    const rate = await this.validateRate(asset)
-    return rate.mul(dec(amount))
-  }
-
-  /**
-   * Get the rate in the default currency for an asset.
-   * @param asset
-   */
-  async validateRate(asset: Asset): Promise<Decimal> {
-    // TODO: DRY. Add validateInput()
-    if (!this.lastInput) {
-      throw new Error('Cannot use validation before setting the last input.')
-    }
-
-    if (!this.lastInput.rates || !(asset in this.lastInput.rates)) {
-      this.validateError(`Cannot resolve rate for an asset ${asset}`)
-    }
-
-    return dec(this.lastInput.rates[asset])
   }
 
   /**

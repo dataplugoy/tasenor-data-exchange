@@ -4,7 +4,6 @@ import { AccountCode, Transaction } from '../../types/Transaction'
 import { Analyzer } from './Analyzer'
 import { chg, dec } from '../utils'
 import { Timestring } from '@tasenor/common'
-import { t } from '../i18n/t'
 
 /**
  * Buy an asset and add it to the stock.
@@ -15,7 +14,7 @@ import { t } from '../i18n/t'
  *
  * Requires fields `assetIn`, `assetAmountIn`.
  */
-export async function buy(time: DateTime, input: UnifiedInput): Promise<Transaction> {
+export async function buy(this: Analyzer, time: DateTime, input: UnifiedInput): Promise<Transaction> {
   // TODO: Handle fee.
   const { assetIn, assetAmountIn } = input
 
