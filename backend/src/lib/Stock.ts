@@ -30,23 +30,39 @@ export class Stock {
   }
 
   /**
-   * Update stock.
+   * Get the record for an asset. Create if needed.
    * @param asset
-   * @param amount
-   * @param value
    */
-  addAsset(asset: Asset, amount: Decimal, value: Decimal): void {
+  getAsset(asset: Asset): AssetRecord {
     if (!(asset in this.stock)) {
       this.stock[asset] = {
         amount: new Decimal(0),
         value: new Decimal(0),
       }
     }
+    return this.stock[asset] as AssetRecord
+  }
 
-    const record: AssetRecord = this.stock[asset] as AssetRecord
+  /**
+   * Update stock.
+   * @param asset
+   * @param amount
+   * @param value
+   */
+  addAsset(asset: Asset, amount: Decimal, value: Decimal): void {
+    const record = this.getAsset(asset)
 
     record.amount = record.amount.plus(amount)
     record.value = record.value.plus(value)
+  }
+
+  /**
+   * Get the current value per unit for an asset.
+   * @param asset
+   */
+  getValue(asset: Asset): Decimal {
+    const record = this.getAsset(asset)
+    return record.value.dividedBy(record.amount)
   }
 
   toJSON(): JsonValue {

@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { UnifiedInput } from '../../types/UnifiedInput'
-import { AccountCode, Transaction } from '../../types/Transaction'
-import { Analyzer } from './Analyzer'
-import { chg, dec } from '../utils'
+import { UnifiedInput } from '../../../types/UnifiedInput'
+import { AccountCode, Transaction } from '../../../types/Transaction'
+import { Analyzer } from '../Analyzer'
+import { chg, dec } from '../../utils'
 import { Timestring } from '@tasenor/common'
 
 /**

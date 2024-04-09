@@ -1,7 +1,7 @@
 import { UnifiedInput } from '../../types/UnifiedInput'
 import { Stock, StockChangeData } from '../Stock'
 import { DateTime } from 'luxon'
-import { buy } from './buy'
+import { buy } from './handlers/buy'
 import { AccountCode, Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring } from '@tasenor/common'
@@ -10,6 +10,7 @@ import { toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
+import { sell } from './handlers/sell'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -33,6 +34,7 @@ export class Analyzer {
 
   // Bind handlers.
   public buyHandler = buy.bind(this)
+  public sellHandler = sell.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)

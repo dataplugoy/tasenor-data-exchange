@@ -20,17 +20,17 @@ import { RunModel } from '../../models/RunModel'
 import { DateTime } from 'luxon'
 
 /**
- * Base class for different input sources supported.
+ * Base class for different input sources and output destinations supported.
  */
-export class InputSourceDriver {
+export class Driver {
 
-  type: prisma.InputSourceType
+  type: prisma.DriverType
   settings: InputSettings
   systemSettings: SettingsModel
   options: InputOptions
   state: FlowState
 
-  constructor(type: prisma.InputSourceType, settings: InputSettings) {
+  constructor(type: prisma.DriverType, settings: InputSettings) {
     this.type = type
     this.settings = settings
   }

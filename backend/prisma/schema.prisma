@@ -9,7 +9,7 @@ generator client {
 
 model Settings {
   id          Int             @id @default(autoincrement())
-  type        InputSourceType @unique
+  type        DriverType @unique
   url         String?
   certificate String?
   apikey      String?
@@ -69,6 +69,7 @@ model FlowPlan {
   stock       Json            @default("{}")
 
   source      InputSource?
+  destination OutputDestination?
   batches     Batch[]
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
@@ -77,8 +78,8 @@ model FlowPlan {
   @@map(name: "flow_plans")
 }
 
-enum InputSourceType {
-  TEST_MOCK_INPUT
+enum DriverType {
+  TEST_MOCK
   ENABLE_BANKING
 }
 
@@ -87,13 +88,27 @@ model InputSource {
   created     DateTime        @default(now())
   updated     DateTime        @updatedAt
 
-  type        InputSourceType
+  type        DriverType
   settings    Json            @default("{}")
 
   flowPlanId  Int             @unique
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
 
   @@map(name: "input_sources")
+}
+
+model OutputDestination {
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  type        DriverType
+  settings    Json            @default("{}")
+
+  flowPlanId  Int             @unique
+  flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
+
+  @@map(name: "outpu_destinations")
 }
 
 enum BatchState {

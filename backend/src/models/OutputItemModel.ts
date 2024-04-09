@@ -26,7 +26,9 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
    * @returns
    */
   static async findForBatch(batch: BatchModel, processed: boolean | undefined = undefined): Promise<OutputItemModel[]> {
-    const items = await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId: batch.id, processed })
-    return items
+    if (processed === false) {
+      return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId: batch.id, delivered: false, skipped: false })
+    }
+    throw new Error(`Listing processed output items is not implemented.`)
   }
 }

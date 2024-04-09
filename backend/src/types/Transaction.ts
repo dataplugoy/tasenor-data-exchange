@@ -4,6 +4,14 @@ import Decimal from 'decimal.js'
 
 // TODO: Split this file.
 
+/**
+ * Account codes:
+ *
+ * ASSET_<ticker>
+ * CURRENCY_<currency>
+ * PROFIT_<ticker>
+ * LOSS_<ticker>
+ */
 export type AccountCode = Opaque<string, 'AccountCode'>
 
 export interface TransactionExtras {

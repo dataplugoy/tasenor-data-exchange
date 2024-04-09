@@ -1,5 +1,5 @@
 import jwa from 'jwa'
-import { InputSourceDriver } from './InputSourceDriver'
+import { Driver } from './Driver'
 import { EnableBankingInputSettings } from '../../types/InputSettings'
 import config from '../../config'
 import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../../types/EnableBanking'
@@ -16,7 +16,7 @@ const jsonBase64 = (data: Record<string, any>) => {
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
-export class EnableBankingInputDriver extends InputSourceDriver {
+export class EnableBankingDriver extends Driver {
 
   declare settings: EnableBankingInputSettings
   declare state: EnableBankingFlowState

@@ -5,7 +5,7 @@ import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'
-import { InputSourceDriver } from '../engine/source/InputSourceDriver'
+import { InputSourceDriver } from '../engine/driver/Driver'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -32,7 +32,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     DATA_FETCHED: (options, batch, run) => this.itemizeInput(options, batch, run),
     DATA_PARSED: (options, batch, run) => this.unifyItems(options, batch, run),
     ITEMS_UNIFIED: (options, batch, run) => this.analyzeItems(options, batch, run),
-    OUTPUT_CREATED: (options, batch, run) => this.notImplemented(options, batch, run),
+    OUTPUT_CREATED: (options, batch, run) => this.deliverOutput(options, batch, run),
     OUTPUT_DELIVERED: (options, batch, run) => this.notImplemented(options, batch, run),
   }
 
@@ -105,9 +105,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
-   * Create and initialize driver.
+   * Create and initialize driver for receiving data.
    */
-  private async getDriver(options: InputOptions): Promise<InputSourceDriver> {
+  private async getInputDriver(options: InputOptions): Promise<InputSourceDriver> {
     const source = await this.getSource()
     const driver = source.getDriver()
 
@@ -117,13 +117,22 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Create and initialize driver for delivering data.
+   */
+  private async getOutputDriver(options: InputOptions): Promise<OutputDestinationDriver> {
+    // TODO: Rename InputOptions to RuntimeOptions.
+    const destination = await this.getDestination()
+
+  }
+
+  /**
    * Set up the transport and fetch the data.
    * @param options
    * @param batch
    * @param run
    */
   private async fetchData(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getDriver(options)
+    const driver = await this.getInputDriver(options)
 
     const state = await driver.autheticate()
     await this.saveState(state)
@@ -145,7 +154,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async itemizeInput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getDriver(options)
+    const driver = await this.getInputDriver(options)
     const items = await driver.itemizeInput(batch)
 
     for (const data of items) {
@@ -170,7 +179,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async unifyItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getDriver(options)
+    const driver = await this.getInputDriver(options)
     const inputs = await InputItemModel.findForBatch(batch, false)
     let rules = await RuleModel.findForFlowByKey(this)
     if (RuleModel.count(rules) === 0) {
@@ -245,6 +254,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Process delivering the result to the output destination.
+   * @param options
+   * @param batch
+   * @param run
+   */
+  private async deliverOutput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const output = await OutputItemModel.findForBatch(batch, false)
+    for (const item of output) {
+
+    }
+  }
+
+  /**
    * Get the input data source.
    */
   async getSource(): Promise<InputSourceModel> {
@@ -253,6 +275,17 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       throw new Error(`Cannot find input source for '${this}'.`)
     }
     return source
+  }
+
+  /**
+   * Get the output data destination.
+   */
+  async getDestination(): Promise<OutputDestinationModel> {
+    const dest = await OutputDestinationModel.findForFlow(this)
+    if (!dest) {
+      throw new Error(`Cannot find output destination for '${this}'.`)
+    }
+    return dest
   }
 
   /**

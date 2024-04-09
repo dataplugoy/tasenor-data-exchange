@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { DateTime } from 'luxon'
-import { InputSourceDriver } from './InputSourceDriver'
+import { Driver } from './Driver'
 import { TestMockInputSettings } from '../../types/InputSettings'
 import { TestMockFlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
@@ -18,13 +18,13 @@ import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
-export class TestMockInputDriver extends InputSourceDriver {
+export class TestMockDriver extends Driver {
 
   declare settings: TestMockInputSettings
   declare state: TestMockFlowState
 
   constructor(settings: TestMockInputSettings) {
-    super('TEST_MOCK_INPUT', settings)
+    super('TEST_MOCK', settings)
   }
 
   async autheticate(): Promise<TestMockFlowState> {
