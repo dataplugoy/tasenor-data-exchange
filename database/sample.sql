@@ -141,7 +141,10 @@ CREATE TABLE public.batches (
     state public."BatchState" NOT NULL,
     "flowPlanId" integer NOT NULL,
     completed timestamp(3) without time zone,
-    data text
+    data text,
+    "lastStamp" timestamp(3) without time zone,
+    "endStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "initialStock" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -180,7 +183,8 @@ CREATE TABLE public.flow_plans (
     updated timestamp(3) without time zone NOT NULL,
     "projectId" integer NOT NULL,
     "lastStamp" timestamp(3) without time zone,
-    state jsonb DEFAULT '{}'::jsonb NOT NULL
+    state jsonb DEFAULT '{}'::jsonb NOT NULL,
+    stock jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -303,7 +307,8 @@ CREATE TABLE public.output_items (
     "unifiedId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL
+    "runId" integer NOT NULL,
+    "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -506,7 +511,8 @@ CREATE TABLE public.unified_items (
     "runId" integer NOT NULL,
     "inputId" integer NOT NULL,
     error text,
-    processed boolean NOT NULL
+    processed boolean NOT NULL,
+    "time" timestamp(3) without time zone NOT NULL
 );
 
 
@@ -659,8 +665,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
-67	2024-04-08 15:13:52.536	2024-04-08 15:13:54.597	1	DATA_PARSED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n
+COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data, "lastStamp", "endStock", "initialStock") FROM stdin;
+69	2024-04-09 07:00:09.986	2024-04-09 07:00:40.83	1	ITEMS_UNIFIED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n	\N	{}	{"ETH": {"value": 5000, "amount": 5.5}}
 \.
 
 
@@ -668,9 +674,9 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
-2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-08 15:13:52.557	1	\N	{}
+COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state, stock) FROM stdin;
+2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}	{}
+1	Test	2024-03-30 14:39:53.161	2024-04-09 07:00:10.019	1	\N	{}	{"ETH": {"value": 5000, "amount": 5.5}}
 \.
 
 
@@ -679,8 +685,8 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 --
 
 COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", skipped, processed, error) FROM stdin;
-11	2024-04-08 15:13:54.588	2024-04-08 15:13:54.588	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {"word1": "Buy"}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	67	336	1	f	f	\N
-12	2024-04-08 15:13:54.593	2024-04-08 15:13:54.593	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {"word1": "Sell"}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	67	336	1	f	f	\N
+15	2024-04-09 07:00:29.753	2024-04-09 07:00:40.806	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {"word1": "Buy"}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	69	343	1	f	t	\N
+16	2024-04-09 07:00:29.758	2024-04-09 07:00:40.827	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {"word1": "Sell"}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	69	343	1	f	t	\N
 \.
 
 
@@ -698,7 +704,7 @@ COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) F
 -- Data for Name: output_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.output_items (id, created, updated, data, processed, skipped, error, "unifiedId", "flowPlanId", "batchId", "runId") FROM stdin;
+COPY public.output_items (id, created, updated, data, processed, skipped, error, "unifiedId", "flowPlanId", "batchId", "runId", "stockChange") FROM stdin;
 \.
 
 
@@ -717,6 +723,8 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 --
 
 COPY public.rules (id, created, updated, priority, type, name, "filterView", "resultView", "ownerId", key, filter, result) FROM stdin;
+19	2024-04-09 06:51:28.866	2024-04-09 06:51:28.866	50	INPUT_SOURCE	Buying	{}	{}	1	Buy	"word1 == 'Buy'"	{"type": "'buy'", "value": "total", "assetIn": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]", "assetAmountIn": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])"}
+20	2024-04-09 06:51:28.87	2024-04-09 06:51:28.87	50	INPUT_SOURCE	Selling	{}	{}	1	Sell	"word1 == 'Sell'"	{"type": "'sell'", "value": "total", "assetIn": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]", "assetAmountIn": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])"}
 \.
 
 
@@ -725,9 +733,9 @@ COPY public.rules (id, created, updated, priority, type, name, "filterView", "re
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
-335	2024-04-08 15:13:52.548	2024-04-08 15:13:52.566	BATCH_CREATED	DATA_FETCHED	67	\N
-336	2024-04-08 15:13:54.551	2024-04-08 15:13:54.601	DATA_FETCHED	DATA_PARSED	67	\N
-337	2024-04-08 16:44:40.168	2024-04-08 16:44:40.23	DATA_PARSED	DATA_PARSED	67	PrismaClientKnownRequestError: \nInvalid `this.db.create()` invocation in\n/home/wigy/project/tasenor-data-exchange/backend/src/models/BaseModel.ts:101:32\n\n   98  * @returns New instance.\n   99  */\n  100 static async create<T extends MinimalModel, C extends BaseModel<T>>(data: Partial<T>): Promise<C> {\n→ 101   const item = await this.db.create(\nUnique constraint failed on the fields: (`type`,`ownerId`)\n    at In.handleRequestError (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:122:6854)\n    at In.handleAndLogRequestError (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:122:6188)\n    at In.request (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:122:5896)\n    at async l (/home/wigy/project/tasenor-data-exchange/backend/node_modules/.pnpm/@prisma+client@5.11.0_prisma@5.11.0/node_modules/@prisma/client/runtime/library.js:127:10871)\n    at Function.create (/home/wigy/project/tasenor-data-exchange/backend/src/models/BaseModel.ts:101:18)\n    at TestMockInput.initializeRules (/home/wigy/project/tasenor-data-exchange/backend/src/engine/source/InputSource.ts:207:20)\n    at FlowPlanModel.unifyItems (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:171:15)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:63:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)
+342	2024-04-09 07:00:10.001	2024-04-09 07:00:10.031	BATCH_CREATED	DATA_FETCHED	69	\N
+343	2024-04-09 07:00:29.722	2024-04-09 07:00:29.765	DATA_FETCHED	DATA_PARSED	69	\N
+344	2024-04-09 07:00:40.669	2024-04-09 07:00:40.834	DATA_PARSED	ITEMS_UNIFIED	69	\N
 \.
 
 
@@ -745,7 +753,9 @@ COPY public.settings (id, type, url, certificate, "user", password, options, api
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "batchId", "runId", "inputId", error, processed) FROM stdin;
+COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "batchId", "runId", "inputId", error, processed, "time") FROM stdin;
+3	2024-04-09 07:00:40.791	2024-04-09 07:00:40.791	{"type": "buy", "value": -15000, "assetIn": "ETH", "assetAmountIn": 5}	f	1	69	344	15	\N	f	2000-01-01 10:00:00
+4	2024-04-09 07:00:40.824	2024-04-09 07:00:40.824	{"type": "sell", "value": 16000, "assetIn": "ETH", "assetAmountIn": 5}	f	1	69	344	16	\N	f	2000-01-01 11:00:00
 \.
 
 
@@ -762,7 +772,7 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 67, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 69, true);
 
 
 --
@@ -776,7 +786,7 @@ SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, true);
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
+SELECT pg_catalog.setval('public.input_items_id_seq', 16, true);
 
 
 --
@@ -804,14 +814,14 @@ SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 18, true);
+SELECT pg_catalog.setval('public.rules_id_seq', 20, true);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 337, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 344, true);
 
 
 --
@@ -825,7 +835,7 @@ SELECT pg_catalog.setval('public.settings_id_seq', 2, true);
 -- Name: unified_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.unified_items_id_seq', 1, false);
+SELECT pg_catalog.setval('public.unified_items_id_seq', 4, true);
 
 
 --

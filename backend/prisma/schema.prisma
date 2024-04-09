@@ -114,7 +114,8 @@ model Batch{
   state       BatchState
   data        String?
   lastStamp   DateTime?
-  stock       Json            @default("{}")
+  initialStock Json           @default("{}")
+  endStock    Json            @default("{}")
 
   flowPlanId  Int
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
@@ -198,7 +199,7 @@ model OutputItem{
   updated     DateTime        @updatedAt
 
   data        Json
-  stock       Json            @default("{}")
+  stockChange Json            @default("{}")
   processed   Boolean
   skipped     Boolean
 
