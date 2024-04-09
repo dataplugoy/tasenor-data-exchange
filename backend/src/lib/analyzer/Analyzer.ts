@@ -228,7 +228,11 @@ export class Analyzer {
    */
   static configure(config: AnalyzerConfig) {
     Analyzer.config = config
-    // TODO: Validate critical stuff like currency and language.
+    for (const c of ['language', 'currency']) {
+      if (config[c] === undefined) {
+        throw new Error(`A required configuration variable '${c}' is missing in ${JSON.stringify(config)}.`)
+      }
+    }
   }
 
   /**
