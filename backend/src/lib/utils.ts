@@ -4,7 +4,7 @@ import Decimal from 'decimal.js'
 /**
  * Ensure number value is an Decimal instance.
  */
-export function dec(value: string | number | Decimal): Decimal {
+export function dec(value: string | number | Decimal | undefined): Decimal {
   if (value instanceof Decimal) {
     return value
   }

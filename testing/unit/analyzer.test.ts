@@ -9,7 +9,7 @@ describe('Analyzer', () => {
     const stock = {
       'ETH': {'value': 5000, 'amount': 5.5}
     }
-    const item = {
+    const input = {
       'type': 'buy' as InputType,
       'value': 15000,
       'assetIn': 'ETH' as Asset,
@@ -17,7 +17,7 @@ describe('Analyzer', () => {
       'text': 'Buy some ETH'
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, item)
+    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {

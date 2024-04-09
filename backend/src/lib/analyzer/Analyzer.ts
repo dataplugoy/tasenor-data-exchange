@@ -6,7 +6,7 @@ import { AccountCode, Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
 import { Asset, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { toJSON } from '../utils'
+import { dec, toJSON } from '../utils'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -30,6 +30,7 @@ export class Analyzer {
   private stock: Stock
   private balances: Balances
   private clock: Timestring
+  private lastInput: UnifiedInput | null
   private lastResult: Transaction | null
 
   /**
@@ -52,6 +53,7 @@ export class Analyzer {
     this.stock = stock
     this.balances = balances
     this.clock = '0000-00-00T00:00:00Z' as Timestring
+    this.lastInput = null
     this.lastResult = null
   }
 
@@ -62,6 +64,7 @@ export class Analyzer {
    * @returns
    */
   async analyze(time: DateTime, input: UnifiedInput): Promise<Transaction> {
+    this.lastInput = input
     this.lastResult = await Analyzer.handlers[input.type](this, time, input)
     return this.lastResult
   }
@@ -126,6 +129,47 @@ export class Analyzer {
       balances: toJSON(this.balances),
       stock: this.stock.toJSON()
     }
+  }
+
+  /**
+   * Throw a validation error.
+   * @param msg
+   */
+  validateError(msg: string): never {
+    throw new Error(`${msg}: ${JSON.stringify(this.lastInput)}`)
+  }
+
+  /**
+   * Do standard validations for input.
+   */
+  validateBasics(): void {
+    if (!this.lastInput) {
+      throw new Error('Cannot use validation before setting the last input.')
+    }
+    if (this.lastInput.value !== undefined && dec(this.lastInput.value).isNegative()) {
+      this.validateError(`Total value ${this.lastInput.value} cannot be negative.`)
+    }
+  }
+
+  /**
+   * Ensure the field exist in input.
+   * @param field
+   */
+  validateRequirdeField(field: keyof UnifiedInput): void {
+    if (!this.lastInput) {
+      throw new Error('Cannot use validation before setting the last input.')
+    }
+    if (this.lastInput[field] === undefined) {
+      this.validateError(`The field '${field}' is required`)
+    }
+  }
+
+  /**
+   * Ensure all fields exist in input.
+   * @param fields
+   */
+  validateRequired(...fields: Array<keyof UnifiedInput>): void {
+    fields.forEach(field => this.validateRequirdeField(field))
   }
 
   /**
