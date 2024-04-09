@@ -1,4 +1,5 @@
 import { Asset, Timestring } from '@tasenor/common'
+import Decimal from 'decimal.js'
 
 /**
  * Main category of the transaction.
@@ -15,24 +16,28 @@ export type TaxType = 'vat'
  */
 export interface UnifiedInput {
   type: InputType
-  time: Timestring
+
   // In case of buying some asset, these may be filled in.
   assetIn?: Asset // Asset that has been traded in.
-  assetAmountIn?: number // Number of assets received.
-  assetValueIn?: number // Value of the incoming stuff in terms of `valueAsset`.
+  assetAmountIn?: number | Decimal // Number of assets received.
+  assetValueIn?: number | Decimal // Value of the incoming stuff in terms of `valueAsset`.
+
   // In case of selling some asset, these may be filled in.
   assetOut?: Asset // Asset that has been traded out.
-  assetAmountOut?: number // Number of assets given.
-  assetValueOut?: number // Value of the outgoing stuff in terms of `valueAsset`.
+  assetAmountOut?: number | Decimal // Number of assets given.
+  assetValueOut?: number | Decimal // Value of the outgoing stuff in terms of `valueAsset`.
+
   // If fee is involved, these may be filled in.
-  fee?: number // Amount of fee charged.
+  fee?: number | Decimal // Amount of fee charged.
   feeAsset?: Asset // Unit of the fee (defaults to `valueAsset`).
+
   // If tax must be calculated, these are filled in.
   taxType?: TaxType // Type of tax involved.
   taxAmount?: number // Amount of tax.
   taxAsset?: Asset // Unit of the tax (defaults to `valueAsset`).
   taxPercentage?: number // Alternatively a % to be charged from the total.
+
   // Total value of the transaction in terms of an asset (usually default currency) if known.
-  value?: number // Total value of the underlying transaction.
+  value?: number | Decimal // Total value of the underlying transaction.
   valueAsset?: Asset // Unit of the total (defaults to the default currency).
 }

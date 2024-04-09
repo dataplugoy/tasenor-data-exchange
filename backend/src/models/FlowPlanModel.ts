@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
-import { error, log } from '@tasenor/common'
+import { Timestring, error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'
@@ -11,6 +11,9 @@ import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { RuleModel } from './RuleModel'
 import { UnifiedItemModel } from './UnifiedItemModel'
+import { Stock, StockData } from '../lib/Stock'
+import { Analyzer } from '../lib/analyzer/Analyzer'
+import { DateTime } from 'luxon'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -193,12 +196,17 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async analyzeItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const unified = await UnifiedItemModel.findForBatch(batch, false)
+    const unifieds = await UnifiedItemModel.findForBatch(batch, false)
 
     // Unified items must be processed in order and batch must stop if one fails.
-    console.dir(unified, { depth: null })
+    const stock = new Stock(batch.data.initialStock as StockData)
+    const analyzer = new Analyzer(stock)
+    for (const unified of unifieds) {
+      await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+      // TODO: apply stock change to batch. Mark processed.
+    }
 
-    // TODO: Add initialStock and endStock to batch.
+
     // TODO: Create separate analyzer lib. Perhaps one front function and sub-functions per unified item type.
     // TODO: Add unit test for every case handled in analyzer (perhaps provide quick JSON API for it).
   }

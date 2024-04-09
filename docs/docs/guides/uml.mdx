@@ -121,9 +121,11 @@ classDiagram
       +number: integer
       +input: InputItem
       +data: json
+      +stockChange: json
       +error: String
       +skipped: boolean
       +processed: boolean
+      +delivered: boolean
     }
     Batch "1" *-- "0..*" OutputItem
     UnifiedItem "1" o-- "0..1" OutputItem

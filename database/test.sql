@@ -141,7 +141,10 @@ CREATE TABLE public.batches (
     state public."BatchState" NOT NULL,
     "flowPlanId" integer NOT NULL,
     completed timestamp(3) without time zone,
-    data text
+    data text,
+    "endStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "initialStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "lastStamp" timestamp(3) without time zone
 );
 
 
@@ -180,7 +183,8 @@ CREATE TABLE public.flow_plans (
     updated timestamp(3) without time zone NOT NULL,
     "projectId" integer NOT NULL,
     "lastStamp" timestamp(3) without time zone,
-    state jsonb DEFAULT '{}'::jsonb NOT NULL
+    state jsonb DEFAULT '{}'::jsonb NOT NULL,
+    stock jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -303,7 +307,9 @@ CREATE TABLE public.output_items (
     "unifiedId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL
+    "runId" integer NOT NULL,
+    delivered boolean NOT NULL,
+    "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -506,7 +512,8 @@ CREATE TABLE public.unified_items (
     "runId" integer NOT NULL,
     "inputId" integer NOT NULL,
     error text,
-    processed boolean NOT NULL
+    processed boolean NOT NULL,
+    "time" timestamp(3) without time zone NOT NULL
 );
 
 
@@ -659,7 +666,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data) FROM stdin;
+COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data, "endStock", "initialStock", "lastStamp") FROM stdin;
 \.
 
 
@@ -667,9 +674,8 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state) FROM stdin;
-2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}
-1	Test Files	2024-03-30 14:39:53.161	2024-04-08 15:13:52.557	1	\N	{}
+COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state, stock) FROM stdin;
+1	Unit Testing	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	1	\N	{}	{}
 \.
 
 
@@ -694,7 +700,7 @@ COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) F
 -- Data for Name: output_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.output_items (id, created, updated, data, processed, skipped, error, "unifiedId", "flowPlanId", "batchId", "runId") FROM stdin;
+COPY public.output_items (id, created, updated, data, processed, skipped, error, "unifiedId", "flowPlanId", "batchId", "runId", delivered, "stockChange") FROM stdin;
 \.
 
 
@@ -737,7 +743,7 @@ COPY public.settings (id, type, url, certificate, "user", password, options, api
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "batchId", "runId", "inputId", error, processed) FROM stdin;
+COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "batchId", "runId", "inputId", error, processed, "time") FROM stdin;
 \.
 
 

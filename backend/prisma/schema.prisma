@@ -202,6 +202,7 @@ model OutputItem{
   stockChange Json            @default("{}")
   processed   Boolean
   skipped     Boolean
+  delivered   Boolean
 
   error       String?
 
