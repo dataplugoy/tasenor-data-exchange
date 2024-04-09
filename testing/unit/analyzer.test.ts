@@ -1,7 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { InputType } from '../../backend/src/types/UnifiedInput'
 import { Asset, Timestring } from '@tasenor/common'
+
+beforeAll(() => {
+  Analyzer.configure({
+    currency: 'EUR'
+  })
+})
 
 describe('Analyzer', () => {
   it('buy', async () => {

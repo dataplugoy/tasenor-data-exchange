@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { buy } from './buy'
 import { AccountCode, Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
-import { Asset, Timestring } from '@tasenor/common'
+import { Asset, Currency, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
 
@@ -19,14 +19,23 @@ function notImplemented(type): AnalyzeHandler {
 }
 
 /**
- * Running balances of accounts.
+ * Running balances for accounts.
  */
 export type Balances = Partial<Record<AccountCode, Decimal>>
+
+/**
+ * Configuration for analyzer.
+ */
+export type AnalyzerConfig = {
+  currency: Currency
+}
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
  */
 export class Analyzer {
+  private static  config: AnalyzerConfig | null
+
   private stock: Stock
   private balances: Balances
   private clock: Timestring
@@ -55,6 +64,22 @@ export class Analyzer {
     this.clock = '0000-00-00T00:00:00Z' as Timestring
     this.lastInput = null
     this.lastResult = null
+  }
+
+  get currency(): Currency {
+    return this.getConfig('currency') as Currency
+  }
+
+  /**
+   * Check that configuration is set and throw error if not.
+   * @param variable
+   * @returns Value from configuration.
+   */
+  getConfig<T>(variable: keyof AnalyzerConfig): T {
+    if (!Analyzer.config) {
+      throw new Error(`Cannot get '${variable}' from analyzer, since configuration not set.`)
+    }
+    return Analyzer.config[variable] as T
   }
 
   /**
@@ -170,6 +195,13 @@ export class Analyzer {
    */
   validateRequired(...fields: Array<keyof UnifiedInput>): void {
     fields.forEach(field => this.validateRequirdeField(field))
+  }
+
+  /**
+   * Set configuration for analyzers.
+   */
+  static configure(config: AnalyzerConfig) {
+    Analyzer.config = config
   }
 
   /**

@@ -18,8 +18,6 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
   // TODO: Resolve asset values at time stamp.
   // TODO: Handle rates given in extras.
   const rates = { ETH: 3351.86 }
-  // TODO: Need to pass currency.
-  const currency = 'EUR'
   // TODO: Handle fee.
   // TODO: Handle various cases of missing value.
 
@@ -40,7 +38,7 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `CURRENCY_${currency}` as AccountCode,
+        account: `CURRENCY_${analyzer.currency}` as AccountCode,
         amount: dec(value).negated(),
         text,
         extras: {},
