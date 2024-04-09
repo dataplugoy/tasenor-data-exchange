@@ -5,7 +5,7 @@ import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'
-import { InputSource } from '../engine/source/InputSource'
+import { InputSourceDriver } from '../engine/source/InputSourceDriver'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -107,7 +107,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver.
    */
-  private async getDriver(options: InputOptions): Promise<InputSource> {
+  private async getDriver(options: InputOptions): Promise<InputSourceDriver> {
     const source = await this.getSource()
     const driver = source.getDriver()
 

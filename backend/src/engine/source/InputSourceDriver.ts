@@ -19,12 +19,10 @@ import { JsonValue } from '@prisma/client/runtime/library'
 import { RunModel } from '../../models/RunModel'
 import { DateTime } from 'luxon'
 
-// TODO: All classes should be renamed as *Driver.
-
 /**
  * Base class for different input sources supported.
  */
-export class InputSource {
+export class InputSourceDriver {
 
   type: prisma.InputSourceType
   settings: InputSettings

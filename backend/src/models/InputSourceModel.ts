@@ -2,9 +2,9 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
 import { Constructor } from '@tasenor/common'
-import { InputSource } from '../engine/source/InputSource'
-import { TestMockInput } from '../engine/source/TestMockInput'
-import { EnableBankingInput } from '../engine/source/EnableBankingInput'
+import { InputSourceDriver } from '../engine/source/InputSourceDriver'
+import { TestMockInputDriver } from '../engine/source/TestMockInput'
+import { EnableBankingInputDriver } from '../engine/source/EnableBankingInputDriver'
 
 export class InputSourceModel extends BaseModel<prisma.InputSource> {
 
@@ -14,9 +14,9 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
   /**
    * Drivers implemented.
    */
-  private static drivers: Record<prisma.InputSourceType, Constructor<InputSource>> = {
-    TEST_MOCK_INPUT: TestMockInput,
-    ENABLE_BANKING: EnableBankingInput,
+  private static drivers: Record<prisma.InputSourceType, Constructor<InputSourceDriver>> = {
+    TEST_MOCK_INPUT: TestMockInputDriver,
+    ENABLE_BANKING: EnableBankingInputDriver,
   }
 
   get type(): prisma.InputSourceType {
@@ -26,7 +26,7 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
   /**
    * Get the driver for this input source.
    */
-  getDriver(): InputSource {
+  getDriver(): InputSourceDriver {
     const Driver = InputSourceModel.drivers[this.type]
     if (!Driver) {
       throw new Error(`Cannot find driver for input source type '${this.type}'.`)
