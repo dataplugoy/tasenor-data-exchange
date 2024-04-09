@@ -666,7 +666,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data, "lastStamp", "endStock", "initialStock") FROM stdin;
-69	2024-04-09 07:00:09.986	2024-04-09 07:00:40.83	1	ITEMS_UNIFIED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n	\N	{}	{"ETH": {"value": 5000, "amount": 5.5}}
+69	2024-04-09 07:00:09.986	2024-04-09 08:27:48.379	1	ITEMS_UNIFIED	1	\N	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n	\N	{}	{"ETH": {"value": "5000", "amount": "5.5"}}
 \.
 
 
@@ -676,7 +676,7 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state, stock) FROM stdin;
 2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}	{}
-1	Test	2024-03-30 14:39:53.161	2024-04-09 07:00:10.019	1	\N	{}	{"ETH": {"value": 5000, "amount": 5.5}}
+1	Test	2024-03-30 14:39:53.161	2024-04-09 08:26:59.681	1	\N	{}	{"ETH": {"value": "5000", "amount": "5.5"}}
 \.
 
 
@@ -736,6 +736,7 @@ COPY public.runs (id, created, updated, "initialState", "finalState", "batchId",
 342	2024-04-09 07:00:10.001	2024-04-09 07:00:10.031	BATCH_CREATED	DATA_FETCHED	69	\N
 343	2024-04-09 07:00:29.722	2024-04-09 07:00:29.765	DATA_FETCHED	DATA_PARSED	69	\N
 344	2024-04-09 07:00:40.669	2024-04-09 07:00:40.834	DATA_PARSED	ITEMS_UNIFIED	69	\N
+345	2024-04-09 08:27:07.562	2024-04-09 08:27:07.593	ITEMS_UNIFIED	ITEMS_UNIFIED	69	Error: Handler function not implemented for type "sell".\n    at Object.sell (/home/wigy/project/tasenor-data-exchange/backend/src/lib/analyzer/Analyzer.ts:12:11)\n    at Analyzer.analyze (/home/wigy/project/tasenor-data-exchange/backend/src/lib/analyzer/Analyzer.ts:35:39)\n    at FlowPlanModel.analyzeItems (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:205:22)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:65:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1
 \.
 
 
@@ -821,7 +822,7 @@ SELECT pg_catalog.setval('public.rules_id_seq', 20, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 344, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 345, true);
 
 
 --
