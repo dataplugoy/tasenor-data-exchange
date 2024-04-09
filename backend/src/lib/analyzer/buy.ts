@@ -2,8 +2,9 @@ import { DateTime } from 'luxon'
 import { UnifiedInput } from '../../types/UnifiedInput'
 import { AccountCode, Transaction } from '../../types/Transaction'
 import { Analyzer } from './Analyzer'
-import { dec } from '../utils'
+import { chg, dec } from '../utils'
 import { Timestring } from '@tasenor/common'
+import { t } from '../i18n/t'
 
 /**
  * Buy an asset and add it to the stock.
@@ -28,11 +29,7 @@ export async function buy(analyzer: Analyzer, time: DateTime, input: UnifiedInpu
   }
   analyzer.validateBasics()
   analyzer.validateRequired('assetIn', 'assetAmountIn')
-  // TODO: Generate localized text if no text to be found.
-  const text = input.text
-  if (!text) {
-    throw new Error(`Text generation not yet implemented: ${JSON.stringify(input)}`)
-  }
+  const text = analyzer.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
 
   return {
     time: time.toUTC().toISO() as Timestring,

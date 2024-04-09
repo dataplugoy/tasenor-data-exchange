@@ -42,3 +42,12 @@ export function toJSON(value: unknown): JsonValue {
   }
   throw new Error(`Invalid type ${type}.`)
 }
+
+/**
+ * Generate a string with + or - sign prefix for numeric value.
+ * @param value
+ */
+export function chg(value: string | number | Decimal | undefined): string {
+  const num = dec(value)
+  return num.isNegative() ? num.toString() : '+' + num.toString()
+}

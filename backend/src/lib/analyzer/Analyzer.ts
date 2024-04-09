@@ -4,9 +4,10 @@ import { DateTime } from 'luxon'
 import { buy } from './buy'
 import { AccountCode, Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
-import { Asset, Currency, Timestring } from '@tasenor/common'
+import { Asset, Currency, Language, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
+import { changeLanguage, initI18N, t } from '../i18n/t'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -28,6 +29,7 @@ export type Balances = Partial<Record<AccountCode, Decimal>>
  */
 export type AnalyzerConfig = {
   currency: Currency
+  language: Language
 }
 
 /**
@@ -67,7 +69,10 @@ export class Analyzer {
   }
 
   get currency(): Currency {
-    return this.getConfig('currency') as Currency
+    return Analyzer.getConfig('currency') as Currency
+  }
+  get language(): Language {
+    return Analyzer.getConfig('language') as Language
   }
 
   /**
@@ -75,7 +80,7 @@ export class Analyzer {
    * @param variable
    * @returns Value from configuration.
    */
-  getConfig<T>(variable: keyof AnalyzerConfig): T {
+  static getConfig<T>(variable: keyof AnalyzerConfig): T {
     if (!Analyzer.config) {
       throw new Error(`Cannot get '${variable}' from analyzer, since configuration not set.`)
     }
@@ -89,6 +94,8 @@ export class Analyzer {
    * @returns
    */
   async analyze(time: DateTime, input: UnifiedInput): Promise<Transaction> {
+    await initI18N()
+    await changeLanguage(this.language)
     this.lastInput = input
     this.lastResult = await Analyzer.handlers[input.type](this, time, input)
     return this.lastResult
@@ -198,10 +205,30 @@ export class Analyzer {
   }
 
   /**
+   * Use either explicit text or translate the given text.
+   * @param text
+   */
+  validateText(text: string, values: Record<string, string | undefined> = {}): string {
+    if (!this.lastInput) {
+      throw new Error('Cannot use validation before setting the last input.')
+    }
+    if (this.lastInput.text !== undefined) {
+      return this.lastInput.text
+    }
+    Object.keys(values).forEach(k => {
+      if (values[k] === undefined) {
+        this.validateError(`A value for key '${k}' is undefined.`)
+      }
+    })
+    return t(text, values as Record<string, string>)
+  }
+
+  /**
    * Set configuration for analyzers.
    */
   static configure(config: AnalyzerConfig) {
     Analyzer.config = config
+    // TODO: Validate critical stuff like currency and language.
   }
 
   /**
