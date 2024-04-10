@@ -46,4 +46,11 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
     }
     throw new Error(`Listing processed output items is not implemented.`)
   }
+
+  /**
+   * Retrieve all output items.
+   */
+  static getAll(filter = {}): Promise<OutputItemModel[]> {
+    return OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>(filter, [{ created: 'asc' }])
+  }
 }

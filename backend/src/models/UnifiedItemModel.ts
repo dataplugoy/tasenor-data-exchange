@@ -58,4 +58,11 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
     const items = await this.findMany<prisma.UnifiedItem, UnifiedItemModel>({ batchId: batch.id, processed }, [{ time: 'asc' }])
     return items
   }
+
+  /**
+   * Retrieve all unified items.
+   */
+  static getAll(filter = {}): Promise<UnifiedItemModel[]> {
+    return UnifiedItemModel.findMany<prisma.UnifiedItem, UnifiedItemModel>(filter, [{ created: 'asc' }])
+  }
 }

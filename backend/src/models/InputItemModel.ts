@@ -70,4 +70,11 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
     const items = await this.findMany<prisma.InputItem, InputItemModel>({ batchId: batch.id, processed })
     return items
   }
+
+  /**
+   * Retrieve all input items.
+   */
+  static getAll(filter = {}): Promise<InputItemModel[]> {
+    return InputItemModel.findMany<prisma.InputItem, InputItemModel>(filter, [{ created: 'asc' }])
+  }
 }
