@@ -14,7 +14,6 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
     return this.data.type
   }
 
-  // TODO: This should be moved to Driver class.
   /**
    * Get the driver for this input source.
    */

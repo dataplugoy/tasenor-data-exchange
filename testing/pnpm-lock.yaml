@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@tasenor/common':
-    specifier: ^1.13.1
-    version: 1.13.1
+    specifier: ^1.13.4
+    version: 1.13.4
 
 devDependencies:
   '@tasenor/config':
@@ -420,8 +420,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@tasenor/common@1.13.1:
-    resolution: {integrity: sha512-J7jK/R2FBqTDXCgTT5dqXyk8W3cxsthG4GlXSIblqjjSd6apPosMSXEvRHsXqvWUQIkqxwLDdkwFpQgqsCDA7w==}
+  /@tasenor/common@1.13.4:
+    resolution: {integrity: sha512-gvQtgMdrFKNWMGBFd7juEQ3OF9DceVPA4PxbirYqf2CBz75OBT7TKBNq9AVai1QBMmlZWkyGlAlCZfWSbPi+Tw==}
     dependencies:
       axios: 1.6.8
       buffer: 6.0.3

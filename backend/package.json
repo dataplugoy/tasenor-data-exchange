@@ -14,7 +14,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@prisma/client": "^5.11.0",
-    "@tasenor/common": "^1.13.0",
+    "@tasenor/common": "^1.13.4",
     "@tasenor/config": "^1.13.0",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.6",
