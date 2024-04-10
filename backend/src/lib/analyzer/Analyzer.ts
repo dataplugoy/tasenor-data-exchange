@@ -1,5 +1,5 @@
 import { UnifiedInput } from '../../types/UnifiedInput'
-import { Stock, InitialStockData } from '../Stock'
+import { Stock, InitialStockData, StockData } from '../Stock'
 import { DateTime } from 'luxon'
 import { buy } from './handlers/buy'
 import { Transaction } from '../../types/Transaction'
@@ -148,6 +148,14 @@ export class Analyzer {
       line.extras.assetChange &&
       this.addAsset(line.account, line.extras.asset, line.extras.assetChange, line.amount)
     )
+  }
+
+  /**
+   * Calculate stock change information for transaction.
+   * @param tx
+   */
+  getStockChange(tx: Transaction): Record<AccountCode, StockData> {
+    return this.stock.getStockChange(tx)
   }
 
   /**

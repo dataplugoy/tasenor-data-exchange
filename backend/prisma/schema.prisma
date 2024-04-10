@@ -108,7 +108,7 @@ model OutputDestination {
   flowPlanId  Int             @unique
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])
 
-  @@map(name: "outpu_destinations")
+  @@map(name: "output_destinations")
 }
 
 enum BatchState {

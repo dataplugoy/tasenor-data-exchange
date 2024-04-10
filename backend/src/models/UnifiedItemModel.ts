@@ -2,6 +2,7 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
 import { UnifiedInput } from '../types/UnifiedInput'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
 
@@ -29,6 +30,14 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    */
   async success(): Promise<void> {
     await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { processed: true })
+  }
+
+  /**
+   * Update stock chane for this item.
+   * @param stockChange
+   */
+  async setStockChange(stockChange: JsonValue): Promise<void> {
+    await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { stockChange })
   }
 
   /**

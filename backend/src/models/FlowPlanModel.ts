@@ -19,6 +19,7 @@ import { OutputItemModel } from './OutputItemModel'
 import { toJSON } from '../lib/utils'
 import { Transaction } from '../types/Transaction'
 import { OutputDestinationModel } from './OutputDestinationModel'
+import { AccountCode } from '../types/AccountCode'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -210,8 +211,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getInputDriver(options)
-
     const unifieds = await UnifiedItemModel.findForBatch(batch)
     const project = await this.getProject()
     Analyzer.configure(project.settings)
@@ -219,14 +218,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     // Unified items must be processed in order and batch must stop if one fails.
     const stock = new Stock(batch.data.initialStock as StockData)
     const analyzer = new Analyzer(stock)
+
     for (const unified of unifieds) {
 
-      //console.log(unified)
-      // Skip processed.
+      // Skip processed, but calculate current stock values.
       if (unified.data.processed) {
-        console.log('APPLY STOCK!')
-        // TODO: Handle stock changes for already processed unified items.
-        //       Add change to unified item and remove from output.
+        stock.apply(unified.data.stockChange as Record<AccountCode, StockData>)
         continue
       }
 
@@ -239,6 +236,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         await unified.fail(err)
         throw err
       }
+
+      // Update stock change.
+      await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
 
       // Save success.
       await OutputItemModel.save({
@@ -254,7 +254,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await unified.success()
     }
 
-    // return 'OK'
+    return 'OK'
   }
 
   /**

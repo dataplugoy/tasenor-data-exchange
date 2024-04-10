@@ -3,6 +3,7 @@ import Decimal from 'decimal.js'
 import { toJSON } from './utils'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { AccountCode } from '../types/AccountCode'
+import { Transaction } from '../types/Transaction'
 
 export type AssetRecord = {
   amount: Decimal
@@ -70,6 +71,43 @@ export class Stock {
   getValue(account: AccountCode, asset: Asset): Decimal {
     const record = this.getAsset(account, asset)
     return record.value.dividedBy(record.amount)
+  }
+
+  /**
+   * Calculate stock change information for a transaction.
+   * @param tx
+   */
+  getStockChange(tx: Transaction): Record<AccountCode, StockData> {
+    const out: Record<AccountCode, StockData> = {}
+    tx.lines.forEach(line => {
+      if (line.extras.assetChange && line.extras.asset) {
+        if (!(line.account in out)) {
+          out[line.account] = {}
+        }
+        if (!(line.extras.asset in out[line.account])) {
+          out[line.account][line.extras.asset] = {
+            amount: new Decimal(0),
+            value: new Decimal(0),
+          }
+        }
+        const record: AssetRecord = out[line.account][line.extras.asset] as AssetRecord
+        record.amount = record.amount.plus(line.extras.assetChange)
+        record.value = record.value.plus(line.amount)
+      }
+    })
+    return out
+  }
+
+  /**
+   * Add changes to the current stock.
+   * @param changes
+   */
+  apply(changes: Record<AccountCode, StockData>) {
+    Object.keys(changes).forEach(account => {
+      Object.keys(changes[account]).forEach(ticker => {
+        this.addAsset(account as AccountCode, ticker as Asset, changes[account][ticker].amount, changes[account][ticker].value)
+      })
+    })
   }
 
   toJSON(): JsonValue {
