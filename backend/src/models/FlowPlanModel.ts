@@ -5,7 +5,7 @@ import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { InputOptions } from '../types/InputOptions'
 import { FlowState } from '../types/FlowState'
-import { InputSourceDriver } from '../engine/driver/Driver'
+import { Driver, Driver } from '../engine/driver/Driver'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -18,6 +18,7 @@ import { ProjectModel } from './ProjectModel'
 import { OutputItemModel } from './OutputItemModel'
 import { toJSON } from '../lib/utils'
 import { Transaction } from '../types/Transaction'
+import { OutputDestinationModel } from './OutputDestinationModel'
 
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
@@ -107,7 +108,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver for receiving data.
    */
-  private async getInputDriver(options: InputOptions): Promise<InputSourceDriver> {
+  private async getInputDriver(options: InputOptions): Promise<Driver> {
     const source = await this.getSource()
     const driver = source.getDriver()
 
@@ -119,10 +120,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver for delivering data.
    */
-  private async getOutputDriver(options: InputOptions): Promise<OutputDestinationDriver> {
+  private async getOutputDriver(options: InputOptions): Promise<Driver> {
     // TODO: Rename InputOptions to RuntimeOptions.
     const destination = await this.getDestination()
+    const driver = destination.getDriver()
 
+    await driver.initialize(this.state, options)
+
+    return driver
   }
 
   /**
@@ -261,6 +266,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async deliverOutput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const output = await OutputItemModel.findForBatch(batch, false)
+    const driver = await this.getOutputDriver(options)
+console.log(driver)
     for (const item of output) {
 
     }

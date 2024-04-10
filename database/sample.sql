@@ -757,6 +757,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 --
 
 COPY public.outpu_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
+1	2024-04-10 07:21:59.931	2024-04-10 07:23:01.083	TEST_MOCK	{"url": "file:///testing/data/output.csv"}	1
 \.
 
 
@@ -802,6 +803,11 @@ COPY public.runs (id, created, updated, "initialState", "finalState", error, "ba
 5	2024-04-10 07:09:10.334	2024-04-10 07:09:10.416	ITEMS_UNIFIED	OUTPUT_CREATED	\N	1
 6	2024-04-10 07:09:13.745	2024-04-10 07:09:13.775	OUTPUT_CREATED	OUTPUT_CREATED	Error: Execution of Run #6 for state 'OUTPUT_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:75:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
 7	2024-04-10 07:09:19.367	2024-04-10 07:09:19.395	OUTPUT_CREATED	OUTPUT_CREATED	Error: Execution of Run #7 for state 'OUTPUT_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:75:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
+8	2024-04-10 07:16:42.511	2024-04-10 07:16:42.537	OUTPUT_CREATED	OUTPUT_CREATED	Error: Execution of Run #8 for state 'OUTPUT_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:75:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
+9	2024-04-10 07:17:01.214	2024-04-10 07:17:01.241	OUTPUT_CREATED	OUTPUT_CREATED	Error: Execution of Run #9 for state 'OUTPUT_CREATED' did not return OK (perhaps incomplete implementation).\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:75:15)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
+10	2024-04-10 07:19:01.588	2024-04-10 07:19:01.608	OUTPUT_CREATED	OUTPUT_CREATED	ReferenceError: OutputDestinationModel is not defined\n    at FlowPlanModel.getDestination (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:286:18)\n    at FlowPlanModel.getOutputDriver (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:124:36)\n    at FlowPlanModel.deliverOutput (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:264:31)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:70:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
+11	2024-04-10 07:19:59.948	2024-04-10 07:19:59.969	OUTPUT_CREATED	OUTPUT_CREATED	ReferenceError: OutputDestinationModel is not defined\n    at FlowPlanModel.getDestination (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:286:18)\n    at FlowPlanModel.getOutputDriver (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:124:36)\n    at FlowPlanModel.deliverOutput (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:264:31)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:70:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
+12	2024-04-10 07:21:10.04	2024-04-10 07:21:10.071	OUTPUT_CREATED	OUTPUT_CREATED	Error: Cannot find output destination for 'FlowPlan #1'.\n    at FlowPlanModel.getDestination (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:289:13)\n    at FlowPlanModel.getOutputDriver (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:125:25)\n    at FlowPlanModel.deliverOutput (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:265:20)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:71:22)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	1
 \.
 
 
@@ -866,7 +872,7 @@ SELECT pg_catalog.setval('public.input_sources_id_seq', 1, false);
 -- Name: outpu_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.outpu_destinations_id_seq', 1, false);
+SELECT pg_catalog.setval('public.outpu_destinations_id_seq', 1, true);
 
 
 --
@@ -894,7 +900,7 @@ SELECT pg_catalog.setval('public.rules_id_seq', 2, true);
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 7, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 12, true);
 
 
 --

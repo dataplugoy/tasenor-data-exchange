@@ -8,7 +8,7 @@ import { Driver } from '../engine/driver/Driver'
 
 export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> {
 
-  static table = 'OutputDestination'
+  static table = 'outputDestination'
   static construct = OutputDestinationModel
 
   /**
