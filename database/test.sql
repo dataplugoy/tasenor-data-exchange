@@ -768,8 +768,7 @@ COPY public.output_items (id, created, updated, data, skipped, delivered, error,
 --
 
 COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin;
-1	2024-03-30 14:39:17.243	2024-03-30 14:39:03.459	Testing	{}	1
-2	2024-04-05 06:52:03.842	2024-04-05 06:51:51.04	Empty	{}	1
+1	2024-03-30 14:39:17.243	2024-04-09 17:51:20.083	Testing	{"currency": "EUR", "language": "fi"}	1
 \.
 
 
@@ -819,7 +818,7 @@ COPY public.users (id, created, updated, email, password, name, address, zip, ci
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 4, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 5, true);
 
 
 --
@@ -833,7 +832,7 @@ SELECT pg_catalog.setval('public.flow_plans_id_seq', 1, false);
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 6, true);
+SELECT pg_catalog.setval('public.input_items_id_seq', 8, true);
 
 
 --
@@ -868,14 +867,14 @@ SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 6, true);
+SELECT pg_catalog.setval('public.rules_id_seq', 8, true);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 41, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 45, true);
 
 
 --
@@ -889,7 +888,7 @@ SELECT pg_catalog.setval('public.settings_id_seq', 1, false);
 -- Name: unified_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.unified_items_id_seq', 4, true);
+SELECT pg_catalog.setval('public.unified_items_id_seq', 6, true);
 
 
 --

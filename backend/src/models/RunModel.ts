@@ -39,6 +39,6 @@ export class RunModel extends BaseModel<prisma.Run> {
    * Retrieve all runs.
    */
   static getAll(filter = {}): Promise<RunModel[]> {
-    return RunModel.findMany<prisma.Run, RunModel>(filter)
+    return RunModel.findMany<prisma.Run, RunModel>(filter, [{ created: 'asc' }])
   }
 }

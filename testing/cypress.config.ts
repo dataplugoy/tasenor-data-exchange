@@ -2,7 +2,6 @@
 import { defineConfig } from 'cypress'
 import { cwd } from 'process'
 
-console.log(cwd())
 export default defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_URL,

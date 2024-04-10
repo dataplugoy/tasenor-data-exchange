@@ -2,9 +2,8 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 1	test@localhost	Test User	Road 66	12345-FI	Tampere	Finland	2024-03-30 14:38:56.726	2024-04-05 10:46:46.293	{"projectId": 1}	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	\N
 \.
 
-COPY public.projects (id, name, created, updated, "userId") FROM stdin;
-1	Testing	2024-03-30 14:39:17.243	2024-03-30 14:39:03.459	1
-2	Empty	2024-04-05 06:52:03.842	2024-04-05 06:51:51.04	1
+COPY public.projects (id, name, created, updated, "userId", settings) FROM stdin;
+1	Testing	2024-03-30 14:39:17.243	2024-04-09 17:51:20.083	1	{"currency": "EUR", "language": "fi"}
 \.
 
 COPY public.settings (id, type, url, certificate, "user", password, options, apikey) FROM stdin;

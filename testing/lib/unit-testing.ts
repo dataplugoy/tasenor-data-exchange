@@ -7,6 +7,7 @@ import path from 'path'
  * Set up the dtabase for testing with DB models.
  */
 export async function beforeModelTesting(): Promise<void> {
+
   const { spawnSync } = require( 'child_process' )
   const databaseDir = path.join(cwd(), '..', 'database')
   const run = spawnSync('pnpm', [ '-C', databaseDir, 'load-test' ])
