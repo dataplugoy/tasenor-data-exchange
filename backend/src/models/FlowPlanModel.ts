@@ -117,7 +117,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * Create and initialize driver for delivering data.
    */
   private async getOutputDriver(options: RuntimeOptions): Promise<Driver> {
-    // TODO: Rename RuntimeOptions to RuntimeOptions.
     const destination = await this.getDestination()
     const driver = destination.getDriver()
 

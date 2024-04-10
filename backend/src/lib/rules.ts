@@ -1,7 +1,7 @@
-import { RuleVariables, RulesEngine, error } from '@tasenor/common'
+import { RuleVariables, RulesEngine, debug, error } from '@tasenor/common'
 import { RuleModel } from '../models/RuleModel'
 
-// TODO: Debug mode to print every step.
+const DEBUG_RULES = true
 
 /**
  * Get a set of variables and apply the first matching rule and get the result.
@@ -16,7 +16,10 @@ export function applyRules(variables: Record<string, unknown>, rules: Record<str
 
   function evaluate(expr): unknown {
     try {
-      return engine.eval(expr)
+      debug('RULES', `Evaluating expr: ${expr}`)
+      const out = engine.eval(expr)
+      debug('RULES', '=>', out)
+      return out
     } catch (err) {
       error(`Evaluation of expression ${JSON.stringify(expr)} failed: ${err}`)
       throw err
