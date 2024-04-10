@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
 import { UnifiedInput } from '../../../types/UnifiedInput'
-import { AccountCode, Transaction } from '../../../types/Transaction'
+import { Transaction } from '../../../types/Transaction'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
 import { Asset, Timestring } from '@tasenor/common'
-import { TransactionLine } from '../../../types/Transaction'
+import { AccountCode } from '../../../types/AccountCode'
+import { TransactionLine } from '../../../types/TransactionLine'
 
 /**
  * Sell an asset and remove it from the stock.
@@ -24,7 +25,8 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedInput):
   this.validateRequired('assetOut', 'assetAmountOut')
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
   const value = await this.validateValue(assetOut, assetAmountOut)
-  const oldValue = this.stock.getValue(assetOut as Asset).mul(assetAmountOut as number)
+  const account = `ASSET_${assetOut}` as AccountCode
+  const oldValue = this.stock.getValue(account, assetOut as Asset).mul(assetAmountOut as number)
 
   const lines: TransactionLine[] = [
     {

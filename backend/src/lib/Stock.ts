@@ -2,6 +2,7 @@ import { Asset } from '@tasenor/common'
 import Decimal from 'decimal.js'
 import { toJSON } from './utils'
 import { JsonValue } from '@prisma/client/runtime/library'
+import { AccountCode } from '../types/AccountCode'
 
 export type AssetRecord = {
   amount: Decimal
@@ -10,22 +11,25 @@ export type AssetRecord = {
 
 export type StockData = Partial<Record<Asset, AssetRecord>>
 
-export type StockChangeData = Partial<Record<Asset, {
+export type InitialStockData = Record<AccountCode, Record<Asset, {
   amount: number | string | Decimal
   value: number | string | Decimal
 }>>
 
 export class Stock {
 
-  private stock: StockData
+  private stock: Record<AccountCode, StockData>
 
-  constructor(stock: StockChangeData) {
+  constructor(init: InitialStockData) {
     this.stock = {}
-    Object.keys(stock).forEach(ticker => {
-      this.stock[ticker] = {
-        amount: new Decimal(stock[ticker].amount),
-        value: new Decimal(stock[ticker].value),
-      }
+    Object.keys(init).forEach(account => {
+      this.stock[account] = {}
+      Object.keys(init[account]).forEach(ticker => {
+        this.stock[account][ticker] = {
+          amount: new Decimal(init[account][ticker].amount),
+          value: new Decimal(init[account][ticker].value),
+        }
+      })
     })
   }
 
@@ -33,14 +37,17 @@ export class Stock {
    * Get the record for an asset. Create if needed.
    * @param asset
    */
-  getAsset(asset: Asset): AssetRecord {
-    if (!(asset in this.stock)) {
-      this.stock[asset] = {
+  getAsset(account: AccountCode, asset: Asset): AssetRecord {
+    if (!(account in this.stock)) {
+      this.stock[account] = {}
+    }
+    if (!(asset in this.stock[account])) {
+      this.stock[account][asset] = {
         amount: new Decimal(0),
         value: new Decimal(0),
       }
     }
-    return this.stock[asset] as AssetRecord
+    return this.stock[account][asset] as AssetRecord
   }
 
   /**
@@ -49,8 +56,8 @@ export class Stock {
    * @param amount
    * @param value
    */
-  addAsset(asset: Asset, amount: Decimal, value: Decimal): void {
-    const record = this.getAsset(asset)
+  addAsset(account: AccountCode, asset: Asset, amount: Decimal, value: Decimal): void {
+    const record = this.getAsset(account, asset)
 
     record.amount = record.amount.plus(amount)
     record.value = record.value.plus(value)
@@ -60,8 +67,8 @@ export class Stock {
    * Get the current value per unit for an asset.
    * @param asset
    */
-  getValue(asset: Asset): Decimal {
-    const record = this.getAsset(asset)
+  getValue(account: AccountCode, asset: Asset): Decimal {
+    const record = this.getAsset(account, asset)
     return record.value.dividedBy(record.amount)
   }
 

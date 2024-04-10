@@ -12,7 +12,7 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ETH': {'value': 5000, 'amount': 5.5}
+      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
     }
     const input = {
       'type': 'buy' as InputType,
@@ -43,7 +43,7 @@ describe('Analyzer', () => {
           ]
         },
         balances: { CURRENCY_EUR: -15000, ASSET_ETH: 15000 },
-        stock: { ETH: { amount: 10.5, value: 20000 } }
+        stock: { ASSET_ETH: { ETH: { amount: 10.5, value: 20000 } } }
       }
     )
   })
@@ -57,7 +57,7 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ETH': {'value': 5000, 'amount': 5.5}
+      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
     }
     const input = {
       'type': 'buy' as InputType,
@@ -87,7 +87,7 @@ describe('Analyzer', () => {
           ]
         },
         balances: { CURRENCY_EUR: -15000, ASSET_ETH: 15000 },
-        stock: { ETH: { amount: 10.5, value: 20000 } }
+        stock: { ASSET_ETH: { ETH: { amount: 10.5, value: 20000 } } }
       }
     )
   })
@@ -132,7 +132,7 @@ describe('Analyzer', () => {
           ]
         },
         balances: { CURRENCY_EUR: -5000, ASSET_ETH: 5000 },
-        stock: { ETH: { amount: 5, value: 5000 } }
+        stock: { ASSET_ETH: { ETH: { amount: 5, value: 5000 } } }
       }
     )
   })

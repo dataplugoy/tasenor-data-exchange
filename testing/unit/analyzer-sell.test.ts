@@ -12,7 +12,7 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ETH': {'value': 5000, 'amount': 5}
+      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as InputType,
@@ -29,9 +29,11 @@ describe('Analyzer', () => {
         "PROFIT_ETH": -1000,
       },
       "stock": {
-        "ETH": {
-          "amount": 0,
-          "value": 0,
+        "ASSET_ETH": {
+          "ETH": {
+            "amount": 0,
+            "value": 0,
+          },
         },
       },
       "tx": {
@@ -71,7 +73,7 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ETH': {'value': 5000, 'amount': 5}
+      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as InputType,
@@ -89,9 +91,11 @@ describe('Analyzer', () => {
           "LOSS_ETH": 1000,
         },
         "stock": {
-          "ETH": {
-            "amount": 0,
-            "value": 0,
+          "ASSET_ETH": {
+            "ETH": {
+              "amount": 0,
+              "value": 0,
+            },
           },
         },
         "tx": {
@@ -132,7 +136,7 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ETH': {'value': 5000, 'amount': 5}
+      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as InputType,
@@ -149,9 +153,11 @@ describe('Analyzer', () => {
           "CURRENCY_EUR": 2000,
         },
         "stock": {
-          "ETH": {
-            "amount": 3,
-            "value": 3000,
+          "ASSET_ETH": {
+            "ETH": {
+              "amount": 3,
+              "value": 3000,
+            },
           },
         },
         "tx": {

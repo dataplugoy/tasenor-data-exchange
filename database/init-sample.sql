@@ -14,7 +14,7 @@ COPY public.settings (id, type, url, certificate, "user", password, options, api
 
 COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state, stock) FROM stdin;
 2	Enable Banking	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	1	\N	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}	{}
-1	Test	2024-03-30 14:39:53.161	2024-04-09 18:05:06.601	1	\N	{}	{"ETH": {"value": "5000", "amount": "5.5"}}
+1	Test	2024-03-30 14:39:53.161	2024-04-09 18:05:06.601	1	\N	{}	{"ASSET_ETH": {"ETH": {"value": "5000", "amount": "5.5"}}}
 \.
 
 COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) FROM stdin;

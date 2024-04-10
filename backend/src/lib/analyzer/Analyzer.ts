@@ -1,8 +1,8 @@
 import { UnifiedInput } from '../../types/UnifiedInput'
-import { Stock, StockChangeData } from '../Stock'
+import { Stock, InitialStockData } from '../Stock'
 import { DateTime } from 'luxon'
 import { buy } from './handlers/buy'
-import { AccountCode, Transaction } from '../../types/Transaction'
+import { Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -11,6 +11,7 @@ import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
 import { sell } from './handlers/sell'
+import { AccountCode } from '../../types/AccountCode'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -117,8 +118,8 @@ export class Analyzer {
    * @param amount
    * @param value
    */
-  addAsset(asset: Asset, amount: Decimal, value: Decimal): void {
-    this.stock.addAsset(asset, amount, value)
+  addAsset(account: AccountCode, asset: Asset, amount: Decimal, value: Decimal): void {
+    this.stock.addAsset(account, asset, amount, value)
   }
 
   /**
@@ -145,7 +146,7 @@ export class Analyzer {
     // Apply asset changes.
     tx.lines.forEach((line) => line.extras.asset &&
       line.extras.assetChange &&
-      this.stock.addAsset(line.extras.asset, line.extras.assetChange, line.amount)
+      this.addAsset(line.account, line.extras.asset, line.extras.assetChange, line.amount)
     )
   }
 
@@ -179,7 +180,7 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  static async run(time: Timestring, stockData: StockChangeData, input: UnifiedInput): Promise<Analyzer> {
+  static async run(time: Timestring, stockData: InitialStockData, input: UnifiedInput): Promise<Analyzer> {
     const stock = new Stock(stockData)
     const analyzer = new Analyzer(stock)
     const tx = await analyzer.analyze(DateTime.fromISO(time), input)
