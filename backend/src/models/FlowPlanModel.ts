@@ -211,7 +211,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getInputDriver(options)
-    console.log(driver)
 
     const unifieds = await UnifiedItemModel.findForBatch(batch)
     const project = await this.getProject()

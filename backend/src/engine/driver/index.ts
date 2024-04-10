@@ -21,5 +21,5 @@ export function getDriver(type: prisma.DriverType, settings: DriverSettings): Dr
   if (!DriverConstructor) {
     throw new Error(`Cannot find driver for input source type '${type}'.`)
   }
-  return new Driver(type, settings)
+  return new DriverConstructor(settings)
 }
