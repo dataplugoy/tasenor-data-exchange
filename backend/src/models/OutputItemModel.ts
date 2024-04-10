@@ -12,6 +12,21 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
+   * Mark this run as a failure.
+   */
+  async fail(err: Error): Promise<void> {
+    await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { error: err.stack || err.message })
+  }
+
+  /**
+   * Mark this nput as successfully handled.
+   * @param state
+   */
+  async success(): Promise<void> {
+    await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { delivered: true })
+  }
+
+  /**
    * Save item to the DB.
    * @param data
    * @returns

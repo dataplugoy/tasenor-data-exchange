@@ -12,6 +12,7 @@ import { InputItemModel } from '../../models/InputItemModel'
 import { RuleModel } from '../../models/RuleModel'
 import { RunModel } from '../../models/RunModel'
 import { UnifiedItemModel } from '../../models/UnifiedItemModel'
+import { OutputItemModel } from '../../models/OutputItemModel'
 
 // TODO: Could add first(), second(), third() functions for regex() rule.
 
@@ -73,5 +74,22 @@ export class TestMockDriver extends Driver {
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItemModel> {
     return this.applyUnifyRules(flow, run, input, rules, input.fields.word1 as string)
+  }
+
+  async deliverOutput(output: OutputItemModel): Promise<void> {
+    const url = this.getURL()
+    if (url.protocol !== 'file:') {
+      throw new Error(`Bad protocol in URL '${this.settings.url}'.`)
+    }
+
+    let n = 1
+    let filePath = path.join(this.root, `${url.pathname}-${n}`)
+    fs.mkdirSync(path.dirname(filePath), { recursive: true })
+    while (fs.existsSync(filePath)) {
+      n++
+      filePath = path.join(this.root, `${url.pathname}-${n}`)
+    }
+
+    fs.writeFileSync(filePath, JSON.stringify(output.data.data, null, 2) + '\n')
   }
 }

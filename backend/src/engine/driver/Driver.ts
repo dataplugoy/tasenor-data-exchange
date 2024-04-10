@@ -18,6 +18,7 @@ import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { RunModel } from '../../models/RunModel'
 import { DateTime } from 'luxon'
+import { OutputItemModel } from '../../models/OutputItemModel'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -263,5 +264,9 @@ export class Driver {
    */
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItemModel> {
     throw new Error(`Input source ${this.type} does not implement unifyItem().`)
+  }
+
+  async deliverOutput(output: OutputItemModel): Promise<void> {
+    throw new Error(`Input source ${this.type} does not implement deliverOutput().`)
   }
 }

@@ -20,6 +20,8 @@ import { toJSON } from '../lib/utils'
 import { Transaction } from '../types/Transaction'
 import { OutputDestinationModel } from './OutputDestinationModel'
 
+type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
+
 export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
   static table = 'flowPlan'
@@ -28,13 +30,13 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * A table of functions how to proceed from each step.
    */
-  functions: Record<prisma.BatchState, (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>> = {
+  functions: Record<prisma.BatchState, undefined | StateHandler> = {
     BATCH_CREATED: (options, batch, run) => this.fetchData(options, batch, run),
     DATA_FETCHED: (options, batch, run) => this.itemizeInput(options, batch, run),
     DATA_PARSED: (options, batch, run) => this.unifyItems(options, batch, run),
     ITEMS_UNIFIED: (options, batch, run) => this.analyzeItems(options, batch, run),
     OUTPUT_CREATED: (options, batch, run) => this.deliverOutput(options, batch, run),
-    OUTPUT_DELIVERED: (options, batch, run) => this.notImplemented(options, batch, run),
+    OUTPUT_DELIVERED: undefined,
   }
 
   get name(): string {
@@ -68,7 +70,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     try {
       // Execute state transition.
-      const result = await this.functions[batch.state](options, batch, run)
+      const fn: StateHandler = this.functions[batch.state] as StateHandler
+      const result = this.functions[batch.state] && await fn(options, batch, run)
       if (result === 'FAIL') {
         throw new Error(`Execution of ${run} for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
       }
@@ -85,10 +88,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Check for completion.
       const futureState = Object.keys(this.functions)[idx + 2]
       if (futureState === undefined) {
-        log(`${batch} completed.`)
+        log(`${batch} completed and is now in state ${nextState}.`)
         await BatchModel.update<prisma.Batch, BatchModel>(batch, { completed: new Date() })
       } else {
-        log(`${run} for ${batch} success.`)
+        log(`${run} for ${batch} success and is now in state ${nextState}.`)
       }
 
     } catch (err) {
@@ -96,13 +99,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       error(`${run} failed: ${err.stack}`)
       await run.fail(err)
     }
-  }
-
-  /**
-   * Helper to mark handler function as not implemented.
-   */
-  private async notImplemented(_options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<never> {
-    throw new Error(`Function not yet implemented for state ${batch.state}.`)
   }
 
   /**
@@ -267,10 +263,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   private async deliverOutput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const output = await OutputItemModel.findForBatch(batch, false)
     const driver = await this.getOutputDriver(options)
-console.log(driver)
-    for (const item of output) {
 
+    // We deliver output in any order.
+    for (const item of output) {
+      try {
+        await driver.deliverOutput(item)
+        await item.success()
+      } catch (err) {
+        await item.fail(err)
+      }
     }
+
+    return 'OK'
   }
 
   /**
