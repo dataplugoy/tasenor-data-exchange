@@ -5,7 +5,7 @@ import prisma from '@prisma/client'
 import { SettingsModel } from '../../models/SettingsModel'
 import { HttpMethod, error, isShortDate, log } from '@tasenor/common'
 import { InputSettings } from '../../types/InputSettings'
-import { InputOptions } from '../../types/InputOptions'
+import { RuntimeOptions } from '../../types/RuntimeOptions'
 import { FlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
 import { PreprocessedInput } from '../../types/PreprocessedInput'
@@ -27,7 +27,7 @@ export class Driver {
   type: prisma.DriverType
   settings: InputSettings
   systemSettings: SettingsModel
-  options: InputOptions
+  options: RuntimeOptions
   state: FlowState
 
   constructor(type: prisma.DriverType, settings: InputSettings) {
@@ -157,7 +157,7 @@ export class Driver {
   /**
    * A hook to perform initialization before use.
    */
-  async initialize(state: FlowState, options: InputOptions): Promise<FlowState> {
+  async initialize(state: FlowState, options: RuntimeOptions): Promise<FlowState> {
     this.options = options
     this.state = state
     this.systemSettings = await SettingsModel.get(this.type)

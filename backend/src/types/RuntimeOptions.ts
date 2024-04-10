@@ -1,6 +1,6 @@
 import { DirectoryPath } from '@tasenor/common'
 
-export type InputOptions = {
+export type RuntimeOptions = {
   tracking?: DirectoryPath | null
   auth?: string | null
 }

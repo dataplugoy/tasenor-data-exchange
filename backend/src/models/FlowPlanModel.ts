@@ -3,9 +3,9 @@ import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
 import { error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
-import { InputOptions } from '../types/InputOptions'
+import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'
-import { Driver, Driver } from '../engine/driver/Driver'
+import { Driver } from '../engine/driver/Driver'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -28,7 +28,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * A table of functions how to proceed from each step.
    */
-  functions: Record<prisma.BatchState, (options: InputOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>> = {
+  functions: Record<prisma.BatchState, (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>> = {
     BATCH_CREATED: (options, batch, run) => this.fetchData(options, batch, run),
     DATA_FETCHED: (options, batch, run) => this.itemizeInput(options, batch, run),
     DATA_PARSED: (options, batch, run) => this.unifyItems(options, batch, run),
@@ -60,7 +60,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Execute the next step of running the current or new batch.
    */
-  async run(options: InputOptions): Promise<void> {
+  async run(options: RuntimeOptions): Promise<void> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
 
@@ -101,14 +101,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Helper to mark handler function as not implemented.
    */
-  private async notImplemented(_options: InputOptions, batch: BatchModel, run: RunModel): Promise<never> {
+  private async notImplemented(_options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<never> {
     throw new Error(`Function not yet implemented for state ${batch.state}.`)
   }
 
   /**
    * Create and initialize driver for receiving data.
    */
-  private async getInputDriver(options: InputOptions): Promise<Driver> {
+  private async getInputDriver(options: RuntimeOptions): Promise<Driver> {
     const source = await this.getSource()
     const driver = source.getDriver()
 
@@ -120,8 +120,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver for delivering data.
    */
-  private async getOutputDriver(options: InputOptions): Promise<Driver> {
-    // TODO: Rename InputOptions to RuntimeOptions.
+  private async getOutputDriver(options: RuntimeOptions): Promise<Driver> {
+    // TODO: Rename RuntimeOptions to RuntimeOptions.
     const destination = await this.getDestination()
     const driver = destination.getDriver()
 
@@ -136,7 +136,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param batch
    * @param run
    */
-  private async fetchData(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+  private async fetchData(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getInputDriver(options)
 
     const state = await driver.autheticate()
@@ -158,7 +158,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param batch
    * @param run
    */
-  private async itemizeInput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+  private async itemizeInput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getInputDriver(options)
     const items = await driver.itemizeInput(batch)
 
@@ -183,7 +183,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param batch
    * @param run
    */
-  private async unifyItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+  private async unifyItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getInputDriver(options)
     const inputs = await InputItemModel.findForBatch(batch, false)
     let rules = await RuleModel.findForFlowByKey(this)
@@ -214,7 +214,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param batch
    * @param run
    */
-  private async analyzeItems(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+  private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const unifieds = await UnifiedItemModel.findForBatch(batch)
     const project = await this.getProject()
     Analyzer.configure(project.settings)
@@ -264,7 +264,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param batch
    * @param run
    */
-  private async deliverOutput(options: InputOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+  private async deliverOutput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const output = await OutputItemModel.findForBatch(batch, false)
     const driver = await this.getOutputDriver(options)
 console.log(driver)

@@ -2,13 +2,13 @@ import { ArgumentParser } from 'argparse'
 import { BaseModel } from '../models/BaseModel'
 import { connect } from '../connect'
 import { UserModel } from '../models/UserModel'
-import { InputOptions } from '../types/InputOptions'
+import { RuntimeOptions } from '../types/RuntimeOptions'
 
 /**
  * Execute one step of the named flow.
  * @param name Title of the flow to execute.
  */
-async function run(email: string, name: string, options: InputOptions) {
+async function run(email: string, name: string, options: RuntimeOptions) {
   const user = await UserModel.find(email)
   if (!user) {
     throw new Error(`User '${email}' not found.`)
@@ -46,7 +46,7 @@ export async function execute(...args: string[]): Promise<void> {
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
 
-  const options: InputOptions = {
+  const options: RuntimeOptions = {
     tracking: commandArgs.track || null,
     auth: commandArgs.auth || null,
   }
