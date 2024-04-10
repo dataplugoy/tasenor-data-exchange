@@ -1,8 +1,6 @@
 import { RuleVariables, RulesEngine, debug, error } from '@tasenor/common'
 import { RuleModel } from '../models/RuleModel'
 
-const DEBUG_RULES = true
-
 /**
  * Get a set of variables and apply the first matching rule and get the result.
  * @param variables
