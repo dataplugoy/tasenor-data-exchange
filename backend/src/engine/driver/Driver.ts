@@ -4,7 +4,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../../models/SettingsModel'
 import { HttpMethod, error, isShortDate, log } from '@tasenor/common'
-import { InputSettings } from '../../types/InputSettings'
+import { DriverSettings } from '../../types/DriverSettings'
 import { RuntimeOptions } from '../../types/RuntimeOptions'
 import { FlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
@@ -25,12 +25,12 @@ import { DateTime } from 'luxon'
 export class Driver {
 
   type: prisma.DriverType
-  settings: InputSettings
+  settings: DriverSettings
   systemSettings: SettingsModel
   options: RuntimeOptions
   state: FlowState
 
-  constructor(type: prisma.DriverType, settings: InputSettings) {
+  constructor(type: prisma.DriverType, settings: DriverSettings) {
     this.type = type
     this.settings = settings
   }

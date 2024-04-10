@@ -1,6 +1,6 @@
 import jwa from 'jwa'
 import { Driver } from './Driver'
-import { EnableBankingInputSettings } from '../../types/InputSettings'
+import { EnableBankingDriverSettings } from '../../types/DriverSettings'
 import config from '../../config'
 import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../../types/EnableBanking'
 import { EnableBankingFlowState } from '../../types/FlowState'
@@ -18,10 +18,10 @@ const jsonBase64 = (data: Record<string, any>) => {
  */
 export class EnableBankingDriver extends Driver {
 
-  declare settings: EnableBankingInputSettings
+  declare settings: EnableBankingDriverSettings
   declare state: EnableBankingFlowState
 
-  constructor(settings: EnableBankingInputSettings) {
+  constructor(settings: EnableBankingDriverSettings) {
     super('ENABLE_BANKING', settings)
   }
 

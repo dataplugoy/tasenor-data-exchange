@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { DateTime } from 'luxon'
 import { Driver } from './Driver'
-import { TestMockInputSettings } from '../../types/InputSettings'
+import { TestMockDriverSettings } from '../../types/DriverSettings'
 import { TestMockFlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
 import { PreprocessedInput } from '../../types/PreprocessedInput'
@@ -20,10 +20,10 @@ import { UnifiedItemModel } from '../../models/UnifiedItemModel'
  */
 export class TestMockDriver extends Driver {
 
-  declare settings: TestMockInputSettings
+  declare settings: TestMockDriverSettings
   declare state: TestMockFlowState
 
-  constructor(settings: TestMockInputSettings) {
+  constructor(settings: TestMockDriverSettings) {
     super('TEST_MOCK', settings)
   }
 
