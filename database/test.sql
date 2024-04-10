@@ -26,6 +26,7 @@ ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_batchId_fkey";
+ALTER TABLE IF EXISTS ONLY public.outpu_destinations DROP CONSTRAINT IF EXISTS "outpu_destinations_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS "input_sources_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_flowPlanId_fkey";
@@ -37,6 +38,7 @@ DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
+DROP INDEX IF EXISTS public."outpu_destinations_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS unified_items_pkey;
@@ -45,6 +47,7 @@ ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS runs_pkey;
 ALTER TABLE IF EXISTS ONLY public.rules DROP CONSTRAINT IF EXISTS rules_pkey;
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS projects_pkey;
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS output_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.outpu_destinations DROP CONSTRAINT IF EXISTS outpu_destinations_pkey;
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS input_sources_pkey;
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS input_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS flow_plans_pkey;
@@ -56,6 +59,7 @@ ALTER TABLE IF EXISTS public.runs ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.rules ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.projects ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.output_items ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.outpu_destinations ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_sources ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.flow_plans ALTER COLUMN id DROP DEFAULT;
@@ -74,6 +78,8 @@ DROP SEQUENCE IF EXISTS public.projects_id_seq;
 DROP TABLE IF EXISTS public.projects;
 DROP SEQUENCE IF EXISTS public.output_items_id_seq;
 DROP TABLE IF EXISTS public.output_items;
+DROP SEQUENCE IF EXISTS public.outpu_destinations_id_seq;
+DROP TABLE IF EXISTS public.outpu_destinations;
 DROP SEQUENCE IF EXISTS public.input_sources_id_seq;
 DROP TABLE IF EXISTS public.input_sources;
 DROP SEQUENCE IF EXISTS public.input_items_id_seq;
@@ -83,7 +89,7 @@ DROP TABLE IF EXISTS public.flow_plans;
 DROP SEQUENCE IF EXISTS public.batches_id_seq;
 DROP TABLE IF EXISTS public.batches;
 DROP TYPE IF EXISTS public."RuleType";
-DROP TYPE IF EXISTS public."InputSourceType";
+DROP TYPE IF EXISTS public."DriverType";
 DROP TYPE IF EXISTS public."BatchState";
 --
 -- Name: BatchState; Type: TYPE; Schema: public; Owner: dev
@@ -93,25 +99,25 @@ CREATE TYPE public."BatchState" AS ENUM (
     'BATCH_CREATED',
     'DATA_FETCHED',
     'DATA_PARSED',
+    'ITEMS_UNIFIED',
     'OUTPUT_CREATED',
-    'OUTPUT_DELIVERED',
-    'ITEMS_UNIFIED'
+    'OUTPUT_DELIVERED'
 );
 
 
 ALTER TYPE public."BatchState" OWNER TO dev;
 
 --
--- Name: InputSourceType; Type: TYPE; Schema: public; Owner: dev
+-- Name: DriverType; Type: TYPE; Schema: public; Owner: dev
 --
 
-CREATE TYPE public."InputSourceType" AS ENUM (
-    'TEST_MOCK_INPUT',
+CREATE TYPE public."DriverType" AS ENUM (
+    'TEST_MOCK',
     'ENABLE_BANKING'
 );
 
 
-ALTER TYPE public."InputSourceType" OWNER TO dev;
+ALTER TYPE public."DriverType" OWNER TO dev;
 
 --
 -- Name: RuleType; Type: TYPE; Schema: public; Owner: dev
@@ -137,14 +143,14 @@ CREATE TABLE public.batches (
     id integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
+    completed timestamp(3) without time zone,
     number integer NOT NULL,
     state public."BatchState" NOT NULL,
-    "flowPlanId" integer NOT NULL,
-    completed timestamp(3) without time zone,
     data text,
-    "endStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "lastStamp" timestamp(3) without time zone,
     "initialStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
-    "lastStamp" timestamp(3) without time zone
+    "endStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "flowPlanId" integer NOT NULL
 );
 
 
@@ -178,12 +184,12 @@ ALTER SEQUENCE public.batches_id_seq OWNED BY public.batches.id;
 
 CREATE TABLE public.flow_plans (
     id integer NOT NULL,
-    title text NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
+    title text NOT NULL,
+    state jsonb DEFAULT '{}'::jsonb NOT NULL,
     "projectId" integer NOT NULL,
     "lastStamp" timestamp(3) without time zone,
-    state jsonb DEFAULT '{}'::jsonb NOT NULL,
     stock jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
@@ -221,12 +227,12 @@ CREATE TABLE public.input_items (
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
     data jsonb NOT NULL,
-    "batchId" integer NOT NULL,
-    "runId" integer NOT NULL,
-    "flowPlanId" integer NOT NULL,
-    skipped boolean NOT NULL,
     processed boolean NOT NULL,
-    error text
+    skipped boolean NOT NULL,
+    error text,
+    "flowPlanId" integer NOT NULL,
+    "batchId" integer NOT NULL,
+    "runId" integer NOT NULL
 );
 
 
@@ -260,11 +266,11 @@ ALTER SEQUENCE public.input_items_id_seq OWNED BY public.input_items.id;
 
 CREATE TABLE public.input_sources (
     id integer NOT NULL,
-    type public."InputSourceType" NOT NULL,
-    "flowPlanId" integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
-    settings jsonb DEFAULT '{}'::jsonb NOT NULL
+    type public."DriverType" NOT NULL,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "flowPlanId" integer NOT NULL
 );
 
 
@@ -293,6 +299,44 @@ ALTER SEQUENCE public.input_sources_id_seq OWNED BY public.input_sources.id;
 
 
 --
+-- Name: outpu_destinations; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.outpu_destinations (
+    id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
+    type public."DriverType" NOT NULL,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "flowPlanId" integer NOT NULL
+);
+
+
+ALTER TABLE public.outpu_destinations OWNER TO dev;
+
+--
+-- Name: outpu_destinations_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.outpu_destinations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.outpu_destinations_id_seq OWNER TO dev;
+
+--
+-- Name: outpu_destinations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.outpu_destinations_id_seq OWNED BY public.outpu_destinations.id;
+
+
+--
 -- Name: output_items; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -301,15 +345,14 @@ CREATE TABLE public.output_items (
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
     data jsonb NOT NULL,
-    processed boolean NOT NULL,
+    "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL,
     skipped boolean NOT NULL,
+    delivered boolean NOT NULL,
     error text,
     "unifiedId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL,
-    delivered boolean NOT NULL,
-    "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL
+    "runId" integer NOT NULL
 );
 
 
@@ -343,9 +386,10 @@ ALTER SEQUENCE public.output_items_id_seq OWNED BY public.output_items.id;
 
 CREATE TABLE public.projects (
     id integer NOT NULL,
-    name text NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
+    name text NOT NULL,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     "userId" integer NOT NULL
 );
 
@@ -382,15 +426,15 @@ CREATE TABLE public.rules (
     id integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
-    priority integer DEFAULT 50 NOT NULL,
     type public."RuleType" NOT NULL,
-    name text NOT NULL,
-    "filterView" jsonb NOT NULL,
-    "resultView" jsonb NOT NULL,
     "ownerId" integer NOT NULL,
+    name text NOT NULL,
     key text NOT NULL,
+    priority integer DEFAULT 50 NOT NULL,
     filter jsonb NOT NULL,
-    result jsonb NOT NULL
+    result jsonb NOT NULL,
+    "filterView" jsonb NOT NULL,
+    "resultView" jsonb NOT NULL
 );
 
 
@@ -428,8 +472,8 @@ CREATE TABLE public.runs (
     updated timestamp(3) without time zone NOT NULL,
     "initialState" public."BatchState" NOT NULL,
     "finalState" public."BatchState" NOT NULL,
-    "batchId" integer NOT NULL,
-    error text
+    error text,
+    "batchId" integer NOT NULL
 );
 
 
@@ -463,13 +507,13 @@ ALTER SEQUENCE public.runs_id_seq OWNED BY public.runs.id;
 
 CREATE TABLE public.settings (
     id integer NOT NULL,
-    type public."InputSourceType" NOT NULL,
+    type public."DriverType" NOT NULL,
     url text,
     certificate text,
+    apikey text,
     "user" text,
     password text,
-    options jsonb DEFAULT '{}'::jsonb NOT NULL,
-    apikey text
+    options jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -505,15 +549,15 @@ CREATE TABLE public.unified_items (
     id integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
+    "time" timestamp(3) without time zone NOT NULL,
     data jsonb NOT NULL,
+    processed boolean NOT NULL,
     skipped boolean NOT NULL,
+    error text,
+    "inputId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL,
-    "inputId" integer NOT NULL,
-    error text,
-    processed boolean NOT NULL,
-    "time" timestamp(3) without time zone NOT NULL
+    "runId" integer NOT NULL
 );
 
 
@@ -547,17 +591,17 @@ ALTER SEQUENCE public.unified_items_id_seq OWNED BY public.unified_items.id;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
     email text NOT NULL,
+    password text NOT NULL,
     name text NOT NULL,
     address text,
     zip text,
     city text,
     country text,
-    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated timestamp(3) without time zone NOT NULL,
-    settings jsonb DEFAULT '{}'::jsonb NOT NULL,
-    password text NOT NULL,
-    "lastSeen" timestamp(3) without time zone
+    "lastSeen" timestamp(3) without time zone,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -614,6 +658,13 @@ ALTER TABLE ONLY public.input_sources ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: outpu_destinations id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.outpu_destinations ALTER COLUMN id SET DEFAULT nextval('public.outpu_destinations_id_seq'::regclass);
+
+
+--
 -- Name: output_items id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -666,7 +717,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.batches (id, created, updated, number, state, "flowPlanId", completed, data, "endStock", "initialStock", "lastStamp") FROM stdin;
+COPY public.batches (id, created, updated, completed, number, state, data, "lastStamp", "initialStock", "endStock", "flowPlanId") FROM stdin;
 \.
 
 
@@ -674,8 +725,8 @@ COPY public.batches (id, created, updated, number, state, "flowPlanId", complete
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", state, stock) FROM stdin;
-1	Unit Testing	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	1	\N	{}	{}
+COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock) FROM stdin;
+1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}
 \.
 
 
@@ -683,7 +734,7 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPlanId", skipped, processed, error) FROM stdin;
+COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId") FROM stdin;
 \.
 
 
@@ -691,8 +742,16 @@ COPY public.input_items (id, created, updated, data, "batchId", "runId", "flowPl
 -- Data for Name: input_sources; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) FROM stdin;
-1	TEST_MOCK_INPUT	1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	{"url": "file:///testing/data/test.csv"}
+COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") FROM stdin;
+1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	TEST_MOCK	{"url": "file:///testing/data/test.csv"}	1
+\.
+
+
+--
+-- Data for Name: outpu_destinations; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.outpu_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
 \.
 
 
@@ -700,7 +759,7 @@ COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) F
 -- Data for Name: output_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.output_items (id, created, updated, data, processed, skipped, error, "unifiedId", "flowPlanId", "batchId", "runId", delivered, "stockChange") FROM stdin;
+COPY public.output_items (id, created, updated, data, "stockChange", skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId") FROM stdin;
 \.
 
 
@@ -708,9 +767,9 @@ COPY public.output_items (id, created, updated, data, processed, skipped, error,
 -- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.projects (id, name, created, updated, "userId") FROM stdin;
-1	Testing	2024-03-30 14:39:17.243	2024-03-30 14:39:03.459	1
-2	Empty	2024-04-05 06:52:03.842	2024-04-05 06:51:51.04	1
+COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin;
+1	2024-03-30 14:39:17.243	2024-03-30 14:39:03.459	Testing	{}	1
+2	2024-04-05 06:52:03.842	2024-04-05 06:51:51.04	Empty	{}	1
 \.
 
 
@@ -718,7 +777,7 @@ COPY public.projects (id, name, created, updated, "userId") FROM stdin;
 -- Data for Name: rules; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.rules (id, created, updated, priority, type, name, "filterView", "resultView", "ownerId", key, filter, result) FROM stdin;
+COPY public.rules (id, created, updated, type, "ownerId", name, key, priority, filter, result, "filterView", "resultView") FROM stdin;
 \.
 
 
@@ -726,7 +785,7 @@ COPY public.rules (id, created, updated, priority, type, name, "filterView", "re
 -- Data for Name: runs; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.runs (id, created, updated, "initialState", "finalState", "batchId", error) FROM stdin;
+COPY public.runs (id, created, updated, "initialState", "finalState", error, "batchId") FROM stdin;
 \.
 
 
@@ -734,8 +793,8 @@ COPY public.runs (id, created, updated, "initialState", "finalState", "batchId",
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.settings (id, type, url, certificate, "user", password, options, apikey) FROM stdin;
-2	TEST_MOCK_INPUT	\N	\N	\N	\N	{}	\N
+COPY public.settings (id, type, url, certificate, apikey, "user", password, options) FROM stdin;
+2	TEST_MOCK	\N	\N	\N	\N	\N	{}
 \.
 
 
@@ -743,7 +802,7 @@ COPY public.settings (id, type, url, certificate, "user", password, options, api
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "batchId", "runId", "inputId", error, processed, "time") FROM stdin;
+COPY public.unified_items (id, created, updated, "time", data, processed, skipped, error, "inputId", "flowPlanId", "batchId", "runId") FROM stdin;
 \.
 
 
@@ -751,8 +810,8 @@ COPY public.unified_items (id, created, updated, data, skipped, "flowPlanId", "b
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.users (id, email, name, address, zip, city, country, created, updated, settings, password, "lastSeen") FROM stdin;
-1	test@localhost	Test User	Road 66	12345-FI	Tampere	Finland	2024-03-30 14:38:56.726	2024-04-05 10:46:46.293	{"projectId": 1}	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	\N
+COPY public.users (id, created, updated, email, password, name, address, zip, city, country, "lastSeen", settings) FROM stdin;
+1	2024-03-30 14:38:56.726	2024-04-05 10:46:46.293	test@localhost	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Test User	Road 66	12345-FI	Tampere	Finland	\N	{"projectId": 1}
 \.
 
 
@@ -760,14 +819,14 @@ COPY public.users (id, email, name, address, zip, city, country, created, update
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 63, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 1, false);
 
 
 --
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, true);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 1, false);
 
 
 --
@@ -781,7 +840,14 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 1, false);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 2, true);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 1, false);
+
+
+--
+-- Name: outpu_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.outpu_destinations_id_seq', 1, false);
 
 
 --
@@ -795,28 +861,28 @@ SELECT pg_catalog.setval('public.output_items_id_seq', 1, false);
 -- Name: projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.projects_id_seq', 2, true);
+SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
 
 
 --
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 20, true);
+SELECT pg_catalog.setval('public.rules_id_seq', 1, false);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 289, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 1, false);
 
 
 --
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 2, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 1, false);
 
 
 --
@@ -830,7 +896,7 @@ SELECT pg_catalog.setval('public.unified_items_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
@@ -863,6 +929,14 @@ ALTER TABLE ONLY public.input_items
 
 ALTER TABLE ONLY public.input_sources
     ADD CONSTRAINT input_sources_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: outpu_destinations outpu_destinations_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.outpu_destinations
+    ADD CONSTRAINT outpu_destinations_pkey PRIMARY KEY (id);
 
 
 --
@@ -926,6 +1000,13 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE UNIQUE INDEX "input_sources_flowPlanId_key" ON public.input_sources USING btree ("flowPlanId");
+
+
+--
+-- Name: outpu_destinations_flowPlanId_key; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE UNIQUE INDEX "outpu_destinations_flowPlanId_key" ON public.outpu_destinations USING btree ("flowPlanId");
 
 
 --
@@ -1009,6 +1090,14 @@ ALTER TABLE ONLY public.input_items
 
 ALTER TABLE ONLY public.input_sources
     ADD CONSTRAINT "input_sources_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: outpu_destinations outpu_destinations_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.outpu_destinations
+    ADD CONSTRAINT "outpu_destinations_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
