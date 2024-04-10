@@ -210,6 +210,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
+    const driver = await this.getInputDriver(options)
+    console.log(driver)
+
     const unifieds = await UnifiedItemModel.findForBatch(batch)
     const project = await this.getProject()
     Analyzer.configure(project.settings)
@@ -219,7 +222,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const analyzer = new Analyzer(stock)
     for (const unified of unifieds) {
 
-      console.log(unified)
+      //console.log(unified)
       // Skip processed.
       if (unified.data.processed) {
         console.log('APPLY STOCK!')
