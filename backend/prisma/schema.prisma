@@ -191,6 +191,7 @@ model UnifiedItem{
 
   time        DateTime
   data        Json
+  stockChange Json            @default("{}")
   processed   Boolean
   skipped     Boolean
 
@@ -215,7 +216,6 @@ model OutputItem{
   updated     DateTime        @updatedAt
 
   data        Json
-  stockChange Json            @default("{}")
   skipped     Boolean
   delivered   Boolean
 

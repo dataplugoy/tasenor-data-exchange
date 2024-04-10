@@ -219,8 +219,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const analyzer = new Analyzer(stock)
     for (const unified of unifieds) {
 
+      console.log(unified)
       // Skip processed.
       if (unified.data.processed) {
+        console.log('APPLY STOCK!')
         // TODO: Handle stock changes for already processed unified items.
         //       Add change to unified item and remove from output.
         continue
@@ -250,7 +252,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await unified.success()
     }
 
-    return 'OK'
+    // return 'OK'
   }
 
   /**
