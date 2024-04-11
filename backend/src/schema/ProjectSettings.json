@@ -1,6 +1,7 @@
 {
   "$id": "ProjectSettings.json",
   "type": "object",
+  "additionalProperties": false,
   "required": ["language", "currency"],
   "properties": {
     "language": {
@@ -11,6 +12,5 @@
       "type": "string",
       "pattern": "^[A-Z][A-Z][A-Z]$"
     }
-  },
-  "additionalProperties": false
+  }
 }

@@ -2,6 +2,7 @@
   "type": "array",
   "items": {
     "type": "object",
+    "additionalProperties": false,
     "required": ["id", "userId", "name", "settings"],
     "properties": {
       "id": {
@@ -24,7 +25,6 @@
         "type": "string",
         "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
       }
-    },
-    "additionalProperties": false
+    }
   }
 }
