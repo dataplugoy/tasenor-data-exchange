@@ -1,0 +1,36 @@
+{
+  "$id": "FlowPlan",
+  "title": "FlowPlan",
+  "type": "object",
+  "required": ["id", "projectId", "title", "state", "lastStamp", "stock"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "projectId": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "state": {
+      "type": "object"
+    },
+    "lastStamp": {
+      "type": ["string", "null"],
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "stock": {
+      "type": "object"
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  },
+  "additionalProperties": false
+}
