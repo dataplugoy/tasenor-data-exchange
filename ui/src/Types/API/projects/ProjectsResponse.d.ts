@@ -6,9 +6,15 @@
  */
 
 export type ProjectsResponse = {
-  id?: number;
-  userId?: number;
-  name?: string;
+  id: number;
+  userId: number;
+  name: string;
+  settings: ProjectSettingsJson;
   created?: string;
   updated?: string;
 }[];
+
+export interface ProjectSettingsJson {
+  language: string;
+  currency: string;
+}

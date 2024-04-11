@@ -26,7 +26,7 @@ ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_batchId_fkey";
-ALTER TABLE IF EXISTS ONLY public.outpu_destinations DROP CONSTRAINT IF EXISTS "outpu_destinations_flowPlanId_fkey";
+ALTER TABLE IF EXISTS ONLY public.output_destinations DROP CONSTRAINT IF EXISTS "output_destinations_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS "input_sources_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_flowPlanId_fkey";
@@ -38,7 +38,7 @@ DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
-DROP INDEX IF EXISTS public."outpu_destinations_flowPlanId_key";
+DROP INDEX IF EXISTS public."output_destinations_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS unified_items_pkey;
@@ -47,7 +47,7 @@ ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS runs_pkey;
 ALTER TABLE IF EXISTS ONLY public.rules DROP CONSTRAINT IF EXISTS rules_pkey;
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS projects_pkey;
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS output_items_pkey;
-ALTER TABLE IF EXISTS ONLY public.outpu_destinations DROP CONSTRAINT IF EXISTS outpu_destinations_pkey;
+ALTER TABLE IF EXISTS ONLY public.output_destinations DROP CONSTRAINT IF EXISTS output_destinations_pkey;
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS input_sources_pkey;
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS input_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS flow_plans_pkey;
@@ -59,7 +59,7 @@ ALTER TABLE IF EXISTS public.runs ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.rules ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.projects ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.output_items ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.outpu_destinations ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.output_destinations ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_sources ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.flow_plans ALTER COLUMN id DROP DEFAULT;
@@ -78,8 +78,8 @@ DROP SEQUENCE IF EXISTS public.projects_id_seq;
 DROP TABLE IF EXISTS public.projects;
 DROP SEQUENCE IF EXISTS public.output_items_id_seq;
 DROP TABLE IF EXISTS public.output_items;
-DROP SEQUENCE IF EXISTS public.outpu_destinations_id_seq;
-DROP TABLE IF EXISTS public.outpu_destinations;
+DROP SEQUENCE IF EXISTS public.output_destinations_id_seq;
+DROP TABLE IF EXISTS public.output_destinations;
 DROP SEQUENCE IF EXISTS public.input_sources_id_seq;
 DROP TABLE IF EXISTS public.input_sources;
 DROP SEQUENCE IF EXISTS public.input_items_id_seq;
@@ -299,10 +299,10 @@ ALTER SEQUENCE public.input_sources_id_seq OWNED BY public.input_sources.id;
 
 
 --
--- Name: outpu_destinations; Type: TABLE; Schema: public; Owner: dev
+-- Name: output_destinations; Type: TABLE; Schema: public; Owner: dev
 --
 
-CREATE TABLE public.outpu_destinations (
+CREATE TABLE public.output_destinations (
     id integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
@@ -312,13 +312,13 @@ CREATE TABLE public.outpu_destinations (
 );
 
 
-ALTER TABLE public.outpu_destinations OWNER TO dev;
+ALTER TABLE public.output_destinations OWNER TO dev;
 
 --
--- Name: outpu_destinations_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+-- Name: output_destinations_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
 --
 
-CREATE SEQUENCE public.outpu_destinations_id_seq
+CREATE SEQUENCE public.output_destinations_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -327,13 +327,13 @@ CREATE SEQUENCE public.outpu_destinations_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.outpu_destinations_id_seq OWNER TO dev;
+ALTER TABLE public.output_destinations_id_seq OWNER TO dev;
 
 --
--- Name: outpu_destinations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+-- Name: output_destinations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
 --
 
-ALTER SEQUENCE public.outpu_destinations_id_seq OWNED BY public.outpu_destinations.id;
+ALTER SEQUENCE public.output_destinations_id_seq OWNED BY public.output_destinations.id;
 
 
 --
@@ -658,10 +658,10 @@ ALTER TABLE ONLY public.input_sources ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- Name: outpu_destinations id; Type: DEFAULT; Schema: public; Owner: dev
+-- Name: output_destinations id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
-ALTER TABLE ONLY public.outpu_destinations ALTER COLUMN id SET DEFAULT nextval('public.outpu_destinations_id_seq'::regclass);
+ALTER TABLE ONLY public.output_destinations ALTER COLUMN id SET DEFAULT nextval('public.output_destinations_id_seq'::regclass);
 
 
 --
@@ -753,11 +753,10 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 
 
 --
--- Data for Name: outpu_destinations; Type: TABLE DATA; Schema: public; Owner: dev
+-- Data for Name: output_destinations; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.outpu_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
-1	2024-04-10 07:21:59.931	2024-04-10 07:23:01.083	TEST_MOCK	{"url": "file:///testing/data/output.csv"}	1
+COPY public.output_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
 \.
 
 
@@ -865,10 +864,10 @@ SELECT pg_catalog.setval('public.input_sources_id_seq', 1, false);
 
 
 --
--- Name: outpu_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+-- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.outpu_destinations_id_seq', 1, true);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 1, false);
 
 
 --
@@ -953,11 +952,11 @@ ALTER TABLE ONLY public.input_sources
 
 
 --
--- Name: outpu_destinations outpu_destinations_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+-- Name: output_destinations output_destinations_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
-ALTER TABLE ONLY public.outpu_destinations
-    ADD CONSTRAINT outpu_destinations_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.output_destinations
+    ADD CONSTRAINT output_destinations_pkey PRIMARY KEY (id);
 
 
 --
@@ -1024,10 +1023,10 @@ CREATE UNIQUE INDEX "input_sources_flowPlanId_key" ON public.input_sources USING
 
 
 --
--- Name: outpu_destinations_flowPlanId_key; Type: INDEX; Schema: public; Owner: dev
+-- Name: output_destinations_flowPlanId_key; Type: INDEX; Schema: public; Owner: dev
 --
 
-CREATE UNIQUE INDEX "outpu_destinations_flowPlanId_key" ON public.outpu_destinations USING btree ("flowPlanId");
+CREATE UNIQUE INDEX "output_destinations_flowPlanId_key" ON public.output_destinations USING btree ("flowPlanId");
 
 
 --
@@ -1114,11 +1113,11 @@ ALTER TABLE ONLY public.input_sources
 
 
 --
--- Name: outpu_destinations outpu_destinations_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+-- Name: output_destinations output_destinations_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
-ALTER TABLE ONLY public.outpu_destinations
-    ADD CONSTRAINT "outpu_destinations_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY public.output_destinations
+    ADD CONSTRAINT "output_destinations_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

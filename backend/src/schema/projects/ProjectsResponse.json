@@ -2,7 +2,7 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["email", "password"],
+    "required": ["id", "userId", "name", "settings"],
     "properties": {
       "id": {
         "type": "integer"
@@ -12,6 +12,9 @@
       },
      "name": {
         "type": "string"
+      },
+      "settings": {
+        "$ref": "ProjectSettings.json"
       },
       "created": {
         "type": "string",

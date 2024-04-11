@@ -17,7 +17,7 @@ export const authorize = () => {
     }
 
     res.locals.token = token
-    Object.assign(res.locals, payload)
+    res.locals.userId = payload.id
 
     next()
   }

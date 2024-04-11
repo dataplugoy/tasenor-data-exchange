@@ -6,7 +6,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       login(): Chainable<void>
-      apiCall(method: string, url: string, data: Record<string, any>): Chainable<Cypress.Response<any>>
+      apiCall(method: string, url: string, data: Record<string, any> = {}): Chainable<Cypress.Response<any>>
     }
   }
 }

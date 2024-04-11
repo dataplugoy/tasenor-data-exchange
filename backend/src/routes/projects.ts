@@ -10,7 +10,7 @@ const router = express.Router()
 router.get('/',
   authorize(),
   async (req, res) => {
-    const userId = res.locals.id
+    const userId = res.locals.userId
     const projects = await ProjectModel.findForUser(userId)
     res.send(projects.map(project => project.data))
   }

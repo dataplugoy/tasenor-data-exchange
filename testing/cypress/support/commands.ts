@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import Ajv from 'ajv'
-import { AssertionError } from 'chai'
+import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
 
 /**
  * Log in as normal user.
@@ -20,15 +20,25 @@ Cypress.Commands.add('login', () => {
 /**
  * Make a HTTP request to API.
  */
-Cypress.Commands.add('apiCall', (method: string, url: string, body: Record<string, any>) => {
+let token: string | undefined
+Cypress.Commands.add('apiCall', (method: string, url: string, body: Record<string, any> = {}) => {
   const baseUrl = new URL(Cypress.env('CYPRESS_URL'))
   const apiUrl = `${baseUrl.protocol}//${baseUrl.hostname}:${parseInt(baseUrl.port) + 1}/api/v1`
-
+  const headers: Record<string, string> = {}
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
   return cy.request({
     failOnStatusCode: false,
     method,
-    url: `${apiUrl}/auth`,
-    body
+    url: `${apiUrl}${url}`,
+    body,
+    headers
+  }).then(res => {
+    if (res.body && res.body.token) {
+      token = res.body.token
+    }
+    return res
   })
 })
 
@@ -40,6 +50,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   expect(res.status).to.eq(200)
 
   const ajv = new Ajv()
+  ajv.addSchema(ProjectSettings)
 
   if (!ajv.validate(json, res.body)) {
     const errors = JSON.stringify(ajv.errors)
