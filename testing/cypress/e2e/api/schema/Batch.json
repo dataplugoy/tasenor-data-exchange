@@ -1,0 +1,53 @@
+{
+  "$id": "Batch",
+  "title": "Batch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "flowPlanId", "number", "state", "lastStamp", "data", "initialStock", "endStock", "completed"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "flowPlanId": {
+      "type": "integer"
+    },
+    "number": {
+      "type": "integer"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "BATCH_CREATED",
+        "DATA_FETCHED",
+        "DATA_PARSED",
+        "ITEMS_UNIFIED",
+        "OUTPUT_CREATED",
+        "OUTPUT_DELIVERED"
+      ]
+    },
+    "lastStamp": {
+      "type": ["string", "null"],
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "data": {
+      "type": "string"
+    },
+    "initialStock": {
+      "type": "object"
+    },
+    "endStock": {
+      "type": "object"
+    },
+    "completed": {
+      "type": "boolean"
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  }
+}
