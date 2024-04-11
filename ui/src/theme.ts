@@ -20,4 +20,14 @@ export const theme = createTheme({
       paper: '#222',
     },
   },
+
+  typography: {
+    h1: {
+      fontWeight: 600,
+      fontSize: '1.25rem',
+      lineHeight: '1.5rem',
+      letterSpacing: '0.1em',
+      textTransform: 'uppercase',
+    },
+  }
 })
