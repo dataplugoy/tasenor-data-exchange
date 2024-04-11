@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 import Ajv from 'ajv'
+import Project from '../e2e/api/schema/Project.json'
 import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
 
 /**
@@ -51,6 +52,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
 
   const ajv = new Ajv()
   ajv.addSchema(ProjectSettings)
+  ajv.addSchema(Project)
 
   if (!ajv.validate(json, res.body)) {
     const errors = JSON.stringify(ajv.errors)

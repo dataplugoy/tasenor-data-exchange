@@ -5,16 +5,17 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type ProjectsResponse = {
-  id: number;
+export type ProjectRequest = Project[];
+
+export interface Project {
+  id?: number;
   userId: number;
   name: string;
-  settings: ProjectSettingsJson;
+  settings?: ProjectSettings;
   created?: string;
   updated?: string;
-}[];
-
-export interface ProjectSettingsJson {
+}
+export interface ProjectSettings {
   language: string;
   currency: string;
 }

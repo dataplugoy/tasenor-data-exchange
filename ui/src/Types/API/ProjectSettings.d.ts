@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface ProjectSettingsJson {
+export interface ProjectSettings {
   language: string;
   currency: string;
 }

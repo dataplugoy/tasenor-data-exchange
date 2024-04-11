@@ -7,8 +7,13 @@
 
 export interface ProjectResponse {
   id?: number;
-  userId?: number;
-  name?: string;
+  userId: number;
+  name: string;
+  settings?: ProjectSettings;
   created?: string;
   updated?: string;
+}
+export interface ProjectSettings {
+  language: string;
+  currency: string;
 }

@@ -1,5 +1,6 @@
 {
-  "$id": "ProjectSettings.json",
+  "$id": "ProjectSettings",
+  "title": "ProjectSettings",
   "type": "object",
   "additionalProperties": false,
   "required": ["language", "currency"],

@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm build-schema",
-    "build-schema": "rm -rf ui/src/Types/API/ backend/src/types/API/ testing/cypress/e2e/api/schema && json2ts --cwd backend/src/schema/ -i backend/src/schema/ -o ui/src/Types/API/ && json2ts --cwd backend/src/schema/ -i backend/src/schema/ -o backend/src/types/API/ && cp -r backend/src/schema/ testing/cypress/e2e/api/",
+    "build-schema": "pnpm build-testing-schema && pnpm build-ui-schema && pnpm build-backend-schema",
+    "build-ui-schema": "rm -rf ui/src/Types/API/ && json2ts --cwd backend/src/schema/ -i backend/src/schema/ -o ui/src/Types/API/",
+    "build-backend-schema": "rm -rf backend/src/types/API/ && json2ts --cwd backend/src/schema/ -i backend/src/schema/ -o backend/src/types/API/",
+    "build-testing-schema": "rm -rf testing/cypress/e2e/api/schema && cp -r backend/src/schema/ testing/cypress/e2e/api/ && find testing/cypress/e2e/api/schema/ -maxdepth 1 -type f -exec mv \\{\\} \\{\\}.json \\;",
     "lint": "pnpm lint-ui && pnpm lint-backend",
     "lint-ui": "cd ui && pnpm lint",
     "lint-backend": "cd backend && pnpm lint",
