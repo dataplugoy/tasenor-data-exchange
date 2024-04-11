@@ -11,6 +11,7 @@ import { FlowPlanInfo } from '../Components/FlowPlanInfo'
 import { ExpandMore } from '@mui/icons-material'
 import { BatchBrogressBar } from '../Components/BatchProgressBar'
 import { DateTime } from 'luxon'
+import { RunList } from '../Components/RunList'
 
 export const FlowPlanPage = (): React.JSX.Element => {
   const GET = useGET<FlowPlanResponse>()
@@ -27,8 +28,6 @@ export const FlowPlanPage = (): React.JSX.Element => {
     })
   }, [])
 
-  // TODO: Fancier timestamp.
-
   return (
     <Box>
       <Typography variant="h1">
@@ -40,7 +39,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
         </Box>
       }
       <Box sx={{ mt: 2 }}>
-        { batches.map(batch => <Accordion key={batch.id}>
+        { batches.map(batch => <Accordion key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
           <AccordionSummary expandIcon={<ExpandMore/>}>
             <Box sx={{ width: '100%' }}>
               <Box sx={{ display: 'inline-block', width: '8%', fontWeight: 'bold' }}>#{batch.number}</Box>
@@ -53,7 +52,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            TODO: Fetch runs.
+            <RunList batch={batch}/>
           </AccordionDetails>
         </Accordion>)}
       </Box>
