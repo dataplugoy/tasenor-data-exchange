@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { Batch } from '../Types/API/Batch'
 import { useGET } from '../Hooks/useNet'
@@ -10,16 +10,18 @@ interface RunListProps {
 export const RunList = (props: RunListProps): React.JSX.Element => {
   const GET = useGET<{}>() // TODO: type
   const { batch } = props
-
+  const [data, setData] = useState({})
   useEffect(() => {
     GET(`/batches/${batch.id}`).then(res => {
-      console.log(res);
+      setData(res)
     })
   }, [])
 
   return (
     <Box>
-      RUN LIST
+      <pre>
+        {JSON.stringify(data, null, 2)}
+      </pre>
     </Box>
   )
 }
