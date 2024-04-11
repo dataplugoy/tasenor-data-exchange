@@ -13,7 +13,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "bacthes": {
+        "batches": {
           "type": "array",
           "items": { "$ref": "Batch" }
         }

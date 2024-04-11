@@ -8,7 +8,7 @@
 export type FlowPlanResponse = FlowPlan & {
   project?: Project;
 } & {
-  bacthes?: Batch[];
+  batches?: Batch[];
 };
 
 export interface FlowPlan {

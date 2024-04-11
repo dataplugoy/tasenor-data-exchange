@@ -6,12 +6,16 @@ export const theme = createTheme({
 
     // Yellow
     primary: {
+      light: '#fceb87',
       main: '#ead140',
+      dark: '#ae9b2c',
       contrastText: '#000'
     },
     // Blue
     secondary: {
+      light: '#73a4e8',
       main: '#0149ab',
+      dark: '#103f7e',
       contrastText: '#FFF'
     },
 
