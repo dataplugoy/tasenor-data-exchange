@@ -3,6 +3,16 @@ import useLocalStorage from 'use-local-storage'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 
+const DEFAULT_USER = {
+  id: 0,
+  email: '',
+  settings: {
+    projectId: 0,
+    languagge: 'en',
+    currency: 'EUR'
+  }
+}
+
 /**
  * Severity of the message.
  */
@@ -39,7 +49,7 @@ export interface AppContextProps {
 export const AppContext = React.createContext<AppContextProps>({
   messages: [],
   project: {},
-  auth: { token: null, user: { id: 0, email: '' } },
+  auth: { token: null, user: DEFAULT_USER },
   addInfo: () => {},
   addWarning: () => {},
   addError: () => {},
@@ -59,7 +69,7 @@ export const AppProvider = (props: { children: ReactNode }): React.ReactNode => 
   const [messages, setMessages] = useState<Message[]>([])
   const [timer, setTimer] = useState<null|NodeJS.Timeout>(null)
   const [project, setProject] = useLocalStorage<ProjectResponse>('project', {})
-  const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', { token: null, user: { id: 0, email: '' } })
+  const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', { token: null, user: DEFAULT_USER })
 
   const addMessage = (type: MessageType, text: string) => {
     if (timer) clearTimeout(timer)

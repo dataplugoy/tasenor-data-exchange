@@ -3,8 +3,9 @@ import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
 import { useNavigate } from 'react-router-dom'
-import { usePOST } from '../Hooks/useNet'
+import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
+import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 
 export const LoginPage = (): React.JSX.Element => {
 
@@ -14,12 +15,12 @@ export const LoginPage = (): React.JSX.Element => {
   const app = useApp()
   const navigate = useNavigate()
   const POST = usePOST<AuthResponse>()
+  const GET = useGET<ProjectResponse>()
 
   const onLogin = () => {
-    POST('/auth', { email, password }).then((res) => {
+    POST('/auth', { email, password }).then(async (res) => {
       if (res) {
         app.setAuth(res)
-        // TODO: Fetch default project.
         navigate('/')
       }
     })

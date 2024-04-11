@@ -20,6 +20,7 @@ import { toJSON } from '../lib/utils'
 import { Transaction } from '../types/Transaction'
 import { OutputDestinationModel } from './OutputDestinationModel'
 import { AccountCode } from '../types/AccountCode'
+import { AnalyzerConfig } from '../lib/analyzer/AnalyzerConfig'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -213,7 +214,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const unifieds = await UnifiedItemModel.findForBatch(batch)
     const project = await this.getProject()
-    Analyzer.configure(project.settings)
+    Analyzer.configure(project.settings as AnalyzerConfig)
 
     // Unified items must be processed in order and batch must stop if one fails.
     const stock = new Stock(batch.data.initialStock as StockData)
@@ -326,5 +327,16 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       throw new Error(`Too many flows named as '${name}' for user ${userId}.`)
     }
     return plans.length ? new FlowPlanModel(plans[0]) : null
+  }
+
+
+  /**
+   * Get plans for the project.
+   * @param projectId
+   * @returns
+   */
+  static async findForProject(projectId: number): Promise<FlowPlanModel[]> {
+    const plans = await FlowPlanModel.findMany<prisma.FlowPlan, FlowPlanModel>({ projectId })
+    return plans
   }
 }
