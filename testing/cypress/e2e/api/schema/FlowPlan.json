@@ -2,6 +2,7 @@
   "$id": "FlowPlan",
   "title": "FlowPlan",
   "type": "object",
+  "additionalProperties": false,
   "required": ["id", "projectId", "title", "state", "lastStamp", "stock"],
   "properties": {
     "id": {
@@ -31,6 +32,5 @@
       "type": "string",
       "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
     }
-  },
-  "additionalProperties": false
+  }
 }

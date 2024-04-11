@@ -5,7 +5,11 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface ProjectResponse {
+export type ProjectResponse = Project & {
+  plans?: FlowPlan[];
+};
+
+export interface Project {
   id?: number;
   userId: number;
   name: string;
@@ -16,4 +20,18 @@ export interface ProjectResponse {
 export interface ProjectSettings {
   language: string;
   currency: string;
+}
+export interface FlowPlan {
+  id: number;
+  projectId: number;
+  title: string;
+  state: {
+    [k: string]: unknown;
+  };
+  lastStamp: string | null;
+  stock: {
+    [k: string]: unknown;
+  };
+  created?: string;
+  updated?: string;
 }
