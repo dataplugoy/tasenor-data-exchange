@@ -2,7 +2,7 @@ import express from 'express'
 import { UserModel } from '../models/UserModel'
 import { compare, sign } from '../lib/crypt'
 import { AllowedSchema, Validator } from 'express-json-validator-middleware'
-import AuthRequest from '../schema/auth/AuthRequest.json'
+import AuthRequest from '../../../schema/auth/AuthRequest.json'
 
 const { validate } = new Validator({})
 

@@ -329,7 +329,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     return plans.length ? new FlowPlanModel(plans[0]) : null
   }
 
-
   /**
    * Get plans for the project.
    * @param projectId
@@ -338,5 +337,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   static async findForProject(projectId: number): Promise<FlowPlanModel[]> {
     const plans = await FlowPlanModel.findMany<prisma.FlowPlan, FlowPlanModel>({ projectId })
     return plans
+  }
+
+  static async get(id: number): Promise<FlowPlanModel | null> {
+    return this.findUnique<prisma.FlowPlan, FlowPlanModel>({ id })
   }
 }

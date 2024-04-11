@@ -21,7 +21,6 @@ router.get('/:id',
   authorize(),
   async (req, res) => {
     const userId = res.locals.userId
-    console.log(req.params.id)
     // TODO: Validate params.id
     const projectId = parseInt(req.params.id)
     const project = await ProjectModel.get(projectId)
