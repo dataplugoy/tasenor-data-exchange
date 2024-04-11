@@ -5,7 +5,10 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface ModelsProjectSettings {
-  language?: string;
-  currency?: string;
+export interface ProjectResponse {
+  id?: number;
+  userId?: number;
+  name?: string;
+  created?: string;
+  updated?: string;
 }
