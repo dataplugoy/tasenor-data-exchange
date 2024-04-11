@@ -25,7 +25,7 @@ router.get('/:id',
     // TODO: Validate params.id
     const projectId = parseInt(req.params.id)
     const project = await ProjectModel.get(projectId)
-    if (project.data.userId !== userId) {
+    if (!project || project.data.userId !== userId) {
       return res.sendStatus(404)
     }
     const plans = await FlowPlanModel.findForProject(projectId)

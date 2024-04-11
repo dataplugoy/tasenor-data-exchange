@@ -27,7 +27,7 @@ export class ProjectModel extends BaseModel<prisma.Project> {
     return this.findById<prisma.Project, ProjectModel>(flow.data.projectId)
   }
 
-  static async get(id: number): Promise<ProjectModel> {
-    return this.findById<prisma.Project, ProjectModel>(id)
+  static async get(id: number): Promise<ProjectModel | null> {
+    return this.findUnique<prisma.Project, ProjectModel>({ id })
   }
 }
