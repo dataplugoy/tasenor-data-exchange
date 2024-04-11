@@ -41,4 +41,9 @@ export class RunModel extends BaseModel<prisma.Run> {
   static getAll(filter = {}): Promise<RunModel[]> {
     return RunModel.findMany<prisma.Run, RunModel>(filter, [{ created: 'asc' }])
   }
+
+  // TODO: Find all findForX functions and use ID only as argument.
+  static async findForBatch(batchId: number): Promise<RunModel[]> {
+    return this.findMany<prisma.Run, RunModel>({ batchId }, [{ created: 'desc' }])
+  }
 }
