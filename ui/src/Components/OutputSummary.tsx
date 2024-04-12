@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
-import { Batch } from '../Types/API/Batch'
-import { useGET } from '../Hooks/useNet'
-import { BatchResponse } from '../Types/API/batches/BatchResponse'
+import React, {  } from 'react'
+import { Box } from '@mui/material'
 import { Run } from '../Types/API/Run'
 import { InputItem } from '../Types/API/InputItem'
 import { UnifiedItem } from '../Types/API/UnifiedItem'
 import { OutputItem } from '../Types/API/OutputItem'
-import { Trans } from 'react-i18next'
-import { DateTime } from 'luxon'
-import { DescribeStateChange } from './DescribeStateChange'
 
 interface OutputSummaryProps {
   run: Run
+  previousRun?: Run
   inputs: Record<number, InputItem[]>
   unifieds: Record<number, UnifiedItem[]>
   outputs: Record<number, OutputItem[]>
 }
 
 export const OutputSummary = (props: OutputSummaryProps): React.JSX.Element => {
-  const { run, inputs, unifieds, outputs } = props
+  const { run, previousRun, inputs, unifieds, outputs } = props
 
-  const total = (inputs[run.id] || []).length + (unifieds[run.id] || []).length + (outputs[run.id] || []).length
+  let total = (inputs[run.id] || []).length + (unifieds[run.id] || []).length + (outputs[run.id] || []).length
 
   let done = 0
   let skips = false;
@@ -44,6 +39,12 @@ export const OutputSummary = (props: OutputSummaryProps): React.JSX.Element => {
   // Analysis counts successful conversions.
   if (run.initialState === 'ITEMS_UNIFIED' && run.finalState === 'OUTPUT_CREATED') {
     done = (outputs[run.id] || []).length
+  }
+
+  // Output total is the same as produced items in previous run.
+  if (run.initialState === 'OUTPUT_CREATED' && previousRun) {
+    // TODO: Not correct when failing in between. Need more comprehensive structuring.
+    total = (outputs[previousRun.id] || []).length
   }
 
   return (

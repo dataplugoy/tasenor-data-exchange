@@ -19,6 +19,7 @@
     "@tasenor/config": "^1.13.0",
     "@types/luxon": "^3.4.2",
     "axios": "^1.6.8",
+    "clone": "^2.1.2",
     "i18next": "^23.10.1",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
@@ -28,6 +29,7 @@
     "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
+    "@types/clone": "^2.1.4",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.24",
