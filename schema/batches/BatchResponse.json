@@ -1,0 +1,46 @@
+{
+  "title": "BatchResponse",
+  "allOf": [
+    { "$ref": "Batch" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "runs": {
+          "type": "array",
+          "items": { "$ref": "Run" }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": { "$ref": "InputItem" }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "unifieds": {
+          "type": "array",
+          "items": { "$ref": "UnifiedItem" }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "outputs": {
+          "type": "array",
+          "items": { "$ref": "OutputItem" }
+        }
+      }
+    }
+  ]
+}

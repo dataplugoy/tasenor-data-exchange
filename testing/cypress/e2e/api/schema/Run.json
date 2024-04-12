@@ -1,0 +1,48 @@
+{
+  "$id": "Run",
+  "title": "Run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "batchId", "initialState", "finalState", "error"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "batchId": {
+      "type": "integer"
+    },
+    "initialState": {
+      "type": "string",
+      "enum": [
+        "BATCH_CREATED",
+        "DATA_FETCHED",
+        "DATA_PARSED",
+        "ITEMS_UNIFIED",
+        "OUTPUT_CREATED",
+        "OUTPUT_DELIVERED"
+      ]
+    },
+    "finalState": {
+      "type": "string",
+      "enum": [
+        "BATCH_CREATED",
+        "DATA_FETCHED",
+        "DATA_PARSED",
+        "ITEMS_UNIFIED",
+        "OUTPUT_CREATED",
+        "OUTPUT_DELIVERED"
+      ]
+    },
+    "error": {
+      "type": ["string", "null"]
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  }
+}

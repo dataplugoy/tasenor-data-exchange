@@ -1,0 +1,51 @@
+{
+  "$id": "UnifiedItem",
+  "title": "UnifiedItem",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "time", "data", "stockChange", "processed", "skipped", "error", "inputId", "batchId", "runId"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "time": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "data": {
+      "type": "object"
+    },
+    "stockChange": {
+      "type": "object"
+    },
+    "processed": {
+      "type": "boolean"
+    },
+    "skipped": {
+      "type": "boolean"
+    },
+    "error": {
+      "type": ["string", "null"]
+    },
+    "inputId": {
+      "type": "integer"
+    },
+    "flowPlanId": {
+      "type": "integer"
+    },
+    "batchId": {
+      "type": "integer"
+    },
+    "runId": {
+      "type": "integer"
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  }
+}
