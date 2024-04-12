@@ -19,7 +19,7 @@ export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
   return obj !== null && typeof obj === 'object' && obj['type'] === 'OutputItem'
 }
 
-export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Fail' | 'Not Started'
+export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Failed' | 'No Progress'
 
 export type RunResult = {
   run: Run
@@ -42,21 +42,109 @@ export function sortRuns(
   unifieds: Record<number, UnifiedItem[]>,
   outputs: Record<number, OutputItem[]>): RunResult[] {
 
-  const result: RunResult[] = []
+  const results: RunResult[] = []
+  let lastSuccess: null | RunResult = null
 
   // Handle in chronological order.
   for (let i = runs.length - 1; i >= 0; i--) {
     const run = runs[i]
-    result.push({
-      run,
-      result: 'Not Started',
-      done: null,
-      total: null,
-      items: []
+    let resultType: RunResultType = 'No Progress'
+    let done: number | null = null
+    let total: number | null = null
+    let items: ResultItem[] = []
+    const hasProgressed = (run.initialState !== run.finalState);
+
+    // Categorize items.
+    (inputs[run.id] || []).forEach((item: InputItem) => {
+      items.push({ type: 'InputItem', ...item})
+    });
+    (unifieds[run.id] || []).forEach(item => {
+      items.push({ type: 'UnifiedItem', ...item})
+    });
+    (outputs[run.id] || []).forEach(item => {
+      items.push({ type: 'OutputItem', ...item})
     })
+
+    // Based on the progress, fill in the result.
+    if (hasProgressed) {
+
+      const skips = items.filter(item => item.skipped)
+      const hasSkips = skips.length > 0
+      const hasAllSkips = items.length > 0 && items.length === skips.length
+      const success = items.filter(item => (isResultOutputItem(item) && item.delivered) || (!isResultOutputItem(item) && item.processed))
+      const hasAllSuccess = items.length > 0 && items.length === success.length
+
+      switch (run.finalState) {
+        case 'DATA_FETCHED':
+          done = null
+          total = null
+          resultType = 'All Success'
+          break
+        case 'DATA_PARSED':
+          done = success.length + skips.length
+          total = items.length
+          break
+        case 'ITEMS_UNIFIED':
+          done = success.length + skips.length
+          total = items.length
+          break
+        case 'OUTPUT_CREATED':
+          done = items.length
+          total = items.length
+          resultType = 'All Success'
+          break
+        default:
+          throw new Error(`State of success '${run.finalState}' not yet implemented.`)
+      }
+
+      if (hasAllSuccess) {
+        resultType = 'All Success'
+      } else if (hasAllSkips) {
+        resultType = 'All Skipped'
+      } else if (hasSkips) {
+        resultType = 'Partly Skipped Success'
+      }
+    } else {
+      const lastItems = lastSuccess?.items || []
+      const skips = lastItems.filter(item => item.skipped)
+      const success = lastItems.filter(item => (isResultOutputItem(item) && item.delivered) || (!isResultOutputItem(item) && item.processed))
+      const failures = lastItems.filter(item => item.error !== null)
+
+      switch (run.initialState) {
+        case 'OUTPUT_CREATED':
+          done = skips.length + success.length
+          total = lastSuccess?.items.length || null
+          break
+        default:
+          throw new Error(`State of failure '${run.initialState}' not yet implemented.`)
+      }
+
+      if (failures.length === lastItems.length) {
+        resultType = 'All Failed'
+      } else if (failures.length > 0) {
+        resultType = 'Partly Fail'
+      } else {
+        resultType = 'No Progress'
+      }
+
+      // Pass last known items for further investigation.
+      items = lastSuccess?.items || []
+    }
+
+    // Collect the results.
+    const result = {
+      result: resultType,
+      run, done, total, items
+    }
+
+    results.push(result)
+
+    if (hasProgressed) {
+      lastSuccess = result
+    }
   }
 
-  result.reverse()
+  results.reverse()
 
-  return result
+  return results
 }

@@ -12,6 +12,7 @@ import { DateTime } from 'luxon'
 import { DescribeStateChange } from './DescribeStateChange'
 import { OutputSummary } from './OutputSummary'
 import { sortRuns } from '../Helpers/sorter'
+import { ResultIndicator } from './ResultIndicator'
 
 interface RunListProps {
   batch: Batch
@@ -47,18 +48,18 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
             <TableCell variant="head"><Trans>Time</Trans></TableCell>
             <TableCell variant="head"><Trans>Progress</Trans></TableCell>
             <TableCell variant="head"><Trans>Output</Trans></TableCell>
-            <TableCell variant="head"><Trans>Success</Trans></TableCell>
+            <TableCell variant="head"><Trans>Result</Trans></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
         {
-          runs.map(run =>
-            <TableRow key={run.id} hover>
-              <TableCell>{run.id}</TableCell>
-              <TableCell>{DateTime.fromISO(run.updated as string).toLocaleString(DateTime.TIME_WITH_SECONDS)}</TableCell>
-              <TableCell><DescribeStateChange initialState={run.initialState} finalState={run.finalState}/></TableCell>
-              <TableCell><OutputSummary run={run} inputs={inputs} unifieds={unifieds} outputs={outputs}/></TableCell>
-              <TableCell>{run.id}</TableCell>
+          sorted.map(result =>
+            <TableRow key={result.run.id} hover>
+              <TableCell>{result.run.id}</TableCell>
+              <TableCell>{DateTime.fromISO(result.run.updated as string).toLocaleString(DateTime.TIME_WITH_SECONDS)}</TableCell>
+              <TableCell><DescribeStateChange result={result}/></TableCell>
+              <TableCell><OutputSummary result={result}/></TableCell>
+              <TableCell><ResultIndicator result={result}/></TableCell>
             </TableRow>
           )
         }

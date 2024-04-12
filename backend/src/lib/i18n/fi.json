@@ -1,4 +1,10 @@
 {
   "Bought {{amount}} {{asset}}": "Ostettu {{amount}} {{asset}}",
-  "Sold {{amount}} {{asset}}": "Myyty {{amount}} {{asset}}"
+  "Sold {{amount}} {{asset}}": "Myyty {{amount}} {{asset}}",
+  "All Success": "Kaikki onnistui",
+  "Partly Skipped Success": "Osa jätetty väliin",
+  "All Skipped": "Käikki jätetty väliin",
+  "Partly Fail": "Osa epäonnistui",
+  "All Failed": "Kaikki epäonnistui",
+  "No Progress": "Ei edistystä"
 }

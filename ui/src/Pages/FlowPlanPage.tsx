@@ -28,6 +28,8 @@ export const FlowPlanPage = (): React.JSX.Element => {
     })
   }, [])
 
+  // TODO: not expanded by default
+
   return (
     <Box>
       <Typography variant="h1">
@@ -39,7 +41,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
         </Box>
       }
       <Box sx={{ mt: 2 }}>
-        { batches.map(batch => <Accordion key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
+        { batches.map(batch => <Accordion defaultExpanded key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
           <AccordionSummary expandIcon={<ExpandMore/>}>
             <Box sx={{ width: '100%' }}>
               <Box sx={{ display: 'inline-block', width: '8%', fontWeight: 'bold' }}>#{batch.number}</Box>
