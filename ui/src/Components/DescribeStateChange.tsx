@@ -17,7 +17,6 @@ export const DescribeStateChange = (props: DescribeStateChangeProps): React.JSX.
   const { initialState, finalState } = result.run
 
   const { t } = useTranslation()
-  // TODO: Color by result.
 
   return (
     <Box sx={{ display: 'inline', color: initialState === finalState ? 'error.main' : undefined }}>

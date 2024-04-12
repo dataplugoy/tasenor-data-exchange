@@ -13,6 +13,8 @@ import { DescribeStateChange } from './DescribeStateChange'
 import { OutputSummary } from './OutputSummary'
 import { sortRuns } from '../Helpers/sorter'
 import { ResultIndicator } from './ResultIndicator'
+import clone from 'clone'
+import { RunDetails } from './RunDetails'
 
 interface RunListProps {
   batch: Batch
@@ -27,6 +29,7 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   const [inputs, setInputs] = useState<Record<number, InputItem[]>>({})
   const [unifieds, setUnifieds] = useState<Record<number, UnifiedItem[]>>({})
   const [outputs, setOutputs] = useState<Record<number, OutputItem[]>>({})
+  const [opened, setOpened] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     GET(`/batches/${batch.id}`).then(res => {
@@ -36,6 +39,15 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
       setOutputs((res?.outputs || []).reduce((prev, cur) => ({...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur])}), {}))
     })
   }, [])
+
+  const onToggle = (id: number) => {
+    if (opened.has(id)) {
+      opened.delete(id)
+    } else {
+      opened.add(id)
+    }
+    setOpened(clone(opened))
+  }
 
   const sorted = sortRuns(runs, inputs, unifieds, outputs)
 
@@ -54,13 +66,22 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
         <TableBody>
         {
           sorted.map(result =>
-            <TableRow key={result.run.id} hover>
-              <TableCell>{result.run.id}</TableCell>
-              <TableCell>{DateTime.fromISO(result.run.updated as string).toLocaleString(DateTime.TIME_WITH_SECONDS)}</TableCell>
-              <TableCell><DescribeStateChange result={result}/></TableCell>
-              <TableCell><OutputSummary result={result}/></TableCell>
-              <TableCell><ResultIndicator result={result}/></TableCell>
-            </TableRow>
+            <React.Fragment key={result.run.id}>
+              <TableRow hover onClick={() => onToggle(result.run.id)}>
+                <TableCell>{result.run.id}</TableCell>
+                <TableCell>{DateTime.fromISO(result.run.updated as string).toLocaleString(DateTime.TIME_WITH_SECONDS)}</TableCell>
+                <TableCell><DescribeStateChange result={result}/></TableCell>
+                <TableCell><OutputSummary result={result}/></TableCell>
+                <TableCell><ResultIndicator result={result}/></TableCell>
+              </TableRow>
+              { !opened.has(result.run.id) &&
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <RunDetails batch={batch} result={result}/>
+                  </TableCell>
+                </TableRow>
+              }
+            </React.Fragment>
           )
         }
         </TableBody>

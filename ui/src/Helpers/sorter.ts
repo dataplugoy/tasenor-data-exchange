@@ -20,10 +20,24 @@ export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
 }
 
 export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Failed' | 'No Progress'
+export type RunStepType =
+  | 'FAILED_AFTER_BATCH_CREATED'
+  | 'FAILED_AFTER_DATA_FETCHED'
+  | 'FAILED_AFTER_DATA_PARSED'
+  | 'FAILED_AFTER_ITEMS_UNIFIED'
+  | 'FAILED_AFTER_OUTPUT_CREATED'
+  | 'FAILED_AFTER_OUTPUT_DELIVERED'
+  | 'SUCCESSFUL_BATCH_CREATED'
+  | 'SUCCESSFUL_DATA_FETCHED'
+  | 'SUCCESSFUL_DATA_PARSED'
+  | 'SUCCESSFUL_ITEMS_UNIFIED'
+  | 'SUCCESSFUL_OUTPUT_CREATED'
+  | 'SUCCESSFUL_OUTPUT_DELIVERED'
 
 export type RunResult = {
   run: Run
   result: RunResultType
+  step: RunStepType
   done: number | null
   total: number | null
   items: ResultItem[]
@@ -49,6 +63,7 @@ export function sortRuns(
   for (let i = runs.length - 1; i >= 0; i--) {
     const run = runs[i]
     let resultType: RunResultType = 'No Progress'
+    let step: RunStepType = 'FAILED_AFTER_BATCH_CREATED'
     let done: number | null = null
     let total: number | null = null
     let items: ResultItem[] = []
@@ -104,6 +119,8 @@ export function sortRuns(
       } else if (hasSkips) {
         resultType = 'Partly Skipped Success'
       }
+      step = `SUCCESSFUL_${run.finalState}`
+
     } else {
       const lastItems = lastSuccess?.items || []
       const skips = lastItems.filter(item => item.skipped)
@@ -127,6 +144,8 @@ export function sortRuns(
         resultType = 'No Progress'
       }
 
+      step = `FAILED_AFTER_${run.finalState}`
+
       // Pass last known items for further investigation.
       items = lastSuccess?.items || []
     }
@@ -134,6 +153,7 @@ export function sortRuns(
     // Collect the results.
     const result = {
       result: resultType,
+      step,
       run, done, total, items
     }
 
