@@ -10,13 +10,13 @@ export type ResultOutputItem = { type: 'OutputItem' } & OutputItem
 export type ResultItem = ResultInputItem | ResultUnifiedItem | ResultOutputItem
 
 export function isResultInputItem(obj: unknown): obj is ResultInputItem {
-  return obj !== null && typeof obj === 'object' && obj['type'] === 'InputItem'
+  return obj !== null && typeof obj === 'object' && obj.type === 'InputItem'
 }
 export function isResultUnifiedItem(obj: unknown): obj is ResultUnifiedItem {
-  return obj !== null && typeof obj === 'object' && obj['type'] === 'UnifiedItem'
+  return obj !== null && typeof obj === 'object' && obj.type === 'UnifiedItem'
 }
 export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
-  return obj !== null && typeof obj === 'object' && obj['type'] === 'OutputItem'
+  return obj !== null && typeof obj === 'object' && obj.type === 'OutputItem'
 }
 
 export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Failed' | 'No Progress'
@@ -71,13 +71,13 @@ export function sortRuns(
 
     // Categorize items.
     (inputs[run.id] || []).forEach((item: InputItem) => {
-      items.push({ type: 'InputItem', ...item})
+      items.push({ type: 'InputItem', ...item })
     });
     (unifieds[run.id] || []).forEach(item => {
-      items.push({ type: 'UnifiedItem', ...item})
+      items.push({ type: 'UnifiedItem', ...item })
     });
     (outputs[run.id] || []).forEach(item => {
-      items.push({ type: 'OutputItem', ...item})
+      items.push({ type: 'OutputItem', ...item })
     })
 
     // Based on the progress, fill in the result.
@@ -154,7 +154,10 @@ export function sortRuns(
     const result = {
       result: resultType,
       step,
-      run, done, total, items
+      run,
+      done,
+      total,
+      items
     }
 
     results.push(result)

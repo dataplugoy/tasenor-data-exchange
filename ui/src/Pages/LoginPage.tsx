@@ -5,7 +5,6 @@ import { useApp } from '../Hooks/useApp'
 import { useNavigate } from 'react-router-dom'
 import { usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
-import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 
 export const LoginPage = (): React.JSX.Element => {
 

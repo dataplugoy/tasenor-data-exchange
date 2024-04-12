@@ -10,7 +10,7 @@ export async function initI18N(): Promise<void> {
     return
   }
 
-  const t = await i18next.init({
+  await i18next.init({
     fallbackLng: 'en',
     lng: 'en',
     ns: ['translations'],
@@ -18,7 +18,7 @@ export async function initI18N(): Promise<void> {
     keySeparator: false,
     resources: {
       en: {
-        translations: fi
+        translations: en
       },
       fi: {
         translations: fi

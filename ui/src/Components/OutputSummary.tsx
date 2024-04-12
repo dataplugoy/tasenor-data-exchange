@@ -1,4 +1,4 @@
-import React, {  } from 'react'
+import React, { } from 'react'
 import { Box } from '@mui/material'
 import { RunResult } from '../Helpers/sorter'
 

@@ -34,9 +34,9 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   useEffect(() => {
     GET(`/batches/${batch.id}`).then(res => {
       setRuns(res?.runs || [])
-      setInputs((res?.inputs || []).reduce((prev, cur) => ({...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur])}), {}))
-      setUnifieds((res?.unifieds || []).reduce((prev, cur) => ({...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur])}), {}))
-      setOutputs((res?.outputs || []).reduce((prev, cur) => ({...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur])}), {}))
+      setInputs((res?.inputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
+      setUnifieds((res?.unifieds || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
+      setOutputs((res?.outputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
     })
   }, [])
 

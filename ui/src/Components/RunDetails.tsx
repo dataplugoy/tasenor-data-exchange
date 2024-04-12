@@ -1,6 +1,6 @@
 import React, { } from 'react'
 import { Box } from '@mui/material'
-import { ResultInputItem, ResultItem, RunResult, isResultOutputItem } from '../Helpers/sorter'
+import { ResultItem, RunResult, isResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
 import { Check, Error, QuestionMark, SkipNext } from '@mui/icons-material'
@@ -86,7 +86,7 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
 }
 
 const Dump = (props: RunDetailsProps): React.JSX.Element => {
-  const { batch, result } = props
+  const { result } = props
   return (
     <Box>
       <pre>
@@ -113,7 +113,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       return <SuccessfulItemsUnified batch={batch} result={result}/>
     case 'SUCCESSFUL_OUTPUT_CREATED':
       return <SuccessOutputCreated batch={batch} result={result}/>
-    }
+  }
 
   return (
     <Box sx={{ color: 'error.light' }}>

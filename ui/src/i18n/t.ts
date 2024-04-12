@@ -18,7 +18,7 @@ export async function initI18N(): Promise<void> {
     keySeparator: false,
     resources: {
       en: {
-        translations: fi
+        translations: en
       },
       fi: {
         translations: fi

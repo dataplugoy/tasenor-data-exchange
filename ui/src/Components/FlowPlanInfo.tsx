@@ -1,9 +1,8 @@
 import React, { } from 'react'
-import { Card, CardContent, CardHeader, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Card, CardContent, CardHeader, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { Air } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
-import { useNavigate } from 'react-router-dom'
 import { Project } from '../Types/API/Project'
 
 interface FlowPlanInfoProps {

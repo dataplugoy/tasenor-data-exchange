@@ -75,7 +75,7 @@ export const useApp = () => useContext(AppContext)
 /**
  * Provider for the global context.
  */
-export const AppProvider = (props: { children: ReactNode }): JSX.Element => {
+export const AppProvider = (props: { children: ReactNode }): React.JSX.Element => {
   const [messages, setMessages] = useState<Message[]>([])
   const [timer, setTimer] = useState<null|NodeJS.Timeout>(null)
   const [project, setProject] = useLocalStorage<ProjectResponse>('project', DEFAULT_PROJECT)

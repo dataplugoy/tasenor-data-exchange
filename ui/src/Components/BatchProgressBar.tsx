@@ -8,19 +8,19 @@ interface BatchBrogressBarProps {
 
 export const BatchBrogressBar = (props: BatchBrogressBarProps): React.JSX.Element => {
   const { state } = props
-  const states = ["BATCH_CREATED", "DATA_FETCHED", "DATA_PARSED", "ITEMS_UNIFIED", "OUTPUT_CREATED", "OUTPUT_DELIVERED"]
+  const states = ['BATCH_CREATED', 'DATA_FETCHED', 'DATA_PARSED', 'ITEMS_UNIFIED', 'OUTPUT_CREATED', 'OUTPUT_DELIVERED']
   const pos = states.indexOf(state) / (states.length - 1)
 
   return (
     <Box sx={{
-        position: 'relative',
-        height: '1rem',
-        backgroundColor: 'secondary.main',
-        borderBottom: '3px solid',
-        borderBottomColor: 'secondary.dark',
-        borderTop: '3px solid',
-        borderTopColor: 'secondary.light',
-      }}
+      position: 'relative',
+      height: '1rem',
+      backgroundColor: 'secondary.main',
+      borderBottom: '3px solid',
+      borderBottomColor: 'secondary.dark',
+      borderTop: '3px solid',
+      borderTopColor: 'secondary.light',
+    }}
     >
       <Box sx={{
         position: 'absolute',
