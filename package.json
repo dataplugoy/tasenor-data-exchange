@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm build-schema",
+    "build": "pnpm build-schema && pnpm build-i18n",
     "build-schema": "pnpm build-testing-schema && pnpm build-ui-schema && pnpm build-backend-schema",
     "build-ui-schema": "rm -rf ui/src/Types/API/ && json2ts --cwd schema/ -i schema/ -o ui/src/Types/API/",
     "build-backend-schema": "rm -rf backend/src/types/API/ && json2ts --cwd schema/ -i schema/ -o backend/src/types/API/",
     "build-testing-schema": "rm -rf testing/cypress/e2e/api/schema && cp -r schema/ testing/cypress/e2e/api/ && find testing/cypress/e2e/api/schema/ -maxdepth 1 -type f -exec mv \\{\\} \\{\\}.json \\;",
+    "build-i18n": "rm -fr ui/src/i18n && cp -r backend/src/lib/i18n ui/src/",
     "lint": "pnpm lint-ui && pnpm lint-backend",
     "lint-ui": "cd ui && pnpm lint",
     "lint-backend": "cd backend && pnpm lint",

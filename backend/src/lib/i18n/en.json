@@ -1,0 +1,12 @@
+{
+  "BATCH_CREATED - BATCH_CREATED" : "Batch started but no progress made",
+  "BATCH_CREATED - DATA_FETCHED" : "Batch created and data fetched",
+  "DATA_FETCHED - DATA_FETCHED" : "Unanble to parse data",
+  "DATA_FETCHED - DATA_PARSED" : "Data fetched and parsed",
+  "DATA_PARSED - DATA_PARSED" : "Unable to convert to standard format",
+  "DATA_PARSED - ITEMS_UNIFIED" : "Converted to standard format",
+  "ITEMS_UNIFIED - ITEMS_UNIFIED" : "Unable to complete analysis",
+  "ITEMS_UNIFIED - OUTPUT_CREATED" : "Analysed and converted to results",
+  "OUTPUT_CREATED - OUTPUT_CREATED" : "Cannot deliver the results",
+  "OUTPUT_CREATED - OUTPUT_DELIVERED" : "Results successfully delivered"
+}

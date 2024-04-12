@@ -1,0 +1,4 @@
+{
+  "Bought {{amount}} {{asset}}": "Ostettu {{amount}} {{asset}}",
+  "Sold {{amount}} {{asset}}": "Myyty {{amount}} {{asset}}"
+}

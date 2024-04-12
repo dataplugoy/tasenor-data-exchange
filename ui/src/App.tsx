@@ -34,5 +34,4 @@ export const App = (): React.JSX.Element => {
       </Container>
     </BrowserRouter>
   </>
-
 }

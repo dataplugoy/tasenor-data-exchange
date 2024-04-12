@@ -6,15 +6,18 @@ import { AppProvider } from './Hooks/useApp'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { theme } from './theme'
 import { I18nextProvider } from 'react-i18next'
-
-const resources = {
-  en: {
-    translations: {}
-  }
-}
+import en from './i18n/en.json'
+import fi from './i18n/fi.json'
 
 i18next.init({
-  resources,
+  resources: {
+    en: {
+      translations: en
+    },
+    fi: {
+      translations: fi
+    },
+  },
 
   fallbackLng: 'en',
   debug: false,

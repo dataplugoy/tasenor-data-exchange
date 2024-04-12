@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import en from './en.json'
 import fi from './fi.json'
 import { Language } from '@tasenor/common'
 
@@ -16,6 +17,9 @@ export async function initI18N(): Promise<void> {
     defaultNS: 'translations',
     keySeparator: false,
     resources: {
+      en: {
+        translations: fi
+      },
       fi: {
         translations: fi
       }

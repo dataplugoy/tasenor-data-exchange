@@ -1,12 +1,9 @@
 import React, { } from 'react'
-import { Box, Card, CardContent, CardHeader, Slider, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { Trans } from 'react-i18next'
-import { Air } from '@mui/icons-material'
-import { FlowPlan } from '../Types/API/FlowPlan'
-import { useNavigate } from 'react-router-dom'
+import { Box } from '@mui/material'
+import { BatchState } from '../Types/BatchState'
 
 interface BatchBrogressBarProps {
-  state: "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED"
+  state: BatchState
 }
 
 export const BatchBrogressBar = (props: BatchBrogressBarProps): React.JSX.Element => {
