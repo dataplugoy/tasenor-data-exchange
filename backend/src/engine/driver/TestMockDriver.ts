@@ -14,8 +14,6 @@ import { RunModel } from '../../models/RunModel'
 import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 import { OutputItemModel } from '../../models/OutputItemModel'
 
-// TODO: Could use first(), second(), third() functions for regex() rule.
-
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
