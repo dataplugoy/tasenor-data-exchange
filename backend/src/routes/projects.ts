@@ -2,6 +2,7 @@ import express from 'express'
 import { authorize } from '../lib/authorize'
 import { ProjectModel } from '../models/ProjectModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
+import { param } from '../lib/param'
 
 const router = express.Router()
 
@@ -19,10 +20,10 @@ router.get('/',
 
 router.get('/:id',
   authorize(),
+  param('id'),
   async (req, res) => {
     const userId = res.locals.userId
-    // TODO: Validate params.id
-    const projectId = parseInt(req.params.id)
+    const projectId = res.locals.id
     const project = await ProjectModel.get(projectId)
     if (!project || project.data.userId !== userId) {
       return res.sendStatus(404)

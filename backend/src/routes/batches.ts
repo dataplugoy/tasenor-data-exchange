@@ -7,15 +7,16 @@ import { RunModel } from '../models/RunModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { OutputItemModel } from '../models/OutputItemModel'
+import { param } from '../lib/param'
 
 const router = express.Router()
 
 router.get('/:id',
   authorize(),
+  param('id'),
   async (req, res) => {
     const userId = res.locals.userId
-    // TODO: Validate params.id
-    const batchId = parseInt(req.params.id)
+    const batchId = res.locals.id
     const batch = await BatchModel.get(batchId)
     const flowPlan = batch && await FlowPlanModel.get(batch.data.flowPlanId)
     const project = flowPlan && await ProjectModel.get(flowPlan.data.projectId)
