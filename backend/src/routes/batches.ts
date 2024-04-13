@@ -25,9 +25,9 @@ router.get('/:id',
     }
 
     const runs = (await RunModel.findForBatch(batchId)).map(run => run.data)
-    const inputs = (await InputItemModel.findForBatch(batch)).map(input => input.data)
-    const unifieds = (await UnifiedItemModel.findForBatch(batch)).map(unified => unified.data)
-    const outputs = (await OutputItemModel.findForBatch(batch)).map(output => output.data)
+    const inputs = (await InputItemModel.findForBatch(batch.id)).map(input => input.data)
+    const unifieds = (await UnifiedItemModel.findForBatch(batch.id)).map(unified => unified.data)
+    const outputs = (await OutputItemModel.findForBatch(batch.id)).map(output => output.data)
 
     res.send({ ...batch.data, runs, inputs, unifieds, outputs })
   }

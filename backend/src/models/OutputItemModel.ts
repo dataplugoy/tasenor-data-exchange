@@ -40,18 +40,18 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
    * @param flow
    * @returns
    */
-  static async findForBatch(batch: BatchModel, processed: boolean | undefined = undefined): Promise<OutputItemModel[]> {
+  static async findForBatch(batchId: number, processed: boolean | undefined = undefined): Promise<OutputItemModel[]> {
     if (processed === false) {
-      return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId: batch.id, delivered: false, skipped: false })
+      return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId, delivered: false, skipped: false })
     }
     if (processed === true) {
       const items = await this.db.findMany({ where: { OR: [
-        { batchId: batch.id, delivered: true },
-        { batchId: batch.id, skipped: true }
+        { batchId, delivered: true },
+        { batchId, skipped: true }
       ]} })
       return items.map(item => this.instantiate(item))
     }
-    return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId: batch.id })
+    return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId })
   }
 
   /**

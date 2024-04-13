@@ -26,8 +26,8 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
    * @param flow
    * @returns
    */
-  static async findForFlow(flow: FlowPlanModel): Promise<InputSourceModel | null> {
-    const source = await this.findUnique<prisma.InputSource, InputSourceModel>({ flowPlanId: flow.id })
+  static async findForFlow(flowPlanId: number): Promise<InputSourceModel | null> {
+    const source = await this.findUnique<prisma.InputSource, InputSourceModel>({ flowPlanId })
     return source
   }
 }

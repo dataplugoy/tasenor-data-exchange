@@ -38,13 +38,13 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlow(flow: FlowPlanModel): Promise<RuleModel[]> {
-    const source = await InputSourceModel.findForFlow(flow)
+  static async findForFlow(flowId: number): Promise<RuleModel[]> {
+    const source = await InputSourceModel.findForFlow(flowId)
     if (!source) {
-      throw new Error(`Cannot find input source for flow ${flow}.`)
+      throw new Error(`Cannot find input source for flow ${flowId}.`)
     }
     const sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
-    const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flow.id, type: 'FLOW' }, [{ priority: 'desc' }])
+    const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flowId, type: 'FLOW' }, [{ priority: 'desc' }])
     return sourceRules.concat(flowRules)
   }
 
@@ -53,9 +53,9 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlowByKey(flow: FlowPlanModel): Promise<Record<string, RuleModel[]>> {
+  static async findForFlowByKey(flowId: number): Promise<Record<string, RuleModel[]>> {
     const byKey: Record<string, RuleModel[]> = {}
-    const rules = await this.findForFlow(flow)
+    const rules = await this.findForFlow(flowId)
 
     for (const rule of rules) {
       if (!byKey[rule.data.key]) {

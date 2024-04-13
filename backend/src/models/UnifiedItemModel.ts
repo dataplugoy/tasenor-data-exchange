@@ -54,8 +54,8 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    * @param flow
    * @returns
    */
-  static async findForBatch(batch: BatchModel, processed: boolean | undefined = undefined): Promise<UnifiedItemModel[]> {
-    const items = await this.findMany<prisma.UnifiedItem, UnifiedItemModel>({ batchId: batch.id, processed }, [{ time: 'asc' }])
+  static async findForBatch(batchId: number, processed: boolean | undefined = undefined): Promise<UnifiedItemModel[]> {
+    const items = await this.findMany<prisma.UnifiedItem, UnifiedItemModel>({ batchId, processed }, [{ time: 'asc' }])
     return items
   }
 

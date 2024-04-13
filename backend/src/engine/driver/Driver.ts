@@ -192,7 +192,7 @@ export class Driver {
    * Load rules to the database.
    */
   async initializeRules(flow: FlowPlanModel): Promise<Record<string, RuleModel[]>> {
-    const source = await InputSourceModel.findForFlow(flow)
+    const source = await InputSourceModel.findForFlow(flow.id)
     log(`Initializing rules for ${source}.`)
 
     const rulePath = path.join(__dirname, 'rules', `${this.constructor.name}.json`)

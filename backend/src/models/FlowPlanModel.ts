@@ -182,8 +182,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async unifyItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getInputDriver(options)
-    const inputs = await InputItemModel.findForBatch(batch, false)
-    let rules = await RuleModel.findForFlowByKey(this)
+    const inputs = await InputItemModel.findForBatch(batch.id, false)
+    let rules = await RuleModel.findForFlowByKey(this.id)
     if (RuleModel.count(rules) === 0) {
       rules = await driver.initializeRules(this)
     }
@@ -212,7 +212,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const unifieds = await UnifiedItemModel.findForBatch(batch)
+    const unifieds = await UnifiedItemModel.findForBatch(batch.id)
     const project = await this.getProject()
     Analyzer.configure(project.settings as AnalyzerConfig)
 
@@ -265,7 +265,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async deliverOutput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const output = await OutputItemModel.findForBatch(batch, false)
+    const output = await OutputItemModel.findForBatch(batch.id, false)
     const driver = await this.getOutputDriver(options)
 
     // We deliver output in any order.
@@ -285,7 +285,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * Get the input data source.
    */
   async getSource(): Promise<InputSourceModel> {
-    const source = await InputSourceModel.findForFlow(this)
+    const source = await InputSourceModel.findForFlow(this.id)
     if (!source) {
       throw new Error(`Cannot find input source for '${this}'.`)
     }
@@ -296,7 +296,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * Get the output data destination.
    */
   async getDestination(): Promise<OutputDestinationModel> {
-    const dest = await OutputDestinationModel.findForFlow(this)
+    const dest = await OutputDestinationModel.findForFlow(this.id)
     if (!dest) {
       throw new Error(`Cannot find output destination for '${this}'.`)
     }
@@ -308,7 +308,11 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @returns
    */
   async getProject(): Promise<ProjectModel> {
-    return await ProjectModel.findForFlow(this)
+    const project = await ProjectModel.get(this.data.projectId)
+    if (!project) {
+      throw new Error(`Cannot find project for '${this}'.`)
+    }
+    return project
   }
 
   /**

@@ -66,8 +66,8 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    * @param flow
    * @returns
    */
-  static async findForBatch(batch: BatchModel, processed: boolean | undefined = undefined): Promise<InputItemModel[]> {
-    const items = await this.findMany<prisma.InputItem, InputItemModel>({ batchId: batch.id, processed })
+  static async findForBatch(batchId: number, processed: boolean | undefined = undefined): Promise<InputItemModel[]> {
+    const items = await this.findMany<prisma.InputItem, InputItemModel>({ batchId, processed })
     return items
   }
 

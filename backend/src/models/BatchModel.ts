@@ -80,8 +80,8 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     return BatchModel.findMany<prisma.Batch, BatchModel>(filter)
   }
 
-  static async findForFlow(flow: FlowPlanModel): Promise<BatchModel[]> {
-    return this.findMany<prisma.Batch, BatchModel>({ flowPlanId: flow.id }, [{ created: 'desc' }])
+  static async findForFlow(flowPlanId: number): Promise<BatchModel[]> {
+    return this.findMany<prisma.Batch, BatchModel>({ flowPlanId }, [{ created: 'desc' }])
   }
 
   static async get(id: number): Promise<BatchModel | null> {

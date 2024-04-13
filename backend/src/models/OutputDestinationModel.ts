@@ -26,8 +26,8 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
    * @param flow
    * @returns
    */
-  static async findForFlow(flow: FlowPlanModel): Promise<OutputDestinationModel | null> {
-    const source = await this.findUnique<prisma.OutputDestination, OutputDestinationModel>({ flowPlanId: flow.id })
+  static async findForFlow(flowPlanId: number): Promise<OutputDestinationModel | null> {
+    const source = await this.findUnique<prisma.OutputDestination, OutputDestinationModel>({ flowPlanId })
     return source
   }
 }
