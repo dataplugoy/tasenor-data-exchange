@@ -1,7 +1,6 @@
+import { ProjectSettings } from '../types/API/Project'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { FlowPlanModel } from './FlowPlanModel'
-import { ProjectSettings } from '../types/ProjectSettings'
 
 export class ProjectModel extends BaseModel<prisma.Project> {
 
