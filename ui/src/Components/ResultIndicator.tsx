@@ -16,10 +16,16 @@ export const ResultIndicator = (props: ResultIndicatorProps): React.JSX.Element 
   const { result } = props
   const { t } = useTranslation()
 
-  // TODO: Color by result.
+  let color: undefined | string = undefined
+  if (result.result === 'All Success') {
+    color = 'success.main'
+  }
+  if (result.result === 'All Failed') {
+    color = 'error.main'
+  }
 
   return (
-    <Box sx={{ display: 'inline' }}>
+    <Box sx={{ display: 'inline', color }}>
       {t(result.result)}
     </Box>
   )
