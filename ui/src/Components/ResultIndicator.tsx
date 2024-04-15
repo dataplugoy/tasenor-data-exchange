@@ -8,7 +8,7 @@ interface ResultIndicatorProps {
 }
 
 /**
- * Describe in text whhat has happened in state change.
+ * Describe in text what has happened in state change.
  * @param props
  * @returns
  */
@@ -16,7 +16,7 @@ export const ResultIndicator = (props: ResultIndicatorProps): React.JSX.Element 
   const { result } = props
   const { t } = useTranslation()
 
-  let color: undefined | string = undefined
+  let color: undefined | string
   if (result.result === 'All Success') {
     color = 'success.main'
   }

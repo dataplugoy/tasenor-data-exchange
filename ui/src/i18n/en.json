@@ -2,7 +2,7 @@
   "BATCH_CREATED - BATCH_CREATED" : "Processing started but unable to fetch data",
   "BATCH_CREATED - DATA_FETCHED" : "Processing started and data fetched",
   "DATA_FETCHED - DATA_FETCHED" : "Unable to parse data",
-  "DATA_FETCHED - DATA_PARSED" : "Data fetched and parsed",
+  "DATA_FETCHED - DATA_PARSED" : "Data successfully parsed",
   "DATA_PARSED - DATA_PARSED" : "Unable to convert to standard format",
   "DATA_PARSED - ITEMS_UNIFIED" : "Converted to standard format",
   "ITEMS_UNIFIED - ITEMS_UNIFIED" : "Unable to complete analysis",

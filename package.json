@@ -15,7 +15,8 @@
     "lint-backend": "cd backend && pnpm lint",
     "fix": "pnpm fix-ui && pnpm fix-backend",
     "fix-ui": "cd ui && pnpm fix",
-    "fix-backend": "cd backend && pnpm fix"
+    "fix-backend": "cd backend && pnpm fix",
+    "preinstall": "cd database && pnpm install && cd ../backend && pnpm install && cd ../ui && pnpm install && cd ../testing && pnpm install"
   },
   "keywords": [],
   "author": "",

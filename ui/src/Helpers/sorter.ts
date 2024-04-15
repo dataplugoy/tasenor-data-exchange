@@ -10,13 +10,13 @@ export type ResultOutputItem = { type: 'OutputItem' } & OutputItem
 export type ResultItem = ResultInputItem | ResultUnifiedItem | ResultOutputItem
 
 export function isResultInputItem(obj: unknown): obj is ResultInputItem {
-  return obj !== null && typeof obj === 'object' && obj.type === 'InputItem'
+  return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'InputItem'
 }
 export function isResultUnifiedItem(obj: unknown): obj is ResultUnifiedItem {
-  return obj !== null && typeof obj === 'object' && obj.type === 'UnifiedItem'
+  return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'UnifiedItem'
 }
 export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
-  return obj !== null && typeof obj === 'object' && obj.type === 'OutputItem'
+  return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'OutputItem'
 }
 
 export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Failed' | 'No Progress'
@@ -96,8 +96,9 @@ export function sortRuns(
           resultType = 'All Success'
           break
         case 'DATA_PARSED':
-          done = success.length + skips.length
+          done = items.length
           total = items.length
+          resultType = 'All Success'
           break
         case 'ITEMS_UNIFIED':
           done = success.length + skips.length
@@ -122,12 +123,19 @@ export function sortRuns(
       step = `SUCCESSFUL_${run.finalState}`
 
     } else {
+      // Get data from the last successful.
       const lastItems = lastSuccess?.items || []
       const skips = lastItems.filter(item => item.skipped)
       const success = lastItems.filter(item => (isResultOutputItem(item) && item.delivered) || (!isResultOutputItem(item) && item.processed))
       const failures = lastItems.filter(item => item.error !== null)
 
+      // Mark the last item not to show confusing items.
+
       switch (run.initialState) {
+        case 'DATA_PARSED':
+          done = skips.length + success.length
+          total = lastSuccess?.items.length || null
+          break
         case 'OUTPUT_CREATED':
           done = skips.length + success.length
           total = lastSuccess?.items.length || null
