@@ -8,7 +8,6 @@ import { DriverSettings } from '../../types/DriverSettings'
 import { RuntimeOptions } from '../../types/RuntimeOptions'
 import { FlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
-import { PreprocessedInput } from '../../types/PreprocessedInput'
 import { InputItemModel } from '../../models/InputItemModel'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { RuleModel } from '../../models/RuleModel'
@@ -19,6 +18,7 @@ import { JsonValue } from '@prisma/client/runtime/library'
 import { RunModel } from '../../models/RunModel'
 import { DateTime } from 'luxon'
 import { OutputItemModel } from '../../models/OutputItemModel'
+import { InputItemData } from '../../types/API/InputItemData'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -184,7 +184,7 @@ export class Driver {
   /**
    * Take the input batch fetched and provide a list of processable input items.
    */
-  async itemizeInput(batch: BatchModel): Promise<PreprocessedInput[]> {
+  async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
     throw new Error(`Input source ${this.type} does not implement itemizeInput().`)
   }
 

@@ -5,7 +5,6 @@ import { Driver } from './Driver'
 import { TestMockDriverSettings } from '../../types/DriverSettings'
 import { TestMockFlowState } from '../../types/FlowState'
 import { BatchModel } from '../../models/BatchModel'
-import { PreprocessedInput } from '../../types/PreprocessedInput'
 import { num } from '@tasenor/common'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { InputItemModel } from '../../models/InputItemModel'
@@ -13,6 +12,7 @@ import { RuleModel } from '../../models/RuleModel'
 import { RunModel } from '../../models/RunModel'
 import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 import { OutputItemModel } from '../../models/OutputItemModel'
+import { InputItemData } from '../../types/API/InputItemData'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -48,13 +48,13 @@ export class TestMockDriver extends Driver {
     return data
   }
 
-  async itemizeInput(batch: BatchModel): Promise<PreprocessedInput[]> {
+  async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
     const lines = batch.parseCsv()
     let lineNumber = 1
-    const items: PreprocessedInput[] = []
+    const items: InputItemData[] = []
 
     for (const line of lines) {
-      const item: PreprocessedInput = {
+      const item: InputItemData = {
         original: line.join(','),
         line: lineNumber++,
         time: line[0],
