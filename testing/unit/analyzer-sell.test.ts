@@ -40,22 +40,22 @@ describe('Analyzer', () => {
         "lines": [
           {
             "account": "CURRENCY_EUR",
-            "amount": 6000,
+            "amount": "6000",
             "extras": {},
             "text": "Sold -5 ETH",
           },
           {
             "account": "ASSET_ETH",
-            "amount": -5000,
+            "amount": "-5000",
             "extras": {
               "asset": "ETH",
-              "assetChange": -5,
+              "assetChange": "-5",
             },
             "text": "Sold -5 ETH",
           },
           {
             "account": "PROFIT_ETH",
-            "amount": -1000,
+            "amount": "-1000",
             "extras": {},
             "text": "Sold -5 ETH",
           },
@@ -102,22 +102,22 @@ describe('Analyzer', () => {
           "lines": [
             {
               "account": "CURRENCY_EUR",
-              "amount": 4000,
+              "amount": "4000",
               "extras": {},
               "text": "Sell some ETH",
             },
             {
               "account": "ASSET_ETH",
-              "amount": -5000,
+              "amount": "-5000",
               "extras": {
                 "asset": "ETH",
-                "assetChange": -5,
+                "assetChange": "-5",
               },
               "text": "Sell some ETH",
             },
             {
               "account": "LOSS_ETH",
-              "amount": 1000,
+              "amount": "1000",
               "extras": {},
               "text": "Sell some ETH",
             },
@@ -164,16 +164,16 @@ describe('Analyzer', () => {
           "lines": [
             {
               "account": "CURRENCY_EUR",
-              "amount": 2000,
+              "amount": "2000",
               "extras": {},
               "text": "Sell some ETH",
             },
             {
               "account": "ASSET_ETH",
-              "amount": -2000,
+              "amount": "-2000",
               "extras": {
                 "asset": "ETH",
-                "assetChange": -2,
+                "assetChange": "-2",
               },
               "text": "Sell some ETH",
             },
