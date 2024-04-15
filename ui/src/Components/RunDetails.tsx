@@ -117,6 +117,23 @@ const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
 
 }
 
+const FailedAfterItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
+  const { result } = props
+  const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
+  return (
+    <Box>
+      {
+        items.map((item, idx) => {
+          return item.error !== null && <Box key={idx}>
+            <ViewError error={item.error}/>
+          </Box>
+        })
+      }
+    </Box>
+  )
+
+}
+
 const Dump = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
   return (
@@ -149,7 +166,9 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       return <SuccessOutputCreated batch={batch} result={result}/>
     case 'FAILED_AFTER_DATA_PARSED':
       return <FailedAfterDataParsed batch={batch} result={result}/>
-  }
+    case 'FAILED_AFTER_ITEMS_UNIFIED':
+      return <FailedAfterItemsUnified batch={batch} result={result}/>
+    }
 
   return (
     <Box sx={{ color: 'error.light' }}>

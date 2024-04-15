@@ -143,6 +143,10 @@ export function sortRuns(
           done = skips.length + success.length
           total = lastSuccess?.items.length || null
           break
+        case 'ITEMS_UNIFIED':
+          done = skips.length + success.length
+          total = lastSuccess?.items.length || null
+          break
         case 'OUTPUT_CREATED':
           done = skips.length + success.length
           total = lastSuccess?.items.length || null
@@ -153,7 +157,7 @@ export function sortRuns(
 
       if (failures.length === lastItems.length) {
         resultType = 'All Failed'
-      } else if (failures.length > 0) {
+      } else if (failures.length > 0 && success.length > 0) {
         resultType = 'Partly Fail'
       } else {
         resultType = 'No Progress'
