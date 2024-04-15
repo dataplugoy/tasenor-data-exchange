@@ -34,6 +34,7 @@ export type Asset3 = string;
  * Asset used to determine the total value of the transaction.
  */
 export type Asset4 = string;
+export type Asset5 = string;
 
 export interface Batch {
   id: number;
@@ -168,9 +169,7 @@ export interface Rates {
 }
 export interface OutputItem {
   id: number;
-  data: {
-    [k: string]: unknown;
-  };
+  data: Transaction;
   delivered: boolean;
   skipped: boolean;
   error: string | null;
@@ -180,4 +179,18 @@ export interface OutputItem {
   runId: number;
   created?: string;
   updated?: string;
+}
+export interface Transaction {
+  time: string;
+  lines: TransactionLine[];
+}
+export interface TransactionLine {
+  account: string;
+  amount: number;
+  text: string;
+  extras: TransactionExtras;
+}
+export interface TransactionExtras {
+  asset?: Asset5;
+  assetChange?: number | string;
 }

@@ -5,11 +5,11 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type Asset = string;
+
 export interface OutputItem {
   id: number;
-  data: {
-    [k: string]: unknown;
-  };
+  data: Transaction;
   delivered: boolean;
   skipped: boolean;
   error: string | null;
@@ -19,4 +19,18 @@ export interface OutputItem {
   runId: number;
   created?: string;
   updated?: string;
+}
+export interface Transaction {
+  time: string;
+  lines: TransactionLine[];
+}
+export interface TransactionLine {
+  account: string;
+  amount: number;
+  text: string;
+  extras: TransactionExtras;
+}
+export interface TransactionExtras {
+  asset?: Asset;
+  assetChange?: number | string;
 }

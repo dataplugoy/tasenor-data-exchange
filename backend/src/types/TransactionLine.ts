@@ -2,6 +2,8 @@ import Decimal from 'decimal.js'
 import { TransactionExtras } from './TransactionExtras'
 import { AccountCode } from './AccountCode'
 
+// TODO: Use from API.
+
 /**
  * A line in the transaction.
  */

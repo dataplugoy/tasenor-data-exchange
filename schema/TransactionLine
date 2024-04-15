@@ -1,0 +1,22 @@
+{
+  "$id": "TransactionLine",
+  "title": "TransactionLine",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["account", "amount", "text", "extras"],
+  "properties": {
+    "account": {
+      "type": "string",
+      "pattern": "^[A-Z_]+$"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "text": {
+      "type": "string"
+    },
+    "extras": {
+      "$ref": "TransactionExtras"
+    }
+  }
+}
