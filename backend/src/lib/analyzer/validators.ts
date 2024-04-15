@@ -1,9 +1,9 @@
 import { Asset } from '@tasenor/common'
-import { UnifiedInput } from '../../types/UnifiedInput'
 import { t } from '../i18n/t'
 import { dec } from '../utils'
 import { Analyzer } from './Analyzer'
 import Decimal from 'decimal.js'
+import { UnifiedItemData } from '../../types/API/UnifiedItem'
 
 /**
  * Throw a validation error.
@@ -17,7 +17,7 @@ export function validateError(this: Analyzer, msg: string): never {
  * Ensure that input is set.
  * @param this
  */
-export function validateInput(this: Analyzer): UnifiedInput {
+export function validateInput(this: Analyzer): UnifiedItemData {
   if (!this.lastInput) {
     throw new Error('Cannot use validation before setting the last input.')
   }
@@ -39,7 +39,7 @@ export function validateBasics(this: Analyzer): void {
  * Ensure the field exist in input.
  * @param field
  */
-export function validateRequirdeField(this: Analyzer, field: keyof UnifiedInput): void {
+export function validateRequirdeField(this: Analyzer, field: keyof UnifiedItemData): void {
   const input = this.validateInput()
   if (input[field] === undefined) {
     this.validateError(`The field '${field}' is required`)
@@ -50,7 +50,7 @@ export function validateRequirdeField(this: Analyzer, field: keyof UnifiedInput)
  * Ensure all fields exist in input.
  * @param fields
  */
-export function validateRequired(this: Analyzer, ...fields: Array<keyof UnifiedInput>): void {
+export function validateRequired(this: Analyzer, ...fields: Array<keyof UnifiedItemData>): void {
   fields.forEach(field => this.validateRequirdeField(field))
 }
 

@@ -90,6 +90,10 @@ export interface UnifiedItemData {
    */
   value?: number | string;
   valueAsset?: Asset4;
+  /**
+   * Text of the original item if known.
+   */
+  text?: string;
   rates?: Rates;
 }
 /**

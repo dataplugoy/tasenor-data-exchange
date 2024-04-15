@@ -72,6 +72,10 @@
       "description": "Asset used to determine the total value of the transaction.",
       "$ref": "Asset"
     },
+    "text": {
+      "description": "Text of the original item if known.",
+      "type": "string"
+    },
     "rates": {
       "description": "Conversion rates for assets involved, if known.",
       "$ref": "Rates"

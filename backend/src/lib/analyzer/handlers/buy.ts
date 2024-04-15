@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { UnifiedInput } from '../../../types/UnifiedInput'
-import { AccountCode, Transaction } from '../../../types/Transaction'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
-import { Timestring } from '@tasenor/common'
+import { Asset, Timestring } from '@tasenor/common'
+import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
+import { Transaction } from '../../../types/API/Transaction'
+import { AccountCode } from '../../../types/AccountCode'
 
 /**
  * Buy an asset and add it to the stock.
@@ -14,31 +15,31 @@ import { Timestring } from '@tasenor/common'
  *
  * Requires fields `assetIn`, `assetAmountIn`.
  */
-export async function buy(this: Analyzer, time: DateTime, input: UnifiedInput): Promise<Transaction> {
+export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
   // TODO: Handle fee.
   const { assetIn, assetAmountIn } = input
 
   this.validateBasics()
   this.validateRequired('assetIn', 'assetAmountIn')
   const text = this.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
-  const value = await this.validateValue(assetIn, assetAmountIn)
+  const value = await this.validateValue(assetIn as Asset, dec(assetAmountIn))
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
         account: `CURRENCY_${this.currency}` as AccountCode,
-        amount: dec(value).negated(),
+        amount: dec(value).negated().toString(),
         text,
         extras: {},
       },
       {
         account: `ASSET_${assetIn}` as AccountCode,
-        amount: dec(value),
+        amount: dec(value).toString(),
         text,
         extras: {
           asset: assetIn,
-          assetChange: dec(assetAmountIn),
+          assetChange: dec(assetAmountIn).toString(),
         },
       },
     ]
