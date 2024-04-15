@@ -5,6 +5,9 @@ import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
 import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
 import { ViewError } from './ViewError'
+import { ResultInputItem } from '../Helpers/sorter'
+import { ResultUnifiedItem } from '../Helpers/sorter'
+import { ResultOutputItem } from '../Helpers/sorter'
 
 // TODO: All JSON-presentations should be converted to nice item specific viewers.
 
@@ -45,10 +48,11 @@ const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
 
 const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
+  const items: ResultInputItem[] = result.items as ResultInputItem[]
   return (
     <Box>
       {
-        result.items.map((item, idx) => <Box key={idx}>
+        items.map((item, idx) => <Box key={idx}>
           <Box>
             <><Trans>Line #</Trans>{item.data.line}: {item.data.time} {item.data.text}  {item.data.total}</>
             <RunStateSuccessIcon/>
@@ -64,11 +68,12 @@ const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
 
 const SuccessfulItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-console.log(result.items);
+  const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
+
   return (
     <Box>
       {
-        result.items.map((item, idx) => <Box key={idx}>
+        items.map((item, idx) => <Box key={idx}>
           <Box>{JSON.stringify(item.data)}<RunStateIcon item={item}/></Box>
           {item.stockChange && JSON.stringify(item.stockChange)}
         </Box>)
@@ -79,11 +84,12 @@ console.log(result.items);
 
 const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
+  const items: ResultOutputItem[] = result.items as ResultOutputItem[]
 
   return (
     <Box>
       {
-        result.items.map((item, idx) => <Box key={idx}>
+        items.map((item, idx) => <Box key={idx}>
           <Box>{item.data.time}<RunStateIcon item={item}/></Box>
           {item.data.lines.map((line, idx) => <Box key={idx}>{JSON.stringify(line)}</Box>)}
         </Box>)
