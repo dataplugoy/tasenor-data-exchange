@@ -58,8 +58,8 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
           <TableRow>
             <TableCell variant="head">#</TableCell>
             <TableCell variant="head"><Trans>Time</Trans></TableCell>
+            <TableCell variant="head"><Trans>Description</Trans></TableCell>
             <TableCell variant="head"><Trans>Progress</Trans></TableCell>
-            <TableCell variant="head"><Trans>Output</Trans></TableCell>
             <TableCell variant="head"><Trans>Result</Trans></TableCell>
           </TableRow>
         </TableHead>
@@ -74,7 +74,7 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
                 <TableCell><OutputSummary result={result}/></TableCell>
                 <TableCell><ResultIndicator result={result}/></TableCell>
               </TableRow>
-              { !opened.has(result.run.id) &&
+              { opened.has(result.run.id) &&
                 <TableRow>
                   <TableCell colSpan={5}>
                     <RunDetails batch={batch} result={result}/>

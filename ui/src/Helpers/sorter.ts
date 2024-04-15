@@ -94,8 +94,8 @@ export function sortRuns(
 
       switch (run.finalState) {
         case 'DATA_FETCHED':
-          done = null
-          total = null
+          done = 1
+          total = 1
           resultType = 'All Success'
           break
         case 'DATA_PARSED':
