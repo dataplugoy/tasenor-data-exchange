@@ -83,6 +83,9 @@ export function sortRuns(
     // Based on the progress, fill in the result.
     if (hasProgressed) {
 
+      if (run.finalState === 'OUTPUT_DELIVERED') {
+        items = lastSuccess?.items || []
+      }
       const skips = items.filter(item => item.skipped)
       const hasSkips = skips.length > 0
       const hasAllSkips = items.length > 0 && items.length === skips.length
@@ -108,6 +111,10 @@ export function sortRuns(
           done = items.length
           total = items.length
           resultType = 'All Success'
+          break
+        case 'OUTPUT_DELIVERED':
+          done = success.length + skips.length
+          total = items.length
           break
         default:
           throw new Error(`State of success '${run.finalState}' not yet implemented.`)

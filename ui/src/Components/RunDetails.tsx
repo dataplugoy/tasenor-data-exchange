@@ -23,7 +23,7 @@ const RunStateSuccessIcon = (): React.JSX.Element => {
 const RunStateIcon = (props: { item: ResultItem }): React.JSX.Element => {
   const success = isResultOutputItem(props.item) ? props.item.delivered : props.item.processed
   if (success) {
-    <RunStateSuccessIcon/>
+    return <RunStateSuccessIcon/>
   }
   if (props.item.skipped) {
     return <Box sx={{ display: 'inline-block', ml: 1 }}><SkipNext sx={{ color: 'primary.main', mb: '-0.4rem' }}/></Box>
@@ -31,6 +31,7 @@ const RunStateIcon = (props: { item: ResultItem }): React.JSX.Element => {
   if (props.item.error !== null) {
     return <Box sx={{ display: 'inline-block', ml: 1 }}><Error sx={{ color: 'error.dark', mb: '-0.4rem' }}/></Box>
   }
+
   return <Box sx={{ display: 'inline-block', ml: 1 }}><HourglassEmpty sx={{ color: 'secondary.light', mb: '-0.4rem' }}/></Box>
 }
 
@@ -98,13 +99,13 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
   )
 }
 
-const FailedWithErrors = (props: RunDetailsProps): React.JSX.Element => {
+const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-  // TODO: Supports input items only.
+  const items: ResultInputItem[] = result.items as ResultInputItem[]
   return (
     <Box>
       {
-        result.items.map((item, idx) => {
+        items.map((item, idx) => {
           return item.error !== null && <Box key={idx}>
             {JSON.stringify(item.data.original, null, 2)}
             <ViewError error={item.error}/>
@@ -144,8 +145,10 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       return <SuccessfulItemsUnified batch={batch} result={result}/>
     case 'SUCCESSFUL_OUTPUT_CREATED':
       return <SuccessOutputCreated batch={batch} result={result}/>
+    case 'SUCCESSFUL_OUTPUT_DELIVERED':
+      return <SuccessOutputCreated batch={batch} result={result}/>
     case 'FAILED_AFTER_DATA_PARSED':
-      return <FailedWithErrors batch={batch} result={result}/>
+      return <FailedAfterDataParsed batch={batch} result={result}/>
   }
 
   return (

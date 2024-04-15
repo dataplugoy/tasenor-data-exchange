@@ -718,7 +718,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.batches (id, created, updated, completed, number, state, data, "lastStamp", "initialStock", "endStock", "flowPlanId") FROM stdin;
-5	2024-04-11 15:19:20.435	2024-04-11 15:19:26.105	\N	1	OUTPUT_CREATED	2000-01-01T12:00:00,Buy 5 ETH,-15000€\n2000-01-01T13:00:00,Sell 5 ETH,16000€\n	\N	{"ASSET_ETH": {"ETH": {"value": "5000", "amount": "5.5"}}}	{}	1
 \.
 
 
@@ -728,7 +727,7 @@ COPY public.batches (id, created, updated, completed, number, state, data, "last
 
 COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock) FROM stdin;
 2	2024-04-03 09:43:15.969	2024-04-04 07:41:52.793	Enable Banking	{"accountId": "effd5fa1-bea1-42fa-b887-de1d0eb4fd51", "sessionId": "3768ec99-5baf-4f3f-bbef-df7e95ce6b23", "validUntil": "2024-04-14T07:31:37.165000Z"}	1	\N	{}
-1	2024-03-30 14:39:53.161	2024-04-11 15:19:20.462	Test	{}	1	\N	{"ASSET_ETH": {"ETH": {"value": "5000", "amount": "5.5"}}}
+1	2024-03-30 14:39:53.161	2024-04-09 18:05:06.601	Test	{}	1	\N	{"ASSET_ETH": {"ETH": {"value": "5000", "amount": "5.5"}}}
 \.
 
 
@@ -737,8 +736,6 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 --
 
 COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId") FROM stdin;
-9	2024-04-11 15:19:22.397	2024-04-11 15:19:24.283	{"line": 1, "text": "Buy 5 ETH", "time": "2000-01-01T12:00:00", "total": -15000, "fields": {"word1": "Buy"}, "original": "2000-01-01T12:00:00,Buy 5 ETH,-15000€"}	t	f	\N	1	5	45
-10	2024-04-11 15:19:22.401	2024-04-11 15:19:24.301	{"line": 2, "text": "Sell 5 ETH", "time": "2000-01-01T13:00:00", "total": 16000, "fields": {"word1": "Sell"}, "original": "2000-01-01T13:00:00,Sell 5 ETH,16000€"}	t	f	\N	1	5	45
 \.
 
 
@@ -757,6 +754,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 --
 
 COPY public.output_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
+1	2024-04-15 11:40:33.161	2024-04-15 11:41:29.039	TEST_MOCK	{"url": "file:///testing/data/output.csv"}	1
 \.
 
 
@@ -765,8 +763,6 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 --
 
 COPY public.output_items (id, created, updated, data, skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId") FROM stdin;
-9	2024-04-11 15:19:26.086	2024-04-11 15:19:26.086	{"time": "2000-01-01T10:00:00.000Z", "lines": [{"text": "Ostettu +5 ETH", "amount": -15000, "extras": {}, "account": "CURRENCY_EUR"}, {"text": "Ostettu +5 ETH", "amount": 15000, "extras": {"asset": "ETH", "assetChange": 5}, "account": "ASSET_ETH"}]}	f	f	\N	9	1	5	47
-10	2024-04-11 15:19:26.1	2024-04-11 15:19:26.1	{"time": "2000-01-01T11:00:00.000Z", "lines": [{"text": "Myyty -5 ETH", "amount": 16000, "extras": {}, "account": "CURRENCY_EUR"}, {"text": "Myyty -5 ETH", "amount": -9523.809523809523, "extras": {"asset": "ETH", "assetChange": -5}, "account": "ASSET_ETH"}, {"text": "Myyty -5 ETH", "amount": -6476.190476190476, "extras": {}, "account": "PROFIT_ETH"}]}	f	f	\N	10	1	5	47
 \.
 
 
@@ -785,8 +781,6 @@ COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin
 --
 
 COPY public.rules (id, created, updated, type, "ownerId", name, key, priority, filter, result, "filterView", "resultView") FROM stdin;
-9	2024-04-11 15:19:24.23	2024-04-11 15:19:24.23	INPUT_SOURCE	1	Buying	Buy	50	"word1 == 'Buy'"	{"type": "'buy'", "value": "-total", "assetIn": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]", "assetAmountIn": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])"}	{}	{}
-10	2024-04-11 15:19:24.232	2024-04-11 15:19:24.232	INPUT_SOURCE	1	Selling	Sell	50	"word1 == 'Sell'"	{"type": "'sell'", "value": "total", "assetOut": "regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[3]", "assetAmountOut": "num(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)[2])"}	{}	{}
 \.
 
 
@@ -795,11 +789,6 @@ COPY public.rules (id, created, updated, type, "ownerId", name, key, priority, f
 --
 
 COPY public.runs (id, created, updated, "initialState", "finalState", error, "batchId") FROM stdin;
-44	2024-04-11 15:19:20.449	2024-04-11 15:19:20.472	BATCH_CREATED	DATA_FETCHED	\N	5
-45	2024-04-11 15:19:22.36	2024-04-11 15:19:22.408	DATA_FETCHED	DATA_PARSED	\N	5
-46	2024-04-11 15:19:24.209	2024-04-11 15:19:24.305	DATA_PARSED	ITEMS_UNIFIED	\N	5
-47	2024-04-11 15:19:26.016	2024-04-11 15:19:26.108	ITEMS_UNIFIED	OUTPUT_CREATED	\N	5
-48	2024-04-11 15:19:28.016	2024-04-11 15:19:28.047	OUTPUT_CREATED	OUTPUT_CREATED	Error: Cannot find output destination for 'FlowPlan #1'.\n    at FlowPlanModel.getDestination (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:301:13)\n    at FlowPlanModel.getOutputDriver (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:122:25)\n    at FlowPlanModel.deliverOutput (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:269:20)\n    at FlowPlanModel.run (/home/wigy/project/tasenor-data-exchange/backend/src/models/FlowPlanModel.ts:76:53)\n    at Object.run (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:22:3)\n    at Object.execute (/home/wigy/project/tasenor-data-exchange/backend/src/engine/cli.ts:54:3)\n    at async file:///home/wigy/project/tasenor-data-exchange/bin/tadex.mjs:4:1	5
 \.
 
 
@@ -818,8 +807,6 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 --
 
 COPY public.unified_items (id, created, updated, "time", data, processed, skipped, error, "inputId", "flowPlanId", "batchId", "runId", "stockChange") FROM stdin;
-9	2024-04-11 15:19:24.28	2024-04-11 15:19:26.091	2000-01-01 10:00:00	{"type": "buy", "value": 15000, "assetIn": "ETH", "assetAmountIn": 5}	t	f	\N	9	1	5	46	{"ASSET_ETH": {"ETH": {"value": 15000, "amount": 5}}}
-10	2024-04-11 15:19:24.299	2024-04-11 15:19:26.102	2000-01-01 11:00:00	{"type": "sell", "value": 16000, "assetOut": "ETH", "assetAmountOut": 5}	t	f	\N	10	1	5	46	{"ASSET_ETH": {"ETH": {"value": -9523.809523809523, "amount": -5}}}
 \.
 
 
@@ -836,7 +823,7 @@ COPY public.users (id, created, updated, email, password, name, address, zip, ci
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 5, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 7, true);
 
 
 --
@@ -850,7 +837,7 @@ SELECT pg_catalog.setval('public.flow_plans_id_seq', 1, false);
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 10, true);
+SELECT pg_catalog.setval('public.input_items_id_seq', 14, true);
 
 
 --
@@ -864,14 +851,14 @@ SELECT pg_catalog.setval('public.input_sources_id_seq', 1, false);
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 1, false);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 1, true);
 
 
 --
 -- Name: output_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_items_id_seq', 10, true);
+SELECT pg_catalog.setval('public.output_items_id_seq', 12, true);
 
 
 --
@@ -885,14 +872,14 @@ SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 10, true);
+SELECT pg_catalog.setval('public.rules_id_seq', 14, true);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 48, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 59, true);
 
 
 --
@@ -906,7 +893,7 @@ SELECT pg_catalog.setval('public.settings_id_seq', 1, false);
 -- Name: unified_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.unified_items_id_seq', 10, true);
+SELECT pg_catalog.setval('public.unified_items_id_seq', 14, true);
 
 
 --
