@@ -45,7 +45,6 @@ const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
 
 const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-console.log(result.items);
   return (
     <Box>
       {
@@ -65,7 +64,7 @@ console.log(result.items);
 
 const SuccessfulItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-
+console.log(result.items);
   return (
     <Box>
       {

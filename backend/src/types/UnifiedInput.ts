@@ -1,6 +1,8 @@
 import { Asset } from '@tasenor/common'
 import Decimal from 'decimal.js'
 
+// TODO: Use API generated interface.
+
 /**
  * Main category of the transaction.
  */

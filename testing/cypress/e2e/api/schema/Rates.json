@@ -1,0 +1,9 @@
+{
+  "$id": "Rates",
+  "title": "Rates",
+  "type": "object",
+  "additionalProperties": true,
+  "description": "Conversion rates to the default currency for assets if known",
+  "properties": {
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "$id": "Asset",
+  "title": "Asset",
+  "type": "string",
+  "pattern": "^[-A-Z._]+$"
+}

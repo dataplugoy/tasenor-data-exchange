@@ -1,0 +1,82 @@
+{
+  "$id": "UnifiedItemData",
+  "title": "UnifiedItemData",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type"],
+  "properties": {
+    "type": {
+      "description": "Main category of the transaction.",
+      "type": "string",
+      "enum": ["buy", "sell", "trade", "income", "expense", "dividend"]
+    },
+    "assetIn": {
+      "description": "In case of buying some asset, this is the asset received.",
+      "$ref": "Asset"
+    },
+    "assetAmountIn": {
+      "description": "In case of buying some asset, this is the number of assets received.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetValueIn": {
+      "description": "In case of buying some asset, this is the value of assets in the default currency.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetOut": {
+      "description": "In case of selling some asset, this is the asset traded out.",
+      "$ref": "Asset"
+    },
+    "assetAmountOut": {
+      "description": "In case of selling some asset, this is the number of assets given.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetValueOut": {
+      "description": "In case of selling some asset, this is the value of assets in the default currency.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "fee": {
+      "description": "Amount of fee charged as a part of the transaction.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "feeAsset": {
+      "description": "Ticker of the fee charged as a currency or other asset ticker.",
+      "$ref": "Asset"
+    },
+    "taxType": {
+      "description": "If tax must be calculated, this is the type of the tax.",
+      "type": "string",
+      "enum": ["vat"]
+    },
+    "taxAmount": {
+      "description": "If tax must be calculated, this is the amount of tax in tax assets.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "taxAsset": {
+      "description": "If tax must be calculated, this is the asset used (defaults to `valueAsset`)",
+      "$ref": "Asset"
+    },
+    "taxPercentage": {
+      "description": "If tax must be calculated, alternatively it can be percentage of the total of the transaction.",
+      "type": "number"
+    },
+    "value": {
+      "description": "Total value of the transaction, if known.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "valueAsset": {
+      "description": "Asset used to determine the total value of the transaction.",
+      "$ref": "Asset"
+    },
+    "rates": {
+      "description": "Conversion rates for assets involved, if known.",
+      "$ref": "Rates"
+    }
+  }
+}

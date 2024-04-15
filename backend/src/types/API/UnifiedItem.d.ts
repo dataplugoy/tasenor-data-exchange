@@ -5,12 +5,31 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * In case of buying some asset, this is the asset received.
+ */
+export type Asset = string;
+/**
+ * In case of selling some asset, this is the asset traded out.
+ */
+export type Asset1 = string;
+/**
+ * Ticker of the fee charged as a currency or other asset ticker.
+ */
+export type Asset2 = string;
+/**
+ * If tax must be calculated, this is the asset used (defaults to `valueAsset`)
+ */
+export type Asset3 = string;
+/**
+ * Asset used to determine the total value of the transaction.
+ */
+export type Asset4 = string;
+
 export interface UnifiedItem {
   id: number;
   time: string;
-  data: {
-    [k: string]: unknown;
-  };
+  data: UnifiedItemData;
   stockChange: {
     [k: string]: unknown;
   };
@@ -23,4 +42,58 @@ export interface UnifiedItem {
   runId: number;
   created?: string;
   updated?: string;
+}
+export interface UnifiedItemData {
+  /**
+   * Main category of the transaction.
+   */
+  type: "buy" | "sell" | "trade" | "income" | "expense" | "dividend";
+  assetIn?: Asset;
+  /**
+   * In case of buying some asset, this is the number of assets received.
+   */
+  assetAmountIn?: number | string;
+  /**
+   * In case of buying some asset, this is the value of assets in the default currency.
+   */
+  assetValueIn?: number | string;
+  assetOut?: Asset1;
+  /**
+   * In case of selling some asset, this is the number of assets given.
+   */
+  assetAmountOut?: number | string;
+  /**
+   * In case of selling some asset, this is the value of assets in the default currency.
+   */
+  assetValueOut?: number | string;
+  /**
+   * Amount of fee charged as a part of the transaction.
+   */
+  fee?: number | string;
+  feeAsset?: Asset2;
+  /**
+   * If tax must be calculated, this is the type of the tax.
+   */
+  taxType?: "vat";
+  /**
+   * If tax must be calculated, this is the amount of tax in tax assets.
+   */
+  taxAmount?: number | string;
+  taxAsset?: Asset3;
+  /**
+   * If tax must be calculated, alternatively it can be percentage of the total of the transaction.
+   */
+  taxPercentage?: number;
+  /**
+   * Total value of the transaction, if known.
+   */
+  value?: number | string;
+  valueAsset?: Asset4;
+  rates?: Rates;
+}
+/**
+ * Conversion rates for assets involved, if known.
+ */
+export interface Rates {
+  [k: string]: unknown;
 }
