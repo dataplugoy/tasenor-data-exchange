@@ -5,8 +5,8 @@
     "filter": "word1 == 'Buy'",
     "result": {
       "type": "'buy'",
-      "assetIn": "nth(3, regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text))",
-      "assetAmountIn": "num(third(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)))",
+      "assetIn": "third(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text))",
+      "assetAmountIn": "num(second(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)))",
       "value": "-total"
     }
   },
@@ -16,8 +16,8 @@
     "filter": "word1 == 'Sell'",
     "result": {
       "type": "'sell'",
-      "assetOut": "nth(3, regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text))",
-      "assetAmountOut": "num(third(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)))",
+      "assetOut": "third(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text))",
+      "assetAmountOut": "num(second(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)))",
       "value": "total"
     }
   }
