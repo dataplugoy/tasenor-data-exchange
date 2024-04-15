@@ -45,7 +45,7 @@ const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
 
 const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-
+console.log(result.items);
   return (
     <Box>
       {

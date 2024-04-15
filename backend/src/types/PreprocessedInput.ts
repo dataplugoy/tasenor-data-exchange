@@ -1,5 +1,7 @@
 import { ShortDate, Timestring } from '@tasenor/common'
 
+// TODO: Use API generated interface.
+
 /**
  * Parsed storage format for incoming data extracted as a single unit of future processing.
  */

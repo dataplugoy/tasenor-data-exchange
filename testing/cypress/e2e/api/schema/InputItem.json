@@ -9,7 +9,7 @@
       "type": "integer"
     },
     "data": {
-      "type": "object"
+      "$ref": "InputItemData"
     },
     "processed": {
       "type": "boolean"

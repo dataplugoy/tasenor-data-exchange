@@ -1,0 +1,28 @@
+{
+  "$id": "InputItemData",
+  "title": "InputItemData",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["line", "original", "time", "text", "total", "fields"],
+  "properties": {
+    "line": {
+      "type": ["null", "integer"]
+    },
+    "original": {
+      "type": "string"
+    },
+    "time": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "text": {
+      "type": "string"
+    },
+    "total": {
+      "type": ["string", "number"]
+    },
+    "fields": {
+      "type": "object"
+    }
+  }
+}

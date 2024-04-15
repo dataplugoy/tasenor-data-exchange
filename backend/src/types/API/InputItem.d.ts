@@ -7,9 +7,7 @@
 
 export interface InputItem {
   id: number;
-  data: {
-    [k: string]: unknown;
-  };
+  data: InputItemData;
   processed: boolean;
   skipped: boolean;
   error: string | null;
@@ -18,4 +16,14 @@ export interface InputItem {
   runId: number;
   created?: string;
   updated?: string;
+}
+export interface InputItemData {
+  line: null | number;
+  original: string;
+  time: string;
+  text: string;
+  total: string | number;
+  fields: {
+    [k: string]: unknown;
+  };
 }
