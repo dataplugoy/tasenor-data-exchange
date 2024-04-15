@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
-import { InputType } from '../../backend/src/types/UnifiedInput'
 import { Asset, Timestring } from '@tasenor/common'
+import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 
 describe('Analyzer', () => {
   it('sell for profit', async () => {
@@ -15,7 +15,7 @@ describe('Analyzer', () => {
       'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
-      'type': 'sell' as InputType,
+      'type': 'sell' as UnifiedItemType,
       'value': 6000,
       'assetOut': 'ETH' as Asset,
       'assetAmountOut': 5,
@@ -76,7 +76,7 @@ describe('Analyzer', () => {
       'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
-      'type': 'sell' as InputType,
+      'type': 'sell' as UnifiedItemType,
       'value': 4000,
       'assetOut': 'ETH' as Asset,
       'assetAmountOut': 5,
@@ -139,7 +139,7 @@ describe('Analyzer', () => {
       'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
-      'type': 'sell' as InputType,
+      'type': 'sell' as UnifiedItemType,
       'value': 2000,
       'assetOut': 'ETH' as Asset,
       'assetAmountOut': 2,

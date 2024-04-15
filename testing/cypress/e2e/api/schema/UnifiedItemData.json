@@ -6,9 +6,7 @@
   "required": ["type"],
   "properties": {
     "type": {
-      "description": "Main category of the transaction.",
-      "type": "string",
-      "enum": ["buy", "sell", "trade", "income", "expense", "dividend"]
+      "$ref": "UnifiedItemType"
     },
     "assetIn": {
       "description": "In case of buying some asset, this is the asset received.",

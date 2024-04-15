@@ -6,6 +6,10 @@
  */
 
 /**
+ * Main category of the transaction.
+ */
+export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "dividend";
+/**
  * In case of buying some asset, this is the asset received.
  */
 export type Asset = string;
@@ -44,10 +48,7 @@ export interface UnifiedItem {
   updated?: string;
 }
 export interface UnifiedItemData {
-  /**
-   * Main category of the transaction.
-   */
-  type: "buy" | "sell" | "trade" | "income" | "expense" | "dividend";
+  type: UnifiedItemType;
   assetIn?: Asset;
   /**
    * In case of buying some asset, this is the number of assets received.
