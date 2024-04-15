@@ -22,7 +22,7 @@ export interface InputItemData {
   original: string;
   time: string;
   text: string;
-  total: string | number;
+  total: string | number | null;
   fields: {
     [k: string]: unknown;
   };

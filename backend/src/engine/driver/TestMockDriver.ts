@@ -59,7 +59,7 @@ export class TestMockDriver extends Driver {
         line: lineNumber++,
         time: line[0],
         text: line[1],
-        total: num(line[2]),
+        total: line[2] === '' ? null : num(line[2]),
         fields: {
           word1: line[1].split(' ')[0]
         }
