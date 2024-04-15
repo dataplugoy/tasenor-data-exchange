@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
-    "@tasenor/common": "^1.13.4",
+    "@tasenor/common": "^1.13.6",
     "@tasenor/config": "^1.13.0",
     "@types/luxon": "^3.4.2",
     "axios": "^1.6.8",

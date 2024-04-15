@@ -18,8 +18,8 @@ dependencies:
     specifier: ^5.15.14
     version: 5.15.14(@emotion/react@11.11.4)(@emotion/styled@11.11.0)(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
   '@tasenor/common':
-    specifier: ^1.13.4
-    version: 1.13.4
+    specifier: ^1.13.6
+    version: 1.13.6
   '@tasenor/config':
     specifier: ^1.13.0
     version: 1.13.0
@@ -1083,8 +1083,8 @@ packages:
     dev: true
     optional: true
 
-  /@tasenor/common@1.13.4:
-    resolution: {integrity: sha512-gvQtgMdrFKNWMGBFd7juEQ3OF9DceVPA4PxbirYqf2CBz75OBT7TKBNq9AVai1QBMmlZWkyGlAlCZfWSbPi+Tw==}
+  /@tasenor/common@1.13.6:
+    resolution: {integrity: sha512-rffriGtHGtThz1vPurIK4K1tPwjXy8sfB2S+UgtieHugj0QNOk0kW98VpC/mTzVkQyajKGX/ZvQZJlrP23Mptg==}
     dependencies:
       axios: 1.6.8
       buffer: 6.0.3
