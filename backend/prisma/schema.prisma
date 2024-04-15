@@ -9,7 +9,7 @@ generator client {
 
 model Settings {
   id          Int             @id @default(autoincrement())
-  type        DriverType @unique
+  type        DriverType      @unique
   url         String?
   certificate String?
   apikey      String?

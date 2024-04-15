@@ -20,7 +20,17 @@ classDiagram
       +last_seen: DateTime
       +settings: json
       +projects: Project[]
+      +services: Service[]
     }
+
+    class Service{
+      +type: enum
+      +name: string
+      +driver: enum
+      +free: boolean
+      +settings: json
+    }
+    Service "0..*" --* "1" User
 
 
     class Project{
@@ -29,7 +39,7 @@ classDiagram
       +settings: json
       +plans: FlowPlan[]
     }
-    User "1" <-- "0..*" Project
+    User "1" *-- "0..*" Project
 
 
     class FlowPlan{

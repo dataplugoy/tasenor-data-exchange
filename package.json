@@ -17,7 +17,7 @@
     "fix-ui": "cd ui && pnpm fix",
     "fix-backend": "cd backend && pnpm fix",
     "test": "cd testing && pnpm run test",
-    "preinstall": "cd database && pnpm install && cd ../backend && pnpm install && cd ../ui && pnpm install && cd ../testing && pnpm install"
+    "preinstall": "cd database && pnpm install && cd ../backend && pnpm install && cd ../ui && pnpm install && cd ../testing && pnpm install && cd ../docs && pnpm install"
   },
   "keywords": [],
   "author": "",
