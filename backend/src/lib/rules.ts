@@ -13,6 +13,16 @@ export function applyRules(variables: Record<string, unknown>, rules: Record<str
   const unusedKeys = new Set(Object.keys(rules))
 
   function evaluate(expr): unknown {
+    // Object is supported by Tasenor common but to get failing part, do it in pieces.
+    if (typeof expr === 'object' && expr !== null) {
+      const ret: Record<string, unknown> = {
+      }
+      Object.keys(expr).forEach(k => {
+        ret[k] = evaluate(expr[k])
+      })
+      return ret
+    }
+
     try {
       debug('RULES', `Evaluating expr: ${expr}`)
       const out = engine.eval(expr)
