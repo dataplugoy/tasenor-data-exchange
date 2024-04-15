@@ -3,7 +3,7 @@ import Decimal from 'decimal.js'
 import { toJSON } from './utils'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { AccountCode } from '../types/AccountCode'
-import { Transaction } from '../types/Transaction'
+import { Transaction } from '../types/API/Transaction'
 
 export type AssetRecord = {
   amount: Decimal

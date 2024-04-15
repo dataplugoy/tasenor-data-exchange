@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
-import { UnifiedInput } from '../../../types/UnifiedInput'
-import { Transaction } from '../../../types/Transaction'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
 import { Asset, Timestring } from '@tasenor/common'
 import { AccountCode } from '../../../types/AccountCode'
-import { TransactionLine } from '../../../types/TransactionLine'
+import { TransactionLine } from '../../../types/API/TransactionLine'
+import { Transaction } from '../../../types/API/Transaction'
+import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 
 /**
  * Sell an asset and remove it from the stock.
@@ -16,7 +16,7 @@ import { TransactionLine } from '../../../types/TransactionLine'
  *
  * Requires fields `assetOut`, `assetAmountOut`.
  */
-export async function sell(this: Analyzer, time: DateTime, input: UnifiedInput): Promise<Transaction> {
+export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
   // TODO: Handle fee.
   // TODO: Short selling (but only allowed if a setting in project is true).
   const { assetOut, assetAmountOut } = input
@@ -24,24 +24,27 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedInput):
   this.validateBasics()
   this.validateRequired('assetOut', 'assetAmountOut')
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
-  const value = await this.validateValue(assetOut, assetAmountOut)
+  if (assetOut === undefined) {
+    this.validateError(`Must have 'assetOut' defined when selling.`)
+  }
+  const value = await this.validateValue(assetOut as Asset, dec(assetAmountOut))
   const account = `ASSET_${assetOut}` as AccountCode
   const oldValue = this.stock.getValue(account, assetOut as Asset).mul(assetAmountOut as number)
 
   const lines: TransactionLine[] = [
     {
       account: `CURRENCY_${this.currency}` as AccountCode,
-      amount: dec(value),
+      amount: dec(value).toString(),
       text,
       extras: {},
     },
     {
       account: `ASSET_${assetOut}` as AccountCode,
-      amount: dec(oldValue).negated(),
+      amount: dec(oldValue).negated().toString(),
       text,
       extras: {
         asset: assetOut,
-        assetChange: dec(assetAmountOut).negated(),
+        assetChange: dec(assetAmountOut).negated().toString(),
       },
     },
   ]
@@ -49,7 +52,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedInput):
   if (value.greaterThan(oldValue)) {
     lines.push({
       account: `PROFIT_${assetOut}` as AccountCode,
-      amount: value.minus(oldValue).negated(),
+      amount: value.minus(oldValue).negated().toString(),
       text,
       extras: {},
     })
@@ -58,7 +61,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedInput):
   if (oldValue.greaterThan(value)) {
     lines.push({
       account: `LOSS_${assetOut}` as AccountCode,
-      amount: oldValue.minus(value),
+      amount: oldValue.minus(value).toString(),
       text,
       extras: {},
     })

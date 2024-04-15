@@ -17,10 +17,10 @@ import { DateTime } from 'luxon'
 import { ProjectModel } from './ProjectModel'
 import { OutputItemModel } from './OutputItemModel'
 import { toJSON } from '../lib/utils'
-import { Transaction } from '../types/Transaction'
 import { OutputDestinationModel } from './OutputDestinationModel'
 import { AccountCode } from '../types/AccountCode'
 import { AnalyzerConfig } from '../lib/analyzer/AnalyzerConfig'
+import { Transaction } from '../types/API/Transaction'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 

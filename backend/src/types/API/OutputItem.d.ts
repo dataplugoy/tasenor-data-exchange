@@ -26,7 +26,7 @@ export interface Transaction {
 }
 export interface TransactionLine {
   account: string;
-  amount: number;
+  amount: number | string;
   text: string;
   extras: TransactionExtras;
 }

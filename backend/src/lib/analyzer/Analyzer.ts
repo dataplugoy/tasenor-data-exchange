@@ -1,17 +1,17 @@
-import { UnifiedInput } from '../../types/UnifiedInput'
 import { Stock, InitialStockData, StockData } from '../Stock'
 import { DateTime } from 'luxon'
 import { buy } from './handlers/buy'
-import { Transaction } from '../../types/Transaction'
 import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { toJSON } from '../utils'
+import { dec, toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
 import { sell } from './handlers/sell'
 import { AccountCode } from '../../types/AccountCode'
+import { Transaction } from '../../types/API/Transaction'
+import { UnifiedItemData } from '../../types/API/UnifiedItemData'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -29,7 +29,7 @@ export class Analyzer {
   protected stock: Stock
   protected balances: Balances
   protected clock: Timestring
-  protected lastInput: UnifiedInput | null
+  protected lastInput: UnifiedItemData | null
   protected lastTime: Timestring
   protected lastResult: Transaction | null
 
@@ -39,10 +39,10 @@ export class Analyzer {
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)
-  public validateInput: () => UnifiedInput = validateInput.bind(this)
+  public validateInput: () => UnifiedItemData = validateInput.bind(this)
   public validateBasics: () => void = validateBasics.bind(this)
-  public validateRequirdeField: (field: keyof UnifiedInput) => void = validateRequirdeField.bind(this)
-  public validateRequired: (...fields: Array<keyof UnifiedInput>) => void = validateRequired.bind(this)
+  public validateRequirdeField: (field: keyof UnifiedItemData) => void = validateRequirdeField.bind(this)
+  public validateRequired: (...fields: Array<keyof UnifiedItemData>) => void = validateRequired.bind(this)
   public validateText: (text: string, values: Record<string, string | undefined>) => string = validateText.bind(this)
   public validateRate: (asset: Asset) => Promise<Decimal> = validateRate.bind(this)
   public validateValue: (asset: Asset | undefined, amount: number | Decimal | undefined) => Promise<Decimal> = validateValue.bind(this)
@@ -85,7 +85,7 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  async analyze(time: DateTime, input: UnifiedInput): Promise<Transaction> {
+  async analyze(time: DateTime, input: UnifiedItemData): Promise<Transaction> {
     await initI18N()
     await changeLanguage(this.language)
     this.lastInput = input
@@ -131,7 +131,7 @@ export class Analyzer {
     if (tx.time < this.clock) {
       throw new Error(`Trying to apply past transaction when the clock is ${this.clock}: ${JSON.stringify(tx)}`)
     }
-    this.clock = tx.time
+    this.clock = tx.time as Timestring
 
     // Sanity check that total is zero.
     let sum = new Decimal(0)
@@ -141,12 +141,12 @@ export class Analyzer {
     }
 
     // Apply balance changes.
-    tx.lines.forEach((line) => this.addBalance(line.account, line.amount))
+    tx.lines.forEach((line) => this.addBalance(line.account as AccountCode, dec(line.amount)))
 
     // Apply asset changes.
     tx.lines.forEach((line) => line.extras.asset &&
       line.extras.assetChange &&
-      this.addAsset(line.account, line.extras.asset, line.extras.assetChange, line.amount)
+      this.addAsset(line.account as AccountCode, line.extras.asset as Asset, dec(line.extras.assetChange), dec(line.amount))
     )
   }
 
@@ -188,7 +188,7 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  static async run(time: Timestring, stockData: InitialStockData, input: UnifiedInput): Promise<Analyzer> {
+  static async run(time: Timestring, stockData: InitialStockData, input: UnifiedItemData): Promise<Analyzer> {
     const stock = new Stock(stockData)
     const analyzer = new Analyzer(stock)
     const tx = await analyzer.analyze(DateTime.fromISO(time), input)

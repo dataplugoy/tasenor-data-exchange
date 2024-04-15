@@ -10,7 +10,8 @@
       "pattern": "^[A-Z_]+$"
     },
     "amount": {
-      "type": "number"
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
     },
     "text": {
       "type": "string"
