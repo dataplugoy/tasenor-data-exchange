@@ -1,6 +1,5 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { FlowPlanModel } from './FlowPlanModel'
 import { Driver } from '../engine/driver/Driver'
 import { DriverSettings } from '../types/DriverSettings'
 import { getDriver } from '../engine/driver'

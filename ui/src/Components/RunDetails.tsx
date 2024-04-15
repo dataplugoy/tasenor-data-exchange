@@ -1,13 +1,10 @@
 import React, { } from 'react'
 import { Box } from '@mui/material'
-import { ResultItem, RunResult, isResultOutputItem } from '../Helpers/sorter'
+import { ResultItem, RunResult, isResultOutputItem, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
 import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
 import { ViewError } from './ViewError'
-import { ResultInputItem } from '../Helpers/sorter'
-import { ResultUnifiedItem } from '../Helpers/sorter'
-import { ResultOutputItem } from '../Helpers/sorter'
 
 // TODO: All JSON-presentations should be converted to nice item specific viewers.
 
@@ -134,17 +131,6 @@ const FailedAfterItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
 
 }
 
-const Dump = (props: RunDetailsProps): React.JSX.Element => {
-  const { result } = props
-  return (
-    <Box>
-      <pre>
-        {JSON.stringify(result, null, 2)}
-      </pre>
-    </Box>
-  )
-}
-
 /**
  * Describe in text whhat has happened in state change.
  * @param props
@@ -168,7 +154,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       return <FailedAfterDataParsed batch={batch} result={result}/>
     case 'FAILED_AFTER_ITEMS_UNIFIED':
       return <FailedAfterItemsUnified batch={batch} result={result}/>
-    }
+  }
 
   return (
     <Box sx={{ color: 'error.light' }}>

@@ -20,7 +20,7 @@ router.get('/:id',
       return res.sendStatus(404)
     }
     const batches = await BatchModel.findForFlow(plan.id)
-    res.send({...plan.data, project: project.data, batches: batches.map(batch => batch.data) })
+    res.send({ ...plan.data, project: project.data, batches: batches.map(batch => batch.data) })
   }
 )
 

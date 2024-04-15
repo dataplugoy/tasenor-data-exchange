@@ -1,10 +1,8 @@
-import { getToken, verify } from './crypt'
-
 /**
  * A middleware checking for proper id parameter.
  * @returns ID checker middleware function.
  */
-export const param = (what: 'id') => {
+export const param = (_what: 'id') => {
   return (req, res, next) => {
     const id = `${req.params.id}`
 

@@ -29,7 +29,7 @@ router.get('/:id',
       return res.sendStatus(404)
     }
     const plans = await FlowPlanModel.findForProject(projectId)
-    res.send({...project.data, plans: plans.map(plan => plan.data) })
+    res.send({ ...project.data, plans: plans.map(plan => plan.data) })
   }
 )
 

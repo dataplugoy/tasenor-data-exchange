@@ -1,6 +1,5 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { BatchModel } from './BatchModel'
 
 export class OutputItemModel extends BaseModel<prisma.OutputItem> {
 
@@ -45,10 +44,14 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
       return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId, delivered: false, skipped: false })
     }
     if (processed === true) {
-      const items = await this.db.findMany({ where: { OR: [
-        { batchId, delivered: true },
-        { batchId, skipped: true }
-      ]} })
+      const items = await this.db.findMany({
+        where: {
+          OR: [
+            { batchId, delivered: true },
+            { batchId, skipped: true }
+          ]
+        }
+      })
       return items.map(item => this.instantiate(item))
     }
     return await this.findMany<prisma.OutputItem, OutputItemModel>({ batchId })

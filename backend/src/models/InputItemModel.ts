@@ -1,6 +1,5 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { BatchModel } from './BatchModel'
 import { ShortDate, Timestring } from '@tasenor/common'
 import { JsonObject } from '@prisma/client/runtime/library'
 

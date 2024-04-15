@@ -1,8 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { BatchModel } from './BatchModel'
-import { UnifiedInput } from '../types/UnifiedInput'
 import { JsonValue } from '@prisma/client/runtime/library'
+import { UnifiedItemData } from '../types/API/UnifiedItemData'
 
 export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
 
@@ -13,8 +12,8 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
     return this.data.data as Record<string, unknown>
   }
 
-  get input(): UnifiedInput {
-    return this.json as unknown as UnifiedInput
+  get input(): UnifiedItemData {
+    return this.json as unknown as UnifiedItemData
   }
 
   /**
