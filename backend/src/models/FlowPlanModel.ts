@@ -135,10 +135,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async fetchData(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getInputDriver(options)
     let result: 'OK' | 'FAIL' = 'OK'
 
     try {
+      const driver = await this.getInputDriver(options)
       const state = await driver.autheticate()
       await this.saveState(state)
       const data = await driver.fetchData(this.lastStamp)
@@ -164,23 +164,32 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async itemizeInput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getInputDriver(options)
-    const items = await driver.itemizeInput(batch)
+    let result: 'OK' | 'FAIL' = 'OK'
 
-    for (const data of items) {
-      const item = await InputItemModel.save({
-        data: data as unknown as JsonValue,
-        flowPlanId: this.id,
-        batchId: batch.id,
-        runId: run.id,
-        processed: false,
-        skipped: false,
-      })
-      log(`${this} created ${item} for ${batch}.`)
+    try {
+      const driver = await this.getInputDriver(options)
+      const items = await driver.itemizeInput(batch)
+
+      for (const data of items) {
+        const item = await InputItemModel.save({
+          data: data as unknown as JsonValue,
+          flowPlanId: this.id,
+          batchId: batch.id,
+          runId: run.id,
+          processed: false,
+          skipped: false,
+        })
+        log(`${this} created ${item} for ${batch}.`)
+      }
+      await run.result(items.length, items.length, 'ALL_SUCCESS')
+    } catch (err) {
+      result = 'FAIL'
+      error(`Input parsing failed: ${err}`)
+      await run.fail(err, null, null, 'ALL_FAILED')
     }
     // TODO: Update lastStamp when parsing is completed (Hmm, do we need better resolution for old stuff? Hash?).
 
-    return 'OK'
+    return result
   }
 
   /**
@@ -190,25 +199,36 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async unifyItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const driver = await this.getInputDriver(options)
-    const inputs = await InputItemModel.findForBatch(batch.id, false)
-    let rules = await RuleModel.findForFlowByKey(this.id)
-    if (RuleModel.count(rules) === 0) {
-      rules = await driver.initializeRules(this)
-    }
-
     let result: 'OK' | 'FAIL' = 'OK'
 
-    // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
-    for (const input of inputs) {
-      try {
-        await driver.unifyItem(this, run, input, rules)
-        await input.success()
-      } catch (err) {
-        result = 'FAIL'
-        error(`Handling of ${input} failed: ${err}`)
-        await input.fail(err)
+    try {
+      const driver = await this.getInputDriver(options)
+      const inputs = await InputItemModel.findForBatch(batch.id, false)
+      let rules = await RuleModel.findForFlowByKey(this.id)
+      if (RuleModel.count(rules) === 0) {
+        rules = await driver.initializeRules(this)
       }
+      const total = inputs.length
+      let done = 0
+      // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
+      for (const input of inputs) {
+        try {
+          await driver.unifyItem(this, run, input, rules)
+          await input.success()
+          done++
+        } catch (err) {
+          result = 'FAIL'
+          error(`Handling of ${input} failed: ${err}`)
+          await input.fail(err)
+        }
+      }
+
+      await run.result(done, total)
+
+    } catch (err) {
+      result = 'FAIL'
+      error(`Unifying input failed: ${err}`)
+      await run.fail(err, null, null, 'ALL_FAILED')
     }
 
     return result
@@ -221,50 +241,65 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async analyzeItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const unifieds = await UnifiedItemModel.findForBatch(batch.id)
-    const project = await this.getProject()
-    Analyzer.configure(project.settings as AnalyzerConfig)
+    let result: 'OK' | 'FAIL' = 'OK'
 
-    // Unified items must be processed in order and batch must stop if one fails.
-    const stock = new Stock(batch.data.initialStock as StockData)
-    const analyzer = new Analyzer(stock)
+    try {
+      const unifieds = await UnifiedItemModel.findForBatch(batch.id)
+      const total = unifieds.length
+      let done = 0
 
-    for (const unified of unifieds) {
+      const project = await this.getProject()
+      Analyzer.configure(project.settings as AnalyzerConfig)
 
-      // Skip processed, but calculate current stock values.
-      if (unified.data.processed) {
-        stock.apply(unified.data.stockChange as Record<AccountCode, StockData>)
-        continue
+      // Unified items must be processed in order and batch must stop if one fails.
+      const stock = new Stock(batch.data.initialStock as StockData)
+      const analyzer = new Analyzer(stock)
+
+      for (const unified of unifieds) {
+
+        // Skip processed, but calculate current stock values.
+        if (unified.data.processed) {
+          stock.apply(unified.data.stockChange as Record<AccountCode, StockData>)
+          continue
+        }
+
+        // Analyze unprocessed.
+        let tx: Transaction
+        try {
+          tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+          analyzer.apply(tx)
+        } catch (err) {
+          await unified.fail(err)
+          throw err
+        }
+
+        // Update stock change.
+        await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
+
+        // Save success.
+        await OutputItemModel.save({
+          data: toJSON(tx),
+          skipped: false,
+          delivered: false,
+          unifiedId: unified.id,
+          flowPlanId: this.id,
+          batchId: batch.id,
+          runId: run.id,
+        })
+
+        await unified.success()
+        done++
       }
 
-      // Analyze unprocessed.
-      let tx: Transaction
-      try {
-        tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
-        analyzer.apply(tx)
-      } catch (err) {
-        await unified.fail(err)
-        throw err
-      }
+      await run.result(done, total)
 
-      // Update stock change.
-      await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
-
-      // Save success.
-      await OutputItemModel.save({
-        data: toJSON(tx),
-        skipped: false,
-        delivered: false,
-        unifiedId: unified.id,
-        flowPlanId: this.id,
-        batchId: batch.id,
-        runId: run.id,
-      })
-
-      await unified.success()
+    } catch (err) {
+      result = 'FAIL'
+      error(`Analyzing item failed: ${err}`)
+      await run.fail(err, null, null, 'ALL_FAILED')
     }
 
-    return 'OK'
+    return result
   }
 
   /**
@@ -274,20 +309,34 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param run
    */
   private async deliverOutput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
-    const output = await OutputItemModel.findForBatch(batch.id, false)
-    const driver = await this.getOutputDriver(options)
+    let result: 'OK' | 'FAIL' = 'OK'
 
-    // We deliver output in any order.
-    for (const item of output) {
-      try {
-        await driver.deliverOutput(item)
-        await item.success()
-      } catch (err) {
-        await item.fail(err)
+    try {
+      const output = await OutputItemModel.findForBatch(batch.id, false)
+      const driver = await this.getOutputDriver(options)
+      const total = output.length
+      let done = 0
+
+      // We deliver output in any order.
+      for (const item of output) {
+        try {
+          await driver.deliverOutput(item)
+          await item.success()
+          done++
+        } catch (err) {
+          await item.fail(err)
+        }
       }
+
+      await run.result(done, total)
+
+    } catch (err) {
+      result = 'FAIL'
+      error(`Delivering output failed: ${err}`)
+      await run.fail(err, null, null, 'ALL_FAILED')
     }
 
-    return 'OK'
+    return result
   }
 
   /**

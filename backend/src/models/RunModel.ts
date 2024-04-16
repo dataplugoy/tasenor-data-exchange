@@ -29,7 +29,20 @@ export class RunModel extends BaseModel<prisma.Run> {
    * @param total
    * @param result
    */
-  async result(done: null | number, total: number | null, result: RunResult): Promise<void> {
+  async result(done: null | number, total: number | null, result: RunResult | undefined = undefined): Promise<void> {
+    if (result === undefined) {
+      if (done === null || total === null) {
+        result = 'ALL_FAILED'
+      } else {
+        if (done === 0 && total === 0) {
+          result = 'NO_PROGRESS'
+        } if (done === total) {
+          result = 'ALL_SUCCESS'
+        } else {
+          result = 'PARTLY_FAIL'
+        }
+      }
+    }
     await RunModel.update<prisma.Run, RunModel>(this, { done, total, result })
   }
 
