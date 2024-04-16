@@ -104,7 +104,7 @@ classDiagram
       +batch: Batch
       +run: Run
       +data: json
-      +error: String
+      +error: string
       +converted: boolean
       +skipped: boolean
     }
@@ -118,7 +118,7 @@ classDiagram
       +input: InputItem
       +data: json
       +stockChange: json
-      +error: String
+      +error: string
       +skipped: boolean
       +processed: boolean
     }
@@ -133,7 +133,7 @@ classDiagram
       +number: integer
       +input: InputItem
       +data: json
-      +error: String
+      +error: string
       +skipped: boolean
       +processed: boolean
       +delivered: boolean
@@ -147,6 +147,10 @@ classDiagram
       +finalState: enum
       +inputs: InputItem[]
       +outputs: OutputItem[]
+      +error: string
+      +done: integer
+      +total: integer
+      +result: enum
     }
     Batch "1" *-- "1..*" Run
     Run "1" *-- "0..*" InputItem

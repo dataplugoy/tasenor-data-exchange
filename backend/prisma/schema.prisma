@@ -168,6 +168,15 @@ model Batch{
   @@map(name: "batches")
 }
 
+enum RunResult{
+  All_Success
+  Partly_Skipped_Success
+  All_Skipped
+  Partly_Fail
+  All_Failed
+  No_Progress
+}
+
 model Run{
   id          Int             @id @default(autoincrement())
   created     DateTime        @default(now())
@@ -177,9 +186,13 @@ model Run{
   finalState  BatchState
 
   error       String?
+  done        Int?
+  total       Int?
+  result      RunResult
 
   batchId     Int
   batch       Batch?          @relation(fields: [batchId], references: [id])
+
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
   outputItems OutputItem[]

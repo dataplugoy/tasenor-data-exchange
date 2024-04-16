@@ -95,6 +95,7 @@ DROP SEQUENCE IF EXISTS public."Service_id_seq";
 DROP TABLE IF EXISTS public."Service";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
+DROP TYPE IF EXISTS public."RunResult";
 DROP TYPE IF EXISTS public."RuleType";
 DROP TYPE IF EXISTS public."DriverType";
 DROP TYPE IF EXISTS public."BatchState";
@@ -137,6 +138,22 @@ CREATE TYPE public."RuleType" AS ENUM (
 
 
 ALTER TYPE public."RuleType" OWNER TO dev;
+
+--
+-- Name: RunResult; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."RunResult" AS ENUM (
+    'All_Success',
+    'Partly_Skipped_Success',
+    'All_Skipped',
+    'Partly_Fail',
+    'All_Failed',
+    'No_Progress'
+);
+
+
+ALTER TYPE public."RunResult" OWNER TO dev;
 
 --
 -- Name: ServiceDriver; Type: TYPE; Schema: public; Owner: dev
@@ -543,7 +560,10 @@ CREATE TABLE public.runs (
     "initialState" public."BatchState" NOT NULL,
     "finalState" public."BatchState" NOT NULL,
     error text,
-    "batchId" integer NOT NULL
+    "batchId" integer NOT NULL,
+    done integer,
+    result public."RunResult" NOT NULL,
+    total integer
 );
 
 
@@ -874,7 +894,7 @@ COPY public.rules (id, created, updated, type, "ownerId", name, key, priority, f
 -- Data for Name: runs; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.runs (id, created, updated, "initialState", "finalState", error, "batchId") FROM stdin;
+COPY public.runs (id, created, updated, "initialState", "finalState", error, "batchId", done, result, total) FROM stdin;
 \.
 
 

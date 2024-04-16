@@ -19,6 +19,7 @@ export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
   return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'OutputItem'
 }
 
+// TODO: Get from API model.
 export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Failed' | 'No Progress'
 export type RunStepType =
   | 'FAILED_AFTER_BATCH_CREATED'
