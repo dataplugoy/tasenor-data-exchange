@@ -90,6 +90,10 @@ export async function validateRate(this: Analyzer, asset: Asset): Promise<Decima
     valueCurrency: this.currency
   })
 
+  if (rate) {
+    return rate.value
+  }
+
   this.validateError(`Cannot resolve rate for an asset ${asset}`)
 }
 

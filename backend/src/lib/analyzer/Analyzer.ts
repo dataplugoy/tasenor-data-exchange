@@ -3,7 +3,7 @@ import { Stock, InitialStockData, StockData } from '../Stock'
 import { DateTime } from 'luxon'
 import { buy } from './handlers/buy'
 import Decimal from 'decimal.js'
-import { Asset, Currency, Language, Timestring } from '@tasenor/common'
+import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
@@ -97,6 +97,10 @@ export class Analyzer {
   async askService(query: ServiceQuery): Promise<ServiceAnswer> {
     for (const service of this.services[query.query]) {
       const result = await service.query(query)
+      if (result !== null) {
+        return result
+      }
+      warning(`A service ${service.constructor.name} was not able to handle query ${JSON.stringify(query)}`)
     }
     throw new Error(`There is no service available to handle query ${JSON.stringify(query)}`)
   }

@@ -2,6 +2,7 @@ import { ServiceType } from "@prisma/client"
 import { ServiceSettings } from "../../types/ServiceSettings"
 import { CryptoCurrency, Currency, Timestring } from "@tasenor/common"
 import Decimal from "decimal.js"
+import path from "path"
 
 /**
  * Asking valuation in the given currency of the value in other currency.
@@ -39,10 +40,17 @@ export type ServiceAnswer = CryptoAnswer | CurrencyAnswer
  */
 export class Service {
 
-  private settings: ServiceSettings
+  protected settings: ServiceSettings
 
   constructor(settings: ServiceSettings) {
     this.settings = settings
+  }
+
+  /**
+   * Root path of the repository.
+   */
+  get root(): string {
+    return path.dirname(path.dirname(path.dirname(path.dirname(__dirname))))
   }
 
   /**
@@ -56,7 +64,7 @@ export class Service {
    * Run the query.
    * @param query
    */
-  async query(query: ServiceQuery): Promise<ServiceAnswer> {
+  async query(query: ServiceQuery): Promise<ServiceAnswer | null> {
     switch (query.query) {
       case 'CRYPTO_RATES':
         return this.queryCryptoRates(query)
@@ -67,11 +75,11 @@ export class Service {
     }
   }
 
-  async queryCryptoRates(query: CryptoQuery): Promise<CryptoAnswer> {
+  async queryCryptoRates(query: CryptoQuery): Promise<CryptoAnswer | null> {
     throw new Error(`Service '${this.constructor.name}' does not implement queryCryptoRates().`)
   }
 
-  async queryCurrencyRates(query: CurrencyQuery): Promise<CurrencyAnswer> {
+  async queryCurrencyRates(query: CurrencyQuery): Promise<CurrencyAnswer | null> {
     throw new Error(`Service '${this.constructor.name}' does not implement queryCurrencyRates().`)
   }
 }
