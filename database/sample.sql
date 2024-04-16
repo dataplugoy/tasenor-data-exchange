@@ -817,7 +817,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public."Service" (id, created, updated, type, name, driver, free, settings, "userId") FROM stdin;
-1	2024-04-16 13:21:55.344	2024-04-16 13:37:45.027	CURRENCY_RATES	Test Files	JSON_FILE	t	{"url": "file://testing/data/rates.json"}	1
+1	2024-04-16 13:21:55.344	2024-04-16 17:20:56.08	CURRENCY_RATES	Test Files	JSON_FILE	t	{"url": "file:///testing/data/rates.json"}	1
 \.
 
 

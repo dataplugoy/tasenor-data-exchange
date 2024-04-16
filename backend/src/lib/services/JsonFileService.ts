@@ -10,7 +10,7 @@ export class JsonFileService extends Service {
     return ['CURRENCY_RATES', 'CRYPTO_RATES']
   }
 
-  private getFile(): any {
+  private getFile(query: CryptoQuery | CurrencyQuery): any {
     const url = new URL(this.settings.url)
     if (url.protocol !== 'file:') {
       throw new Error(`Bad protocol in URL '${this.settings.url}'.`)
@@ -22,7 +22,7 @@ export class JsonFileService extends Service {
   }
 
   async queryCryptoRates(query: CryptoQuery): Promise<CryptoAnswer> {
-    const [data, filePath] = this.getFile()
+    const [data, filePath] = this.getFile(query)
 
     if (!('crypto' in data)) {
       throw new Error(`There is no 'crypto' section in rate data '${filePath}'.`)
@@ -43,7 +43,7 @@ export class JsonFileService extends Service {
   }
 
   async queryCurrencyRates(query: CurrencyQuery): Promise<CurrencyAnswer | null> {
-    const [data, filePath] = this.getFile()
+    const [data, filePath] = this.getFile(query)
 
     if (!('currency' in data)) {
       throw new Error(`There is no 'currency' section in rate data '${filePath}'.`)
