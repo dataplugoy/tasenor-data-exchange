@@ -169,12 +169,12 @@ model Batch{
 }
 
 enum RunResult{
-  All_Success
-  Partly_Skipped_Success
-  All_Skipped
-  Partly_Fail
-  All_Failed
-  No_Progress
+  ALL_SUCCESS
+  PARTLY_SKIPPED_SUCCESS
+  ALL_SKIPPED
+  PARTLY_FAIL
+  ALL_FAILED
+  NO_PROGRESS
 }
 
 model Run{
@@ -188,7 +188,7 @@ model Run{
   error       String?
   done        Int?
   total       Int?
-  result      RunResult
+  result      RunResult       @default(NO_PROGRESS)
 
   batchId     Int
   batch       Batch?          @relation(fields: [batchId], references: [id])

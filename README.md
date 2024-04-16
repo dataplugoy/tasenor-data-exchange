@@ -29,5 +29,5 @@ pnpm run init-sample
 
 To run test batch
 ```
-bin/tadex.mjs --user tommi.ronkainen@gmail.com run Test
+bin/tadex.mjs --user user@localhost run Test
 ```

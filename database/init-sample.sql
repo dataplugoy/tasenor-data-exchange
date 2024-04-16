@@ -1,5 +1,5 @@
 COPY public.users (id, email, name, address, zip, city, country, created, updated, settings, password, "lastSeen") FROM stdin;
-1	tommi.ronkainen@gmail.com	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	{"projectId": 1}	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	\N
+1	user@localhost	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	{"projectId": 1}	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	\N
 \.
 
 COPY public.projects (id, name, created, updated, "userId", settings) FROM stdin;

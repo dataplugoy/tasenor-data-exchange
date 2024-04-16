@@ -1,6 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
+import { RunResult } from '../types/API/Run'
 
 export class RunModel extends BaseModel<prisma.Run> {
 
@@ -10,8 +11,8 @@ export class RunModel extends BaseModel<prisma.Run> {
   /**
    * Mark this run as a failure.
    */
-  async fail(err: Error): Promise<void> {
-    await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message })
+  async fail(err: Error, done: null | number, total: number | null, result: RunResult): Promise<void> {
+    await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message, done, total, result })
   }
 
   /**
@@ -20,6 +21,16 @@ export class RunModel extends BaseModel<prisma.Run> {
    */
   async success(state: prisma.BatchState): Promise<void> {
     await RunModel.update<prisma.Run, RunModel>(this, { finalState: state })
+  }
+
+  /**
+   * Update counters and results.
+   * @param done
+   * @param total
+   * @param result
+   */
+  async result(done: null | number, total: number | null, result: RunResult): Promise<void> {
+    await RunModel.update<prisma.Run, RunModel>(this, { done, total, result })
   }
 
   /**

@@ -75,7 +75,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const fn: StateHandler = this.functions[batch.state] as StateHandler
       const result = this.functions[batch.state] && await fn(options, batch, run)
       if (result === 'FAIL') {
-        throw new Error(`Execution of ${run} for state '${batch.state}' returned FAIL (should throw detailed error perhaps).`)
+        error(`Execution of ${run} for state '${batch.state}' returned FAIL.`)
+        return
       }
       if (result !== 'OK') {
         throw new Error(`Execution of ${run} for state '${batch.state}' did not return OK (perhaps incomplete implementation).`)
@@ -99,7 +100,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     } catch (err) {
 
       error(`${run} failed: ${err.stack}`)
-      await run.fail(err)
+      await run.fail(err, null, null, 'ALL_FAILED')
     }
   }
 
@@ -135,18 +136,25 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async fetchData(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     const driver = await this.getInputDriver(options)
+    let result: 'OK' | 'FAIL' = 'OK'
 
-    const state = await driver.autheticate()
-    await this.saveState(state)
-    const data = await driver.fetchData(this.lastStamp)
+    try {
+      const state = await driver.autheticate()
+      await this.saveState(state)
+      const data = await driver.fetchData(this.lastStamp)
 
-    if (typeof data !== 'string') {
-      throw new Error(`Bad data type '${typeof data}' received from ${driver.type} driver.`)
+      if (typeof data !== 'string') {
+        throw new Error(`Bad data type '${typeof data}' received from ${driver.type} driver.`)
+      }
+      await batch.setData(data)
+      await run.result(1, 1, 'ALL_SUCCESS')
+    } catch (err) {
+      result = 'FAIL'
+      error(`Fetching data failed: ${err}`)
+      await run.fail(err, null, null, 'ALL_FAILED')
     }
-    await batch.setData(data)
-    // TODO: Update lastStamp when parsing is completed.
 
-    return 'OK'
+    return result
   }
 
   /**
@@ -170,6 +178,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       })
       log(`${this} created ${item} for ${batch}.`)
     }
+    // TODO: Update lastStamp when parsing is completed (Hmm, do we need better resolution for old stuff? Hash?).
 
     return 'OK'
   }

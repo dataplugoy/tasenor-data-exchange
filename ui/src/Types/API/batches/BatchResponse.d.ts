@@ -14,6 +14,13 @@ export type BatchResponse = Batch & {
 } & {
   outputs?: OutputItem[];
 };
+export type RunResult =
+  | "ALL_SUCCESS"
+  | "PARTLY_SKIPPED_SUCCESS"
+  | "ALL_SKIPPED"
+  | "PARTLY_FAIL"
+  | "ALL_FAILED"
+  | "NO_PROGRESS";
 /**
  * Main category of the transaction.
  */
@@ -75,6 +82,9 @@ export interface Run {
     | "OUTPUT_CREATED"
     | "OUTPUT_DELIVERED";
   error: string | null;
+  done?: number | null;
+  total?: number | null;
+  result?: RunResult;
   created?: string;
   updated?: string;
 }

@@ -144,12 +144,12 @@ ALTER TYPE public."RuleType" OWNER TO dev;
 --
 
 CREATE TYPE public."RunResult" AS ENUM (
-    'All_Success',
-    'Partly_Skipped_Success',
-    'All_Skipped',
-    'Partly_Fail',
-    'All_Failed',
-    'No_Progress'
+    'ALL_SUCCESS',
+    'PARTLY_SKIPPED_SUCCESS',
+    'ALL_SKIPPED',
+    'PARTLY_FAIL',
+    'ALL_FAILED',
+    'NO_PROGRESS'
 );
 
 
@@ -562,7 +562,7 @@ CREATE TABLE public.runs (
     error text,
     "batchId" integer NOT NULL,
     done integer,
-    result public."RunResult" NOT NULL,
+    result public."RunResult" DEFAULT 'NO_PROGRESS'::public."RunResult" NOT NULL,
     total integer
 );
 
@@ -921,7 +921,7 @@ COPY public.unified_items (id, created, updated, "time", data, processed, skippe
 --
 
 COPY public.users (id, created, updated, email, password, name, address, zip, city, country, "lastSeen", settings) FROM stdin;
-1	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	tommi.ronkainen@gmail.com	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	{"projectId": 1}
+1	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	user@localhost	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	{"projectId": 1}
 \.
 
 

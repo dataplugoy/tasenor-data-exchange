@@ -5,6 +5,14 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type RunResult =
+  | "ALL_SUCCESS"
+  | "PARTLY_SKIPPED_SUCCESS"
+  | "ALL_SKIPPED"
+  | "PARTLY_FAIL"
+  | "ALL_FAILED"
+  | "NO_PROGRESS";
+
 export interface Run {
   id: number;
   batchId: number;
@@ -23,6 +31,9 @@ export interface Run {
     | "OUTPUT_CREATED"
     | "OUTPUT_DELIVERED";
   error: string | null;
+  done?: number | null;
+  total?: number | null;
+  result?: RunResult;
   created?: string;
   updated?: string;
 }
