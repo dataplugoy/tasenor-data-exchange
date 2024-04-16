@@ -150,7 +150,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await run.result(1, 1, 'ALL_SUCCESS')
     } catch (err) {
       result = 'FAIL'
-      error(`Fetching data failed: ${err}`)
+      error(`Fetching data failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
     }
 
@@ -184,7 +184,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await run.result(items.length, items.length, 'ALL_SUCCESS')
     } catch (err) {
       result = 'FAIL'
-      error(`Input parsing failed: ${err}`)
+      error(`Input parsing failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
     }
     // TODO: Update lastStamp when parsing is completed (Hmm, do we need better resolution for old stuff? Hash?).
@@ -218,7 +218,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           done++
         } catch (err) {
           result = 'FAIL'
-          error(`Handling of ${input} failed: ${err}`)
+          error(`Handling of ${input} failed: ${err.stack}`)
           await input.fail(err)
         }
       }
@@ -227,7 +227,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     } catch (err) {
       result = 'FAIL'
-      error(`Unifying input failed: ${err}`)
+      error(`Unifying input failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
     }
 
@@ -295,7 +295,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     } catch (err) {
       result = 'FAIL'
-      error(`Analyzing item failed: ${err}`)
+      error(`Analyzing item failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
     }
 
@@ -332,7 +332,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     } catch (err) {
       result = 'FAIL'
-      error(`Delivering output failed: ${err}`)
+      error(`Delivering output failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
     }
 
