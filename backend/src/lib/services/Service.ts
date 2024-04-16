@@ -1,6 +1,6 @@
 import { ServiceType } from "@prisma/client"
 import { ServiceSettings } from "../../types/ServiceSettings"
-import { CryptoCurrency, Currency, Timestring } from "@tasenor/common"
+import { CryptoCurrency, Currency, Timestring, log } from "@tasenor/common"
 import Decimal from "decimal.js"
 import path from "path"
 
@@ -65,6 +65,7 @@ export class Service {
    * @param query
    */
   async query(query: ServiceQuery): Promise<ServiceAnswer | null> {
+    log(`Calling service ${JSON.stringify(query)}`)
     switch (query.query) {
       case 'CRYPTO_RATES':
         return this.queryCryptoRates(query)
