@@ -19,8 +19,6 @@ export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
   return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'OutputItem'
 }
 
-// TODO: Get from API model.
-export type RunResultType = 'All Success' | 'Partly Skipped Success' | 'All Skipped' | 'Partly Fail' | 'All Failed' | 'No Progress'
 export type RunStepType =
   | 'FAILED_AFTER_BATCH_CREATED'
   | 'FAILED_AFTER_DATA_FETCHED'
@@ -37,10 +35,7 @@ export type RunStepType =
 
 export type RunResult = {
   run: Run
-  result: RunResultType
   step: RunStepType
-  done: number | null
-  total: number | null
   items: ResultItem[]
 }
 
@@ -63,10 +58,7 @@ export function sortRuns(
   // Handle in chronological order.
   for (let i = runs.length - 1; i >= 0; i--) {
     const run = runs[i]
-    let resultType: RunResultType = 'No Progress'
     let step: RunStepType = 'FAILED_AFTER_BATCH_CREATED'
-    let done: number | null = null
-    let total: number | null = null
     let items: ResultItem[] = []
     const hasProgressed = (run.initialState !== run.finalState);
 
@@ -81,102 +73,21 @@ export function sortRuns(
       items.push({ type: 'OutputItem', ...item })
     })
 
-    // Based on the progress, fill in the result.
     if (hasProgressed) {
-
+      step = `SUCCESSFUL_${run.finalState}`
       if (run.finalState === 'OUTPUT_DELIVERED') {
         items = lastSuccess?.items || []
       }
-      const skips = items.filter(item => item.skipped)
-      const hasSkips = skips.length > 0
-      const hasAllSkips = items.length > 0 && items.length === skips.length
-      const success = items.filter(item => (isResultOutputItem(item) && item.delivered) || (!isResultOutputItem(item) && item.processed))
-      const hasAllSuccess = items.length > 0 && items.length === success.length
-
-      switch (run.finalState) {
-        case 'DATA_FETCHED':
-          done = 1
-          total = 1
-          resultType = 'All Success'
-          break
-        case 'DATA_PARSED':
-          done = items.length
-          total = items.length
-          resultType = 'All Success'
-          break
-        case 'ITEMS_UNIFIED':
-          done = success.length + skips.length
-          total = items.length
-          break
-        case 'OUTPUT_CREATED':
-          done = items.length
-          total = items.length
-          resultType = 'All Success'
-          break
-        case 'OUTPUT_DELIVERED':
-          done = success.length + skips.length
-          total = items.length
-          break
-        default:
-          throw new Error(`State of success '${run.finalState}' not yet implemented.`)
-      }
-
-      if (hasAllSuccess) {
-        resultType = 'All Success'
-      } else if (hasAllSkips) {
-        resultType = 'All Skipped'
-      } else if (hasSkips) {
-        resultType = 'Partly Skipped Success'
-      }
-      step = `SUCCESSFUL_${run.finalState}`
-
     } else {
-      // Get data from the last successful.
-      const lastItems = lastSuccess?.items || []
-      const skips = lastItems.filter(item => item.skipped)
-      const success = lastItems.filter(item => (isResultOutputItem(item) && item.delivered) || (!isResultOutputItem(item) && item.processed))
-      const failures = lastItems.filter(item => item.error !== null)
-
-      // Mark the last item not to show confusing items.
-
-      switch (run.initialState) {
-        case 'DATA_PARSED':
-          done = skips.length + success.length
-          total = lastSuccess?.items.length || null
-          break
-        case 'ITEMS_UNIFIED':
-          done = skips.length + success.length
-          total = lastSuccess?.items.length || null
-          break
-        case 'OUTPUT_CREATED':
-          done = skips.length + success.length
-          total = lastSuccess?.items.length || null
-          break
-        default:
-          throw new Error(`State of failure '${run.initialState}' not yet implemented.`)
-      }
-
-      if (failures.length === lastItems.length) {
-        resultType = 'All Failed'
-      } else if (failures.length > 0 && success.length > 0) {
-        resultType = 'Partly Fail'
-      } else {
-        resultType = 'No Progress'
-      }
-
-      step = `FAILED_AFTER_${run.finalState}`
-
       // Pass last known items for further investigation.
+      step = `FAILED_AFTER_${run.finalState}`
       items = lastSuccess?.items || []
     }
 
     // Collect the results.
     const result = {
-      result: resultType,
       step,
       run,
-      done,
-      total,
       items
     }
 

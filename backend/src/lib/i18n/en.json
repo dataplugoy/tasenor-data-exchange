@@ -8,5 +8,11 @@
   "ITEMS_UNIFIED - ITEMS_UNIFIED" : "Unable to complete analysis",
   "ITEMS_UNIFIED - OUTPUT_CREATED" : "Analysed and converted to results",
   "OUTPUT_CREATED - OUTPUT_CREATED" : "Cannot deliver the results",
-  "OUTPUT_CREATED - OUTPUT_DELIVERED" : "Results successfully delivered"
+  "OUTPUT_CREATED - OUTPUT_DELIVERED" : "Results successfully delivered",
+  "RESULT_ALL_SUCCESS": "All Successful",
+  "RESULT_PARTLY_SKIPPED_SUCCESS": "Skipped Some",
+  "RESULT_ALL_SKIPPED": "All Skipped",
+  "RESULT_PARTLY_FAIL": "Partly Failed",
+  "RESULT_ALL_FAILED": "All Failed",
+  "RESULT_NO_PROGRESS": "No Progress"
 }

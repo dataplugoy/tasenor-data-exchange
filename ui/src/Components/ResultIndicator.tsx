@@ -13,20 +13,20 @@ interface ResultIndicatorProps {
  * @returns
  */
 export const ResultIndicator = (props: ResultIndicatorProps): React.JSX.Element => {
-  const { result } = props
+  const result = props.result.run.result
   const { t } = useTranslation()
 
   let color: undefined | string
-  if (result.result === 'All Success') {
+  if (result === 'ALL_SUCCESS') {
     color = 'success.main'
   }
-  if (result.result === 'All Failed') {
+  if (result === 'ALL_FAILED') {
     color = 'error.main'
   }
 
   return (
     <Box sx={{ display: 'inline', color }}>
-      {t(result.result)}
+      {t(`RESULT_${result}`)}
     </Box>
   )
 }

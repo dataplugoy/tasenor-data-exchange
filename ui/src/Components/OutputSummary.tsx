@@ -13,7 +13,7 @@ interface OutputSummaryProps {
  */
 export const OutputSummary = (props: OutputSummaryProps): React.JSX.Element => {
   const { result } = props
-  const { done, total } = result
+  const { done, total } = result.run
 
   return (
     <Box sx={{ display: 'inline' }}>
