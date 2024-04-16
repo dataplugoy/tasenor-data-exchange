@@ -13,7 +13,7 @@ import { sell } from './handlers/sell'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
-import { Service } from '../services/Service'
+import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -88,6 +88,17 @@ export class Analyzer {
         this.services[cabapility].push(service)
       })
     })
+  }
+
+  /**
+   * Run the service query.
+   * @param query
+   */
+  async askService(query: ServiceQuery): Promise<ServiceAnswer> {
+    for (const service of this.services[query.query]) {
+      const result = await service.query(query)
+    }
+    throw new Error(`There is no service available to handle query ${JSON.stringify(query)}`)
   }
 
   /**
