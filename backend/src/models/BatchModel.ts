@@ -3,6 +3,7 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
+import { Service } from '../lib/services/Service'
 
 export class BatchModel extends BaseModel<prisma.Batch> {
 
@@ -47,6 +48,13 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     parser.end()
 
     return records
+  }
+
+  /**
+   * Get the services for this batch model.
+   */
+  async getServices(): Promise<Service[]> {
+    return FlowPlanModel.getServices(this.data.flowPlanId)
   }
 
   /**

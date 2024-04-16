@@ -2,6 +2,10 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { ProjectModel } from './ProjectModel'
 import { FlowPlanModel } from './FlowPlanModel'
+import { ServiceModel } from './ServiceModel'
+import { Service } from '../lib/services/Service'
+import { getService } from '../lib/services'
+import { ServiceSettings } from '../types/ServiceSettings'
 
 export class UserModel extends BaseModel<prisma.User> {
 
@@ -15,7 +19,7 @@ export class UserModel extends BaseModel<prisma.User> {
   /**
    * Get a list of all projects the user has.
    */
-  getProjects(): Promise<ProjectModel[]> {
+  async getProjects(): Promise<ProjectModel[]> {
     return ProjectModel.findForUser(this.id)
   }
 
@@ -23,7 +27,7 @@ export class UserModel extends BaseModel<prisma.User> {
    * Find the named flow for this project.
    * @param name
    */
-  findFlowPlan(name: string) {
+  async findFlowPlan(name: string) {
     return FlowPlanModel.findForUser(this.id, name)
   }
 
@@ -34,5 +38,13 @@ export class UserModel extends BaseModel<prisma.User> {
    */
   static async find(email: string): Promise<UserModel | null> {
     return this.findUnique<prisma.User, UserModel>({ email })
+  }
+
+  /***
+   * Find the configured services for the user.
+   */
+  static async getServices(userId: number): Promise<Service[]> {
+    const models = await ServiceModel.findForUser(userId)
+    return models.map(service => getService(service.data.driver, service.data.settings as ServiceSettings))
   }
 }

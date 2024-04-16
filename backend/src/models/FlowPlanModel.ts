@@ -21,6 +21,7 @@ import { OutputDestinationModel } from './OutputDestinationModel'
 import { AccountCode } from '../types/AccountCode'
 import { AnalyzerConfig } from '../lib/analyzer/AnalyzerConfig'
 import { Transaction } from '../types/API/Transaction'
+import { Service } from '../lib/services/Service'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -254,6 +255,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Unified items must be processed in order and batch must stop if one fails.
       const stock = new Stock(batch.data.initialStock as StockData)
       const analyzer = new Analyzer(stock)
+      analyzer.setServices(await batch.getServices())
 
       for (const unified of unifieds) {
 
@@ -371,6 +373,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       throw new Error(`Cannot find project for '${this}'.`)
     }
     return project
+  }
+
+  /**
+   * Get the servies for the flow plan.
+   * @param flowPlanId
+   */
+  static async getServices(flowPlanId: number): Promise<Service[]> {
+    const plan = await FlowPlanModel.get(flowPlanId)
+    if (!plan) {
+      throw new Error(`Failed to find flow plan model ${flowPlanId}.`)
+    }
+    return ProjectModel.getServices(plan.data.projectId)
   }
 
   /**

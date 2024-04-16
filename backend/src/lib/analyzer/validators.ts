@@ -30,7 +30,7 @@ export function validateInput(this: Analyzer): UnifiedItemData {
 export function validateBasics(this: Analyzer): void {
   const input = this.validateInput()
 
-  if (input.value !== undefined && dec(input.value).isNegative()) {
+  if (input.value !== undefined && input.value !== null && dec(input.value).isNegative()) {
     this.validateError(`Total value ${input.value} cannot be negative.`)
   }
 }
@@ -76,20 +76,20 @@ export function validateText(this: Analyzer, text: string, values: Record<string
  * Get the rate in the default currency for an asset or throw an error.
  * @param asset
  */
-export async function validateRate(asset: Asset): Promise<Decimal> {
+export async function validateRate(this: Analyzer, asset: Asset): Promise<Decimal> {
   const input = this.validateInput()
-  if (!input.rates || !(asset in input.rates)) {
-    this.validateError(`Cannot resolve rate for an asset ${asset}`)
+  if (input.rates && (asset in input.rates)) {
+    return dec(input.rates[asset] as string | number | Decimal)
   }
-  return dec(input.rates[asset])
+  this.validateError(`Cannot resolve rate for an asset ${asset}`)
 }
 
 /**
  * Resolve total value if not given explicitly.
  */
-export async function validateValue(asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined): Promise<Decimal> {
+export async function validateValue(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined): Promise<Decimal> {
   const input = this.validateInput()
-  if (input.value !== undefined) {
+  if (input.value !== undefined && input.value !== null) {
     return dec(input.value)
   }
   if (asset === undefined) {

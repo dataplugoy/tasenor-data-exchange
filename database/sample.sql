@@ -160,7 +160,8 @@ ALTER TYPE public."RunResult" OWNER TO dev;
 --
 
 CREATE TYPE public."ServiceDriver" AS ENUM (
-    'TASENOR'
+    'TASENOR',
+    'JSON_FILE'
 );
 
 
@@ -816,6 +817,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public."Service" (id, created, updated, type, name, driver, free, settings, "userId") FROM stdin;
+1	2024-04-16 13:21:55.344	2024-04-16 13:37:45.027	CURRENCY_RATES	Test Files	JSON_FILE	t	{"url": "file://testing/data/rates.json"}	1
 \.
 
 
@@ -929,7 +931,7 @@ COPY public.users (id, created, updated, email, password, name, address, zip, ci
 -- Name: Service_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public."Service_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Service_id_seq"', 2, true);
 
 
 --

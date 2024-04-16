@@ -1,3 +1,4 @@
+import prisma from '@prisma/client'
 import { Stock, InitialStockData, StockData } from '../Stock'
 import { DateTime } from 'luxon'
 import { buy } from './handlers/buy'
@@ -12,6 +13,7 @@ import { sell } from './handlers/sell'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
+import { Service } from '../services/Service'
 
 // TODO: Plan and embed the rule-based steps here or elsewhere.
 
@@ -25,6 +27,8 @@ export type Balances = Partial<Record<AccountCode, Decimal>>
  */
 export class Analyzer {
   private static  config: AnalyzerConfig | null
+
+  private services: Record<prisma.ServiceType, Service[]>
 
   protected stock: Stock
   protected balances: Balances
@@ -52,6 +56,10 @@ export class Analyzer {
    * @param stock
    */
   constructor(stock: Stock, balances: Balances = {}) {
+    this.services = {
+      CRYPTO_RATES: [],
+      CURRENCY_RATES: []
+    }
     this.stock = stock
     this.balances = balances
     this.clock = '0000-00-00T00:00:00Z' as Timestring
@@ -65,6 +73,21 @@ export class Analyzer {
   }
   get language(): Language {
     return Analyzer.getConfig('language') as Language
+  }
+
+  /**
+   * Set services available.
+   * @param services
+   */
+  setServices(services: Service[]): void {
+    Object.keys(this.services).forEach(cabapility => {
+      this.services[cabapility] = []
+    })
+    services.forEach(service => {
+      service.getCababilities().forEach(cabapility => {
+        this.services[cabapility].push(service)
+      })
+    })
   }
 
   /**

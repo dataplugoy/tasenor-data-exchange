@@ -1,6 +1,8 @@
 import { ProjectSettings } from '../types/API/Project'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
+import { UserModel } from './UserModel'
+import { Service } from '../lib/services/Service'
 
 export class ProjectModel extends BaseModel<prisma.Project> {
 
@@ -24,5 +26,17 @@ export class ProjectModel extends BaseModel<prisma.Project> {
 
   static async get(id: number): Promise<ProjectModel | null> {
     return this.findUnique<prisma.Project, ProjectModel>({ id })
+  }
+
+  /**
+   * Get services for the project.
+   * @param projectId
+   */
+  static async getServices(projectId: number): Promise<Service[]> {
+    const project = await ProjectModel.get(projectId)
+    if (!project) {
+      throw new Error(`Failed to find flow plan model ${projectId}.`)
+    }
+    return UserModel.getServices(project.data.userId)
   }
 }
