@@ -24,7 +24,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   this.validateBasics()
   this.validateRequired('assetOut', 'assetAmountOut')
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
-  const value = await this.validateValue(assetOut as Asset, dec(assetAmountOut))
+  const value = await this.validateValue(assetOut as Asset, dec(assetAmountOut), false)
   const account = `ASSET_${assetOut}` as AccountCode
   const oldValue = this.stock.getValue(account, assetOut as Asset).mul(assetAmountOut as number)
 

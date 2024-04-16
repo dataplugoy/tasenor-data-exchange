@@ -48,8 +48,8 @@ export class Analyzer {
   public validateRequirdeField: (field: keyof UnifiedItemData) => void = validateRequirdeField.bind(this)
   public validateRequired: (...fields: Array<keyof UnifiedItemData>) => void = validateRequired.bind(this)
   public validateText: (text: string, values: Record<string, string | undefined>) => string = validateText.bind(this)
-  public validateRate: (asset: Asset) => Promise<Decimal> = validateRate.bind(this)
-  public validateValue: (asset: Asset | undefined, amount: number | Decimal | undefined) => Promise<Decimal> = validateValue.bind(this)
+  public validateRate: (asset: Asset, canUseService: boolean) => Promise<Decimal> = validateRate.bind(this)
+  public validateValue: (asset: Asset | undefined, amount: number | Decimal | undefined, canUseService: boolean) => Promise<Decimal> = validateValue.bind(this)
 
   /**
    * Initialize

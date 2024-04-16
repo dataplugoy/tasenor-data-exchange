@@ -76,22 +76,24 @@ export function validateText(this: Analyzer, text: string, values: Record<string
  * Get the rate in the default currency for an asset or throw an error.
  * @param asset
  */
-export async function validateRate(this: Analyzer, asset: Asset): Promise<Decimal> {
+export async function validateRate(this: Analyzer, asset: Asset, canUseService: boolean): Promise<Decimal> {
   const input = this.validateInput()
   if (input.rates && (asset in input.rates)) {
     return dec(input.rates[asset] as string | number | Decimal)
   }
 
   // TODO: If currency? How about optional prefixing like CURRENCY: to make it clear. (Update API spec.)
-  const rate = await this.askService({
-    query: 'CRYPTO_RATES',
-    time: this.lastTime,
-    asset: input.assetIn as CryptoCurrency,
-    valueCurrency: this.currency
-  })
+  if (canUseService) {
+    const rate = await this.askService({
+      query: 'CRYPTO_RATES',
+      time: this.lastTime,
+      asset: input.assetIn as CryptoCurrency,
+      valueCurrency: this.currency
+    })
 
-  if (rate) {
-    return rate.value
+    if (rate) {
+      return rate.value
+    }
   }
 
   this.validateError(`Cannot resolve rate for an asset ${asset}`)
@@ -100,7 +102,7 @@ export async function validateRate(this: Analyzer, asset: Asset): Promise<Decima
 /**
  * Resolve total value if not given explicitly.
  */
-export async function validateValue(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined): Promise<Decimal> {
+export async function validateValue(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined, canUseService: boolean): Promise<Decimal> {
   const input = this.validateInput()
   if (input.value !== undefined && input.value !== null) {
     return dec(input.value)
@@ -112,6 +114,6 @@ export async function validateValue(this: Analyzer, asset: Asset | undefined = u
     this.validateError(`Cannot figure out value without amount of the asset`)
   }
 
-  const rate = await this.validateRate(asset)
+  const rate = await this.validateRate(asset, canUseService)
   return rate.mul(dec(amount))
 }
