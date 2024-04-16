@@ -33,6 +33,7 @@ ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_i
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS "flow_plans_projectId_fkey";
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
+ALTER TABLE IF EXISTS ONLY public."Service" DROP CONSTRAINT IF EXISTS "Service_userId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
 DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
@@ -52,6 +53,7 @@ ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS input_
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS input_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS flow_plans_pkey;
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS batches_pkey;
+ALTER TABLE IF EXISTS ONLY public."Service" DROP CONSTRAINT IF EXISTS "Service_pkey";
 ALTER TABLE IF EXISTS public.users ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.unified_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.settings ALTER COLUMN id DROP DEFAULT;
@@ -64,6 +66,7 @@ ALTER TABLE IF EXISTS public.input_sources ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.flow_plans ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.batches ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public."Service" ALTER COLUMN id DROP DEFAULT;
 DROP SEQUENCE IF EXISTS public.users_id_seq;
 DROP TABLE IF EXISTS public.users;
 DROP SEQUENCE IF EXISTS public.unified_items_id_seq;
@@ -88,6 +91,10 @@ DROP SEQUENCE IF EXISTS public.flow_plans_id_seq;
 DROP TABLE IF EXISTS public.flow_plans;
 DROP SEQUENCE IF EXISTS public.batches_id_seq;
 DROP TABLE IF EXISTS public.batches;
+DROP SEQUENCE IF EXISTS public."Service_id_seq";
+DROP TABLE IF EXISTS public."Service";
+DROP TYPE IF EXISTS public."ServiceType";
+DROP TYPE IF EXISTS public."ServiceDriver";
 DROP TYPE IF EXISTS public."RuleType";
 DROP TYPE IF EXISTS public."DriverType";
 DROP TYPE IF EXISTS public."BatchState";
@@ -131,9 +138,73 @@ CREATE TYPE public."RuleType" AS ENUM (
 
 ALTER TYPE public."RuleType" OWNER TO dev;
 
+--
+-- Name: ServiceDriver; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."ServiceDriver" AS ENUM (
+    'TASENOR'
+);
+
+
+ALTER TYPE public."ServiceDriver" OWNER TO dev;
+
+--
+-- Name: ServiceType; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."ServiceType" AS ENUM (
+    'CURRENCY_RATES',
+    'CRYPTO_RATES'
+);
+
+
+ALTER TYPE public."ServiceType" OWNER TO dev;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: Service; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public."Service" (
+    id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
+    type public."ServiceType" NOT NULL,
+    name text NOT NULL,
+    driver public."ServiceDriver" NOT NULL,
+    free boolean NOT NULL,
+    settings jsonb NOT NULL,
+    "userId" integer NOT NULL
+);
+
+
+ALTER TABLE public."Service" OWNER TO dev;
+
+--
+-- Name: Service_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public."Service_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Service_id_seq" OWNER TO dev;
+
+--
+-- Name: Service_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public."Service_id_seq" OWNED BY public."Service".id;
+
 
 --
 -- Name: batches; Type: TABLE; Schema: public; Owner: dev
@@ -630,6 +701,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: Service id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public."Service" ALTER COLUMN id SET DEFAULT nextval('public."Service_id_seq"'::regclass);
+
+
+--
 -- Name: batches id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -711,6 +789,14 @@ ALTER TABLE ONLY public.unified_items ALTER COLUMN id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: Service; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public."Service" (id, created, updated, type, name, driver, free, settings, "userId") FROM stdin;
+\.
 
 
 --
@@ -820,6 +906,13 @@ COPY public.users (id, created, updated, email, password, name, address, zip, ci
 
 
 --
+-- Name: Service_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public."Service_id_seq"', 1, false);
+
+
+--
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
@@ -901,6 +994,14 @@ SELECT pg_catalog.setval('public.unified_items_id_seq', 14, true);
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- Name: Service Service_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public."Service"
+    ADD CONSTRAINT "Service_pkey" PRIMARY KEY (id);
 
 
 --
@@ -1046,6 +1147,14 @@ CREATE UNIQUE INDEX "unified_items_inputId_key" ON public.unified_items USING bt
 --
 
 CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email);
+
+
+--
+-- Name: Service Service_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public."Service"
+    ADD CONSTRAINT "Service_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

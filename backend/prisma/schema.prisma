@@ -36,8 +36,33 @@ model User {
   settings    Json            @default("{}")
 
   projects    Project[]
+  services    Service[]
 
   @@map(name: "users")
+}
+
+enum ServiceType {
+  CURRENCY_RATES
+  CRYPTO_RATES
+}
+
+enum ServiceDriver {
+  TASENOR
+}
+
+model Service {
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  type        ServiceType
+  name        String
+  driver      ServiceDriver
+  free        Boolean
+  settings    Json
+
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Project {

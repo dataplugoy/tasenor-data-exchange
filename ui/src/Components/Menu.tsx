@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Button, Box } from '@mui/material'
-import { AccountTree, Home, Logout, Rule } from '@mui/icons-material'
+import { AccountTree, Home, Logout, MiscellaneousServices, Rule } from '@mui/icons-material'
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { DEFAULT_USER, useApp } from '../Hooks/useApp'
@@ -20,10 +20,11 @@ export const Menu = (): React.JSX.Element => {
 
   return (
     <AppBar position="static">
-      <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 4fr' }}>
+      <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 2fr' }}>
         <Button startIcon={<Home />} onClick={() => navigate('/home')}><Trans>Dashboard</Trans></Button>
         <Button startIcon={<AccountTree />}><Trans>Projects</Trans></Button>
         <Button startIcon={<Rule />}><Trans>Rules</Trans></Button>
+        <Button startIcon={<MiscellaneousServices />}><Trans>Services</Trans></Button>
         <Box sx={{ textAlign: 'right' }}>
           <Button startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>
         </Box>
