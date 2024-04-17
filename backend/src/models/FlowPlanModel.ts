@@ -262,35 +262,43 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         // Skip processed, but calculate current stock values.
         if (unified.data.processed) {
           stock.apply(unified.data.stockChange as Record<AccountCode, StockData>)
+          done++
           continue
         }
 
-        // Analyze unprocessed.
-        let tx: Transaction
         try {
-          tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
-          analyzer.apply(tx)
+          // Analyze unprocessed.
+          let tx: Transaction
+          try {
+            tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+            analyzer.apply(tx)
+          } catch (err) {
+            await unified.fail(err)
+            throw err
+          }
+
+          // Update stock change.
+          await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
+
+          // Save success.
+          await OutputItemModel.save({
+            data: toJSON(tx),
+            skipped: false,
+            delivered: false,
+            unifiedId: unified.id,
+            flowPlanId: this.id,
+            batchId: batch.id,
+            runId: run.id,
+          })
+
+          await unified.success()
+          done++
         } catch (err) {
+          result = 'FAIL'
+          error(`Unifying input failed: ${err.stack}`)
           await unified.fail(err)
-          throw err
+          await run.fail(err)
         }
-
-        // Update stock change.
-        await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
-
-        // Save success.
-        await OutputItemModel.save({
-          data: toJSON(tx),
-          skipped: false,
-          delivered: false,
-          unifiedId: unified.id,
-          flowPlanId: this.id,
-          batchId: batch.id,
-          runId: run.id,
-        })
-
-        await unified.success()
-        done++
       }
 
       await run.result(done, total)
