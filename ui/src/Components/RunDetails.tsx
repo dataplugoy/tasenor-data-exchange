@@ -17,15 +17,28 @@ const RunStateSuccessIcon = (): React.JSX.Element => {
   return <Box sx={{ display: 'inline-block', ml: 1 }}><Check sx={{ color: 'success.main', mb: '-0.4rem' }}/></Box>
 }
 
-const RunStateIcon = (props: { item: ResultItem }): React.JSX.Element => {
-  const success = isResultOutputItem(props.item) ? props.item.delivered : props.item.processed
+interface RunStateIconProps {
+  result: RunResult
+  item: ResultItem
+}
+
+const RunStateIcon = (props: RunStateIconProps): React.JSX.Element => {
+  const { item, result } = props
+  let success = isResultOutputItem(item) ? item.delivered : item.processed
+  const progress = result.run.initialState !== result.run.finalState
+  const step = result.step
+
+  if (!success && progress && ['SUCCESSFUL_DATA_PARSED', 'SUCCESSFUL_ITEMS_UNIFIED', 'SUCCESSFUL_OUTPUT_CREATED'].includes(step)) {
+    success = true
+  }
+
   if (success) {
     return <RunStateSuccessIcon/>
   }
-  if (props.item.skipped) {
+  if (item.skipped) {
     return <Box sx={{ display: 'inline-block', ml: 1 }}><SkipNext sx={{ color: 'primary.main', mb: '-0.4rem' }}/></Box>
   }
-  if (props.item.error !== null) {
+  if (item.error !== null) {
     return <Box sx={{ display: 'inline-block', ml: 1 }}><Error sx={{ color: 'error.dark', mb: '-0.4rem' }}/></Box>
   }
 
@@ -72,7 +85,7 @@ const SuccessfulItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
     <Box>
       {
         items.map((item, idx) => <Box key={idx}>
-          <Box>{JSON.stringify(item.data)}<RunStateIcon item={item}/></Box>
+          <Box>{JSON.stringify(item.data)}<RunStateIcon result={result} item={item}/></Box>
           {item.stockChange && JSON.stringify(item.stockChange)}
         </Box>)
       }
@@ -88,7 +101,7 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
     <Box>
       {
         items.map((item, idx) => <Box key={idx}>
-          <Box>{item.data.time}<RunStateIcon item={item}/></Box>
+          <Box>{item.data.time}<RunStateIcon result={result} item={item}/></Box>
           {item.data.lines.map((line, idx) => <Box key={idx}>{JSON.stringify(line)}</Box>)}
         </Box>)
       }
