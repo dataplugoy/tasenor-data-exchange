@@ -1,8 +1,9 @@
 import { ServiceType } from "@prisma/client"
 import { ServiceSettings } from "../../types/ServiceSettings"
-import { CryptoCurrency, Currency, Timestring, log } from "@tasenor/common"
+import { HttpMethod, error, CryptoCurrency, Currency, Timestring, log } from "@tasenor/common"
 import Decimal from "decimal.js"
 import path from "path"
+import axios, { AxiosRequestConfig } from 'axios'
 
 /**
  * Asking valuation in the given currency of the value in other currency.
@@ -58,6 +59,76 @@ export class Service {
    */
   getCababilities(): ServiceType[] {
     return []
+  }
+
+  /**
+   * Construct standard default headers for requests.
+   */
+  protected headers(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+    const token = this.settings.token
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    return headers
+  }
+
+  /**
+   * Ensure that URL does not have double slash in the beginning.
+   * @param url Local part of the URL.
+   */
+  private makeUrl(url: string): string {
+    const baseUrl = this.settings.url.replace(/\/$/, '')
+    url = url.replace(/^\//, '')
+    return `${baseUrl}/${url}`
+  }
+
+  /**
+   * Executor for HTTP requests.
+   * @param method
+   */
+  private async request<T>(method: HttpMethod, url: string, data: unknown = undefined): Promise<T> {
+    log(`Service ${this.constructor.name} requesting '${method} ${url.replace(/token=(.............)/, 'XXXXXXXXXXXXX')}'.`)
+
+    const conf: AxiosRequestConfig = {
+      method,
+      url,
+      headers: this.headers(),
+      data,
+    }
+
+    const result = await axios(conf).catch(err => {
+      error('Request failed: ' + JSON.stringify(err.response.data))
+      throw err
+    })
+
+    return result.data
+  }
+
+  /**
+   * Execute GET request.
+   */
+  protected async GET<T>(url): Promise<T> {
+    const resp = await this.request<T>('GET', this.makeUrl(url))
+    return resp
+  }
+
+  /**
+   * Execute DELETE request.
+   */
+  protected async DELETE<T>(url): Promise<T> {
+    const resp = await this.request<T>('DELETE', this.makeUrl(url))
+    return resp
+  }
+
+  /**
+   * Execute POST request.
+   */
+  protected async POST<T>(url, data): Promise<T> {
+    const resp = await this.request<T>('POST', this.makeUrl(url), data)
+    return resp
   }
 
   /**

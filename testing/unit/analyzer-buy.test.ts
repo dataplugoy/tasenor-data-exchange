@@ -138,6 +138,7 @@ describe('Analyzer', () => {
     )
   })
 
+
   it('buying using rates from the service', async () => {
     Analyzer.configure({
       currency: 'EUR',
@@ -159,26 +160,26 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
-      tx: {
-        time: '2000-01-01T00:00:00.000Z',
-        lines: [
-          {
-            account: 'CURRENCY_EUR',
-            amount: "-55000",
-            text: 'Bought +1.1 BTC',
-            extras: {}
-          },
-          {
-            account: 'ASSET_BTC',
-            amount: "55000",
-            text: 'Bought +1.1 BTC',
-            extras: { asset: 'BTC', assetChange: "1.1" }
-          }
-        ]
-      },
-      balances: { CURRENCY_EUR: -55000, ASSET_BTC: 55000 },
-      stock: { ASSET_BTC: { BTC: { amount: 1.1, value: 55000 } } }
-    }
-  )
-})
+        tx: {
+          time: '2000-01-01T00:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: "-55000",
+              text: 'Bought +1.1 BTC',
+              extras: {}
+            },
+            {
+              account: 'ASSET_BTC',
+              amount: "55000",
+              text: 'Bought +1.1 BTC',
+              extras: { asset: 'BTC', assetChange: "1.1" }
+            }
+          ]
+        },
+        balances: { CURRENCY_EUR: -55000, ASSET_BTC: 55000 },
+        stock: { ASSET_BTC: { BTC: { amount: 1.1, value: 55000 } } }
+      }
+    )
+  })
 })
