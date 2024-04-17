@@ -11,8 +11,12 @@ export class RunModel extends BaseModel<prisma.Run> {
   /**
    * Mark this run as a failure.
    */
-  async fail(err: Error, done: null | number, total: number | null, result: RunResult): Promise<void> {
-    await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message, done, total, result })
+  async fail(err: Error, done: null | number | undefined = undefined, total: number | null | undefined = undefined, result: RunResult | undefined = undefined): Promise<void> {
+    if (done === undefined) {
+      await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message })
+    } else {
+      await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message, done, total, result })
+    }
   }
 
   /**
