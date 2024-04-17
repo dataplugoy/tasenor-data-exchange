@@ -226,9 +226,14 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  static async run(time: Timestring, stockData: InitialStockData, input: UnifiedItemData): Promise<Analyzer> {
+  static async run(time: Timestring, stockData: InitialStockData, input: UnifiedItemData, services: undefined | Service[] = undefined): Promise<Analyzer> {
     const stock = new Stock(stockData)
     const analyzer = new Analyzer(stock)
+
+    if (services !== undefined) {
+      analyzer.setServices(services)
+    }
+
     const tx = await analyzer.analyze(DateTime.fromISO(time), input)
     analyzer.apply(tx)
 
