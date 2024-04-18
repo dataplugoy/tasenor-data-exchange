@@ -1,17 +1,28 @@
-import React, { } from 'react'
-import { Card, CardContent, CardHeader, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
-import { Air } from '@mui/icons-material'
+import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
+import { useGET } from '../Hooks/useNet'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
   project: Project
+  onRunComplete: () => Promise<void>
 }
 
 export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
-  const { plan, project } = props
+  const { plan, project, onRunComplete } = props
+  const [running, setRunning] = useState(false)
+  const GET = useGET()
+
+  const onRun = async () => {
+    setRunning(true)
+    await GET(`/flow-plans/${plan.id}/run`)
+    await onRunComplete()
+    setRunning(false)
+  }
 
   return (
     <Card>
@@ -19,10 +30,26 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
         avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
         title={<Typography variant="subtitle1"><Trans>Data Flow Plan</Trans>: {plan.title}</Typography>}
       />
-      <CardContent>
-      <Typography variant="subtitle1"><Trans>Project</Trans>: {project.name}</Typography>
-      <Typography variant="subtitle1"><Trans>Currency</Trans>: {project.settings?.currency}</Typography>
-      <Typography variant="subtitle1"><Trans>Language</Trans>: {project.settings?.language}</Typography>
+      <CardContent sx={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+        <Box>
+          <Button
+            sx={{ backgroundColor: 'secondary.main', color: 'secondary.contrastText' }}
+            variant="outlined"
+            onClick={onRun}
+            disabled={running}
+          >
+            <Trans>Run</Trans> {running ? <CircularProgress sx={{ ml: '0.2rem' }}color="primary" size={'1rem'}/> : <PlayArrow/> }
+          </Button>
+        </Box>
+        <Box>
+          <Typography variant="subtitle1"><Trans>Project</Trans>: {project.name}</Typography>
+        </Box>
+        <Box>
+          <Typography variant="subtitle1"><Trans>Currency</Trans>: {project.settings?.currency}</Typography>
+        </Box>
+        <Box>
+          <Typography variant="subtitle1"><Trans>Language</Trans>: {project.settings?.language}</Typography>
+        </Box>
       </CardContent>
     </Card>
   )

@@ -20,12 +20,16 @@ export const FlowPlanPage = (): React.JSX.Element => {
   const [flowPlan, setFlowPlan] = useState<FlowPlan | null>(null)
   const [batches, setBatches] = useState<Batch[]>([])
 
-  useEffect(() => {
-    GET(`/flow-plans/${id}`).then(res => {
+  const updateFlowPlan = async () => {
+    await GET(`/flow-plans/${id}`).then(res => {
       res && res.project && setProject(res.project)
       res && setFlowPlan(res)
       res && res.batches && setBatches(res.batches)
     })
+  }
+
+  useEffect(() => {
+    updateFlowPlan()
   }, [])
 
   return (
@@ -35,7 +39,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
       </Typography>
       {
         flowPlan && project && <Box sx={{ mt: 2 }}>
-          <FlowPlanInfo plan={flowPlan} project={project}/>
+          <FlowPlanInfo plan={flowPlan} project={project} onRunComplete={updateFlowPlan}/>
         </Box>
       }
       <Box sx={{ mt: 2 }}>
