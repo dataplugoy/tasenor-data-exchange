@@ -19,7 +19,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
   const [project, setProject] = useState<Project | null>(null)
   const [flowPlan, setFlowPlan] = useState<FlowPlan | null>(null)
   const [batches, setBatches] = useState<Batch[]>([])
-  const isCompleted = batches.length && !!batches[0].completed
+  const isCompleted = !batches.length || !!batches[0].completed
 
   const updateFlowPlan = async () => {
     await GET(`/flow-plans/${id}`).then(res => {
