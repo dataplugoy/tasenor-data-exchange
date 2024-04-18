@@ -7,7 +7,7 @@ import { FlowPlanResponse } from '../Types/API/flow-plans/FlowPlanResponse'
 import { Project } from '../Types/API/Project'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Batch } from '../Types/API/Batch'
-import { FlowPlanInfo } from '../Components/FlowPlanInfo'
+import { FlowPlanInfo } from '../Components/FlowPlanInfoCard'
 import { ExpandMore } from '@mui/icons-material'
 import { BatchBrogressBar } from '../Components/BatchProgressBar'
 import { DateTime } from 'luxon'
@@ -45,7 +45,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
       }
       <Box sx={{ mt: 2 }}>
         { batches.map((batch, idx) => (
-          <Accordion key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
+          <Accordion data-cy={`Batch-#${batch.number}`} key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
             <AccordionSummary expandIcon={<ExpandMore/>}>
               <Box sx={{ width: '100%' }}>
                 <Box sx={{ display: 'inline-block', width: '8%', fontWeight: 'bold' }}>#{batch.number}</Box>

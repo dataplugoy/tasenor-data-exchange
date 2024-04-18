@@ -33,7 +33,7 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
           <TableBody>
           {
             plans.map(plan =>
-              <TableRow key={plan.id} hover onClick={() => onClickRow(plan.id)}>
+              <TableRow data-cy={`FlowPlan-${plan.title}`} key={plan.id} hover onClick={() => onClickRow(plan.id)}>
                 <TableCell>{plan.title}</TableCell>
               </TableRow>
             )

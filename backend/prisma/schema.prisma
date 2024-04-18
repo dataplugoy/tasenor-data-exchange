@@ -16,6 +16,7 @@ model Settings {
   user        String?
   password    String?
   options     Json            @default("{}")
+
   @@map(name: "settings")
 }
 
@@ -64,6 +65,8 @@ model Service {
 
   userId      Int
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map(name: "services")
 }
 
 model Project {
