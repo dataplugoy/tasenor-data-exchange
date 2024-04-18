@@ -12,9 +12,14 @@ export class RunModel extends BaseModel<prisma.Run> {
    * Mark this run as a failure.
    */
   async fail(err: Error, done: null | number | undefined = undefined, total: number | null | undefined = undefined, result: RunResult | undefined = undefined): Promise<void> {
-    if (done === undefined) {
+    if (done === undefined || total === undefined || result === undefined) {
+      this.data.error = err.stack || err.message
       await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message })
     } else {
+      this.data.error = err.stack || err.message
+      this.data.done = done
+      this.data.total = total
+      this.data.result = result
       await RunModel.update<prisma.Run, RunModel>(this, { error: err.stack || err.message, done, total, result })
     }
   }
@@ -24,6 +29,7 @@ export class RunModel extends BaseModel<prisma.Run> {
    * @param state
    */
   async success(state: prisma.BatchState): Promise<void> {
+    this.data.finalState = state
     await RunModel.update<prisma.Run, RunModel>(this, { finalState: state })
   }
 
@@ -47,6 +53,9 @@ export class RunModel extends BaseModel<prisma.Run> {
         }
       }
     }
+    this.data.done = done
+    this.data.total = total
+    this.data.result = result
     await RunModel.update<prisma.Run, RunModel>(this, { done, total, result })
   }
 

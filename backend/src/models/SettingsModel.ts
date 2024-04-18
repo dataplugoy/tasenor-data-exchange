@@ -6,7 +6,7 @@ export class SettingsModel extends BaseModel<prisma.Settings> {
   static table = 'settings'
   static construct = SettingsModel
 
-  get type(): prisma.InputSourceType {
+  get type(): prisma.DriverType {
     return this.data.type
   }
 
@@ -33,7 +33,7 @@ export class SettingsModel extends BaseModel<prisma.Settings> {
     return this.getOrThrow('certificate')
   }
 
-  static async get(type: prisma.InputSourceType): Promise<SettingsModel> {
+  static async get(type: prisma.DriverType): Promise<SettingsModel> {
     const settings = await this.findUnique<prisma.Settings, SettingsModel>({ type })
     if (!settings) {
       throw new Error(`Cannot find system level settings for ${type}.`)

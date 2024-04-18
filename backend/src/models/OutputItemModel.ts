@@ -14,6 +14,7 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
    * Mark this run as a failure.
    */
   async fail(err: Error): Promise<void> {
+    this.data.error = err.stack || err.message
     await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { error: err.stack || err.message })
   }
 
@@ -22,6 +23,7 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
    * @param state
    */
   async success(): Promise<void> {
+    this.data.delivered = true
     await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { delivered: true })
   }
 

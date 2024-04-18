@@ -40,6 +40,7 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    * Mark this run as a failure.
    */
   async fail(err: Error): Promise<void> {
+    this.data.error = err.stack || err.message
     await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { error: err.stack || err.message })
   }
 
@@ -48,6 +49,7 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    * @param state
    */
   async success(): Promise<void> {
+    this.data.processed = true
     await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { processed: true })
   }
 

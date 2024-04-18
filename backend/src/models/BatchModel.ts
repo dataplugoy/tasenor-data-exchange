@@ -15,6 +15,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   async setData(data: string): Promise<void> {
+    this.data.data = data
     await BatchModel.update<prisma.Batch, BatchModel>(this, { data })
   }
 

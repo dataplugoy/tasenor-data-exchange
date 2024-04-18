@@ -63,9 +63,17 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
-   * Execute the next step of running the current or new batch.
+   * Run steps until batch finished or error encountered. Create new batch if the latest done.
+   * @param options
    */
   async run(options: RuntimeOptions): Promise<void> {
+    console.log('TODO')
+  }
+
+  /**
+   * Execute the next step of running the current or new batch.
+   */
+  private async runStep(options: RuntimeOptions): Promise<void> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
 

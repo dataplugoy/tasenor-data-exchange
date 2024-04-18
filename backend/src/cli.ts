@@ -40,6 +40,7 @@ export async function execute(...args: string[]): Promise<void> {
   parser.add_argument('--user', { help: 'Email of the TaDeX user.' })
   parser.add_argument('command', { help: 'Command to execute', choices: Object.keys(commands) })
   parser.add_argument('name', { help: 'Name of the flow' })
+  parser.add_argument('count', { help: 'Number of iteration or "all".', nargs: '?', default: '1' })
 
   const commandArgs = parser.parse_args(args)
 
@@ -49,6 +50,7 @@ export async function execute(...args: string[]): Promise<void> {
   const options: RuntimeOptions = {
     tracking: commandArgs.track || null,
     auth: commandArgs.auth || null,
+    repeat: commandArgs.count === 'all' ? 'MAX' : parseInt(commandArgs.count)
   }
 
   await commands[commandArgs.command](commandArgs.user || '', commandArgs.name || '', options)

@@ -20,6 +20,7 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    * Mark this run as a failure.
    */
   async fail(err: Error): Promise<void> {
+    this.data.error = err.stack || err.message
     await UnifiedItemModel.update<prisma.InputItem, UnifiedItemModel>(this, { error: err.stack || err.message })
   }
 
@@ -28,6 +29,7 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    * @param state
    */
   async success(): Promise<void> {
+    this.data.processed = true
     await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { processed: true })
   }
 
@@ -36,6 +38,7 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    * @param stockChange
    */
   async setStockChange(stockChange: JsonValue): Promise<void> {
+    this.data.stockChange = stockChange
     await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { stockChange })
   }
 
