@@ -9,11 +9,12 @@ import { useGET } from '../Hooks/useNet'
 interface FlowPlanInfoProps {
   plan: FlowPlan
   project: Project
+  button: 'run' | 'retry'
   onRunComplete: () => Promise<void>
 }
 
 export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
-  const { plan, project, onRunComplete } = props
+  const { plan, project, button, onRunComplete } = props
   const [running, setRunning] = useState(false)
   const GET = useGET()
 
@@ -38,7 +39,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
             onClick={onRun}
             disabled={running}
           >
-            <Trans>Run</Trans> {running ? <CircularProgress sx={{ ml: '0.2rem' }}color="primary" size={'1rem'}/> : <PlayArrow/> }
+            {button === 'retry' ? <Trans>Retry</Trans> : <Trans>Run</Trans>}
+            {running ? <CircularProgress sx={{ ml: '0.2rem' }}color="primary" size={'1rem'}/> : <PlayArrow/> }
           </Button>
         </Box>
         <Box>

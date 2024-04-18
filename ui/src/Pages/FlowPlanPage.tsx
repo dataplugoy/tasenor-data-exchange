@@ -19,6 +19,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
   const [project, setProject] = useState<Project | null>(null)
   const [flowPlan, setFlowPlan] = useState<FlowPlan | null>(null)
   const [batches, setBatches] = useState<Batch[]>([])
+  const isCompleted = batches.length && !!batches[0].completed
 
   const updateFlowPlan = async () => {
     await GET(`/flow-plans/${id}`).then(res => {
@@ -39,26 +40,28 @@ export const FlowPlanPage = (): React.JSX.Element => {
       </Typography>
       {
         flowPlan && project && <Box sx={{ mt: 2 }}>
-          <FlowPlanInfo plan={flowPlan} project={project} onRunComplete={updateFlowPlan}/>
+          <FlowPlanInfo plan={flowPlan} project={project} button={isCompleted ? 'run' : 'retry' } onRunComplete={updateFlowPlan}/>
         </Box>
       }
       <Box sx={{ mt: 2 }}>
-        { batches.map(batch => <Accordion key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
-          <AccordionSummary expandIcon={<ExpandMore/>}>
-            <Box sx={{ width: '100%' }}>
-              <Box sx={{ display: 'inline-block', width: '8%', fontWeight: 'bold' }}>#{batch.number}</Box>
-              <Box sx={{ display: 'inline-block', width: '25%' }}>
-                {DateTime.fromISO(batch.updated as string).toLocaleString(DateTime.DATETIME_FULL)}
+        { batches.map((batch, idx) => (
+          <Accordion key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
+            <AccordionSummary expandIcon={<ExpandMore/>}>
+              <Box sx={{ width: '100%' }}>
+                <Box sx={{ display: 'inline-block', width: '8%', fontWeight: 'bold' }}>#{batch.number}</Box>
+                <Box sx={{ display: 'inline-block', width: '25%' }}>
+                  {DateTime.fromISO(batch.updated as string).toLocaleString(DateTime.DATETIME_FULL)}
+                </Box>
+                <Box sx={{ display: 'inline-block', width: '60%', mb: '-3px' }}>
+                  <BatchBrogressBar state={batch.state}/>
+                </Box>
               </Box>
-              <Box sx={{ display: 'inline-block', width: '60%', mb: '-3px' }}>
-                <BatchBrogressBar state={batch.state}/>
-              </Box>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <RunList batch={batch}/>
-          </AccordionDetails>
-        </Accordion>)}
+            </AccordionSummary>
+            <AccordionDetails>
+              <RunList batch={batch}/>
+            </AccordionDetails>
+          </Accordion>))
+        }
       </Box>
     </Box>
   )
