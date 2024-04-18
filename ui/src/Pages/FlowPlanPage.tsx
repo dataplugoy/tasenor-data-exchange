@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { useGET } from '../Hooks/useNet'
 import { useParams } from 'react-router-dom'
@@ -12,6 +12,7 @@ import { ExpandMore } from '@mui/icons-material'
 import { BatchBrogressBar } from '../Components/BatchProgressBar'
 import { DateTime } from 'luxon'
 import { RunList } from '../Components/RunList'
+import { whenBatchUpdates } from '../Signals/updates'
 
 export const FlowPlanPage = (): React.JSX.Element => {
   const GET = useGET<FlowPlanResponse>()
@@ -31,7 +32,9 @@ export const FlowPlanPage = (): React.JSX.Element => {
 
   useEffect(() => {
     updateFlowPlan()
+    whenBatchUpdates(updateFlowPlan)
   }, [])
+
 
   return (
     <Box>
@@ -40,7 +43,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
       </Typography>
       {
         flowPlan && project && <Box sx={{ mt: 2 }}>
-          <FlowPlanInfo plan={flowPlan} project={project} button={isCompleted ? 'run' : 'retry' } onRunComplete={updateFlowPlan}/>
+          <FlowPlanInfo plan={flowPlan} project={project} button={isCompleted ? 'run' : 'retry' }/>
         </Box>
       }
       <Box sx={{ mt: 2 }}>

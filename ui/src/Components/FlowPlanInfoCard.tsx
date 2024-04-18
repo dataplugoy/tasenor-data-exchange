@@ -5,23 +5,23 @@ import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useGET } from '../Hooks/useNet'
+import { signalBatchUpdate } from '../Signals/updates'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
   project: Project
   button: 'run' | 'retry'
-  onRunComplete: () => Promise<void>
 }
 
 export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
-  const { plan, project, button, onRunComplete } = props
+  const { plan, project, button } = props
   const [running, setRunning] = useState(false)
   const GET = useGET()
 
   const onRun = async () => {
     setRunning(true)
     await GET(`/flow-plans/${plan.id}/run`)
-    await onRunComplete()
+    signalBatchUpdate()
     setRunning(false)
   }
 

@@ -15,6 +15,7 @@ import { sortRuns } from '../Helpers/sorter'
 import { ResultIndicator } from './ResultIndicator'
 import clone from 'clone'
 import { RunDetails } from './RunDetails'
+import { whenBatchUpdates } from '../Signals/updates'
 
 interface RunListProps {
   batch: Batch
@@ -31,13 +32,18 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   const [outputs, setOutputs] = useState<Record<number, OutputItem[]>>({})
   const [opened, setOpened] = useState<Set<number>>(new Set())
 
-  useEffect(() => {
+  const updateRunList = async () => {
     GET(`/batches/${batch.id}`).then(res => {
       setRuns(res?.runs || [])
       setInputs((res?.inputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
       setUnifieds((res?.unifieds || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
       setOutputs((res?.outputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
     })
+  }
+
+  useEffect(() => {
+    updateRunList()
+    whenBatchUpdates(updateRunList)
   }, [])
 
   const onToggle = (id: number) => {
