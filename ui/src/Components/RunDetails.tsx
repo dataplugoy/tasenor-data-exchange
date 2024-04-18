@@ -112,8 +112,13 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
 const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
   const items: ResultInputItem[] = result.items as ResultInputItem[]
+  const noItemErrors = items.filter(i => !!i.error).length === 0
+
   return (
     <Box>
+      {
+        noItemErrors && result.run.error && <ViewError error={result.run.error}/>
+      }
       {
         items.map((item, idx) => {
           return item.error !== null && <Box key={idx}>
