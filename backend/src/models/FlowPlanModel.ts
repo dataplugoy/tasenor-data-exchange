@@ -22,6 +22,7 @@ import { AccountCode } from '../types/AccountCode'
 import { AnalyzerConfig } from '../lib/analyzer/AnalyzerConfig'
 import { Transaction } from '../types/API/Transaction'
 import { Service } from '../lib/services/Service'
+import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -66,15 +67,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * Run steps until batch finished or error encountered. Create new batch if the latest done.
    * @param options
    */
-  async run(options: RuntimeOptions): Promise<void> {
+  async run(options: RuntimeOptions, counter = 0): Promise<FlowPlanRunResponse> {
     const [batch, run, result] = await this.runStep(options)
     if (batch.data.completed || result === 'FAIL' || options.repeat === 1) {
-      return
+      return {
+        success: result === 'OK',
+        count: counter + 1
+      }
     }
     if (options.repeat === 'MAX') {
-      await this.run(options)
+      return await this.run(options, counter + 1)
     } else {
-      await this.run({...options, repeat: options.repeat - 1 })
+      return await this.run({...options, repeat: options.repeat - 1 }, counter + 1)
     }
   }
 

@@ -1,0 +1,10 @@
+{
+  "title": "FlowPlanRunResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["success", "count"],
+  "properties": {
+    "success": { "type": "boolean" },
+    "count": { "type": "integer" }
+  }
+}

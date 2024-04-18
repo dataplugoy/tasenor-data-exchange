@@ -24,4 +24,23 @@ router.get('/:id',
   }
 )
 
+router.get('/:id/run',
+  authorize(),
+  param('id'),
+  async (req, res) => {
+    const userId = res.locals.userId
+    const flowPlanId = res.locals.id
+    const plan = await FlowPlanModel.get(flowPlanId)
+    const project = plan && await ProjectModel.get(plan?.data.projectId)
+
+    if (!plan || !project || project.data.userId !== userId) {
+      return res.sendStatus(404)
+    }
+
+    const result = await plan.run({ repeat: 'MAX' })
+
+    res.send(result)
+  }
+)
+
 export default router
