@@ -67,13 +67,21 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param options
    */
   async run(options: RuntimeOptions): Promise<void> {
-    console.log('TODO')
+    const [batch, run, result] = await this.runStep(options)
+    if (batch.data.completed || result === 'FAIL' || options.repeat === 1) {
+      return
+    }
+    if (options.repeat === 'MAX') {
+      await this.run(options)
+    } else {
+      await this.run({...options, repeat: options.repeat - 1 })
+    }
   }
 
   /**
    * Execute the next step of running the current or new batch.
    */
-  private async runStep(options: RuntimeOptions): Promise<void> {
+  private async runStep(options: RuntimeOptions): Promise<[BatchModel, RunModel, 'OK' | 'FAIL']> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
 
@@ -85,7 +93,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const result = this.functions[batch.state] && await fn(options, batch, run)
       if (result === 'FAIL') {
         error(`Execution of ${run} for state '${batch.state}' returned FAIL.`)
-        return
+        return [batch, run, 'FAIL']
       }
       if (result !== 'OK') {
         throw new Error(`Execution of ${run} for state '${batch.state}' did not return OK (perhaps incomplete implementation).`)
@@ -106,10 +114,13 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         log(`${run} for ${batch} success and is now in state ${nextState}.`)
       }
 
+      return [batch, run, 'OK']
+
     } catch (err) {
 
       error(`${run} failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
+      return [batch, run, 'FAIL']
     }
   }
 
