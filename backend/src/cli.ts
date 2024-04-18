@@ -1,10 +1,8 @@
 import { ArgumentParser } from 'argparse'
-import { BaseModel } from '../models/BaseModel'
-import { connect } from '../connect'
-import { UserModel } from '../models/UserModel'
-import { RuntimeOptions } from '../types/RuntimeOptions'
-
-// TODO: Move to ..
+import { BaseModel } from './models/BaseModel'
+import { connect } from './connect'
+import { UserModel } from './models/UserModel'
+import { RuntimeOptions } from './types/RuntimeOptions'
 
 /**
  * Execute one step of the named flow.
