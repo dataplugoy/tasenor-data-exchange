@@ -57,7 +57,7 @@ const config: Config = {
     image: 'logo.png',
     navbar: {
       title: 'Tasenor Data Exchange',
-      items: process.env.ENV === 'dev' ? [
+      items: process.env.NODE_ENV === 'dev' ? [
         {
           type: 'docSidebar',
           sidebarId: 'docSidebarId',

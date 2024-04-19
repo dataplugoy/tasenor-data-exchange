@@ -2,8 +2,8 @@
   "name": "@tasenor/tadex-docs",
   "description": "TaDeX documentation",
   "scripts": {
-    "dev": "ENV=dev docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify",
-    "docker": "pnpm run dev"
+    "dev": "NODE_ENV=dev docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify",
+    "docker": "NODE_ENV=prod docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify"
   },
   "keywords": [],
   "author": "Dataplug Oy",
