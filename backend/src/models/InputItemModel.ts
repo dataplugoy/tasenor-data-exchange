@@ -37,7 +37,7 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   }
 
   /**
-   * Mark this run as a failure.
+   * Mark this input handling as a failure.
    */
   async fail(err: Error): Promise<void> {
     this.data.error = err.stack || err.message
@@ -45,12 +45,20 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   }
 
   /**
-   * Mark this nput as successfully handled.
+   * Mark this input as successfully handled.
    * @param state
    */
   async success(): Promise<void> {
     this.data.processed = true
     await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { processed: true })
+  }
+  /**
+   * Mark this input as skipped.
+   * @param state
+   */
+  async skip(): Promise<void> {
+    this.data.skipped = true
+    await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { skipped: true })
   }
 
   /**
@@ -75,7 +83,17 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   /**
    * Retrieve all input items.
    */
-  static getAll(filter = {}): Promise<InputItemModel[]> {
+  static async getAll(filter = {}): Promise<InputItemModel[]> {
     return InputItemModel.findMany<prisma.InputItem, InputItemModel>(filter, [{ created: 'asc' }])
+  }
+
+  /**
+   * Check if there is more than one input with the same hash in the same flow plan.
+   * @param input
+   * @returns
+   */
+  static async isDuplicate(input: InputItemModel): Promise<boolean> {
+    const items = await InputItemModel.findMany<prisma.InputItem, InputItemModel>({ flowPlanId: input.data.flowPlanId, hash: input.data.hash })
+    return items.length > 1
   }
 }

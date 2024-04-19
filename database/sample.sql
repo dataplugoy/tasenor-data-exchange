@@ -41,6 +41,7 @@ DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
 DROP INDEX IF EXISTS public."output_destinations_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
+DROP INDEX IF EXISTS public."input_items_flowPlanId_hash_idx";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS unified_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.settings DROP CONSTRAINT IF EXISTS settings_pkey;
@@ -280,7 +281,8 @@ CREATE TABLE public.input_items (
     error text,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL
+    "runId" integer NOT NULL,
+    hash character varying(40) NOT NULL
 );
 
 
@@ -834,7 +836,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId") FROM stdin;
+COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId", hash) FROM stdin;
 \.
 
 
@@ -1123,6 +1125,13 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: input_items_flowPlanId_hash_idx; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX "input_items_flowPlanId_hash_idx" ON public.input_items USING btree ("flowPlanId", hash);
+
+
+--
 -- Name: input_sources_flowPlanId_key; Type: INDEX; Schema: public; Owner: dev
 --
 
@@ -1318,3 +1327,4 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
+

@@ -33,6 +33,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwa": "^2.0.0",
     "luxon": "^3.4.4",
+    "object-hash": "^3.0.0",
     "prisma": "^5.11.0",
     "ts-opaque": "^3.0.1",
     "tsx": "^4.7.1"

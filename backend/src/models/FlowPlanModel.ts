@@ -23,6 +23,7 @@ import { AnalyzerConfig } from '../lib/analyzer/AnalyzerConfig'
 import { Transaction } from '../types/API/Transaction'
 import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
+import hash from 'object-hash'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -197,6 +198,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       for (const data of items) {
         const item = await InputItemModel.save({
           data: data as unknown as JsonValue,
+          hash: hash(data, { algorithm: 'sha1' }),
           flowPlanId: this.id,
           batchId: batch.id,
           runId: run.id,
@@ -237,9 +239,16 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
         try {
-          await driver.unifyItem(this, run, input, rules)
-          await input.success()
-          done++
+          // Verify duplicates first.
+          if (await InputItemModel.isDuplicate(input)) {
+            // TODO: Here we check and possibly throw a question if duplicates are okay.
+            //       Need three configuration options: 'never', 'always', 'ask'.
+            await input.skip()
+          } else {
+            await driver.unifyItem(this, run, input, rules)
+            await input.success()
+            done++
+          }
         } catch (err) {
           result = 'FAIL'
           error(`Handling of ${input} failed: ${err.stack}`)

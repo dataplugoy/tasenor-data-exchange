@@ -210,6 +210,7 @@ model InputItem{
   updated     DateTime        @updatedAt
 
   data        Json
+  hash        String          @db.VarChar(40)
   processed   Boolean
   skipped     Boolean
 
@@ -224,6 +225,7 @@ model InputItem{
   run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "input_items")
+  @@index([flowPlanId, hash])
 }
 
 model UnifiedItem{
