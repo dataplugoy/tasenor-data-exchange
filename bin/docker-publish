@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# A script to publish docker containers.
+#
+
+FILE=`dirname "${BASH_SOURCE[0]}"`/..
+ROOT=`readlink -f "$FILE"`
+
+set -e
+
+usage() {
+  echo "usage: $0 {latest,staging}"
+  exit 0
+}
+
+if [ -z "$1" ]; then
+  usage
+fi
+
+if [ -z "$DOCKER_USER" ]; then
+  echo "Must set DOCKER_USER first."
+  exit 1
+fi
+if [ -z "$DOCKER_PASSWORD" ]; then
+  echo "Must set DOCKER_PASSWORD first."
+  exit 1
+fi
+
+echo "==================#==================================================================="
+echo "DOCKER PUBLISHING ‖"
+echo "==================#"
+echo
+
+cd "$ROOT"
+echo $DOCKER_PASSWORD | docker login -u ${DOCKER_USER} --password-stdin
+
+if [ "$1" == latest ]; then
+  VERSION=`jq -r .version < package.json`
+
+  echo docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-${VERSION}
+  docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-${VERSION}
+  echo docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-latest
+  docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-latest
+  echo docker push dataplug/tasenor:tadex-api-${VERSION}
+  docker push dataplug/tasenor:tadex-api-${VERSION}
+  echo docker push dataplug/tasenor:tadex-api-latest
+  docker push dataplug/tasenor:tadex-api-latest
+
+  echo docker tag tasenor-data-exchange-tadex:latest dataplug/tasenor:tadex-${VERSION}
+  docker tag tasenor-data-exchange-tadex:latest dataplug/tasenor:tadex-${VERSION}
+  echo docker tag tasenor-data-exchange-tadex:latest dataplug/tasenor:tadex-latest
+  docker tag tasenor-data-exchange-tadex:latest dataplug/tasenor:tadex-latest
+  echo docker push dataplug/tasenor:tadex-${VERSION}
+  docker push dataplug/tasenor:tadex-${VERSION}
+  echo docker push dataplug/tasenor:tadex-latest
+  docker push dataplug/tasenor:tadex-latest
+
+  echo docker tag tasenor-data-exchange-tadex-db:latest dataplug/tasenor:tadex-db-${VERSION}
+  docker tag tasenor-data-exchange-tadex-db:latest dataplug/tasenor:tadex-db-${VERSION}
+  echo docker tag tasenor-data-exchange-tadex-db:latest dataplug/tasenor:tadex-db-latest
+  docker tag tasenor-data-exchange-tadex-db:latest dataplug/tasenor:tadex-db-latest
+  echo docker push dataplug/tasenor:tadex-db-${VERSION}
+  docker push dataplug/tasenor:tadex-db-${VERSION}
+  echo docker push dataplug/tasenor:tadex-db-latest
+  docker push dataplug/tasenor:tadex-db-latest
+
+  echo docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-${VERSION}
+  docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-${VERSION}
+  echo docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-latest
+  docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-latest
+  echo docker push dataplug/tasenor:tadex-docs-${VERSION}
+  docker push dataplug/tasenor:tadex-docs-${VERSION}
+  echo docker push dataplug/tasenor:tadex-docs-latest
+  docker push dataplug/tasenor:tadex-docs-latest
+
+elif [ "$1" == staging ]; then
+
+  echo "NOT YET IMPLEMENTED"
+
+else
+  usage
+fi
