@@ -43,6 +43,7 @@ services:
       PORT: 7301
       VIRTUAL_HOST: tadex.localhost
       VIRTUAL_PORT: 7301
+      API_URL: http://tadex-api:7302
     command: pnpm run docker
 
   tadex-api:
