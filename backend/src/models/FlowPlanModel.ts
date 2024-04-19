@@ -24,6 +24,7 @@ import { Transaction } from '../types/API/Transaction'
 import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
+import { InputItemData } from '../types/API/InputItemData'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -62,6 +63,15 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   async saveState(state: FlowState): Promise<void> {
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { state })
+  }
+
+  /**
+   * Update the latest time stamp.
+   * @param state
+   */
+  async setStamp(lastStamp: Date | null): Promise<void> {
+    this.data.lastStamp = lastStamp
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { lastStamp })
   }
 
   /**
@@ -113,8 +123,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Check for completion.
       const futureState = Object.keys(this.functions)[idx + 2]
       if (futureState === undefined) {
-        log(`${batch} completed and is now in state ${nextState}.`)
+        log(`${batch} completed and is now in state ${nextState} and last time stamp ${batch.data.lastStamp}.`)
         await BatchModel.update<prisma.Batch, BatchModel>(batch, { completed: new Date() })
+        await this.setStamp(batch.data.lastStamp)
       } else {
         log(`${run} for ${batch} success and is now in state ${nextState}.`)
       }
@@ -166,6 +177,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const driver = await this.getInputDriver(options)
       const state = await driver.autheticate()
       await this.saveState(state)
+      // TODO: This last stamp is not necessarily true if we allow old data to appear (like Lynx tax fixes).
       const data = await driver.fetchData(this.lastStamp)
 
       if (typeof data !== 'string') {
@@ -207,13 +219,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         })
         log(`${this} created ${item} for ${batch}.`)
       }
-      await run.result(items.length, items.length, 0, 'ALL_SUCCESS')
+      await run.result(items.length, items.length, 0, items.length > 0 ? 'ALL_SUCCESS' : 'NO_PROGRESS')
     } catch (err) {
       result = 'FAIL'
       error(`Input parsing failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
     }
-    // TODO: Update lastStamp when parsing is completed (Hmm, do we need better resolution for old stuff? Hash?).
 
     return result
   }
@@ -240,17 +251,32 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
         try {
-          // Verify duplicates first.
+          // TODO: What's wrong with types here?
+          const data = input.data.data as unknown as InputItemData
+
+            // Verify duplicates first.
           if (await InputItemModel.isDuplicate(input)) {
-            // TODO: Here we check and possibly throw a question if duplicates are okay.
+            // TODO: Here we possibly throw a question wether duplicates are okay.
             //       Need three configuration options: 'never', 'always', 'ask'.
-            await input.skip('DUPLICATE')
-            skipped++
-          } else {
-            await driver.unifyItem(this, run, input, rules)
-            await input.success()
-            done++
+            // await input.skip('DUPLICATE')
+            // skipped++
+            // continue
           }
+
+          // Verify time stamps not being in the past.
+            // TODO: Here we possibly throw a question wether items can appear before the last time stamp.
+            //       Need three configuration options: 'never', 'always', 'ask'.
+            const time = new Date(data.time)
+            if (this.data.lastStamp && this.data.lastStamp > time) {
+              await input.skip('IN_THE_PAST')
+              skipped++
+              continue
+            }
+
+          await driver.unifyItem(this, run, input, rules)
+          await input.success()
+          done++
+
         } catch (err) {
           result = 'FAIL'
           error(`Handling of ${input} failed: ${err.stack}`)
@@ -259,6 +285,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       }
 
       await run.result(done, total, skipped)
+
+      // Mark the last timestamp.
+      let lastStamp = this.data.lastStamp
+      for (const input of inputs) {
+        // TODO: What's wrong with types here?
+        const data = input.data.data as unknown as InputItemData
+        const newStamp = new Date(data.time)
+        if (lastStamp === null || newStamp > lastStamp) {
+          lastStamp = newStamp
+        }
+      }
+      await batch.setStamp(lastStamp)
 
     } catch (err) {
       result = 'FAIL'

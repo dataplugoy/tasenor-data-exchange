@@ -21,7 +21,7 @@ export type RunResult =
   | "PARTLY_FAIL"
   | "ALL_FAILED"
   | "NO_PROGRESS";
-export type SkipReason = null | "DUPLICATE";
+export type SkipReason = null | ("DUPLICATE" | "IN_THE_PAST");
 /**
  * Main category of the transaction.
  */

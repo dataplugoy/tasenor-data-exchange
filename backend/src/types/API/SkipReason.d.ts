@@ -5,4 +5,4 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type SkipReason = null | "DUPLICATE";
+export type SkipReason = null | ("DUPLICATE" | "IN_THE_PAST");

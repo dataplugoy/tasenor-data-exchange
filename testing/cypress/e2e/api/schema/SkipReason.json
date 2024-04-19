@@ -3,6 +3,7 @@
   "title": "SkipReason",
   "type": ["null", "string"],
   "enum": [
-    "DUPLICATE"
+    "DUPLICATE",
+    "IN_THE_PAST"
   ]
 }
