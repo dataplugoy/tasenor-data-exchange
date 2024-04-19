@@ -1,0 +1,7 @@
+{
+  "title": "ProjectsResponse",
+  "type": "array",
+  "items": {
+    "$ref": "Project"
+  }
+}

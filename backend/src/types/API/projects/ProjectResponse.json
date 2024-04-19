@@ -1,0 +1,17 @@
+{
+  "title": "ProjectResponse",
+  "allOf": [
+    { "$ref": "Project" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "plans": {
+          "type": "array",
+          "items": { "$ref": "FlowPlan" }
+        }
+      }
+    }
+  ]
+
+}

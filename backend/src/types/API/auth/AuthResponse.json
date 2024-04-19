@@ -1,0 +1,48 @@
+{
+  "title": "AuthResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["user", "token"],
+  "properties": {
+    "token": {
+      "type": ["string", "null"]
+    },
+    "user": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "email", "settings"],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "settings": {
+          "type": "object",
+          "required": ["projectId"],
+          "properties": {
+            "projectId": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  }
+}
