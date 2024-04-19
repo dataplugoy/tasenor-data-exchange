@@ -57,3 +57,16 @@ services:
       VIRTUAL_HOST: tadex-api.localhost
       VIRTUAL_PORT: 7302
     command: pnpm run docker
+
+  tadex-docs:
+    container_name: tadex-docs
+    build:
+      context: docs
+    ports:
+      - 7304:7304
+    environment:
+      PORT: 7304
+      ENV: prod
+      VIRTUAL_HOST: tadex-docs.localhost
+      VIRTUAL_PORT: 7304
+    command: pnpm run docker
