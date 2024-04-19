@@ -46,7 +46,7 @@ export class RunModel extends BaseModel<prisma.Run> {
       } else {
         if (done === 0 && total === 0) {
           result = 'NO_PROGRESS'
-        } if (done === total) {
+        } else if (done === total) {
           result = 'ALL_SUCCESS'
         } else {
           result = 'PARTLY_FAIL'

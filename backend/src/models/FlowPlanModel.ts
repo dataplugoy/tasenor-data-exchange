@@ -243,7 +243,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           if (await InputItemModel.isDuplicate(input)) {
             // TODO: Here we check and possibly throw a question if duplicates are okay.
             //       Need three configuration options: 'never', 'always', 'ask'.
-            await input.skip()
+            await input.skip('DUPLICATE')
           } else {
             await driver.unifyItem(this, run, input, rules)
             await input.success()

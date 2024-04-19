@@ -21,6 +21,7 @@ export type RunResult =
   | "PARTLY_FAIL"
   | "ALL_FAILED"
   | "NO_PROGRESS";
+export type SkipReason = null | "DUPLICATE";
 /**
  * Main category of the transaction.
  */
@@ -93,6 +94,7 @@ export interface InputItem {
   data: InputItemData;
   processed: boolean;
   skipped: boolean;
+  skipReason: SkipReason;
   error: string | null;
   flowPlanId: number;
   batchId: number;

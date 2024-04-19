@@ -94,6 +94,7 @@ DROP SEQUENCE IF EXISTS public.flow_plans_id_seq;
 DROP TABLE IF EXISTS public.flow_plans;
 DROP SEQUENCE IF EXISTS public.batches_id_seq;
 DROP TABLE IF EXISTS public.batches;
+DROP TYPE IF EXISTS public."SkipReason";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
 DROP TYPE IF EXISTS public."RunResult";
@@ -179,6 +180,17 @@ CREATE TYPE public."ServiceType" AS ENUM (
 
 
 ALTER TYPE public."ServiceType" OWNER TO dev;
+
+--
+-- Name: SkipReason; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."SkipReason" AS ENUM (
+    'DUPLICATE'
+);
+
+
+ALTER TYPE public."SkipReason" OWNER TO dev;
 
 SET default_tablespace = '';
 
@@ -282,7 +294,8 @@ CREATE TABLE public.input_items (
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
-    hash character varying(40) NOT NULL
+    hash character varying(40) NOT NULL,
+    "skipReason" public."SkipReason"
 );
 
 
@@ -836,7 +849,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId", hash) FROM stdin;
+COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId", hash, "skipReason") FROM stdin;
 \.
 
 

@@ -4,7 +4,13 @@
   "additionalProperties": false,
   "required": ["success", "count"],
   "properties": {
-    "success": { "type": "boolean" },
-    "count": { "type": "integer" }
+    "success": {
+      "description": "True if the latest or newly created batch run was completed successfully.",
+      "type": "boolean"
+    },
+    "count": {
+      "description": "How many steps were completed during this request.",
+      "type": "integer"
+    }
   }
 }

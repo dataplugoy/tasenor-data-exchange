@@ -6,6 +6,12 @@
  */
 
 export interface FlowPlanRunResponse {
+  /**
+   * True if the latest or newly created batch run was completed successfully.
+   */
   success: boolean;
+  /**
+   * How many steps were completed during this request.
+   */
   count: number;
 }

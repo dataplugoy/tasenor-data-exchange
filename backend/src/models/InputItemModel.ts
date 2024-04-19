@@ -2,6 +2,7 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { ShortDate, Timestring } from '@tasenor/common'
 import { JsonObject } from '@prisma/client/runtime/library'
+import { SkipReason } from '../types/API/InputItem'
 
 export class InputItemModel extends BaseModel<prisma.InputItem> {
 
@@ -56,9 +57,10 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    * Mark this input as skipped.
    * @param state
    */
-  async skip(): Promise<void> {
+  async skip(skipReason: SkipReason): Promise<void> {
     this.data.skipped = true
-    await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { skipped: true })
+    this.data.skipReason = skipReason
+    await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { skipped: true, skipReason })
   }
 
   /**

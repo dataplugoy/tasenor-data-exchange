@@ -5,11 +5,14 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type SkipReason = null | "DUPLICATE";
+
 export interface InputItem {
   id: number;
   data: InputItemData;
   processed: boolean;
   skipped: boolean;
+  skipReason: SkipReason;
   error: string | null;
   flowPlanId: number;
   batchId: number;

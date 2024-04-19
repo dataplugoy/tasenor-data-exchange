@@ -1,0 +1,8 @@
+{
+  "$id": "SkipReason",
+  "title": "SkipReason",
+  "type": ["null", "string"],
+  "enum": [
+    "DUPLICATE"
+  ]
+}

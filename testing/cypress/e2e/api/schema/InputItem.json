@@ -3,7 +3,7 @@
   "title": "InputItem",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "data", "processed", "skipped", "error", "flowPlanId", "batchId", "runId"],
+  "required": ["id", "data", "processed", "skipped", "skipReason", "error", "flowPlanId", "batchId", "runId"],
   "properties": {
     "id": {
       "type": "integer"
@@ -16,6 +16,9 @@
     },
     "skipped": {
       "type": "boolean"
+    },
+    "skipReason": {
+      "$ref": "SkipReason"
     },
     "error": {
       "type": ["string", "null"]

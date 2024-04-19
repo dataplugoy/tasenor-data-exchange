@@ -204,6 +204,10 @@ model Run{
   @@map(name: "runs")
 }
 
+enum SkipReason{
+  DUPLICATE
+}
+
 model InputItem{
   id          Int             @id @default(autoincrement())
   created     DateTime        @default(now())
@@ -213,6 +217,7 @@ model InputItem{
   hash        String          @db.VarChar(40)
   processed   Boolean
   skipped     Boolean
+  skipReason  SkipReason?
 
   error       String?
   unifiedItem UnifiedItem?
