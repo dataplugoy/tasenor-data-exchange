@@ -172,7 +172,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         throw new Error(`Bad data type '${typeof data}' received from ${driver.type} driver.`)
       }
       await batch.setData(data)
-      await run.result(1, 1, 'ALL_SUCCESS')
+      await run.result(1, 1, 0, 'ALL_SUCCESS')
     } catch (err) {
       result = 'FAIL'
       error(`Fetching data failed: ${err.stack}`)
@@ -207,7 +207,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         })
         log(`${this} created ${item} for ${batch}.`)
       }
-      await run.result(items.length, items.length, 'ALL_SUCCESS')
+      await run.result(items.length, items.length, 0, 'ALL_SUCCESS')
     } catch (err) {
       result = 'FAIL'
       error(`Input parsing failed: ${err.stack}`)
@@ -236,6 +236,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       }
       const total = inputs.length
       let done = 0
+      let skipped = 0
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
         try {
@@ -244,6 +245,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             // TODO: Here we check and possibly throw a question if duplicates are okay.
             //       Need three configuration options: 'never', 'always', 'ask'.
             await input.skip('DUPLICATE')
+            skipped++
           } else {
             await driver.unifyItem(this, run, input, rules)
             await input.success()
@@ -256,7 +258,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
       }
 
-      await run.result(done, total)
+      await run.result(done, total, skipped)
 
     } catch (err) {
       result = 'FAIL'
@@ -333,7 +335,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
       }
 
-      await run.result(done, total)
+      await run.result(done, total, 0)
 
     } catch (err) {
       result = 'FAIL'
@@ -370,7 +372,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
       }
 
-      await run.result(done, total)
+      await run.result(done, total, 0)
 
     } catch (err) {
       result = 'FAIL'

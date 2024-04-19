@@ -39,7 +39,7 @@ export class RunModel extends BaseModel<prisma.Run> {
    * @param total
    * @param result
    */
-  async result(done: null | number, total: number | null, result: RunResult | undefined = undefined): Promise<void> {
+  async result(done: null | number, total: number | null, skipped: number | null, result: RunResult | undefined = undefined): Promise<void> {
     if (result === undefined) {
       if (done === null || total === null) {
         result = 'ALL_FAILED'
@@ -49,7 +49,15 @@ export class RunModel extends BaseModel<prisma.Run> {
         } else if (done === total) {
           result = 'ALL_SUCCESS'
         } else {
-          result = 'PARTLY_FAIL'
+          if (skipped !== null && skipped > 0) {
+            if (skipped === total) {
+              result = 'ALL_SKIPPED'
+            } else {
+              result = 'PARTLY_SKIPPED_SUCCESS'
+            }
+          } else {
+            result = 'PARTLY_FAIL'
+          }
         }
       }
     }
