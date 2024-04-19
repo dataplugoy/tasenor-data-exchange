@@ -4,7 +4,7 @@
  * work well for content-centric websites.
  */
 :root {
-  background-color: rgb(252,249,244);
+  background-color: #eee;
 }
 
 [data-theme='dark']:root {

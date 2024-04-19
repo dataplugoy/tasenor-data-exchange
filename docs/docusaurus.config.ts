@@ -57,25 +57,21 @@ const config: Config = {
     image: 'logo.png',
     navbar: {
       title: 'Tasenor Data Exchange',
-      logo: {
-        alt: 'Tasenor Logo',
-        src: 'logo.png',
-      },
-      items: [
+      items: process.env.ENV === 'dev' ? [
         {
           type: 'docSidebar',
           sidebarId: 'docSidebarId',
           position: 'left',
           label: 'Documentation',
         },
-      ]
+      ]: []
     },
 
     footer: {
       style: 'dark',
       links: [
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Dataplug Oy, Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Dataplug Oy`,
     },
 
     prism: {
