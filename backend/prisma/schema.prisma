@@ -33,6 +33,8 @@ model User {
   city        String?
   country     String?
 
+  admin       Boolean         @default(false)
+
   lastSeen    DateTime?
   settings    Json            @default("{}")
 

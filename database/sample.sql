@@ -186,7 +186,8 @@ ALTER TYPE public."ServiceType" OWNER TO dev;
 --
 
 CREATE TYPE public."SkipReason" AS ENUM (
-    'DUPLICATE'
+    'DUPLICATE',
+    'IN_THE_PAST'
 );
 
 
@@ -708,7 +709,8 @@ CREATE TABLE public.users (
     city text,
     country text,
     "lastSeen" timestamp(3) without time zone,
-    settings jsonb DEFAULT '{}'::jsonb NOT NULL
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    admin boolean DEFAULT false NOT NULL
 );
 
 
@@ -937,8 +939,8 @@ COPY public.unified_items (id, created, updated, "time", data, processed, skippe
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.users (id, created, updated, email, password, name, address, zip, city, country, "lastSeen", settings) FROM stdin;
-1	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	user@localhost	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	{"projectId": 1}
+COPY public.users (id, created, updated, email, password, name, address, zip, city, country, "lastSeen", settings, admin) FROM stdin;
+1	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	user@localhost	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	{"projectId": 1}	f
 \.
 
 
