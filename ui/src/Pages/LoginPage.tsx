@@ -24,13 +24,20 @@ export const LoginPage = (): React.JSX.Element => {
     })
   }
 
+  const onRegister = () => {
+    navigate('/register')
+  }
+
   return <Box sx={{ p: 4, textAlign: 'center' }}>
     <img src="/Images/logo.jpeg"/>
     <Box sx={{ mt: 2 }}>
       <TextField onChange={e => setEmail(e.target.value)} value={email} name="email" label={t('Email')}/>
       <TextField onChange={e => setPassword(e.target.value)} value={password} name="password" type="password" label={t('Password')}/>
       <Box sx={{ mt: 2 }}>
-        <Button onClick={onLogin}><Trans>Login</Trans></Button>
+        <Button onClick={onLogin} variant="outlined"><Trans>Login</Trans></Button>
+      </Box>
+      <Box sx={{ mt: 2 }}>
+        <Button onClick={onRegister}><Trans>Register</Trans></Button>
       </Box>
     </Box>
   </Box>

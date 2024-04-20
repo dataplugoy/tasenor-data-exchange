@@ -7,6 +7,7 @@ import { Messages } from './Components/Messages'
 import { HomePage } from './Pages/HomePage'
 import { Menu } from './Components/Menu'
 import { FlowPlanPage } from './Pages/FlowPlanPage'
+import { RegisterPage } from './Pages/RegisterPage'
 
 export const App = (): React.JSX.Element => {
 
@@ -27,6 +28,7 @@ export const App = (): React.JSX.Element => {
               <Route path="/" element={<IndexPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
               <Route path="/home" element={<HomePage/>}/>
+              <Route path="/register" element={<RegisterPage/>}/>
               <Route path="/flow-plan/:id" element={<FlowPlanPage/>}/>
             </Routes>
           </Box>
