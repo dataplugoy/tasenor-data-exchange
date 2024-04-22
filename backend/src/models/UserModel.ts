@@ -47,4 +47,13 @@ export class UserModel extends BaseModel<prisma.User> {
     const models = await ServiceModel.findForUser(userId)
     return models.map(service => getService(service.data.driver, service.data.settings as ServiceSettings))
   }
+
+  /**
+   * Save user to the DB.
+   * @param data
+   * @returns
+   */
+  static async save(data: Partial<prisma.User>): Promise<UserModel> {
+    return UserModel.create<prisma.User, UserModel>(data)
+  }
 }

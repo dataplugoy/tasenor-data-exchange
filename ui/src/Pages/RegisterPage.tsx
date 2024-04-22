@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { useApp } from '../Hooks/useApp'
+import { useNavigate } from 'react-router-dom'
 
 export const RegisterPage = (): React.JSX.Element => {
 
@@ -18,6 +19,7 @@ export const RegisterPage = (): React.JSX.Element => {
   const [country, setCountry] = useState('')
   const POST = usePOST<AuthResponse>()
   const app = useApp()
+  const navigate = useNavigate()
 
   const onRegister = () => {
 
@@ -26,7 +28,9 @@ export const RegisterPage = (): React.JSX.Element => {
       return
     }
 
-    POST('/auth/register', { email, password, name, address, zip, city, country }).then(async (res) => {
+    POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project') }).then(async (res) => {
+      res && app.setAuth(res)
+      navigate('/')
     })
   }
 
@@ -39,7 +43,7 @@ export const RegisterPage = (): React.JSX.Element => {
       <TextField autoComplete="new-password" required fullWidth onChange={e => setPasswordAgain(e.target.value)} value={passwordAgain} name="password-again" type="password" label={t('Password Again')}/>
       <TextField fullWidth onChange={e => setName(e.target.value)} value={name} name="name" label={t('Name')}/>
       <TextField fullWidth onChange={e => setAddress(e.target.value)} value={address} name="address" label={t('Address')}/>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', gap: '1rem' }}>
         <TextField onChange={e => setZip(e.target.value)} value={zip} name="name" label={t('Zip')}/>
         <TextField onChange={e => setCity(e.target.value)} value={city} name="name" label={t('City')}/>
       </Box>

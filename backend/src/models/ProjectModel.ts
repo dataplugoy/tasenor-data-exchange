@@ -39,4 +39,14 @@ export class ProjectModel extends BaseModel<prisma.Project> {
     }
     return UserModel.getServices(project.data.userId)
   }
+
+  /**
+   * Save user to the DB.
+   * @param data
+   * @returns
+   */
+  static async save(data: Partial<prisma.Project>): Promise<ProjectModel> {
+    console.log(data)
+    return ProjectModel.create<prisma.Project, ProjectModel>(data)
+  }
 }
