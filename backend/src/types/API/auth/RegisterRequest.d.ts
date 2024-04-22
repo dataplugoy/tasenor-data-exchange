@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface AuthRequest {
+export interface RegisterRequest {
   email: string;
   password: string;
   name: string;

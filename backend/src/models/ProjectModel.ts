@@ -46,7 +46,6 @@ export class ProjectModel extends BaseModel<prisma.Project> {
    * @returns
    */
   static async save(data: Partial<prisma.Project>): Promise<ProjectModel> {
-    console.log(data)
     return ProjectModel.create<prisma.Project, ProjectModel>(data)
   }
 }

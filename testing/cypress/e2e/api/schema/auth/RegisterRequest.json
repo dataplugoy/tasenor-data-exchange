@@ -1,14 +1,16 @@
 {
-  "title": "AuthRequest",
+  "title": "RegisterRequest",
   "type": "object",
   "additionalProperties": false,
   "required": ["email", "password", "name"],
   "properties": {
     "email": {
-      "type": "string"
+      "type": "string",
+      "pattern": "@"
     },
     "password": {
-      "type": "string"
+      "type": "string",
+      "minLength": 8
     },
     "name": {
       "type": "string"

@@ -29,8 +29,10 @@ export const RegisterPage = (): React.JSX.Element => {
     }
 
     POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project') }).then(async (res) => {
-      res && app.setAuth(res)
-      navigate('/')
+      if (res) {
+        app.setAuth(res)
+        navigate('/')
+      }
     })
   }
 
