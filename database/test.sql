@@ -41,6 +41,7 @@ DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
 DROP INDEX IF EXISTS public."output_destinations_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
+DROP INDEX IF EXISTS public."input_items_flowPlanId_hash_idx";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS unified_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.settings DROP CONSTRAINT IF EXISTS settings_pkey;
@@ -93,6 +94,7 @@ DROP SEQUENCE IF EXISTS public.flow_plans_id_seq;
 DROP TABLE IF EXISTS public.flow_plans;
 DROP SEQUENCE IF EXISTS public.batches_id_seq;
 DROP TABLE IF EXISTS public.batches;
+DROP TYPE IF EXISTS public."SkipReason";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
 DROP TYPE IF EXISTS public."RunResult";
@@ -178,6 +180,18 @@ CREATE TYPE public."ServiceType" AS ENUM (
 
 
 ALTER TYPE public."ServiceType" OWNER TO dev;
+
+--
+-- Name: SkipReason; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."SkipReason" AS ENUM (
+    'DUPLICATE',
+    'IN_THE_PAST'
+);
+
+
+ALTER TYPE public."SkipReason" OWNER TO dev;
 
 SET default_tablespace = '';
 
@@ -280,7 +294,9 @@ CREATE TABLE public.input_items (
     error text,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL
+    "runId" integer NOT NULL,
+    hash character varying(40) NOT NULL,
+    "skipReason" public."SkipReason"
 );
 
 
@@ -693,7 +709,8 @@ CREATE TABLE public.users (
     city text,
     country text,
     "lastSeen" timestamp(3) without time zone,
-    settings jsonb DEFAULT '{}'::jsonb NOT NULL
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    admin boolean DEFAULT false NOT NULL
 );
 
 
@@ -833,7 +850,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId") FROM stdin;
+COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId", hash, "skipReason") FROM stdin;
 \.
 
 
@@ -918,8 +935,8 @@ COPY public.unified_items (id, created, updated, "time", data, processed, skippe
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.users (id, created, updated, email, password, name, address, zip, city, country, "lastSeen", settings) FROM stdin;
-1	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	test@localhost	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	{"projectId": 1}
+COPY public.users (id, created, updated, email, password, name, address, zip, city, country, "lastSeen", settings, admin) FROM stdin;
+1	2024-03-30 14:38:56.726	2024-04-05 07:08:25.754	test@localhost	$2b$13$YAnqCS/Zsov6Bt5fR3phDelItsA6PpCLYl/kotccl5hAgbVojUQqC	Tommi Ronkainen	Ahvenisjärventie 22	33720	Tampere	Finland	\N	{"projectId": 1}	f
 \.
 
 
@@ -1116,6 +1133,13 @@ ALTER TABLE ONLY public.unified_items
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: input_items_flowPlanId_hash_idx; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX "input_items_flowPlanId_hash_idx" ON public.input_items USING btree ("flowPlanId", hash);
 
 
 --
