@@ -1,7 +1,5 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { ProjectModel } from './ProjectModel'
-import { FlowPlanModel } from './FlowPlanModel'
 
 export class ServiceModel extends BaseModel<prisma.Service> {
 

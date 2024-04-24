@@ -79,7 +79,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param options
    */
   async run(options: RuntimeOptions, counter = 0): Promise<FlowPlanRunResponse> {
-    const [batch, run, result] = await this.runStep(options)
+    const [batch,, result] = await this.runStep(options)
     if (batch.data.completed || result === 'FAIL' || options.repeat === 1) {
       return {
         success: result === 'OK',
