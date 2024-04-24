@@ -9,4 +9,5 @@ DELETE FROM output_destinations;
 DELETE FROM flow_plans;
 DELETE FROM settings;
 DELETE FROM projects;
+DELETE FROM services;
 DELETE FROM users;

@@ -10,7 +10,7 @@ export async function beforeModelTesting(): Promise<void> {
 
   const { spawnSync } = require( 'child_process' )
   const databaseDir = path.join(cwd(), '..', 'database')
-  const run = spawnSync('pnpm', [ '-C', databaseDir, 'load-test' ])
+  const run = spawnSync('pnpm', [ '-C', databaseDir, 'load' ])
   if (run.stderr.toString().trim() !== '') {
     throw new Error(`Database initialization failed: ${run.stderr.toString().trim()}`)
   }
