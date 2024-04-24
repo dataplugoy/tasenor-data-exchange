@@ -15,7 +15,8 @@ export function signalBatchUpdate() {
  */
 export function whenBatchUpdates(fn: () => void) {
   effect(() => {
-    const _dummy = batchUpdates.value
+    // eslint-disable-next-line
+    const dummy = batchUpdates.value
     fn()
   })
 }

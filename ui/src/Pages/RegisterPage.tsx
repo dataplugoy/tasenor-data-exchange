@@ -36,7 +36,6 @@ export const RegisterPage = (): React.JSX.Element => {
     })
   }
 
-
   return <Box sx={{ mt: 10, textAlign: 'center', ml: '25%' }}>
     <Box sx={{ display: 'grid', gridTemplateColumns: '50%', rowGap: '1rem' }}>
       <Trans>Register to Tasenor Data Exchange</Trans>

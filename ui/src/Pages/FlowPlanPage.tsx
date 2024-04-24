@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { useGET } from '../Hooks/useNet'
 import { useParams } from 'react-router-dom'
@@ -34,7 +34,6 @@ export const FlowPlanPage = (): React.JSX.Element => {
     updateFlowPlan()
     whenBatchUpdates(updateFlowPlan)
   }, [])
-
 
   return (
     <Box>
