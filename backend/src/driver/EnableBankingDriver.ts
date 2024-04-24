@@ -1,9 +1,9 @@
 import jwa from 'jwa'
 import { Driver } from './Driver'
-import { EnableBankingDriverSettings } from '../../types/DriverSettings'
-import config from '../../config'
-import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../../types/EnableBanking'
-import { EnableBankingFlowState } from '../../types/FlowState'
+import { EnableBankingDriverSettings } from '../types/DriverSettings'
+import config from '../config'
+import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../types/EnableBanking'
+import { EnableBankingFlowState } from '../types/FlowState'
 import { DateTime } from 'luxon'
 
 /**

@@ -3,9 +3,7 @@ import { Constructor } from '@tasenor/common'
 import { TestMockDriver } from './TestMockDriver'
 import { EnableBankingDriver } from './EnableBankingDriver'
 import { Driver } from './Driver'
-import { DriverSettings } from '../../types/DriverSettings'
-
-// TODO: Move to ../lib
+import { DriverSettings } from '../types/DriverSettings'
 
 /**
  * Drivers implemented.

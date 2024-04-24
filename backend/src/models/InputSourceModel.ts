@@ -1,8 +1,8 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { Driver } from '../engine/driver/Driver'
+import { Driver } from '../driver/Driver'
 import { DriverSettings } from '../types/DriverSettings'
-import { getDriver } from '../engine/driver'
+import { getDriver } from '../driver'
 
 export class InputSourceModel extends BaseModel<prisma.InputSource> {
 

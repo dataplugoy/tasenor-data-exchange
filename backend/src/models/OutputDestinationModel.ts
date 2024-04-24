@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { Driver } from '../engine/driver/Driver'
-import { getDriver } from '../engine/driver'
+import { Driver } from '../driver/Driver'
+import { getDriver } from '../driver'
 import { DriverSettings } from '../types/DriverSettings'
 
 export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> {

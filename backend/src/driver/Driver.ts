@@ -2,23 +2,23 @@ import path from 'path'
 import fs from 'fs'
 import axios, { AxiosRequestConfig } from 'axios'
 import prisma from '@prisma/client'
-import { SettingsModel } from '../../models/SettingsModel'
+import { SettingsModel } from '../models/SettingsModel'
 import { HttpMethod, error, isShortDate, log } from '@tasenor/common'
-import { DriverSettings } from '../../types/DriverSettings'
-import { RuntimeOptions } from '../../types/RuntimeOptions'
-import { FlowState } from '../../types/FlowState'
-import { BatchModel } from '../../models/BatchModel'
-import { InputItemModel } from '../../models/InputItemModel'
-import { FlowPlanModel } from '../../models/FlowPlanModel'
-import { RuleModel } from '../../models/RuleModel'
-import { InputSourceModel } from '../../models/InputSourceModel'
-import { applyRules } from '../../lib/rules'
-import { UnifiedItemModel } from '../../models/UnifiedItemModel'
+import { DriverSettings } from '../types/DriverSettings'
+import { RuntimeOptions } from '../types/RuntimeOptions'
+import { FlowState } from '../types/FlowState'
+import { BatchModel } from '../models/BatchModel'
+import { InputItemModel } from '../models/InputItemModel'
+import { FlowPlanModel } from '../models/FlowPlanModel'
+import { RuleModel } from '../models/RuleModel'
+import { InputSourceModel } from '../models/InputSourceModel'
+import { applyRules } from '../lib/rules'
+import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { RunModel } from '../../models/RunModel'
+import { RunModel } from '../models/RunModel'
 import { DateTime } from 'luxon'
-import { OutputItemModel } from '../../models/OutputItemModel'
-import { InputItemData } from '../../types/API/InputItemData'
+import { OutputItemModel } from '../models/OutputItemModel'
+import { InputItemData } from '../types/API/InputItemData'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -40,7 +40,7 @@ export class Driver {
    * Root path of the repository.
    */
   get root(): string {
-    return path.dirname(path.dirname(path.dirname(path.dirname(__dirname))))
+    return path.dirname(path.dirname(path.dirname(__dirname)))
   }
 
   /**
