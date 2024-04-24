@@ -15,5 +15,5 @@ COPY public.flow_plans (id, title, created, updated, "projectId", "lastStamp", s
 \.
 
 COPY public.input_sources (id, type, "flowPlanId", created, updated, settings) FROM stdin;
-1	TEST_MOCK	1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	{"url": "file:///testing/data/test.csv"}
+1	TEST_MOCK	1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	{"url": "file:///backend/testing/data/test.csv"}
 \.

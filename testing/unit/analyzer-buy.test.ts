@@ -154,7 +154,7 @@ describe('Analyzer', () => {
     }
 
     const services = [
-      new JsonFileService({ url: 'file:///testing/unit/data/rates.json' })
+      new JsonFileService({ url: 'file:///backend/testing/unit/data/rates.json' })
     ]
 
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)

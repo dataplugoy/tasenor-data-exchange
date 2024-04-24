@@ -1,4 +1,4 @@
 node_modules/
 dist/
-testing/data/output.csv-*
+backend/testing/data/output.csv-*
 testing/cypress/screenshots/
