@@ -859,7 +859,7 @@ COPY public.input_items (id, created, updated, data, processed, skipped, error, 
 --
 
 COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") FROM stdin;
-1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	TEST_MOCK	{"url": "file:///backend/testing/data/test.csv"}	1
+1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	TEST_MOCK	{"url": "file:///test.csv"}	1
 \.
 
 
@@ -868,7 +868,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 --
 
 COPY public.output_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
-1	2024-04-15 11:40:33.161	2024-04-15 11:41:29.039	TEST_MOCK	{"url": "file:///backend/testing/data/output.csv"}	1
+1	2024-04-15 11:40:33.161	2024-04-15 11:41:29.039	TEST_MOCK	{"url": "file:///output.csv"}	1
 \.
 
 
@@ -910,7 +910,7 @@ COPY public.runs (id, created, updated, "initialState", "finalState", error, "ba
 --
 
 COPY public.services (id, created, updated, type, name, driver, free, settings, "userId") FROM stdin;
-1	2024-04-18 15:46:48.721	2024-04-18 15:46:10.27	CRYPTO_RATES	Test Files	JSON_FILE	f	{"url": "file:///backend/testing/data/rates.json"}	1
+1	2024-04-18 15:46:48.721	2024-04-18 15:46:10.27	CRYPTO_RATES	Test Files	JSON_FILE	f	{"url": "file:///rates.json"}	1
 \.
 
 

@@ -16,6 +16,6 @@ ADD tsconfig.json .
 ADD src src
 ADD prisma .
 ADD bin bin
-ADD testing testing
+ADD samples samples
 
 CMD ["pnpm", "run", "docker"]

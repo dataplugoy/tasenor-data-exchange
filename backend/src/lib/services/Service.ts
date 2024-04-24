@@ -51,7 +51,7 @@ export class Service {
    * Root path of the repository.
    */
   get root(): string {
-    return path.dirname(path.dirname(path.dirname(path.dirname(__dirname))))
+    return path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'samples')
   }
 
   /**
