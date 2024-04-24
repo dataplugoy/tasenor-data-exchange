@@ -16,7 +16,7 @@
     "fix": "pnpm fix-ui && pnpm fix-backend",
     "fix-ui": "cd ui && pnpm fix",
     "fix-backend": "cd backend && pnpm fix",
-    "prepare-test": "docker compose up -d --build --force-recreate tadex-db && docker exec tadex-db wait-for-it.sh -h localhost -p 7300 && cd backend && DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run migrate",
+    "prepare-test": "docker compose up -d --build --force-recreate && docker exec tadex-api bin/wait-for-it.sh -t 120 -h localhost -p 7302 && cd backend && DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run migrate",
     "test": "pnpm run prepare-test && cd testing && pnpm run test",
     "preinstall": "cd database && pnpm install && cd ../backend && pnpm install && cd ../ui && pnpm install && cd ../testing && pnpm install && cd ../docs && pnpm install"
   },

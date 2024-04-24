@@ -1,3 +1,4 @@
 node_modules/
 dist/
 testing/data/output.csv-*
+testing/cypress/screenshots/

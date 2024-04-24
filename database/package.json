@@ -5,8 +5,8 @@
     "dev": "docker compose -f ../docker-compose.yml up --build --force-recreate tadex-db",
     "clear": "docker exec -i tadex-db psql -b -q -E postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < clear.sql",
     "init": "docker exec -i tadex-db psql -b -q -E postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < init.sql",
-    "load": "docker exec -i tadex-db psql -b -q -E postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < test.sql",
-    "save": "docker exec tadex-db pg_dump --clean --if-exists postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex > test.sql"
+    "load": "docker exec -i tadex-db psql -b -q -E postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < docker-entrypoint-initdb.d/test.sql",
+    "save": "docker exec tadex-db pg_dump --clean --if-exists postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex > docker-entrypoint-initdb.d/test.sql"
   },
   "dependencies": {
     "prisma": "^5.11.0"

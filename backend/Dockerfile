@@ -15,5 +15,6 @@ RUN pnpm install
 ADD tsconfig.json .
 ADD src src
 ADD prisma .
+ADD bin bin
 
 CMD ["pnpm", "run", "docker"]

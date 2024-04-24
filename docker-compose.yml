@@ -54,6 +54,7 @@ services:
       - 7302:7302
     environment:
       PORT: 7302
+      DATABASE_URL: postgres://dev:02u3QD2e3wxssfdr3sxds@tadex-db:7300/tadex
       VIRTUAL_HOST: tadex-api.localhost
       VIRTUAL_PORT: 7302
     command: pnpm run docker
