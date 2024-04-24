@@ -241,9 +241,9 @@ export class Driver {
 
     const data: Record<string, unknown> = applyRules(variables, rules, ruleKey) as Record<string, unknown>
 
-    const time = isShortDate(input.time) ?
-      DateTime.fromISO(`${input.time}T12:00:00Z`).toUTC().toISO() :
-      DateTime.fromISO(`${input.time}`).toUTC().toISO()
+    const time = isShortDate(input.time)
+      ? DateTime.fromISO(`${input.time}T12:00:00Z`).toUTC().toISO()
+      : DateTime.fromISO(`${input.time}`).toUTC().toISO()
 
     const unified = await UnifiedItemModel.save({
       data: data as JsonValue,

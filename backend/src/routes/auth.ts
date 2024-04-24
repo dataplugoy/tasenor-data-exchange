@@ -68,7 +68,7 @@ router.post('/register',
     const token = await sign({ id: user.id }, 'tadex-api')
 
     const project = await ProjectModel.save({ userId: user.id, name: projectName, settings: { currency: 'EUR', language: 'fi' } })
-    await UserModel.update<prisma.User, UserModel>(user, { settings: { projectId: project.id }})
+    await UserModel.update<prisma.User, UserModel>(user, { settings: { projectId: project.id } })
 
     return res.send({
       token,

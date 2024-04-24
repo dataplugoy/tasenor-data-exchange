@@ -53,6 +53,7 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
     this.data.processed = true
     await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { processed: true })
   }
+
   /**
    * Mark this input as skipped.
    * @param state

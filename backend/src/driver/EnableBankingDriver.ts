@@ -10,7 +10,7 @@ import { DateTime } from 'luxon'
  * Helper to encode JSON as base64.
  */
 const jsonBase64 = (data: Record<string, any>) => {
-  return Buffer.from(JSON.stringify(data)).toString("base64").replace("=", "")
+  return Buffer.from(JSON.stringify(data)).toString('base64').replace('=', '')
 }
 
 /**
@@ -35,19 +35,19 @@ export class EnableBankingDriver extends Driver {
     const jwtBody = {
       iss: 'enablebanking.com',
       aud: 'api.enablebanking.com',
-      iat: iat,
+      iat,
       exp: iat + expire
     }
 
     const header = jsonBase64({
-      typ: "JWT",
-      alg: "RS256",
+      typ: 'JWT',
+      alg: 'RS256',
       kid: this.systemSettings.apikey
     })
 
     const body = jsonBase64(jwtBody)
 
-    const signature = jwa("RS256").sign(`${header}.${body}`, this.systemSettings.certificate)
+    const signature = jwa('RS256').sign(`${header}.${body}`, this.systemSettings.certificate)
 
     return `${header}.${body}.${signature}`
   }
@@ -73,7 +73,7 @@ export class EnableBankingDriver extends Driver {
           name: this.settings.bankName,
           country: this.settings.country,
         },
-        state: "NOT-YET-IN-TADEX-USE", // Pass any info here.
+        state: 'NOT-YET-IN-TADEX-USE', // Pass any info here.
         redirect_url: config.SITE_URL, // TODO: Need proper redirect URL.
         psu_type: this.settings.psuType,
       }

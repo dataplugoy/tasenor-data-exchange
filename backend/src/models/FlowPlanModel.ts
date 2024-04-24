@@ -89,7 +89,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     if (options.repeat === 'MAX') {
       return await this.run(options, counter + 1)
     } else {
-      return await this.run({...options, repeat: options.repeat - 1 }, counter + 1)
+      return await this.run({ ...options, repeat: options.repeat - 1 }, counter + 1)
     }
   }
 
@@ -254,7 +254,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           // TODO: What's wrong with types here?
           const data = input.data.data as unknown as InputItemData
 
-            // Verify duplicates first.
+          // Verify duplicates first.
           if (await InputItemModel.isDuplicate(input)) {
             // TODO: Here we possibly throw a question wether duplicates are okay.
             //       Need three configuration options: 'never', 'always', 'ask'.
@@ -264,14 +264,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           }
 
           // Verify time stamps not being in the past.
-            // TODO: Here we possibly throw a question wether items can appear before the last time stamp.
-            //       Need three configuration options: 'never', 'always', 'ask'.
-            const time = new Date(data.time)
-            if (this.data.lastStamp && this.data.lastStamp > time) {
-              await input.skip('IN_THE_PAST')
-              skipped++
-              continue
-            }
+          // TODO: Here we possibly throw a question wether items can appear before the last time stamp.
+          //       Need three configuration options: 'never', 'always', 'ask'.
+          const time = new Date(data.time)
+          if (this.data.lastStamp && this.data.lastStamp > time) {
+            await input.skip('IN_THE_PAST')
+            skipped++
+            continue
+          }
 
           await driver.unifyItem(this, run, input, rules)
           await input.success()
