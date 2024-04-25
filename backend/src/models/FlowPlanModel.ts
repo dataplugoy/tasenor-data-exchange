@@ -406,6 +406,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           await item.success()
           done++
         } catch (err) {
+          result = 'FAIL'
           await item.fail(err)
         }
       }

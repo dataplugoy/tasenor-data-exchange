@@ -41,7 +41,7 @@ export class RunModel extends BaseModel<prisma.Run> {
    */
   async result(done: null | number, total: number | null, skipped: number | null, result: RunResult | undefined = undefined): Promise<void> {
     if (result === undefined) {
-      if (done === null || total === null) {
+      if (done === null || total === null || (done === 0 && skipped === 0 && total > 0)) {
         result = 'ALL_FAILED'
       } else {
         if (done === 0 && total === 0) {

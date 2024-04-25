@@ -135,8 +135,15 @@ const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
 const FailedAfterItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
   const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
+  const noItemErrors = items.filter(i => !!i.error).length === 0
+
+  // TODO: DRY. Similar to previuous.
+
   return (
     <Box>
+      {
+        noItemErrors && result.run.error && <ViewError error={result.run.error}/>
+      }
       {
         items.map((item, idx) => {
           return item.error !== null && <Box key={idx}>
@@ -146,7 +153,29 @@ const FailedAfterItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
       }
     </Box>
   )
+}
 
+const FailedAfterOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
+  const { result } = props
+  const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
+  const noItemErrors = items.filter(i => !!i.error).length === 0
+
+  // TODO: DRY. Similar to previuous.
+
+  return (
+    <Box>
+      {
+        noItemErrors && result.run.error && <ViewError error={result.run.error}/>
+      }
+      {
+        items.map((item, idx) => {
+          return item.error !== null && <Box key={idx}>
+            <ViewError error={item.error}/>
+          </Box>
+        })
+      }
+    </Box>
+  )
 }
 
 /**
@@ -172,6 +201,8 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       return <FailedAfterDataParsed batch={batch} result={result}/>
     case 'FAILED_AFTER_ITEMS_UNIFIED':
       return <FailedAfterItemsUnified batch={batch} result={result}/>
+    case 'FAILED_AFTER_OUTPUT_CREATED':
+      return <FailedAfterOutputCreated batch={batch} result={result}/>
   }
 
   return (
