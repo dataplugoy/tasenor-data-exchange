@@ -15,7 +15,7 @@ router.post('/',
   validate({ body: CreateFlowPlanRequest as AllowedSchema }),
   async (req, res) => {
     const userId = res.locals.userId
-    res.send({})
+    res.send({ userId })
   }
 )
 
