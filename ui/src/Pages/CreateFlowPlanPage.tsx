@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, MenuItem, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
 
@@ -31,7 +31,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
         settings: destinationSettings,
       },
     }
-    console.log(data);
+    console.log(data)
   }
 
   return (
