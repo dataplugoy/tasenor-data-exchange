@@ -49,9 +49,8 @@ export const RegisterPage = (): React.JSX.Element => {
         <TextField onChange={e => setCity(e.target.value)} value={city} name="name" label={t('City')}/>
       </Box>
       <TextField fullWidth onChange={e => setCountry(e.target.value)} value={country} name="address" label={t('Country')}/>
-      <Box sx={{ mt: 2 }}>
-        <Button onClick={onRegister} variant="outlined"><Trans>Register</Trans></Button>
-      </Box>
+
+      <Button sx={{ mt: 2 }} onClick={onRegister} variant="outlined"><Trans>Register</Trans></Button>
     </Box>
   </Box>
 }

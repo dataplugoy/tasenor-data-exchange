@@ -1,5 +1,5 @@
 import React, { } from 'react'
-import { Card, CardContent, CardHeader, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Button, Card, CardActions, CardContent, CardHeader, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { Air } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
@@ -15,6 +15,10 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
 
   const onClickRow = (id: number) => {
     navigate(`/flow-plan/${id}`)
+  }
+
+  const onCreateNew = () => {
+    navigate(`/flow-plan/new`)
   }
 
   return (
@@ -41,6 +45,9 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
           </TableBody>
         </Table>
       </CardContent>
+      <CardActions>
+        <Button onClick={onCreateNew}><Trans>Create New</Trans></Button>
+      </CardActions>
     </Card>
   )
 }
