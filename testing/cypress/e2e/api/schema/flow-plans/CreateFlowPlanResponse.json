@@ -1,3 +1,6 @@
 {
-  "$ref": "FlowPlan"
+  "title": "CreateFlowPlanResponse",
+  "allOf": [
+    { "$ref": "FlowPlan" }
+  ]
 }

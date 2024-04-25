@@ -19,7 +19,7 @@
           "type": "string",
           "enum": [
             "TEST_MOCK",
-            "NO_ACTION"
+            "ENABLE_BANKING"
           ]
         },
         "settings": {
@@ -36,7 +36,7 @@
           "type": "string",
           "enum": [
             "TEST_MOCK",
-            "ENABLE_BANKING"
+            "NO_ACTION"
           ]
         },
         "settings": {

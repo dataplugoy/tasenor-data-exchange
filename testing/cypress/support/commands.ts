@@ -1,7 +1,24 @@
 /// <reference types="cypress" />
 import Ajv from 'ajv'
+import Asset from '../e2e/api/schema/Asset.json'
+import Batch from '../e2e/api/schema/Batch.json'
+import FlowPlan from '../e2e/api/schema/FlowPlan.json'
+import InputItemData from '../e2e/api/schema/InputItemData.json'
+import InputItem from '../e2e/api/schema/InputItem.json'
+import OutputItem from '../e2e/api/schema/OutputItem.json'
 import Project from '../e2e/api/schema/Project.json'
 import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
+import Rates from '../e2e/api/schema/Rates.json'
+import Run from '../e2e/api/schema/Run.json'
+import RunResult from '../e2e/api/schema/RunResult.json'
+import SkipReason from '../e2e/api/schema/SkipReason.json'
+import TransactionExtras from '../e2e/api/schema/TransactionExtras.json'
+import Transaction from '../e2e/api/schema/Transaction.json'
+import TransactionLine from '../e2e/api/schema/TransactionLine.json'
+import UnifiedItemData from '../e2e/api/schema/UnifiedItemData.json'
+import UnifiedItem from '../e2e/api/schema/UnifiedItem.json'
+import UnifiedItemType from '../e2e/api/schema/UnifiedItemType.json'
+
 
 /**
  * Log in as normal user.
@@ -51,8 +68,25 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   expect(res.status).to.eq(200)
 
   const ajv = new Ajv()
-  ajv.addSchema(ProjectSettings)
+
+  ajv.addSchema(Asset)
+  ajv.addSchema(Batch)
+  ajv.addSchema(FlowPlan)
+  ajv.addSchema(InputItemData)
+  ajv.addSchema(InputItem)
+  ajv.addSchema(OutputItem)
   ajv.addSchema(Project)
+  ajv.addSchema(ProjectSettings)
+  ajv.addSchema(Rates)
+  ajv.addSchema(Run)
+  ajv.addSchema(RunResult)
+  ajv.addSchema(SkipReason)
+  ajv.addSchema(TransactionExtras)
+  ajv.addSchema(Transaction)
+  ajv.addSchema(TransactionLine)
+  ajv.addSchema(UnifiedItemData)
+  ajv.addSchema(UnifiedItem)
+  ajv.addSchema(UnifiedItemType)
 
   if (!ajv.validate(json, res.body)) {
     const errors = JSON.stringify(ajv.errors)

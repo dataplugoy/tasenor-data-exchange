@@ -9,13 +9,13 @@ export interface CreateFlowPlanRequest {
   name: string;
   projectId: number;
   input: {
-    type: "TEST_MOCK" | "NO_ACTION";
+    type: "TEST_MOCK" | "ENABLE_BANKING";
     settings: {
       [k: string]: unknown;
     };
   };
   output: {
-    type: "TEST_MOCK" | "ENABLE_BANKING";
+    type: "TEST_MOCK" | "NO_ACTION";
     settings: {
       [k: string]: unknown;
     };
