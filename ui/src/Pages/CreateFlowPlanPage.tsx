@@ -10,7 +10,6 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
   const onCreate = () => {
   }
 
-
   return (
     <Box>
       <Typography variant="h1" textAlign="center">

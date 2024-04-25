@@ -1,9 +1,9 @@
-import { log } from "@tasenor/common"
-import { OutputItemModel } from "../models/OutputItemModel"
-import { NoActionDriverSettings } from "../types/DriverSettings"
-import { NoActionFlowState } from "../types/FlowState"
-import { Driver } from "./Driver"
-import { Transaction } from "../types/API/Transaction"
+import { log } from '@tasenor/common'
+import { OutputItemModel } from '../models/OutputItemModel'
+import { NoActionDriverSettings } from '../types/DriverSettings'
+import { NoActionFlowState } from '../types/FlowState'
+import { Driver } from './Driver'
+import { Transaction } from '../types/API/Transaction'
 
 export class NoActionDriver extends Driver {
 

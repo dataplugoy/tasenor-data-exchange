@@ -18,7 +18,7 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
   }
 
   const onCreateNew = () => {
-    navigate(`/flow-plan/new`)
+    navigate('/flow-plan/new')
   }
 
   return (
