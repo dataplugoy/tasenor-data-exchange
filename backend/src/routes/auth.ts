@@ -7,9 +7,8 @@ import RegisterRequest from '../../src/types/API/auth/RegisterRequest.json'
 import { ProjectModel } from '../models/ProjectModel'
 import prisma from '@prisma/client'
 
-const { validate } = new Validator({})
-
 const router = express.Router()
+const { validate } = new Validator({})
 
 /**
  * Login attempt returns token if successful.

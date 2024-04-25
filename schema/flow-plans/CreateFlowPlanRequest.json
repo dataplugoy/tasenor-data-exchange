@@ -1,0 +1,48 @@
+{
+  "title": "CreateFlowPlanRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "projectId", "input", "output"],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "projectId": {
+      "type": "integer"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "settings"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "TEST_MOCK",
+            "NO_ACTION"
+          ]
+        },
+        "settings": {
+          "type": "object"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "settings"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "TEST_MOCK",
+            "ENABLE_BANKING"
+          ]
+        },
+        "settings": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

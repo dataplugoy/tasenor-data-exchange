@@ -9,6 +9,7 @@ export default defineConfig(({ command, mode }) => {
     base: '/',
     define: {
       DEBUG: JSON.stringify(env.DEBUG === 'true'),
+      NODE_ENV: JSON.stringify(env.NODE_ENV || 'dev'),
       global: 'globalThis',
     },
     server: {

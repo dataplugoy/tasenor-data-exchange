@@ -4,8 +4,20 @@ import { ProjectModel } from '../models/ProjectModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { BatchModel } from '../models/BatchModel'
 import { param } from '../lib/param'
+import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlanRequest.json'
+import { AllowedSchema, Validator } from 'express-json-validator-middleware'
 
 const router = express.Router()
+const { validate } = new Validator({})
+
+router.post('/',
+  authorize(),
+  validate({ body: CreateFlowPlanRequest as AllowedSchema }),
+  async (req, res) => {
+    const userId = res.locals.userId
+    res.send({})
+  }
+)
 
 router.get('/:id',
   authorize(),
