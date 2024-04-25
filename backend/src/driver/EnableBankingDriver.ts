@@ -25,6 +25,14 @@ export class EnableBankingDriver extends Driver {
     super('ENABLE_BANKING', settings)
   }
 
+  canHandleInput(): boolean {
+    return true
+  }
+
+  canHandleOutput(): boolean {
+    return true
+  }
+
   /**
    * Create a JWT token for this application.
    */

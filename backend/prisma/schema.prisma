@@ -111,6 +111,7 @@ model FlowPlan {
 
 enum DriverType {
   TEST_MOCK
+  NO_ACTION
   ENABLE_BANKING
 }
 

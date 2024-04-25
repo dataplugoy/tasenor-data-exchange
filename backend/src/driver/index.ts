@@ -4,12 +4,14 @@ import { TestMockDriver } from './TestMockDriver'
 import { EnableBankingDriver } from './EnableBankingDriver'
 import { Driver } from './Driver'
 import { DriverSettings } from '../types/DriverSettings'
+import { NoActionDriver } from './NoActionDriver'
 
 /**
  * Drivers implemented.
  */
 const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   TEST_MOCK: TestMockDriver,
+  NO_ACTION: NoActionDriver,
   ENABLE_BANKING: EnableBankingDriver,
 }
 

@@ -44,6 +44,22 @@ export class Driver {
   }
 
   /**
+   * If true, driver is able to handle input.
+   * @returns
+   */
+  canHandleInput(): boolean {
+    return false
+  }
+
+  /**
+   * If true, driver is able to handle output.
+   * @returns
+   */
+  canHandleOutput(): boolean {
+    return false
+  }
+
+  /**
    * Ensure that `url` is defined in settings and return it.
    * @returns URL object.
    */

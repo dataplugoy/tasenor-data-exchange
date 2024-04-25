@@ -123,7 +123,8 @@ ALTER TYPE public."BatchState" OWNER TO dev;
 
 CREATE TYPE public."DriverType" AS ENUM (
     'TEST_MOCK',
-    'ENABLE_BANKING'
+    'ENABLE_BANKING',
+    'NO_ACTION'
 );
 
 
@@ -868,7 +869,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 --
 
 COPY public.output_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
-1	2024-04-15 11:40:33.161	2024-04-15 11:41:29.039	TEST_MOCK	{"url": "file:///output.csv"}	1
+1	2024-04-15 11:40:33.161	2024-04-25 12:45:18.235	NO_ACTION	{}	1
 \.
 
 
@@ -1338,3 +1339,4 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
+

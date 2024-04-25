@@ -2,6 +2,9 @@ export type TestMockDriverSettings = {
   url: string
 }
 
+export type NoActionDriverSettings = {
+}
+
 export type EnableBankingDriverSettings = {
   sessionInDays: number
   bankName: string
@@ -10,4 +13,4 @@ export type EnableBankingDriverSettings = {
   iban: string
 }
 
-export type DriverSettings = TestMockDriverSettings | EnableBankingDriverSettings
+export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings

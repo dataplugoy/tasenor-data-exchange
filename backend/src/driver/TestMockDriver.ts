@@ -26,6 +26,14 @@ export class TestMockDriver extends Driver {
     super('TEST_MOCK', settings)
   }
 
+  canHandleInput(): boolean {
+    return true
+  }
+
+  canHandleOutput(): boolean {
+    return true
+  }
+
   async autheticate(): Promise<TestMockFlowState> {
     return this.state
   }
