@@ -1,5 +1,7 @@
 # Tasenor Data Exchange (TaDeX)
 
+[![TaDeX CI](https://github.com/dataplugoy/tasenor-data-exchange/actions/workflows/node.js.yml/badge.svg)](https://github.com/dataplugoy/tasenor-data-exchange/actions/workflows/node.js.yml)
+
 ## Database
 
 Development database is accessible with
