@@ -953,7 +953,7 @@ SELECT pg_catalog.setval('public.batches_id_seq', 5, true);
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 1, false);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, false);
 
 
 --
@@ -967,14 +967,14 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 8, true);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 1, false);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 2, false);
 
 
 --
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 1, false);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 2, false);
 
 
 --
@@ -1340,4 +1340,3 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
-
