@@ -34,6 +34,7 @@ ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_i
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS "flow_plans_projectId_fkey";
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
+ALTER TABLE IF EXISTS ONLY public.alerts DROP CONSTRAINT IF EXISTS "alerts_userId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
 DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
@@ -56,6 +57,7 @@ ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS input_
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS input_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS flow_plans_pkey;
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS batches_pkey;
+ALTER TABLE IF EXISTS ONLY public.alerts DROP CONSTRAINT IF EXISTS alerts_pkey;
 ALTER TABLE IF EXISTS public.users ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.unified_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.settings ALTER COLUMN id DROP DEFAULT;
@@ -69,6 +71,7 @@ ALTER TABLE IF EXISTS public.input_sources ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.flow_plans ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.batches ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.alerts ALTER COLUMN id DROP DEFAULT;
 DROP SEQUENCE IF EXISTS public.users_id_seq;
 DROP TABLE IF EXISTS public.users;
 DROP SEQUENCE IF EXISTS public.unified_items_id_seq;
@@ -95,6 +98,8 @@ DROP SEQUENCE IF EXISTS public.flow_plans_id_seq;
 DROP TABLE IF EXISTS public.flow_plans;
 DROP SEQUENCE IF EXISTS public.batches_id_seq;
 DROP TABLE IF EXISTS public.batches;
+DROP SEQUENCE IF EXISTS public.alerts_id_seq;
+DROP TABLE IF EXISTS public.alerts;
 DROP TYPE IF EXISTS public."SkipReason";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
@@ -102,6 +107,31 @@ DROP TYPE IF EXISTS public."RunResult";
 DROP TYPE IF EXISTS public."RuleType";
 DROP TYPE IF EXISTS public."DriverType";
 DROP TYPE IF EXISTS public."BatchState";
+DROP TYPE IF EXISTS public."AlertType";
+DROP TYPE IF EXISTS public."AlertMethod";
+--
+-- Name: AlertMethod; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."AlertMethod" AS ENUM (
+    'INTERACTIVE',
+    'EMAIL'
+);
+
+
+ALTER TYPE public."AlertMethod" OWNER TO dev;
+
+--
+-- Name: AlertType; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."AlertType" AS ENUM (
+    'UPLOAD_REQUIRED'
+);
+
+
+ALTER TYPE public."AlertType" OWNER TO dev;
+
 --
 -- Name: BatchState; Type: TYPE; Schema: public; Owner: dev
 --
@@ -198,6 +228,47 @@ ALTER TYPE public."SkipReason" OWNER TO dev;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: alerts; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.alerts (
+    id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
+    "userId" integer NOT NULL,
+    type public."AlertType" NOT NULL,
+    method public."AlertMethod" NOT NULL,
+    url text NOT NULL,
+    payload text NOT NULL,
+    delivered timestamp(3) without time zone
+);
+
+
+ALTER TABLE public.alerts OWNER TO dev;
+
+--
+-- Name: alerts_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.alerts_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.alerts_id_seq OWNER TO dev;
+
+--
+-- Name: alerts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.alerts_id_seq OWNED BY public.alerts.id;
+
 
 --
 -- Name: batches; Type: TABLE; Schema: public; Owner: dev
@@ -741,6 +812,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: alerts id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.alerts ALTER COLUMN id SET DEFAULT nextval('public.alerts_id_seq'::regclass);
+
+
+--
 -- Name: batches id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -829,6 +907,14 @@ ALTER TABLE ONLY public.unified_items ALTER COLUMN id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: alerts; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.alerts (id, created, updated, "userId", type, method, url, payload, delivered) FROM stdin;
+\.
 
 
 --
@@ -944,6 +1030,13 @@ COPY public.users (id, created, updated, email, password, name, address, zip, ci
 
 
 --
+-- Name: alerts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.alerts_id_seq', 1, false);
+
+
+--
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
@@ -1032,6 +1125,14 @@ SELECT pg_catalog.setval('public.unified_items_id_seq', 6, true);
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- Name: alerts alerts_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.alerts
+    ADD CONSTRAINT alerts_pkey PRIMARY KEY (id);
 
 
 --
@@ -1199,6 +1300,14 @@ CREATE UNIQUE INDEX "unified_items_inputId_key" ON public.unified_items USING bt
 --
 
 CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email);
+
+
+--
+-- Name: alerts alerts_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.alerts
+    ADD CONSTRAINT "alerts_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

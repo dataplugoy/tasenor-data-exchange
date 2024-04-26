@@ -8,6 +8,8 @@ import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlan
 import { AllowedSchema, Validator } from 'express-json-validator-middleware'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
+import { AlertException } from '../exceptions/AlertException'
+import { log } from '@tasenor/common'
 
 const router = express.Router()
 const { validate } = new Validator({})
@@ -105,9 +107,16 @@ router.get('/:id/run',
       return res.sendStatus(404)
     }
 
-    const result = await plan.run({ repeat: 'MAX' })
-
-    res.send(result)
+    try {
+      const result = await plan.run({ interactive: true, repeat: 'MAX' })
+      res.send(result)
+    } catch (err) {
+      if (err instanceof AlertException) {
+        log(`Delivering an immediate alert: ${err}`)
+        // TODO: Save alert nevertheless and mark it delivered.
+        res.send({})
+      }
+    }
   }
 )
 

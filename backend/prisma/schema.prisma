@@ -40,6 +40,7 @@ model User {
 
   projects    Project[]
   services    Service[]
+  alerts      Alert[]
 
   @@map(name: "users")
 }
@@ -312,4 +313,30 @@ model Rule{
   @@unique([type, ownerId, name])
 
   @@map(name: "rules")
+}
+
+enum AlertType {
+  UPLOAD_REQUIRED
+}
+
+enum AlertMethod {
+  INTERACTIVE
+  EMAIL
+}
+
+model Alert{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        AlertType
+  method      AlertMethod
+  url         String
+  payload     String
+  delivered   DateTime?
+
+  @@map(name: "alerts")
 }

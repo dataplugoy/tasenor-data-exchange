@@ -25,6 +25,7 @@ import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
+import { AlertException, UploadRequired } from '../exceptions/AlertException'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -133,6 +134,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       return [batch, run, 'OK']
 
     } catch (err) {
+
+      if (err instanceof AlertException) {
+        if (options.interactive) {
+          throw err
+        }
+        // TODO: Save it for later delivery.
+        // TODO: Halt the process smoothly instead of failing.
+      }
 
       error(`${run} failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
