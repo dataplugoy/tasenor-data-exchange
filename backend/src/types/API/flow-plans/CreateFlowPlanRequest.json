@@ -2,7 +2,7 @@
   "title": "CreateFlowPlanRequest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["title", "projectId", "input", "output"],
+  "required": ["title", "projectId", "source", "destination"],
   "properties": {
     "title": {
       "type": "string"
@@ -10,7 +10,7 @@
     "projectId": {
       "type": "integer"
     },
-    "input": {
+    "source": {
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "settings"],
@@ -27,7 +27,7 @@
         }
       }
     },
-    "output": {
+    "destination": {
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "settings"],

@@ -17,7 +17,7 @@ router.post('/',
   validate({ body: CreateFlowPlanRequest as AllowedSchema }),
   async (req, res) => {
     const userId = res.locals.userId
-    const { projectId, title, input, output } = req.body
+    const { projectId, title, source, destination } = req.body
     const project = await ProjectModel.get(projectId)
 
     if (!project || project.data.userId !== userId) {
@@ -29,14 +29,14 @@ router.post('/',
       projectId
     })
     await InputSourceModel.save({
-      type: input.type,
+      type: source.type,
       flowPlanId: plan.id,
-      settings: input.settings
+      settings: source.settings
     })
     await OutputDestinationModel.save({
-      type: output.type,
+      type: destination.type,
       flowPlanId: plan.id,
-      settings: output.settings
+      settings: destination.settings
     })
     res.send(plan.data)
   }

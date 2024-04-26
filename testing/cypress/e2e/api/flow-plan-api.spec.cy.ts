@@ -6,13 +6,13 @@ describe('Flow Plan API', () => {
       cy.apiCall('POST', '/flow-plans', {
         title: 'UI Test',
         projectId: 1,
-        input: {
+        source: {
           type: 'TEST_MOCK',
           settings: {
             url: 'file:////dev/null'
           }
         },
-        output: {
+        destination: {
           type: 'NO_ACTION',
           settings: {}
         }

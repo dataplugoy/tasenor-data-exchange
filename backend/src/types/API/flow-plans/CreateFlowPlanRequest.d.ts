@@ -8,13 +8,13 @@
 export interface CreateFlowPlanRequest {
   title: string;
   projectId: number;
-  input: {
+  source: {
     type: "TEST_MOCK" | "ENABLE_BANKING";
     settings: {
       [k: string]: unknown;
     };
   };
-  output: {
+  destination: {
     type: "TEST_MOCK" | "NO_ACTION";
     settings: {
       [k: string]: unknown;
