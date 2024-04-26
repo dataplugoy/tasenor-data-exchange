@@ -5,6 +5,7 @@
     {
       "type": "object",
       "additionalProperties": false,
+      "required": ["project"],
       "properties": {
         "project": { "$ref": "Project" }
       }
@@ -12,10 +13,23 @@
     {
       "type": "object",
       "additionalProperties": false,
+      "required": ["batches"],
       "properties": {
         "batches": {
           "type": "array",
-          "items": { "$ref": "Batch" }
+          "items": {
+            "allOf": [
+              { "$ref": "Batch" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["outputDeliveredCount"],
+                "properties": {
+                  "outputDeliveredCount": { "type": "number" }
+                }
+              }
+            ]
+          }
         }
       }
     }

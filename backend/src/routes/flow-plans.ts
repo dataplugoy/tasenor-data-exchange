@@ -54,8 +54,41 @@ router.get('/:id',
     if (!plan || !project || project.data.userId !== userId) {
       return res.sendStatus(404)
     }
-    const batches = await BatchModel.findForFlow(plan.id)
-    res.send({ ...plan.data, project: project.data, batches: batches.map(batch => batch.data) })
+
+    const batches = await BatchModel.db.findMany({
+      select: {
+        id: true,
+        flowPlanId: true,
+        number: true,
+        state: true,
+        lastStamp: true,
+        data: true,
+        initialStock: true,
+        endStock: true,
+        completed: true,
+        created: true,
+        updated: true,
+        _count: {
+          select: {
+            outputItems: { where: { delivered: true }}
+          }
+        }
+      },
+      orderBy: [{
+        created: 'desc'
+      }]
+    })
+
+    res.send({
+      ...plan.data,
+      project: project.data,
+      batches: batches.map(line => ({
+          ...line,
+          _count: undefined,
+          outputDeliveredCount: line._count.outputItems
+        })
+      )
+    })
   }
 )
 

@@ -14,12 +14,16 @@ import { DateTime } from 'luxon'
 import { RunList } from '../Components/RunList'
 import { whenBatchUpdates } from '../Signals/updates'
 
+type BatchWithOutput = Batch & {
+  outputDeliveredCount: number
+}
+
 export const FlowPlanPage = (): React.JSX.Element => {
   const GET = useGET<FlowPlanResponse>()
   const { id } = useParams()
   const [project, setProject] = useState<Project | null>(null)
   const [flowPlan, setFlowPlan] = useState<FlowPlan | null>(null)
-  const [batches, setBatches] = useState<Batch[]>([])
+  const [batches, setBatches] = useState<BatchWithOutput[]>([])
   const isCompleted = !batches.length || !!batches[0].completed
 
   const updateFlowPlan = async () => {
@@ -49,14 +53,15 @@ export const FlowPlanPage = (): React.JSX.Element => {
         { batches.map((batch, idx) => (
           <Accordion data-cy={`Batch-#${batch.number}`} key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
             <AccordionSummary expandIcon={<ExpandMore/>}>
-              <Box sx={{ width: '100%' }}>
-                <Box sx={{ display: 'inline-block', width: '8%', fontWeight: 'bold' }}>#{batch.number}</Box>
-                <Box sx={{ display: 'inline-block', width: '25%' }}>
+              <Box sx={{ width: '100%', display: 'grid', gridTemplateColumns: '5% 30% 60% 5%' }}>
+                <Box sx={{ display: 'inline-block', fontWeight: 'bold' }}>#{batch.number}</Box>
+                <Box sx={{ display: 'inline-block' }}>
                   {DateTime.fromISO(batch.updated as string).toLocaleString(DateTime.DATETIME_FULL)}
                 </Box>
-                <Box sx={{ display: 'inline-block', width: '60%', mb: '-3px' }}>
+                <Box sx={{ display: 'inline-block' }}>
                   <BatchBrogressBar state={batch.state}/>
                 </Box>
+                <Box sx={{ textAlign: 'center', fontWeight: 'bold', color: 'secondary.light' }}>{batch.outputDeliveredCount || ''}</Box>
               </Box>
             </AccordionSummary>
             <AccordionDetails>
