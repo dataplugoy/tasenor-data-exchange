@@ -284,6 +284,7 @@ model OutputItem{
   run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "output_items")
+  @@index([flowPlanId, delivered, created])
 }
 
 enum RuleType {

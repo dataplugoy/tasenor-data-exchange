@@ -39,6 +39,7 @@ DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
+DROP INDEX IF EXISTS public."output_items_flowPlanId_delivered_created_idx";
 DROP INDEX IF EXISTS public."output_destinations_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_items_flowPlanId_hash_idx";
@@ -1159,6 +1160,13 @@ CREATE UNIQUE INDEX "output_destinations_flowPlanId_key" ON public.output_destin
 
 
 --
+-- Name: output_items_flowPlanId_delivered_created_idx; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX "output_items_flowPlanId_delivered_created_idx" ON public.output_items USING btree ("flowPlanId", delivered, created);
+
+
+--
 -- Name: output_items_unifiedId_key; Type: INDEX; Schema: public; Owner: dev
 --
 
@@ -1340,3 +1348,4 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
+

@@ -62,7 +62,7 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   /**
    * Retrieve all output items.
    */
-  static getAll(filter = {}): Promise<OutputItemModel[]> {
-    return OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>(filter, [{ created: 'asc' }])
+  static getAll(filter = {}, order = [{ created: 'asc' }]): Promise<OutputItemModel[]> {
+    return OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>(filter, order)
   }
 }

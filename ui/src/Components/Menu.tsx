@@ -22,8 +22,8 @@ export const Menu = (): React.JSX.Element => {
     <AppBar position="static">
       <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 2fr' }}>
         <Button startIcon={<Home />} onClick={() => navigate('/home')}><Trans>Dashboard</Trans></Button>
+        <Button startIcon={<Rule />} onClick={() => navigate('/results')}><Trans>Results</Trans></Button>
         <Button startIcon={<AccountTree />}><Trans>Rules</Trans></Button>
-        <Button startIcon={<Rule />}><Trans>Results</Trans></Button>
         <Button startIcon={<MiscellaneousServices />}><Trans>Services</Trans></Button>
         <Box sx={{ textAlign: 'right' }}>
           <Button startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>

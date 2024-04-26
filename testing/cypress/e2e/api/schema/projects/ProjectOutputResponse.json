@@ -1,0 +1,5 @@
+{
+  "title": "ProjectOutputResponse",
+  "type": "array",
+  "items": { "$ref": "OutputItem" }
+}
