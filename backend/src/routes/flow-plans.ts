@@ -70,7 +70,7 @@ router.get('/:id',
         updated: true,
         _count: {
           select: {
-            outputItems: { where: { delivered: true }}
+            outputItems: { where: { delivered: true } }
           }
         }
       },
@@ -83,10 +83,10 @@ router.get('/:id',
       ...plan.data,
       project: project.data,
       batches: batches.map(line => ({
-          ...line,
-          _count: undefined,
-          outputDeliveredCount: line._count.outputItems
-        })
+        ...line,
+        _count: undefined,
+        outputDeliveredCount: line._count.outputItems
+      })
       )
     })
   }
