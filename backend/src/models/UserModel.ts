@@ -54,6 +54,7 @@ export class UserModel extends BaseModel<prisma.User> {
    * @returns
    */
   static async save(data: Partial<prisma.User>): Promise<UserModel> {
+    // TODO: Handle if id != null.
     return UserModel.create<prisma.User, UserModel>(data)
   }
 }

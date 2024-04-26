@@ -29,4 +29,9 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
     const source = await this.findUnique<prisma.InputSource, InputSourceModel>({ flowPlanId })
     return source
   }
+
+  static async save(data: Partial<prisma.InputSource>): Promise<InputSourceModel> {
+    // TODO: Handle if id != null.
+    return InputSourceModel.create<prisma.InputSource, InputSourceModel>(data)
+  }
 }

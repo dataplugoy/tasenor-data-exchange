@@ -29,4 +29,9 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
     const source = await this.findUnique<prisma.OutputDestination, OutputDestinationModel>({ flowPlanId })
     return source
   }
+
+  static async save(data: Partial<prisma.OutputDestination>): Promise<OutputDestinationModel> {
+    // TODO: Handle if id != null.
+    return OutputDestinationModel.create<prisma.OutputDestination, OutputDestinationModel>(data)
+  }
 }

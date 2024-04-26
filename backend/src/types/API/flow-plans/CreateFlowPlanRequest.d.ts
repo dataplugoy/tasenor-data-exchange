@@ -6,7 +6,7 @@
  */
 
 export interface CreateFlowPlanRequest {
-  name: string;
+  title: string;
   projectId: number;
   input: {
     type: "TEST_MOCK" | "ENABLE_BANKING";

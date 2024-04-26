@@ -499,4 +499,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   static async get(id: number): Promise<FlowPlanModel | null> {
     return this.findUnique<prisma.FlowPlan, FlowPlanModel>({ id })
   }
+
+  static async save(data: Partial<prisma.FlowPlan>): Promise<FlowPlanModel> {
+    // TODO: Handle if id != null.
+    return FlowPlanModel.create<prisma.FlowPlan, FlowPlanModel>(data)
+  }
 }
