@@ -21,7 +21,7 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    */
   async fail(err: Error): Promise<void> {
     this.data.error = err.stack || err.message
-    await UnifiedItemModel.update<prisma.InputItem, UnifiedItemModel>(this, { error: err.stack || err.message })
+    await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { error: err.stack || err.message })
   }
 
   /**

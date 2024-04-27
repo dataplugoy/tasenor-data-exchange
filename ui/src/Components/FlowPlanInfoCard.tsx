@@ -6,6 +6,7 @@ import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useGET } from '../Hooks/useNet'
 import { signalBatchUpdate } from '../Signals/updates'
+import { isAlert } from '../Types/isAlert'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -20,9 +21,13 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
   const onRun = async () => {
     setRunning(true)
-    await GET(`/flow-plans/${plan.id}/run`)
-    signalBatchUpdate()
+    const res = await GET(`/flow-plans/${plan.id}/run`)
     setRunning(false)
+    if (isAlert(res)) {
+      alert('TODO: Upload a file.')
+    } else {
+      signalBatchUpdate()
+    }
   }
 
   return (

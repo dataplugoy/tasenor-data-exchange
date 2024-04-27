@@ -5,13 +5,27 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface FlowPlanRunResponse {
-  /**
-   * True if the latest or newly created batch run was completed successfully.
-   */
-  success: boolean;
-  /**
-   * How many steps were completed during this request.
-   */
-  count: number;
+export type FlowPlanRunResponse =
+  | {
+      /**
+       * True if the latest or newly created batch run was completed successfully.
+       */
+      success: boolean;
+      /**
+       * How many steps were completed during this request.
+       */
+      count: number;
+    }
+  | Alert;
+
+export interface Alert {
+  id: number;
+  userId: number;
+  type: "UPLOAD_REQUIRED";
+  method: "INTERACTIVE" | "EMAIL";
+  url: string;
+  payload: string;
+  delivered: null | string;
+  created?: string;
+  updated?: string;
 }

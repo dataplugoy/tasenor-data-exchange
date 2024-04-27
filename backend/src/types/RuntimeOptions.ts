@@ -4,5 +4,6 @@ export type RuntimeOptions = {
   tracking?: DirectoryPath | null
   auth?: string | null
   repeat: 'MAX' | number
+  userId: number
   interactive?: boolean
 }

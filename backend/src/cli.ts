@@ -19,6 +19,8 @@ async function run(email: string, name: string, options: RuntimeOptions) {
     throw new Error(`Flow plan '${name}' not found.`)
   }
 
+  options.userId = user.id
+
   await plan.run(options)
 }
 
@@ -48,6 +50,7 @@ export async function execute(...args: string[]): Promise<void> {
   BaseModel.setDb(db)
 
   const options: RuntimeOptions = {
+    userId: 0,
     tracking: commandArgs.track || null,
     auth: commandArgs.auth || null,
     repeat: commandArgs.count === 'all' ? 'MAX' : parseInt(commandArgs.count)

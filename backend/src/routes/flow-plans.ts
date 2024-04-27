@@ -10,6 +10,7 @@ import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { AlertException } from '../exceptions/AlertException'
 import { log } from '@tasenor/common'
+import { AlertModel } from '../models/AlertModel'
 
 const router = express.Router()
 const { validate } = new Validator({})
@@ -108,13 +109,13 @@ router.get('/:id/run',
     }
 
     try {
-      const result = await plan.run({ interactive: true, repeat: 'MAX' })
+      const result = await plan.run({ userId, interactive: true, repeat: 'MAX' })
       res.send(result)
     } catch (err) {
       if (err instanceof AlertException) {
         log(`Delivering an immediate alert: ${err}`)
-        // TODO: Save alert nevertheless and mark it delivered.
-        res.send({})
+        const alert = await AlertModel.interactive(err)
+        res.status(202).send(alert.data)
       }
     }
   }
