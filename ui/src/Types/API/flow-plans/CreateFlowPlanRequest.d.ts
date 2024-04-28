@@ -9,7 +9,7 @@ export interface CreateFlowPlanRequest {
   title: string;
   projectId: number;
   source: {
-    type: "TEST_MOCK" | "ENABLE_BANKING";
+    type: "TEST_MOCK" | "ENABLE_BANKING" | "MANUAL_UPLOAD";
     settings: {
       [k: string]: unknown;
     };

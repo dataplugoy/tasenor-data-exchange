@@ -155,7 +155,8 @@ ALTER TYPE public."BatchState" OWNER TO dev;
 CREATE TYPE public."DriverType" AS ENUM (
     'TEST_MOCK',
     'ENABLE_BANKING',
-    'NO_ACTION'
+    'NO_ACTION',
+    'MANUAL_UPLOAD'
 );
 
 
@@ -1009,6 +1010,7 @@ COPY public.services (id, created, updated, type, name, driver, free, settings, 
 COPY public.settings (id, type, url, certificate, apikey, "user", password, options) FROM stdin;
 2	TEST_MOCK	\N	\N	\N	\N	\N	{}
 1	NO_ACTION	\N	\N	\N	\N	\N	{}
+3	MANUAL_UPLOAD	\N	\N	\N	\N	\N	{}
 \.
 
 
@@ -1110,7 +1112,7 @@ SELECT pg_catalog.setval('public.services_id_seq', 1, false);
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 1, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 3, true);
 
 
 --

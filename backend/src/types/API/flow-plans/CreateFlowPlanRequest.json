@@ -19,7 +19,8 @@
           "type": "string",
           "enum": [
             "TEST_MOCK",
-            "ENABLE_BANKING"
+            "ENABLE_BANKING",
+            "MANUAL_UPLOAD"
           ]
         },
         "settings": {

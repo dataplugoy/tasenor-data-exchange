@@ -13,4 +13,7 @@ export type EnableBankingDriverSettings = {
   iban: string
 }
 
-export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings
+export type ManualUploadDriverSettings = {
+}
+
+export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings | ManualUploadDriverSettings

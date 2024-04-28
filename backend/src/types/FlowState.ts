@@ -12,4 +12,7 @@ export type EnableBankingFlowState = {
   accountId: string
 }
 
-export type FlowState = TestMockFlowState | NoActionFlowState | EnableBankingFlowState
+export type ManualUploadFlowState = {
+}
+
+export type FlowState = TestMockFlowState | NoActionFlowState | EnableBankingFlowState | ManualUploadFlowState

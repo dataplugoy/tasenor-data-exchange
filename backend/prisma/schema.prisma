@@ -114,6 +114,7 @@ enum DriverType {
   TEST_MOCK
   NO_ACTION
   ENABLE_BANKING
+  MANUAL_UPLOAD
 }
 
 model InputSource {
