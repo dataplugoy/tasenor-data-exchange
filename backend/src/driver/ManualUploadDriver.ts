@@ -1,3 +1,6 @@
+import { UploadRequired } from '../exceptions/AlertException'
+import { _ } from '../lib/i18n/t'
+import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ManualUploadDriverSettings } from '../types/DriverSettings'
 import { ManualUploadFlowState } from '../types/FlowState'
 import { Driver } from './Driver'
@@ -19,8 +22,7 @@ export class ManualUploadDriver extends Driver {
     return {}
   }
 
-  async fetchData(_lastStamp: Date | null): Promise<string> {
-    // TODO: Pass flow-plan and URL could be `GET /api/v1/flow-plans/${flow.id}/continue`.
-    throw new Error('Need more info to build proper URL in fetchData().')
+  async fetchData(flowPlan: FlowPlanModel): Promise<string> {
+    throw new UploadRequired(`/flow-plans/${flowPlan.id}/continue`, _('Please select a statement to upload.'), this.options.userId)
   }
 }

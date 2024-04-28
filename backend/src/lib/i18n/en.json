@@ -14,5 +14,6 @@
   "RESULT_ALL_SKIPPED": "All Skipped",
   "RESULT_PARTLY_FAIL": "Partly Failed",
   "RESULT_ALL_FAILED": "All Failed",
-  "RESULT_NO_PROGRESS": "No Progress"
+  "RESULT_NO_PROGRESS": "No Progress",
+  "RESULT_WAITING": "Waiting"
 }

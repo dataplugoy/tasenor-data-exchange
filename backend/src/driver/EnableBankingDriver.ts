@@ -5,6 +5,7 @@ import config from '../config'
 import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../types/EnableBanking'
 import { EnableBankingFlowState } from '../types/FlowState'
 import { DateTime } from 'luxon'
+import { FlowPlanModel } from '../models/FlowPlanModel'
 
 /**
  * Helper to encode JSON as base64.
@@ -110,7 +111,7 @@ export class EnableBankingDriver extends Driver {
     return this.state
   }
 
-  async fetchData(lastStamp: Date | null): Promise<string> {
+  async fetchData(_flowPlan: FlowPlanModel): Promise<string> {
     const output = await this.GET(`/accounts/${this.state.accountId}/transactions`)
     // TODO: Handle continuation_key.
     // console.dir(out, {depth: null})

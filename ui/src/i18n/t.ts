@@ -5,6 +5,10 @@ import { Language } from '@tasenor/common'
 
 let initialized = false
 
+/**
+ * Initialize i18n if not yet initialized.
+ * @returns
+ */
 export async function initI18N(): Promise<void> {
   if (initialized) {
     return
@@ -45,4 +49,13 @@ export async function changeLanguage(lang: Language): Promise<void> {
  */
 export function t(s: string, values: Record<string, string> = {}): string {
   return i18next.t(s, values)
+}
+
+/**
+ * Placeholder to help scanning translation texts for UI. This function does nothing.
+ * @param s
+ * @returns
+ */
+export function _(s: string): string {
+  return s
 }

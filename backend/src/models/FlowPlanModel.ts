@@ -189,7 +189,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const state = await driver.autheticate()
       await this.saveState(state)
       // TODO: This last stamp is not necessarily true if we allow old data to appear (like Lynx tax fixes).
-      const data = await driver.fetchData(this.lastStamp)
+      const data = await driver.fetchData(this)
 
       if (typeof data !== 'string') {
         throw new Error(`Bad data type '${typeof data}' received from ${driver.type} driver.`)
@@ -197,6 +197,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await batch.setData(data)
       await run.result(1, 1, 0, 'ALL_SUCCESS')
     } catch (err) {
+      if (err instanceof AlertException) {
+        throw err
+      }
       result = 'FAIL'
       error(`Fetching data failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')

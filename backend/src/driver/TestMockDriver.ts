@@ -38,7 +38,7 @@ export class TestMockDriver extends Driver {
     return this.state
   }
 
-  async fetchData(lastStamp: Date | null): Promise<string> {
+  async fetchData(flowPlan: FlowPlanModel): Promise<string> {
 
     const url = this.getURL()
     if (url.protocol !== 'file:') {
@@ -48,8 +48,8 @@ export class TestMockDriver extends Driver {
     const filePath = path.join(this.root, url.pathname)
     const data = fs.readFileSync(filePath).toString('utf-8')
 
-    if (lastStamp) {
-      const stamp: string = DateTime.fromJSDate(lastStamp).toISO() as string
+    if (flowPlan.data.lastStamp) {
+      const stamp: string = DateTime.fromJSDate(flowPlan.data.lastStamp).toISO() as string
       return data.split('\n').filter(line => line === '' || line >= stamp).join('\n')
     }
 
