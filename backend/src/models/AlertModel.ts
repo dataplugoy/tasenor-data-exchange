@@ -18,4 +18,16 @@ export class AlertModel extends BaseModel<prisma.Alert> {
     }
     return AlertModel.create<prisma.Alert, AlertModel>(data)
   }
+
+  static async nonInteractive(err: AlertException): Promise<AlertModel> {
+    const data = {
+      userId: err.userId,
+      type: err.type,
+      method: 'EMAIL' as AlertMethod,
+      url: err.url,
+      payload: err.payload,
+      delivered: null
+    }
+    return AlertModel.create<prisma.Alert, AlertModel>(data)
+  }
 }

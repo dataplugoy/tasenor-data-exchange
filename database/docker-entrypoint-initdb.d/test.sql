@@ -184,7 +184,8 @@ CREATE TYPE public."RunResult" AS ENUM (
     'ALL_SKIPPED',
     'PARTLY_FAIL',
     'ALL_FAILED',
-    'NO_PROGRESS'
+    'NO_PROGRESS',
+    'WAITING'
 );
 
 
@@ -932,6 +933,7 @@ COPY public.batches (id, created, updated, completed, number, state, data, "last
 
 COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock) FROM stdin;
 1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}
+2	2024-04-28 08:55:30.01	2024-04-28 08:55:30.01	Upload Testing	{}	1	\N	{}
 \.
 
 
@@ -949,6 +951,7 @@ COPY public.input_items (id, created, updated, data, processed, skipped, error, 
 
 COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") FROM stdin;
 1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	TEST_MOCK	{"url": "file:///test.csv"}	1
+2	2024-04-28 08:55:30.026	2024-04-28 08:55:30.026	MANUAL_UPLOAD	{}	2
 \.
 
 
@@ -958,6 +961,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 
 COPY public.output_destinations (id, created, updated, type, settings, "flowPlanId") FROM stdin;
 1	2024-04-15 11:40:33.161	2024-04-25 12:45:18.235	NO_ACTION	{}	1
+2	2024-04-28 08:55:30.032	2024-04-28 08:55:30.032	NO_ACTION	{}	2
 \.
 
 
@@ -1049,7 +1053,7 @@ SELECT pg_catalog.setval('public.batches_id_seq', 5, true);
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, false);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 2, true);
 
 
 --
@@ -1063,14 +1067,14 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 8, true);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 2, false);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 2, true);
 
 
 --
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 2, false);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 2, true);
 
 
 --

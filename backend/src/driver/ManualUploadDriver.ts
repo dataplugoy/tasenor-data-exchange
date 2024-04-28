@@ -20,6 +20,7 @@ export class ManualUploadDriver extends Driver {
   }
 
   async fetchData(_lastStamp: Date | null): Promise<string> {
-    throw new Error(`Need more info to build proper URL in fetchData().`)
+    // TODO: Pass flow-plan and URL could be `GET /api/v1/flow-plans/${flow.id}/continue`.
+    throw new Error('Need more info to build proper URL in fetchData().')
   }
 }

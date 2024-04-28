@@ -184,6 +184,7 @@ enum RunResult{
   PARTLY_FAIL
   ALL_FAILED
   NO_PROGRESS
+  WAITING
 }
 
 model Run{

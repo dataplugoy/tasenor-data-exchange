@@ -25,7 +25,8 @@ import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
-import { AlertException, UploadRequired } from '../exceptions/AlertException'
+import { AlertException } from '../exceptions/AlertException'
+import { AlertModel } from './AlertModel'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -81,7 +82,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   async run(options: RuntimeOptions, counter = 0): Promise<FlowPlanRunResponse> {
     const [batch,, result] = await this.runStep(options)
-    if (batch.data.completed || result === 'FAIL' || options.repeat === 1) {
+    if (batch.data.completed || result === 'FAIL' || result === 'WAIT' || options.repeat === 1) {
       return {
         success: result === 'OK',
         count: counter + 1
@@ -97,7 +98,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Execute the next step of running the current or new batch.
    */
-  private async runStep(options: RuntimeOptions): Promise<[BatchModel, RunModel, 'OK' | 'FAIL']> {
+  private async runStep(options: RuntimeOptions): Promise<[BatchModel, RunModel, 'OK' | 'WAIT' | 'FAIL']> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
 
@@ -136,11 +137,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     } catch (err) {
 
       if (err instanceof AlertException) {
+        await run.alert(err)
         if (options.interactive) {
           throw err
         }
-        // TODO: Save it for later delivery.
-        // TODO: Halt the process smoothly instead of failing.
+        await AlertModel.nonInteractive(err)
+        return [batch, run, 'WAIT']
       }
 
       error(`${run} failed: ${err.stack}`)

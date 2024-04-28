@@ -2,6 +2,7 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
 import { RunResult } from '../types/API/Run'
+import { AlertException } from '../exceptions/AlertException'
 
 export class RunModel extends BaseModel<prisma.Run> {
 
@@ -31,6 +32,16 @@ export class RunModel extends BaseModel<prisma.Run> {
   async success(state: prisma.BatchState): Promise<void> {
     this.data.finalState = state
     await RunModel.update<prisma.Run, RunModel>(this, { finalState: state })
+  }
+
+  /**
+   * Run interrupted by alert.
+   * @param err
+   */
+  // eslint-disable-next-line
+  async alert(err: AlertException): Promise<void> {
+    this.data.result = 'WAITING'
+    await RunModel.update<prisma.Run, RunModel>(this, { result: 'WAITING' })
   }
 
   /**

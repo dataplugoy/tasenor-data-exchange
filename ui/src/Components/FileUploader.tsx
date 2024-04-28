@@ -24,7 +24,7 @@ export type FileUploaderProps = {
 /**
  * An file uploader utility.
  */
-export const FileUploader = (props: FileUploaderProps): JSX.Element => {
+export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
   const { visible, title, text, url } = props
   const [upload, setUpload] = useState<FileUploadData | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -89,14 +89,14 @@ export const FileUploader = (props: FileUploaderProps): JSX.Element => {
    * Upload handler.
    */
   const onUpload = async () => {
-      setUploading(true)
-      await axios.post(url, upload).then(resp => {
-        setUploading(false)
-      }).catch(err => {
-        setUploading(false)
-        console.error(err)
-        app.addError(t('File uploading failed.'))
-      })
+    setUploading(true)
+    await axios.post(url, upload).then(resp => {
+      setUploading(false)
+    }).catch(err => {
+      setUploading(false)
+      console.error(err)
+      app.addError(t('File uploading failed.'))
+    })
   }
 
   // TODO: Ability to Cancel.
