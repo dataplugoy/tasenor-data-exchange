@@ -25,7 +25,7 @@ import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
-import { AlertException } from '../exceptions/AlertException'
+import { AlertException, UploadRequired } from '../exceptions/AlertException'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
