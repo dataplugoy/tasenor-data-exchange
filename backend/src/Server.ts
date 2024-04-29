@@ -33,17 +33,13 @@ class TasenorDataExchangeServer {
     this.app.use(express.json())
 
     // Security.
-    // TODO: Configure origin.
-    const origin = 'localhost'
-    const apiOrigin = 'localhost'
-    this.app.use(cors({ origin }))
+    this.app.use(cors())
     const contentSecurityPolicy = {
       useDefaults: true,
       crossOriginResourcePolicy: { policy: 'same-site' },
       directives: {
-        defaultSrc: ["'self'", apiOrigin],
-        imgSrc: ["'self'", 'data:', apiOrigin],
-        scriptSrc: ["'self'", "'unsafe-eval'"]
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:'],
       }
     }
     this.app.use(helmet({ contentSecurityPolicy }))
