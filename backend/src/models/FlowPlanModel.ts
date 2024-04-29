@@ -266,7 +266,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
         try {
-          // TODO: What's wrong with types here?
+          console.log(input.data)
           const data = input.data.data as unknown as InputItemData
 
           // Verify duplicates first.
@@ -526,8 +526,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     return this.findUnique<prisma.FlowPlan, FlowPlanModel>({ id })
   }
 
-  static async save(data: Partial<prisma.FlowPlan>): Promise<FlowPlanModel> {
-    // TODO: Handle if id != null.
+  static async save(data: FlowPlanModel | Partial<prisma.FlowPlan>): Promise<FlowPlanModel> {
+    if (data.id) {
+      throw new Error('A function save() cannot be used to existing object.')
+    }
     return FlowPlanModel.create<prisma.FlowPlan, FlowPlanModel>(data)
   }
 }

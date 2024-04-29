@@ -31,7 +31,9 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
   }
 
   static async save(data: Partial<prisma.InputSource>): Promise<InputSourceModel> {
-    // TODO: Handle if id != null.
+    if (data.id) {
+      throw new Error('A function save() cannot be used to existing object.')
+    }
     return InputSourceModel.create<prisma.InputSource, InputSourceModel>(data)
   }
 }

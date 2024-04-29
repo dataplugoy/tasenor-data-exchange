@@ -54,7 +54,9 @@ export class UserModel extends BaseModel<prisma.User> {
    * @returns
    */
   static async save(data: Partial<prisma.User>): Promise<UserModel> {
-    // TODO: Handle if id != null.
+    if (data.id) {
+      throw new Error('A function save() cannot be used to existing object.')
+    }
     return UserModel.create<prisma.User, UserModel>(data)
   }
 }

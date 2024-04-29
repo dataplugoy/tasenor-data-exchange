@@ -31,7 +31,9 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
   }
 
   static async save(data: Partial<prisma.OutputDestination>): Promise<OutputDestinationModel> {
-    // TODO: Handle if id != null.
+    if (data.id) {
+      throw new Error('A function save() cannot be used to existing object.')
+    }
     return OutputDestinationModel.create<prisma.OutputDestination, OutputDestinationModel>(data)
   }
 }
