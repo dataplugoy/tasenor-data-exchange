@@ -19,6 +19,7 @@ export type FileUploaderProps = {
   title: string
   text: string
   url: string
+  onCancel: () => void
 }
 
 /**
@@ -99,7 +100,12 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
     })
   }
 
-  // TODO: Ability to Cancel.
+  /**
+   * Cancel dialog.
+   */
+  const onCancel = () => {
+    props.onCancel()
+  }
 
   return (
     <Dialog open={visible} fullWidth>
@@ -122,6 +128,7 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
       </DialogContent>
 
       <DialogActions>
+        <Button variant="outlined" disabled={uploading} onClick={onCancel}><Trans>Cancel</Trans></Button>
         <Button variant="outlined" disabled={!upload || uploading} onClick={onUpload}><Trans>Upload</Trans></Button>
       </DialogActions>
     </Dialog>

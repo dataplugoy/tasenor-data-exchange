@@ -37,9 +37,14 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     }
   }
 
+  const onUploadCancel = async () => {
+    setUpload('')
+    signalBatchUpdate()
+  }
+
   return (
     <>
-      <FileUploader visible={!!upload} text={upload} url={uploadUrl} title={t('Upload a File')}/>
+      <FileUploader onCancel={() => onUploadCancel()} visible={!!upload} text={upload} url={uploadUrl} title={t('Upload a File')}/>
       <Card>
         <CardHeader
           avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
