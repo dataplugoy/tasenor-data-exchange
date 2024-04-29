@@ -40,6 +40,7 @@ DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
+DROP INDEX IF EXISTS public."output_items_flowPlanId_hash_idx";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_delivered_created_idx";
 DROP INDEX IF EXISTS public."output_destinations_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
@@ -490,7 +491,8 @@ CREATE TABLE public.output_items (
     "unifiedId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
-    "runId" integer NOT NULL
+    "runId" integer NOT NULL,
+    hash character varying(40) NOT NULL
 );
 
 
@@ -969,7 +971,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 -- Data for Name: output_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.output_items (id, created, updated, data, skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId") FROM stdin;
+COPY public.output_items (id, created, updated, data, skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId", hash) FROM stdin;
 \.
 
 
@@ -1271,6 +1273,13 @@ CREATE UNIQUE INDEX "output_destinations_flowPlanId_key" ON public.output_destin
 --
 
 CREATE INDEX "output_items_flowPlanId_delivered_created_idx" ON public.output_items USING btree ("flowPlanId", delivered, created);
+
+
+--
+-- Name: output_items_flowPlanId_hash_idx; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX "output_items_flowPlanId_hash_idx" ON public.output_items USING btree ("flowPlanId", hash);
 
 
 --

@@ -368,8 +368,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
 
           // Save success.
-          await OutputItemModel.save({
+          const output = await OutputItemModel.save({
             data: toJSON(tx),
+            hash: hash(tx, { algorithm: 'sha1' }),
             skipped: false,
             delivered: false,
             unifiedId: unified.id,
@@ -377,6 +378,16 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             batchId: batch.id,
             runId: run.id,
           })
+
+          // Verify duplicates first.
+          if (await OutputItemModel.isDuplicate(output)) {
+            // TODO: Here we possibly throw a question wether duplicates are okay.
+            //       Need three configuration options: 'never', 'always', 'ask'.
+            //       Also delete duplicate immediately if not allowed or query returns "no duplicate".
+            // await unified.skip('DUPLICATE')
+            // skipped++
+            // continue
+          }
 
           await unified.success()
           done++

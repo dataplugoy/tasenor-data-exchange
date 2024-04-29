@@ -65,4 +65,14 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   static getAll(filter = {}, order = [{ created: 'asc' }]): Promise<OutputItemModel[]> {
     return OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>(filter, order)
   }
+
+  /**
+   * Check if there is more than one output with the same hash in the same flow plan.
+   * @param output
+   * @returns
+   */
+  static async isDuplicate(output: OutputItemModel): Promise<boolean> {
+    const items = await OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>({ flowPlanId: output.data.flowPlanId, hash: output.data.hash })
+    return items.length > 1
+  }
 }

@@ -272,6 +272,7 @@ model OutputItem{
   updated     DateTime        @updatedAt
 
   data        Json
+  hash        String          @db.VarChar(40)
   skipped     Boolean
   delivered   Boolean
 
@@ -287,6 +288,7 @@ model OutputItem{
   run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "output_items")
+  @@index([flowPlanId, hash])
   @@index([flowPlanId, delivered, created])
 }
 
