@@ -111,10 +111,11 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
 
 const FailedAfterBatchCreated = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-
+  const runResult = result.run.result as string
   return (
     <Box>
         {result.run.error && <ViewError error={result.run.error}/>}
+        {runResult === 'WAITING' && <Trans>Waiting for file upload.</Trans>}
     </Box>
   )
 

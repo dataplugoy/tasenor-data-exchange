@@ -33,6 +33,7 @@ export type RunStepType =
   | 'SUCCESSFUL_OUTPUT_CREATED'
   | 'SUCCESSFUL_OUTPUT_DELIVERED'
 
+// TODO: Overlaps Prisma type. Rename.
 export type RunResult = {
   run: Run
   step: RunStepType
