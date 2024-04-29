@@ -37,6 +37,9 @@ echo $DOCKER_PASSWORD | docker login -u ${DOCKER_USER} --password-stdin
 if [ "$1" == latest ]; then
   VERSION=`jq -r .version < package.json`
 
+  echo docker compose build
+  docker compose build
+
   echo docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-${VERSION}
   docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-${VERSION}
   echo docker tag tasenor-data-exchange-tadex-api:latest dataplug/tasenor:tadex-api-latest
