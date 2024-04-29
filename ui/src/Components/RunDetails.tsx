@@ -1,6 +1,6 @@
 import React, { } from 'react'
 import { Box } from '@mui/material'
-import { ResultItem, RunResult, isResultOutputItem, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
+import { ResultItem, RunStepResult, isResultOutputItem, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
 import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
@@ -10,7 +10,7 @@ import { ViewError } from './ViewError'
 
 interface RunDetailsProps {
   batch: Batch
-  result: RunResult
+  result: RunStepResult
 }
 
 const RunStateSuccessIcon = (): React.JSX.Element => {
@@ -18,7 +18,7 @@ const RunStateSuccessIcon = (): React.JSX.Element => {
 }
 
 interface RunStateIconProps {
-  result: RunResult
+  result: RunStepResult
   item: ResultItem
 }
 

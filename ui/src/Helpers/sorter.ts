@@ -33,8 +33,7 @@ export type RunStepType =
   | 'SUCCESSFUL_OUTPUT_CREATED'
   | 'SUCCESSFUL_OUTPUT_DELIVERED'
 
-// TODO: Overlaps Prisma type. Rename.
-export type RunResult = {
+export type RunStepResult = {
   run: Run
   step: RunStepType
   items: ResultItem[]
@@ -51,10 +50,10 @@ export function sortRuns(
   runs: Run[],
   inputs: Record<number, InputItem[]>,
   unifieds: Record<number, UnifiedItem[]>,
-  outputs: Record<number, OutputItem[]>): RunResult[] {
+  outputs: Record<number, OutputItem[]>): RunStepResult[] {
 
-  const results: RunResult[] = []
-  let lastSuccess: null | RunResult = null
+  const results: RunStepResult[] = []
+  let lastSuccess: null | RunStepResult = null
 
   // Handle in chronological order.
   for (let i = runs.length - 1; i >= 0; i--) {

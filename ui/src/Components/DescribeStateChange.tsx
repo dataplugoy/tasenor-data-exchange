@@ -1,10 +1,10 @@
 import React, { } from 'react'
 import { Box } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { RunResult } from '../Helpers/sorter'
+import { RunStepResult } from '../Helpers/sorter'
 
 interface DescribeStateChangeProps {
-  result: RunResult
+  result: RunStepResult
 }
 
 /**

@@ -1,5 +1,5 @@
-import { FlowPlanModel } from "../models/FlowPlanModel"
-import { ProjectModel } from "../models/ProjectModel"
+import { FlowPlanModel } from '../models/FlowPlanModel'
+import { ProjectModel } from '../models/ProjectModel'
 
 /**
  * A middleware checking for proper id parameter.

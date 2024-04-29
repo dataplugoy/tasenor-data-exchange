@@ -1,9 +1,9 @@
 import React, { } from 'react'
 import { Box } from '@mui/material'
-import { RunResult } from '../Helpers/sorter'
+import { RunStepResult } from '../Helpers/sorter'
 
 interface OutputSummaryProps {
-  result: RunResult
+  result: RunStepResult
 }
 
 /**
