@@ -20,6 +20,7 @@ export type FileUploaderProps = {
   text: string
   url: string
   onCancel: () => void
+  onSuccess: () => void
 }
 
 /**
@@ -91,8 +92,10 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
    */
   const onUpload = async () => {
     setUploading(true)
-    await axios.post(url, upload).then(resp => {
+    await axios.post(`${url}?token=${app.auth.token}`, upload).then(resp => {
       setUploading(false)
+      setUpload(null)
+      props.onSuccess()
     }).catch(err => {
       setUploading(false)
       console.error(err)

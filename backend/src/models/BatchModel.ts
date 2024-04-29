@@ -64,27 +64,36 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   /**
+   * Find the latest batch for the model.
+   */
+  static async getLatest(plan: FlowPlanModel): Promise<BatchModel | null> {
+    const latest = await this.db.findMany({ where: { flowPlanId: plan.id }, orderBy: { number: 'desc' }, take: 1 })
+    return latest.length ? new BatchModel(latest[0]) : null
+  }
+
+  /**
    * Either create a new batch or find the last incomplete batch.
    * @param plan Flow plan.
    * @returns
    */
   static async getNext(plan: FlowPlanModel): Promise<BatchModel> {
-    const latest = await this.db.findMany({ where: { flowPlanId: plan.id }, orderBy: { number: 'desc' }, take: 1 })
+    const latest = await this.getLatest(plan)
 
-    if (latest.length === 0 || latest[0].completed) {
+    if (!latest || latest.data.completed) {
       const newBatch = await this.db.create({
         data: {
-          number: latest.length ? latest[0].number + 1 : 1,
+          number: latest ? latest.data.number + 1 : 1,
           state: 'BATCH_CREATED',
           data: null,
-          initialStock: plan.data.stock,
+          initialStock: latest ? latest.data.endStock : plan.data.stock,
+          endStock: latest ? latest.data.endStock : plan.data.stock,
           flowPlanId: plan.id,
         }
       })
       return new BatchModel(newBatch)
     }
 
-    return new BatchModel(latest[0])
+    return latest
   }
 
   /**

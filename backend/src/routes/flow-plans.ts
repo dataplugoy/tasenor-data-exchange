@@ -9,7 +9,7 @@ import { AllowedSchema, Validator } from 'express-json-validator-middleware'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { AlertException } from '../exceptions/AlertException'
-import { log } from '@tasenor/common'
+import { error, log } from '@tasenor/common'
 import { AlertModel } from '../models/AlertModel'
 
 const router = express.Router()
@@ -116,7 +116,50 @@ router.get('/:id/run',
       res.send(result)
     } catch (err) {
       if (err instanceof AlertException) {
-        log(`Delivering an immediate alert: ${err}`)
+        log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
+        const alert = await AlertModel.interactive(err)
+        res.status(202).send(alert.data)
+      }
+    }
+  }
+)
+
+router.post('/:id/continue',
+  authorize(),
+  param('id'),
+  // TODO: Validation of request.
+  async (req, res) => {
+    // TODO: DRY. Same than previous function.
+    const userId = res.locals.userId
+    const flowPlanId = res.locals.id
+    const plan = await FlowPlanModel.get(flowPlanId)
+    const project = plan && await ProjectModel.get(plan?.data.projectId)
+
+    if (!plan || !project || project.data.userId !== userId) {
+      return res.sendStatus(404)
+    }
+
+    // Find the latest batch.
+    const batch = await BatchModel.getLatest(plan)
+    if (!batch) {
+      error(`Cannot find any batches for ${plan}.`)
+      return res.sendStatus(400)
+    }
+
+    // Set the uploaded data.
+    const { name, type, data } = req.body
+    log(`Uploading a file '${name}' of type ${type} to ${batch}.`)
+    // TODO: Need to think about if we need to support any binary data instead of assuming utf-8.
+    const content = Buffer.from(data, 'hex').toString('utf8')
+    await batch.setData(content)
+
+    // TODO: DRY. Same as in the `run`-url.
+    try {
+      const result = await plan.run({ userId, interactive: true, repeat: 'MAX' })
+      res.send(result)
+    } catch (err) {
+      if (err instanceof AlertException) {
+        log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
         const alert = await AlertModel.interactive(err)
         res.status(202).send(alert.data)
       }
