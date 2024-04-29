@@ -69,7 +69,7 @@ router.post('/register',
     const project = await ProjectModel.save({ userId: user.id, name: projectName, settings: { currency: 'EUR', language: 'fi' } })
     await UserModel.update<prisma.User, UserModel>(user, { settings: { projectId: project.id } })
 
-    return res.send({
+    return res.status(201).send({
       token,
       user: {
         id: user.id,

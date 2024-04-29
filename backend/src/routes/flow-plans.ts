@@ -41,7 +41,7 @@ router.post('/',
       flowPlanId: plan.id,
       settings: destination.settings
     })
-    res.send(plan.data)
+    res.status(201).send(plan.data)
   }
 )
 
