@@ -70,7 +70,7 @@ router.get('/:id',
         }
       },
       where: {
-        flowPlanId: res.locals.flowPlanId
+        flowPlanId: res.locals.id
       },
       orderBy: [{
         created: 'desc'

@@ -304,7 +304,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Mark the last timestamp.
       let lastStamp = this.data.lastStamp
       for (const input of inputs) {
-        // TODO: What's wrong with types here?
         const data = input.data.data as unknown as InputItemData
         const newStamp = new Date(data.time)
         if (lastStamp === null || newStamp > lastStamp) {

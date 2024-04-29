@@ -125,73 +125,36 @@ const FailedAfterDataFetched = (props: RunDetailsProps): React.JSX.Element => {
   return FailedAfterBatchCreated(props)
 }
 
-const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
+function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): React.JSX.Element {
   const { result } = props
-  const items: ResultInputItem[] = result.items as ResultInputItem[]
+  const items: T[] = result.items as T[]
   const noItemErrors = items.filter(i => !!i.error).length === 0
 
-  return (
-    <Box>
+  return <Box>
       {
         noItemErrors && result.run.error && <ViewError error={result.run.error}/>
       }
       {
         items.map((item, idx) => {
           return item.error !== null && <Box key={idx}>
-            {JSON.stringify(item.data.original, null, 2)}
+            {JSON.stringify(item.data, null, 2)}
             <ViewError error={item.error}/>
           </Box>
         })
       }
-    </Box>
-  )
+  </Box>
+}
 
+const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
+  return RenderErrorOrItemErrors<ResultInputItem>(props)
 }
 
 const FailedAfterItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
-  const { result } = props
-  const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
-  const noItemErrors = items.filter(i => !!i.error).length === 0
-
-  // TODO: DRY. Similar to previuous.
-
-  return (
-    <Box>
-      {
-        noItemErrors && result.run.error && <ViewError error={result.run.error}/>
-      }
-      {
-        items.map((item, idx) => {
-          return item.error !== null && <Box key={idx}>
-            <ViewError error={item.error}/>
-          </Box>
-        })
-      }
-    </Box>
-  )
+  return RenderErrorOrItemErrors<ResultUnifiedItem>(props)
 }
 
 const FailedAfterOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
-  const { result } = props
-  const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
-  const noItemErrors = items.filter(i => !!i.error).length === 0
-
-  // TODO: DRY. Similar to previuous.
-
-  return (
-    <Box>
-      {
-        noItemErrors && result.run.error && <ViewError error={result.run.error}/>
-      }
-      {
-        items.map((item, idx) => {
-          return item.error !== null && <Box key={idx}>
-            <ViewError error={item.error}/>
-          </Box>
-        })
-      }
-    </Box>
-  )
+  return RenderErrorOrItemErrors<ResultUnifiedItem>(props)
 }
 
 /**
@@ -227,7 +190,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
 
   return (
     <Box sx={{ color: 'error.light' }}>
-      TODO: Details of {result.step}
+      <Trans>Not implemented.</Trans>
     </Box>
   )
 }
