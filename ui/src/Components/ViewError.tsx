@@ -14,6 +14,9 @@ export const ViewError = (props: ViewErrorProps): React.JSX.Element => {
   const { error } = props
 
   function fixFile(fileName: string): string {
+    if (/^node:\w+/.test(fileName)) {
+      return fileName
+    }
     for (const subPath of ['@tasenor/common/src', 'backend/src', 'node_modules/@prisma/client/']) {
       const i = fileName.indexOf(subPath)
       if (i >= 0) {

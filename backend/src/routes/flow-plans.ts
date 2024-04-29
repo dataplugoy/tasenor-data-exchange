@@ -47,16 +47,8 @@ router.post('/',
 
 router.get('/:id',
   authorize(),
-  param('id'),
+  param('flowPlanId'),
   async (req, res) => {
-    const userId = res.locals.userId
-    const flowPlanId = res.locals.id
-    const plan = await FlowPlanModel.get(flowPlanId)
-    const project = plan && await ProjectModel.get(plan?.data.projectId)
-
-    if (!plan || !project || project.data.userId !== userId) {
-      return res.sendStatus(404)
-    }
 
     const batches = await BatchModel.db.findMany({
       select: {
@@ -78,7 +70,7 @@ router.get('/:id',
         }
       },
       where: {
-        flowPlanId
+        flowPlanId: res.locals.flowPlanId
       },
       orderBy: [{
         created: 'desc'
@@ -86,8 +78,8 @@ router.get('/:id',
     })
 
     res.send({
-      ...plan.data,
-      project: project.data,
+      ...res.locals.flowPlan.data,
+      project: res.locals.project.data,
       batches: batches.map(line => ({
         ...line,
         _count: undefined,
@@ -100,19 +92,10 @@ router.get('/:id',
 
 router.get('/:id/run',
   authorize(),
-  param('id'),
+  param('flowPlanId'),
   async (req, res) => {
-    const userId = res.locals.userId
-    const flowPlanId = res.locals.id
-    const plan = await FlowPlanModel.get(flowPlanId)
-    const project = plan && await ProjectModel.get(plan?.data.projectId)
-
-    if (!plan || !project || project.data.userId !== userId) {
-      return res.sendStatus(404)
-    }
-
     try {
-      const result = await plan.run({ userId, interactive: true, repeat: 'MAX' })
+      const result = await res.locals.flowPlan.run({ userId: res.locals.userId, interactive: true, repeat: 'MAX' })
       res.send(result)
     } catch (err) {
       if (err instanceof AlertException) {
@@ -126,23 +109,13 @@ router.get('/:id/run',
 
 router.post('/:id/continue',
   authorize(),
-  param('id'),
-  // TODO: Validation of request.
+  param('flowPlanId'),
+  // TODO: Validation of file upload request.
   async (req, res) => {
-    // TODO: DRY. Same than previous function.
-    const userId = res.locals.userId
-    const flowPlanId = res.locals.id
-    const plan = await FlowPlanModel.get(flowPlanId)
-    const project = plan && await ProjectModel.get(plan?.data.projectId)
-
-    if (!plan || !project || project.data.userId !== userId) {
-      return res.sendStatus(404)
-    }
-
     // Find the latest batch.
-    const batch = await BatchModel.getLatest(plan)
+    const batch = await BatchModel.getLatest(res.locals.flowPlan)
     if (!batch) {
-      error(`Cannot find any batches for ${plan}.`)
+      error(`Cannot find any batches for ${res.locals.flowPlan}.`)
       return res.sendStatus(400)
     }
 
@@ -155,7 +128,7 @@ router.post('/:id/continue',
 
     // TODO: DRY. Same as in the `run`-url.
     try {
-      const result = await plan.run({ userId, interactive: true, repeat: 'MAX' })
+      const result = await res.locals.flowPlan.run({ userId: res.locals.userId, interactive: true, repeat: 'MAX' })
       res.send(result)
     } catch (err) {
       if (err instanceof AlertException) {

@@ -21,16 +21,9 @@ router.get('/',
 
 router.get('/:id/output',
   authorize(),
-  param('id'),
+  param('projectId'),
   async (req, res) => {
-    // TODO: DRY. Should have one verification done by project fetch middleware.
-    const userId = res.locals.userId
-    const projectId = res.locals.id
-    const project = await ProjectModel.get(projectId)
-    if (!project || project.data.userId !== userId) {
-      return res.sendStatus(404)
-    }
-    const plans = await FlowPlanModel.findForProject(projectId)
+    const plans = await FlowPlanModel.findForProject(res.locals.id)
     const items = await OutputItemModel.getAll({ delivered: true, flowPlanId: { in: plans.map(plan => plan.id) } }, [{ created: 'desc' }])
     res.send(items.map(item => item.data))
   }
@@ -38,16 +31,10 @@ router.get('/:id/output',
 
 router.get('/:id',
   authorize(),
-  param('id'),
+  param('projectId'),
   async (req, res) => {
-    const userId = res.locals.userId
-    const projectId = res.locals.id
-    const project = await ProjectModel.get(projectId)
-    if (!project || project.data.userId !== userId) {
-      return res.sendStatus(404)
-    }
-    const plans = await FlowPlanModel.findForProject(projectId)
-    res.send({ ...project.data, plans: plans.map(plan => plan.data) })
+    const plans = await FlowPlanModel.findForProject(res.locals.id)
+    res.send({ ...res.locals.project.data, plans: plans.map(plan => plan.data) })
   }
 )
 
