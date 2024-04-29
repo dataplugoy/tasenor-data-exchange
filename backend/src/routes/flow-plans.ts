@@ -77,6 +77,9 @@ router.get('/:id',
           }
         }
       },
+      where: {
+        flowPlanId
+      },
       orderBy: [{
         created: 'desc'
       }]
