@@ -16,7 +16,7 @@ describe('Flow Plan API', () => {
           type: 'NO_ACTION',
           settings: {}
         }
-      }).should('validatesAs', CreateFlowPlannResponse)
+      }).should('validatesAs', CreateFlowPlannResponse, 201)
     })
   })
 })

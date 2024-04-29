@@ -63,9 +63,9 @@ Cypress.Commands.add('apiCall', (method: string, url: string, body: Record<strin
 /**
  * Validate a response against the JSON schema.
  */
-chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, any>) {
+chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, any>, status = 200) {
   const res = this._obj
-  expect(res.status).to.eq(200)
+  expect(res.status).to.eq(status)
 
   const ajv = new Ajv()
 
