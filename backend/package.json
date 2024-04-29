@@ -2,11 +2,9 @@
   "name": "@tasenor/tadex-backend",
   "description": "TaDeX backend",
   "scripts": {
-    "dev": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run migrate && DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run dev-api",
+    "dev": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run migrate && DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex NODE_ENV=dev pnpm run api",
     "api": "npx tsx watch --clear-screen=false src/Server.ts",
-    "dev-api": "NODE_ENV=dev pnpm run api",
-    "prod-api": "NODE_ENV=prod pnpm run api",
-    "docker": "pnpm run migrate && pnpm run prod-api",
+    "docker": "pnpm run migrate && pnpm run api",
     "fix": "eslint --fix src/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "migrate": "prisma db push --accept-data-loss"
