@@ -121,6 +121,10 @@ const FailedAfterBatchCreated = (props: RunDetailsProps): React.JSX.Element => {
 
 }
 
+const FailedAfterDataFetched = (props: RunDetailsProps): React.JSX.Element => {
+  return FailedAfterBatchCreated(props)
+}
+
 const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
   const items: ResultInputItem[] = result.items as ResultInputItem[]
@@ -211,6 +215,8 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       return <SuccessOutputCreated batch={batch} result={result}/>
     case 'FAILED_AFTER_BATCH_CREATED':
       return <FailedAfterBatchCreated batch={batch} result={result}/>
+    case 'FAILED_AFTER_DATA_FETCHED':
+      return <FailedAfterDataFetched batch={batch} result={result}/>
     case 'FAILED_AFTER_DATA_PARSED':
       return <FailedAfterDataParsed batch={batch} result={result}/>
     case 'FAILED_AFTER_ITEMS_UNIFIED':
