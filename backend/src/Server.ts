@@ -20,6 +20,10 @@ class TasenorDataExchangeServer {
 
   public start = async () => {
 
+    if (!process.env.SECRET && process.env.NODE_ENV !== 'dev') {
+      throw new Error('Cannot run server without SECRET environment variable unless in dev-mode.')
+    }
+
     BaseModel.setDb(await connect())
 
     // Log requests.
