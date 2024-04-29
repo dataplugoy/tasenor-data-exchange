@@ -43,6 +43,7 @@ services:
       PORT: 7301
       VIRTUAL_HOST: tadex.localhost
       VIRTUAL_PORT: 7301
+      NODE_ENV: dev
       API_URL: http://tadex-api:7302
     command: pnpm run docker
 
@@ -54,6 +55,7 @@ services:
       - 7302:7302
     environment:
       PORT: 7302
+      NODE_ENV: dev
       DATABASE_URL: postgres://dev:02u3QD2e3wxssfdr3sxds@tadex-db:7300/tadex
       VIRTUAL_HOST: tadex-api.localhost
       VIRTUAL_PORT: 7302
@@ -67,7 +69,7 @@ services:
       - 7304:7304
     environment:
       PORT: 7304
-      NODE_ENV: prod
+      NODE_ENV: dev
       VIRTUAL_HOST: tadex-docs.localhost
       VIRTUAL_PORT: 7304
     command: pnpm run docker
