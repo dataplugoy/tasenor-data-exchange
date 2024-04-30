@@ -1,14 +1,14 @@
 {
   "title": "BatchResponse",
   "allOf": [
-    { "$ref": "Batch" },
+    { "$ref": "Batch.json" },
     {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "runs": {
           "type": "array",
-          "items": { "$ref": "Run" }
+          "items": { "$ref": "Run.json" }
         }
       }
     },
@@ -18,7 +18,7 @@
       "properties": {
         "inputs": {
           "type": "array",
-          "items": { "$ref": "InputItem" }
+          "items": { "$ref": "InputItem.json" }
         }
       }
     },
@@ -28,7 +28,7 @@
       "properties": {
         "unifieds": {
           "type": "array",
-          "items": { "$ref": "UnifiedItem" }
+          "items": { "$ref": "UnifiedItem.json" }
         }
       }
     },
@@ -38,7 +38,7 @@
       "properties": {
         "outputs": {
           "type": "array",
-          "items": { "$ref": "OutputItem" }
+          "items": { "$ref": "OutputItem.json" }
         }
       }
     }

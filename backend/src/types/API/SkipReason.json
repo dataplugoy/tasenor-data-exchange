@@ -1,0 +1,9 @@
+{
+  "$id": "SkipReason",
+  "title": "SkipReason",
+  "type": ["null", "string"],
+  "enum": [
+    "DUPLICATE",
+    "IN_THE_PAST"
+  ]
+}

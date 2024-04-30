@@ -1,0 +1,7 @@
+{
+  "$id": "UnifiedItemType",
+  "title": "UnifiedItemType",
+  "description": "Main category of the transaction.",
+  "type": "string",
+  "enum": ["buy", "sell", "trade", "income", "expense", "dividend"]
+}

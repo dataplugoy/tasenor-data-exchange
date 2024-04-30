@@ -2,6 +2,6 @@
   "title": "ProjectsResponse",
   "type": "array",
   "items": {
-    "$ref": "Project"
+    "$ref": "Project.json"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "$id": "AlertType",
+  "title": "AlertType",
+  "type": "string",
+  "enum": [
+    "UPLOAD_REQUIRED"
+  ]
+}

@@ -1,14 +1,14 @@
 {
   "title": "ProjectResponse",
   "allOf": [
-    { "$ref": "Project" },
+    { "$ref": "Project.json" },
     {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "plans": {
           "type": "array",
-          "items": { "$ref": "FlowPlan" }
+          "items": { "$ref": "FlowPlan.json" }
         }
       }
     }

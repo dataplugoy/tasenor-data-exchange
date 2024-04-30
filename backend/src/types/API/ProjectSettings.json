@@ -1,0 +1,17 @@
+{
+  "$id": "ProjectSettings",
+  "title": "ProjectSettings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["language", "currency"],
+  "properties": {
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z][a-z]$"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z][A-Z]$"
+    }
+  }
+}

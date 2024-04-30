@@ -1,0 +1,44 @@
+{
+  "$id": "InputItem",
+  "title": "InputItem",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "data", "processed", "skipped", "skipReason", "error", "flowPlanId", "batchId", "runId"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "data": {
+      "$ref": "InputItemData.json"
+    },
+    "processed": {
+      "type": "boolean"
+    },
+    "skipped": {
+      "type": "boolean"
+    },
+    "skipReason": {
+      "$ref": "SkipReason.json"
+    },
+    "error": {
+      "type": ["string", "null"]
+    },
+    "flowPlanId": {
+      "type": "integer"
+    },
+    "batchId": {
+      "type": "integer"
+    },
+    "runId": {
+      "type": "integer"
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  }
+}

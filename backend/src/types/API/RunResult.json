@@ -1,0 +1,13 @@
+{
+  "$id": "RunResult",
+  "title": "RunResult",
+  "type": "string",
+  "enum": [
+    "ALL_SUCCESS",
+    "PARTLY_SKIPPED_SUCCESS",
+    "ALL_SKIPPED",
+    "PARTLY_FAIL",
+    "ALL_FAILED",
+    "NO_PROGRESS"
+  ]
+}

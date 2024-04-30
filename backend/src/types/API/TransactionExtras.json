@@ -1,0 +1,14 @@
+{
+  "$id": "TransactionExtras",
+  "title": "TransactionExtras",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "asset": { "$ref": "Asset.json" },
+    "assetChange": {
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    }
+  }
+}
