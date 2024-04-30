@@ -1,27 +1,27 @@
 {
-  "$id": "OutputItem",
-  "title": "OutputItem",
+  "$id": "InputItem",
+  "title": "InputItem",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "data", "skipped", "delivered", "error", "unifiedId", "flowPlanId", "batchId", "runId"],
+  "required": ["id", "data", "processed", "skipped", "skipReason", "error", "flowPlanId", "batchId", "runId"],
   "properties": {
     "id": {
       "type": "integer"
     },
     "data": {
-      "$ref": "Transaction"
+      "$ref": "InputItemData.json"
     },
-    "delivered": {
+    "processed": {
       "type": "boolean"
     },
     "skipped": {
       "type": "boolean"
     },
+    "skipReason": {
+      "$ref": "SkipReason.json"
+    },
     "error": {
       "type": ["string", "null"]
-    },
-    "unifiedId": {
-      "type": "integer"
     },
     "flowPlanId": {
       "type": "integer"

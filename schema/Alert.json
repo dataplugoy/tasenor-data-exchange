@@ -1,9 +1,9 @@
 {
-  "$id": "Project",
-  "title": "Project",
+  "$id": "Alert",
+  "title": "Alert",
   "type": "object",
   "additionalProperties": false,
-  "required": ["userId", "name"],
+  "required": ["id", "userId", "type", "method", "url", "payload", "delivered"],
   "properties": {
     "id": {
       "type": "integer"
@@ -11,11 +11,21 @@
     "userId": {
       "type": "integer"
     },
-    "name": {
+    "type": {
+      "$ref": "AlertType.json"
+    },
+    "method": {
+      "$ref": "AlertMethod.json"
+    },
+    "url": {
       "type": "string"
     },
-    "settings": {
-      "$ref": "ProjectSettings"
+    "payload": {
+      "type": "string"
+    },
+    "delivered": {
+      "type": ["null", "string"],
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
     },
     "created": {
       "type": "string",

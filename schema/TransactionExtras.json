@@ -5,7 +5,7 @@
   "additionalProperties": false,
   "required": [],
   "properties": {
-    "asset": { "$ref": "Asset" },
+    "asset": { "$ref": "Asset.json" },
     "assetChange": {
       "type": ["number", "string"],
       "pattern": "^[0-9]+(\\.[0-9]+)?$"

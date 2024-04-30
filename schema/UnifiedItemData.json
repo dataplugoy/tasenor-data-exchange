@@ -6,11 +6,11 @@
   "required": ["type"],
   "properties": {
     "type": {
-      "$ref": "UnifiedItemType"
+      "$ref": "UnifiedItemType.json"
     },
     "assetIn": {
       "description": "In case of buying some asset, this is the asset received.",
-      "$ref": "Asset"
+      "$ref": "Asset.json"
     },
     "assetAmountIn": {
       "description": "In case of buying some asset, this is the number of assets received.",
@@ -24,7 +24,7 @@
     },
     "assetOut": {
       "description": "In case of selling some asset, this is the asset traded out.",
-      "$ref": "Asset"
+      "$ref": "Asset.json"
     },
     "assetAmountOut": {
       "description": "In case of selling some asset, this is the number of assets given.",
@@ -43,7 +43,7 @@
     },
     "feeAsset": {
       "description": "Ticker of the fee charged as a currency or other asset ticker.",
-      "$ref": "Asset"
+      "$ref": "Asset.json"
     },
     "taxType": {
       "description": "If tax must be calculated, this is the type of the tax.",
@@ -57,7 +57,7 @@
     },
     "taxAsset": {
       "description": "If tax must be calculated, this is the asset used (defaults to `valueAsset`)",
-      "$ref": "Asset"
+      "$ref": "Asset.json"
     },
     "taxPercentage": {
       "description": "If tax must be calculated, alternatively it can be percentage of the total of the transaction.",
@@ -70,7 +70,7 @@
     },
     "valueAsset": {
       "description": "Asset used to determine the total value of the transaction.",
-      "$ref": "Asset"
+      "$ref": "Asset.json"
     },
     "text": {
       "description": "Text of the original item if known.",
@@ -78,7 +78,7 @@
     },
     "rates": {
       "description": "Conversion rates for assets involved, if known.",
-      "$ref": "Rates"
+      "$ref": "Rates.json"
     }
   }
 }
