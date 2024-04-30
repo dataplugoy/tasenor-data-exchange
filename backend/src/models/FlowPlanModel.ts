@@ -266,7 +266,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
         try {
-          console.log(input.data)
           const data = input.data.data as unknown as InputItemData
 
           // Verify duplicates first.
