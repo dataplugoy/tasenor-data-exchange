@@ -12,7 +12,7 @@
     "lines": {
       "type": "array",
       "items": {
-        "$ref": "TransactionLine"
+        "$ref": "TransactionLine.json"
       }
     }
   }

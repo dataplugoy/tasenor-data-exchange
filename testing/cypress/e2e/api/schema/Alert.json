@@ -12,10 +12,10 @@
       "type": "integer"
     },
     "type": {
-      "$ref": "AlertType"
+      "$ref": "AlertType.json"
     },
     "method": {
-      "$ref": "AlertMethod"
+      "$ref": "AlertMethod.json"
     },
     "url": {
       "type": "string"

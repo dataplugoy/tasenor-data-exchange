@@ -1,13 +1,13 @@
 {
   "title": "FlowPlanResponse",
   "allOf": [
-    { "$ref": "FlowPlan" },
+    { "$ref": "FlowPlan.json" },
     {
       "type": "object",
       "additionalProperties": false,
       "required": ["project"],
       "properties": {
-        "project": { "$ref": "Project" }
+        "project": { "$ref": "Project.json" }
       }
     },
     {
@@ -19,7 +19,7 @@
           "type": "array",
           "items": {
             "allOf": [
-              { "$ref": "Batch" },
+              { "$ref": "Batch.json" },
               {
                 "type": "object",
                 "additionalProperties": false,

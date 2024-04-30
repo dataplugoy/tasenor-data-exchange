@@ -15,7 +15,7 @@
       "type": "string"
     },
     "settings": {
-      "$ref": "ProjectSettings"
+      "$ref": "ProjectSettings.json"
     },
     "created": {
       "type": "string",

@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 import Ajv from 'ajv'
+import Alert from '../e2e/api/schema/Alert.json'
+import AlertMethod from '../e2e/api/schema/AlertMethod.json'
+import AlertType from '../e2e/api/schema/AlertType.json'
 import Asset from '../e2e/api/schema/Asset.json'
 import Batch from '../e2e/api/schema/Batch.json'
 import FlowPlan from '../e2e/api/schema/FlowPlan.json'
@@ -69,6 +72,9 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
 
   const ajv = new Ajv()
 
+  ajv.addSchema(Alert)
+  ajv.addSchema(AlertMethod)
+  ajv.addSchema(AlertType)
   ajv.addSchema(Asset)
   ajv.addSchema(Batch)
   ajv.addSchema(FlowPlan)

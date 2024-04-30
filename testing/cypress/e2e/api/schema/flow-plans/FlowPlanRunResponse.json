@@ -17,7 +17,7 @@
       }
     },
     {
-      "$ref": "Alert"
+      "$ref": "Alert.json"
     }
   ]
 }

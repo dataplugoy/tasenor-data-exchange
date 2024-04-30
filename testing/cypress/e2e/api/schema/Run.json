@@ -43,7 +43,7 @@
       "type": ["integer", "null"]
     },
     "result": {
-      "$ref": "RunResult"
+      "$ref": "RunResult.json"
     },
     "created": {
       "type": "string",

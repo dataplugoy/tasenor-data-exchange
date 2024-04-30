@@ -9,7 +9,7 @@
       "type": "integer"
     },
     "data": {
-      "$ref": "Transaction"
+      "$ref": "Transaction.json"
     },
     "delivered": {
       "type": "boolean"
