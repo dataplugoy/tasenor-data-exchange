@@ -1,4 +1,4 @@
-import { Asset, CryptoCurrency } from '@tasenor/common'
+import { Asset, CryptoCurrency, Currency, isCurrency } from '@tasenor/common'
 import { t } from '../i18n/t'
 import { dec } from '../utils'
 import { Analyzer } from './Analyzer'
@@ -82,14 +82,24 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
     return dec(input.rates[asset] as string | number | Decimal)
   }
 
-  // TODO: If currency? How about optional prefixing like CURRENCY: to make it clear. (Update API spec.)
   if (canUseService) {
-    const rate = await this.askService({
-      query: 'CRYPTO_RATES',
-      time: this.lastTime,
-      asset: input.assetIn as CryptoCurrency,
-      valueCurrency: this.currency
-    })
+    let rate
+    const [prefix, body] = asset.split(':')
+    if (isCurrency(asset) || prefix === 'CURRENCY') {
+      rate = await this.askService({
+        query: 'CURRENCY_RATES',
+        time: this.lastTime,
+        currency: input.assetIn as Currency,
+        valueCurrency: this.currency
+      })
+    } else {
+      rate = await this.askService({
+        query: 'CRYPTO_RATES',
+        time: this.lastTime,
+        asset: input.assetIn as CryptoCurrency,
+        valueCurrency: this.currency
+      })
+    }
 
     if (rate) {
       return rate.value

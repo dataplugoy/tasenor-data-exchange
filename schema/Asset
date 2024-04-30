@@ -2,5 +2,5 @@
   "$id": "Asset",
   "title": "Asset",
   "type": "string",
-  "pattern": "^[-A-Z._]+$"
+  "pattern": "^[-:A-Z._0-9]+$"
 }
