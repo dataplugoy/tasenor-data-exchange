@@ -12,17 +12,10 @@
       "type": "integer"
     },
     "type": {
-      "type": "string",
-      "enum": [
-        "UPLOAD_REQUIRED"
-      ]
+      "$ref": "AlertType"
     },
     "method": {
-      "type": "string",
-      "enum": [
-        "INTERACTIVE",
-        "EMAIL"
-      ]
+      "$ref": "AlertMethod"
     },
     "url": {
       "type": "string"

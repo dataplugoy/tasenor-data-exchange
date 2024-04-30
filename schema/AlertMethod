@@ -1,0 +1,9 @@
+{
+  "$id": "AlertMethod",
+  "title": "AlertMethod",
+  "type": "string",
+  "enum": [
+    "INTERACTIVE",
+    "EMAIL"
+  ]
+}

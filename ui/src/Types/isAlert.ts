@@ -13,7 +13,5 @@ export function isAlert(obj: unknown): obj is Alert {
     return false
   }
 
-  // TODO: Get list of types and methods from somewhere.
-  return ['UPLOAD_REQUIRED'].includes((obj as object).type) &&
-    ['INTERACTIVE', 'EMAIL'].includes((obj as object).method)
+  return obj.method === 'INTERACTIVE'
 }

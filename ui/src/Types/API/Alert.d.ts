@@ -5,11 +5,14 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type AlertType = "UPLOAD_REQUIRED";
+export type AlertMethod = "INTERACTIVE" | "EMAIL";
+
 export interface Alert {
   id: number;
   userId: number;
-  type: "UPLOAD_REQUIRED";
-  method: "INTERACTIVE" | "EMAIL";
+  type: AlertType;
+  method: AlertMethod;
   url: string;
   payload: string;
   delivered: null | string;
