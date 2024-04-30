@@ -7,7 +7,6 @@ import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
 import { error, log } from '@tasenor/common'
 import routes from './routes'
-import { ValidationError } from 'express-json-validator-middleware'
 
 class TasenorDataExchangeServer {
   public app = express()
@@ -49,19 +48,6 @@ class TasenorDataExchangeServer {
     this.app.use(helmet({ contentSecurityPolicy }))
 
     this.app.use('/api/v1', routes)
-
-    // Validation catcher.
-    this.app.use((err, req, res, next) => {
-      if (err instanceof ValidationError) {
-        error(`Validation error: ${req.method} ${req.originalUrl}`, JSON.stringify(err.validationErrors))
-        res.status(400).send({
-          message: 'Invalid request parameters.'
-        })
-        next()
-      } else {
-        next(err)
-      }
-    })
 
     this.app.listen(this.config.PORT, () => {
       log(`Server started on port ${this.config.PORT}.`)

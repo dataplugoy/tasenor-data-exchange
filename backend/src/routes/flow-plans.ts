@@ -6,19 +6,18 @@ import { BatchModel } from '../models/BatchModel'
 import { param } from '../lib/param'
 import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlanRequest.json'
 import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
-import { AllowedSchema, Validator } from 'express-json-validator-middleware'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { AlertException } from '../exceptions/AlertException'
 import { error, log } from '@tasenor/common'
 import { AlertModel } from '../models/AlertModel'
+import { validate } from '../lib/validate'
 
 const router = express.Router()
-const { validate } = new Validator({})
 
 router.post('/',
   authorize(),
-  validate({ body: CreateFlowPlanRequest as AllowedSchema }),
+  validate(CreateFlowPlanRequest),
   async (req, res) => {
     const userId = res.locals.userId
     const { projectId, title, source, destination } = req.body
@@ -111,7 +110,7 @@ router.get('/:id/run',
 router.post('/:id/continue',
   authorize(),
   param('flowPlanId'),
-  validate({ body: ContinueFlowPlanRequest as AllowedSchema }),
+  validate(ContinueFlowPlanRequest),
   async (req, res) => {
     // Find the latest batch.
     const batch = await BatchModel.getLatest(res.locals.flowPlan)

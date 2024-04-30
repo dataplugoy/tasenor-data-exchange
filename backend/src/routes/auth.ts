@@ -1,20 +1,19 @@
 import express from 'express'
 import { UserModel } from '../models/UserModel'
 import { compare, sign } from '../lib/crypt'
-import { AllowedSchema, Validator } from 'express-json-validator-middleware'
 import AuthRequest from '../../src/types/API/auth/AuthRequest.json'
 import RegisterRequest from '../../src/types/API/auth/RegisterRequest.json'
 import { ProjectModel } from '../models/ProjectModel'
 import prisma from '@prisma/client'
+import { validate } from '../lib/validate'
 
 const router = express.Router()
-const { validate } = new Validator({})
 
 /**
  * Login attempt returns token if successful.
  */
 router.post('/',
-  validate({ body: AuthRequest as AllowedSchema }),
+  validate(AuthRequest),
   async (req, res) => {
     const { email, password } = req.body
     const user = await UserModel.find(email)
@@ -47,7 +46,7 @@ router.post('/',
  * Register user.
  */
 router.post('/register',
-  validate({ body: RegisterRequest as AllowedSchema }),
+  validate(RegisterRequest),
   async (req, res) => {
     const { email, password, name, address, zip, city, country, projectName } = req.body
     const old = await UserModel.find(email)
