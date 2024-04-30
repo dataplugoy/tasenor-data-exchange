@@ -50,7 +50,7 @@ ajv.addSchema(UnifiedItemType)
 export const validate = (schema) => {
   return (req, res, next) => {
     if (!ajv.validate(schema, req.body)) {
-      error(`Validation failed:`, ajv.errors)
+      error(`Validation failed: ${JSON.stringify(ajv.errors)}`)
       res.status(400).send({
         message: 'Invalid request parameters.'
       })
