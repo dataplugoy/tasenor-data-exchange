@@ -1,5 +1,5 @@
 {
-  "$id": "Rates",
+  "$id": "Rates.json",
   "title": "Rates",
   "type": "object",
   "additionalProperties": true,

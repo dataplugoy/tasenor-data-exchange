@@ -1,5 +1,5 @@
 {
-  "$id": "Batch",
+  "$id": "Batch.json",
   "title": "Batch",
   "type": "object",
   "additionalProperties": false,

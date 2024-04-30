@@ -1,5 +1,5 @@
 {
-  "$id": "OutputItem",
+  "$id": "OutputItem.json",
   "title": "OutputItem",
   "type": "object",
   "additionalProperties": false,

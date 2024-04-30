@@ -1,5 +1,5 @@
 {
-  "$id": "FlowPlan",
+  "$id": "FlowPlan.json",
   "title": "FlowPlan",
   "type": "object",
   "additionalProperties": false,

@@ -1,5 +1,5 @@
 {
-  "$id": "SkipReason",
+  "$id": "SkipReason.json",
   "title": "SkipReason",
   "type": ["null", "string"],
   "enum": [

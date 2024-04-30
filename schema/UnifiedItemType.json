@@ -1,5 +1,5 @@
 {
-  "$id": "UnifiedItemType",
+  "$id": "UnifiedItemType.json",
   "title": "UnifiedItemType",
   "description": "Main category of the transaction.",
   "type": "string",

@@ -1,5 +1,5 @@
 {
-  "$id": "UnifiedItem",
+  "$id": "UnifiedItem.json",
   "title": "UnifiedItem",
   "type": "object",
   "additionalProperties": false,

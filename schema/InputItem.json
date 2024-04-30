@@ -1,5 +1,5 @@
 {
-  "$id": "InputItem",
+  "$id": "InputItem.json",
   "title": "InputItem",
   "type": "object",
   "additionalProperties": false,

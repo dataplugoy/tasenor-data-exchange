@@ -1,5 +1,5 @@
 {
-  "$id": "ProjectSettings",
+  "$id": "ProjectSettings.json",
   "title": "ProjectSettings",
   "type": "object",
   "additionalProperties": false,

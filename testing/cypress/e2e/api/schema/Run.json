@@ -1,5 +1,5 @@
 {
-  "$id": "Run",
+  "$id": "Run.json",
   "title": "Run",
   "type": "object",
   "additionalProperties": false,

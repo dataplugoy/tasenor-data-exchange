@@ -1,5 +1,5 @@
 {
-  "$id": "RunResult",
+  "$id": "RunResult.json",
   "title": "RunResult",
   "type": "string",
   "enum": [

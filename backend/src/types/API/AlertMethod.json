@@ -1,5 +1,5 @@
 {
-  "$id": "AlertMethod",
+  "$id": "AlertMethod.json",
   "title": "AlertMethod",
   "type": "string",
   "enum": [

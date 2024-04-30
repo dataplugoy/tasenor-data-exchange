@@ -1,5 +1,5 @@
 {
-  "$id": "FileUpload",
+  "$id": "FileUpload.json",
   "title": "FileUpload",
   "type": "object",
   "additionalProperties": false,

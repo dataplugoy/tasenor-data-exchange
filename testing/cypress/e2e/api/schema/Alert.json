@@ -1,5 +1,5 @@
 {
-  "$id": "Alert",
+  "$id": "Alert.json",
   "title": "Alert",
   "type": "object",
   "additionalProperties": false,
