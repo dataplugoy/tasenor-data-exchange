@@ -5,6 +5,7 @@ import { FlowPlanModel } from '../models/FlowPlanModel'
 import { BatchModel } from '../models/BatchModel'
 import { param } from '../lib/param'
 import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlanRequest.json'
+import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
 import { AllowedSchema, Validator } from 'express-json-validator-middleware'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
@@ -110,7 +111,7 @@ router.get('/:id/run',
 router.post('/:id/continue',
   authorize(),
   param('flowPlanId'),
-  // TODO: Validation of file upload request.
+  validate({ body: ContinueFlowPlanRequest as AllowedSchema }),
   async (req, res) => {
     // Find the latest batch.
     const batch = await BatchModel.getLatest(res.locals.flowPlan)
