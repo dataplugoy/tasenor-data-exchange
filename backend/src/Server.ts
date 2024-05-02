@@ -32,8 +32,8 @@ class TasenorDataExchangeServer {
     })
 
     // Basics.
-    this.app.use(express.urlencoded({ extended: true }))
-    this.app.use(express.json())
+    this.app.use(express.json({ limit: '500Mb' }))
+    this.app.use(express.urlencoded({ limit: '500Mb', extended: true }))
 
     // Security.
     this.app.use(cors())

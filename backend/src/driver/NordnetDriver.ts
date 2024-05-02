@@ -24,7 +24,7 @@ export class NordnetDriver extends ManualUploadDriver {
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
 
-    const csv = batch.parseCsvColumns({
+    const csv = await batch.parseCsvColumns({
       delimiter: '\t',
       raw: true,
       regexMatch: /^\s*Id\tKirjausp.iv.\sKauppap.iv.\sMaksup.iv./,

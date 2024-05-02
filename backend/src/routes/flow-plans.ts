@@ -122,7 +122,6 @@ router.post('/:id/continue',
     // Set the uploaded data.
     const { name, type, data } = req.body
     log(`Uploading a file '${name}' of type ${type} to ${batch}.`)
-    // TODO: Need to think about if we need to support any binary data instead of assuming utf-8.
     const content = Buffer.from(data, 'hex')
     await batch.setData(content)
 

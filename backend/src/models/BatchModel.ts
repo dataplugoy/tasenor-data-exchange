@@ -41,9 +41,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Get the CSV presentation of the data.
    */
-  parseCsv(options: CsvOptions = {}): string[][] | Record<string, string>[] | { raw: string, record: Record<string, string>}[] {
-    const records: string[][] = []
-    const parser = parse(options)
+  async parseCsv(options: CsvOptions = {}): Promise<string[][] | Record<string, string>[] | { raw: string, record: Record<string, string>}[]> {
 
     if (this.data.data === null) {
       throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
@@ -64,28 +62,35 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       }
     }
 
-    parser.on('readable', function() {
-      let record
-      while ((record = parser.read()) !== null) {
-        records.push(record)
-      }
+    return new Promise((resolve, reject) => {
+      const records: string[][] = []
+      const parser = parse(options)
+
+      parser.on('readable', function() {
+        let record
+        while ((record = parser.read()) !== null) {
+          records.push(record)
+        }
+      })
+
+      parser.on('end', function() {
+        resolve(records)
+      })
+
+      parser.on('error', function(err) {
+        reject(new Error(`CSV Parser failed: ${err.message}`))
+      })
+
+      parser.write(data)
+      parser.end()
     })
-
-    parser.on('error', function(err) {
-      throw new Error(`CSV Parser failed: ${err.message}`)
-    })
-
-    parser.write(data)
-    parser.end()
-
-    return records
   }
 
   /**
    * Similar to parseCsv(), but columnwise result.
    * @param options
    */
-  parseCsvColumns(options: CsvOptions = {}): { raw: string, record: Record<string, string>}[] {
+  async parseCsvColumns(options: CsvOptions = {}): Promise<{ raw: string, record: Record<string, string>}[]> {
     return this.parseCsv({ columns: true, raw: true, ...options }) as unknown as { raw: string, record: Record<string, string>}[]
   }
 
