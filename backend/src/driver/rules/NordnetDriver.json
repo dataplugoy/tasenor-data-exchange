@@ -7,7 +7,7 @@
       "type": "'expense'",
       "value": "Summa",
       "valueAsset": "Valuutta",
-      "account": "NORDNET_MONTHLY_SAVING_FEE"
+      "account": "'NORDNET_MONTHLY_SAVING_FEE'"
     }
   }
 ]

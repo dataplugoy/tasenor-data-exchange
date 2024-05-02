@@ -35,10 +35,10 @@ export type Asset4 = string;
 export type Asset5 = string;
 
 export interface UnifiedItem {
-  id: number;
+  id?: number;
   time: string;
   data: UnifiedItemData;
-  stockChange: {
+  stockChange?: {
     [k: string]: unknown;
   };
   processed: boolean;

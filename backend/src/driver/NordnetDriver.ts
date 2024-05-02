@@ -9,6 +9,7 @@ import { RunModel } from '../models/RunModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { RuleModel } from '../models/RuleModel'
 import { UnifiedItemModel } from '../models/UnifiedItemModel'
+import { UnifiedItem } from '../types/API/UnifiedItem'
 
 /**
  * A base class for drivers that use manual upload.
@@ -47,7 +48,7 @@ export class NordnetDriver extends ManualUploadDriver {
     )
   }
 
-  async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItemModel> {
+  async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {
     return this.applyUnifyRules(flow, run, input, rules, input.fields['Tapahtumatyyppi'] as string)
   }
 }

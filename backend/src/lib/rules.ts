@@ -8,7 +8,7 @@ import { RuleModel } from '../models/RuleModel'
  * @param key
  * @returns
  */
-export function applyRules(variables: Record<string, unknown>, rules: Record<string, RuleModel[]>, key: string | null): undefined | unknown {
+export function applyRules<T>(variables: Record<string, unknown>, rules: Record<string, RuleModel[]>, key: string | null): T {
   const engine = new RulesEngine(variables as RuleVariables)
   const unusedKeys = new Set(Object.keys(rules))
 
@@ -46,14 +46,14 @@ export function applyRules(variables: Record<string, unknown>, rules: Record<str
   if (key !== null) {
     const result = applyRuleKey(key)
     if (result !== undefined) {
-      return result
+      return result as T
     }
   }
 
   for (const k of unusedKeys) {
     const result = applyRuleKey(k)
     if (result !== undefined) {
-      return result
+      return result as T
     }
   }
 

@@ -8,7 +8,7 @@ import { FlowState } from '../types/FlowState'
 import { Driver } from '../driver/Driver'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
 import { RuleModel } from './RuleModel'
 import { UnifiedItemModel } from './UnifiedItemModel'
 import { Stock, StockData } from '../lib/Stock'
@@ -287,7 +287,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             continue
           }
 
-          await driver.unifyItem(this, run, input, rules)
+          const unified = await driver.unifyItem(this, run, input, rules)
+          await UnifiedItemModel.save({
+            data: unified as unknown as JsonObject,
+            time: new Date(unified.time),
+            processed: false,
+            skipped: false,
+            error: null,
+            flowPlanId: input.data.flowPlanId,
+            batchId: input.data.batchId,
+            runId: run.id,
+            inputId: input.id,
+          })
           await input.success()
           done++
 

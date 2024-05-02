@@ -13,12 +13,12 @@ import { FlowPlanModel } from '../models/FlowPlanModel'
 import { RuleModel } from '../models/RuleModel'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { applyRules } from '../lib/rules'
-import { UnifiedItemModel } from '../models/UnifiedItemModel'
-import { JsonValue } from '@prisma/client/runtime/library'
 import { RunModel } from '../models/RunModel'
 import { DateTime } from 'luxon'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { InputItemData } from '../types/API/InputItemData'
+import { UnifiedItem } from '../types/API/UnifiedItem'
+import { UnifiedItemData } from '../types/API/UnifiedItemData'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -241,7 +241,7 @@ export class Driver {
    * @param input
    * @param rules
    */
-  protected async applyUnifyRules(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>, ruleKey: string | null = null): Promise<UnifiedItemModel> {
+  protected async applyUnifyRules(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>, ruleKey: string | null = null): Promise<UnifiedItem> {
     if (RuleModel.count(rules) === 0) {
       throw new Error(`There are no rules available in ${flow} for unifying input.`)
     }
@@ -255,30 +255,29 @@ export class Driver {
       ...input.fields
     }
 
-    const data: Record<string, unknown> = applyRules(variables, rules, ruleKey) as Record<string, unknown>
+    const data: UnifiedItemData = applyRules(variables, rules, ruleKey)
 
     const time = isShortDate(input.time)
       ? DateTime.fromISO(`${input.time}T12:00:00Z`).toUTC().toISO()
       : DateTime.fromISO(`${input.time}`).toUTC().toISO()
 
-    const unified = await UnifiedItemModel.save({
-      data: data as JsonValue,
-      time: new Date(time as string),
+    return {
+      data: data,
+      time: `${time}`,
       processed: false,
       skipped: false,
+      error: null,
       flowPlanId: input.data.flowPlanId,
       batchId: input.data.batchId,
       runId: run.id,
       inputId: input.id,
-    })
-
-    return unified
+    }
   }
 
   /**
    * Take an input item and convert it to the unified model.
    */
-  async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItemModel> {
+  async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {
     throw new Error(`Input source ${this.type} does not implement unifyItem().`)
   }
 

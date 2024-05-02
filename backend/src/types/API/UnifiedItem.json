@@ -3,7 +3,7 @@
   "title": "UnifiedItem",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "time", "data", "stockChange", "processed", "skipped", "error", "inputId", "batchId", "runId"],
+  "required": ["time", "data", "processed", "skipped", "error", "inputId", "batchId", "runId"],
   "properties": {
     "id": {
       "type": "integer"

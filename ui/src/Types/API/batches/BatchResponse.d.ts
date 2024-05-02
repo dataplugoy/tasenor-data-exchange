@@ -117,10 +117,10 @@ export interface InputItemData {
   };
 }
 export interface UnifiedItem {
-  id: number;
+  id?: number;
   time: string;
   data: UnifiedItemData;
-  stockChange: {
+  stockChange?: {
     [k: string]: unknown;
   };
   processed: boolean;
