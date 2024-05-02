@@ -1,3 +1,4 @@
+import chardet from 'chardet'
 import { Options, parse } from 'csv-parse'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
@@ -35,9 +36,19 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Get the CSV presentation of the data.
    */
-  parseCsv(options: Options = {}): string[][] {
+  parseCsv(options: Options = {}): string[][] | Record<string,string>[] {
     const records: string[][] = []
     const parser = parse(options)
+
+    if (this.data.data === null) {
+      throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
+    }
+    const encoding = chardet.detect(this.data.data)
+    if (!encoding) {
+      throw new Error(`Unable to detect encodin for data in ${this}.`)
+    }
+
+    const data = this.data.data.toString(encoding as BufferEncoding)
 
     parser.on('readable', function() {
       let record
@@ -50,7 +61,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       throw new Error(`CSV Parser failed: ${err.message}`)
     })
 
-    parser.write(this.data.data)
+    parser.write(data)
     parser.end()
 
     return records

@@ -7,7 +7,7 @@ describe.only('Nordnet', () => {
     const driver = getDriver('NORDNET', {})
     const batch = createBatchFrom('Nordnet-deposit-buy-fee.csv')
 
-    // const items = await driver.itemizeInput(batch)
+    const items = await driver.itemizeInput(batch)
 
     expect(null).toBe(null)
   })

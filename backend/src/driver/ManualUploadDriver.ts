@@ -28,11 +28,14 @@ export class ManualUploadDriver extends Driver {
   }
 
   async fetchData(flowPlan: FlowPlanModel): Promise<Buffer> {
-    console.log('here')
     const batch = await BatchModel.getLatest(flowPlan)
     if (batch && batch.data.data !== null) {
       return batch.data.data
     }
-    throw new UploadRequired(`/api/v1/flow-plans/${flowPlan.id}/continue`, _('Please select a statement to upload.'), this.options.userId)
+    throw new UploadRequired(
+      `/api/v1/flow-plans/${flowPlan.id}/continue`,
+      _('Please select a statement to upload.'),
+      this.options.userId
+    )
   }
 }
