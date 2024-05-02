@@ -39,10 +39,24 @@ export function validateBasics(this: Analyzer): void {
  * Ensure the field exist in input.
  * @param field
  */
-export function validateRequirdeField(this: Analyzer, field: keyof UnifiedItemData): void {
+export function validateRequiredField(this: Analyzer, field: keyof UnifiedItemData): void {
   const input = this.validateInput()
   if (input[field] === undefined) {
     this.validateError(`The field '${field}' is required`)
+  }
+}
+
+/**
+ * Ensure the field exist in input and is not empty.
+ * @param field
+ */
+export function validateNotEmpty(this: Analyzer, field: keyof UnifiedItemData): void {
+  const input = this.validateInput()
+  if (input[field] === undefined) {
+    this.validateError(`The field '${field}' is required`)
+  }
+  if (input[field]?.toString().trim() === '') {
+    this.validateError(`The field '${field}' must have content`)
   }
 }
 
@@ -51,7 +65,7 @@ export function validateRequirdeField(this: Analyzer, field: keyof UnifiedItemDa
  * @param fields
  */
 export function validateRequired(this: Analyzer, ...fields: Array<keyof UnifiedItemData>): void {
-  fields.forEach(field => this.validateRequirdeField(field))
+  fields.forEach(field => this.validateRequiredField(field))
 }
 
 /**

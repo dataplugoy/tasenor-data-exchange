@@ -18,7 +18,8 @@ import { AccountCode } from '../../../types/AccountCode'
 export async function expense(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
   this.validateBasics()
-  this.validateRequired('account', 'text')
+  this.validateNotEmpty('account')
+  this.validateNotEmpty('text')
 
   const { account, text } = input
   const value = await this.validateValue()
