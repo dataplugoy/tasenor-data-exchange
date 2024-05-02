@@ -31,13 +31,13 @@ export class NordnetDriver extends ManualUploadDriver {
     })
 
     return csv.map((line, index) => ({
-        line: index + 2,
-        original: line.raw,
-        time: DateTime.fromISO(`${line.record['Kirjauspäivä']}T12:00:00Z`).toUTC().toISO() as string,
-        text: line.record['Tapahtumateksti'] || line.record['Tapahtumatyyppi'],
-        total: line.record['Summa'],
-        fields: line.record
-      })
+      line: index + 2,
+      original: line.raw,
+      time: DateTime.fromISO(`${line.record['Kirjauspäivä']}T12:00:00Z`).toUTC().toISO() as string,
+      text: line.record.Tapahtumateksti || line.record.Tapahtumatyyppi,
+      total: line.record.Summa,
+      fields: line.record
+    })
     )
   }
 }

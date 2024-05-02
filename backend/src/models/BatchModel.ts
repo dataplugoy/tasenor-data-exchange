@@ -52,6 +52,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       throw new Error(`Unable to detect encodin for data in ${this}.`)
     }
 
+    // eslint-disable-next-line
     const data = this.data.data.toString(encoding as BufferEncoding)
 
     if (options.regexMatch) {
