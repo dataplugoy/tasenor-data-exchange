@@ -8,6 +8,10 @@
     "type": {
       "$ref": "UnifiedItemType.json"
     },
+    "account": {
+      "description": "Account involved, if already known.",
+      "$ref": "Account.json"
+    },
     "assetIn": {
       "description": "In case of buying some asset, this is the asset received.",
       "$ref": "Asset.json"

@@ -10,25 +10,29 @@
  */
 export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "dividend";
 /**
- * In case of buying some asset, this is the asset received.
+ * Account involved, if already known.
  */
 export type Asset = string;
 /**
- * In case of selling some asset, this is the asset traded out.
+ * In case of buying some asset, this is the asset received.
  */
 export type Asset1 = string;
 /**
- * Ticker of the fee charged as a currency or other asset ticker.
+ * In case of selling some asset, this is the asset traded out.
  */
 export type Asset2 = string;
 /**
- * If tax must be calculated, this is the asset used (defaults to `valueAsset`)
+ * Ticker of the fee charged as a currency or other asset ticker.
  */
 export type Asset3 = string;
 /**
- * Asset used to determine the total value of the transaction.
+ * If tax must be calculated, this is the asset used (defaults to `valueAsset`)
  */
 export type Asset4 = string;
+/**
+ * Asset used to determine the total value of the transaction.
+ */
+export type Asset5 = string;
 
 export interface UnifiedItem {
   id: number;
@@ -49,7 +53,8 @@ export interface UnifiedItem {
 }
 export interface UnifiedItemData {
   type: UnifiedItemType;
-  assetIn?: Asset;
+  account?: Asset;
+  assetIn?: Asset1;
   /**
    * In case of buying some asset, this is the number of assets received.
    */
@@ -58,7 +63,7 @@ export interface UnifiedItemData {
    * In case of buying some asset, this is the value of assets in the default currency.
    */
   assetValueIn?: number | string;
-  assetOut?: Asset1;
+  assetOut?: Asset2;
   /**
    * In case of selling some asset, this is the number of assets given.
    */
@@ -71,7 +76,7 @@ export interface UnifiedItemData {
    * Amount of fee charged as a part of the transaction.
    */
   fee?: number | string;
-  feeAsset?: Asset2;
+  feeAsset?: Asset3;
   /**
    * If tax must be calculated, this is the type of the tax.
    */
@@ -80,7 +85,7 @@ export interface UnifiedItemData {
    * If tax must be calculated, this is the amount of tax in tax assets.
    */
   taxAmount?: number | string;
-  taxAsset?: Asset3;
+  taxAsset?: Asset4;
   /**
    * If tax must be calculated, alternatively it can be percentage of the total of the transaction.
    */
@@ -89,7 +94,7 @@ export interface UnifiedItemData {
    * Total value of the transaction, if known.
    */
   value?: number | string;
-  valueAsset?: Asset4;
+  valueAsset?: Asset5;
   /**
    * Text of the original item if known.
    */
