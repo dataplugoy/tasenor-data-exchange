@@ -75,8 +75,7 @@ export class NordnetDriver extends ManualUploadDriver {
       text: line.record.Tapahtumateksti || line.record.Tapahtumatyyppi,
       total: line.record.Summa,
       fields: line.record
-    })
-    )
+    }))
   }
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {

@@ -52,3 +52,22 @@ export function chg(value: string | number | Decimal | undefined): string {
   const num = dec(value)
   return num.isNegative() ? num.toString() : '+' + num.toString()
 }
+
+
+  /**
+   * Convert chardet encoding to the supported buffer encoding
+   * "ascii" | "utf8" | "utf-8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
+   */
+export function parseEncoding(encoding: string): 'ascii' | 'utf8' | 'utf-8' | 'utf16le' | 'ucs2' | 'ucs-2' | 'base64' | 'latin1' | 'binary' | 'hex' {
+  switch (encoding.toUpperCase()) {
+    case 'UTF-8':
+      return 'utf-8'
+    case 'ISO-8859-2':
+    case 'ISO-8859-1':
+      return 'latin1'
+    case 'UTF-16LE':
+      return 'utf16le'
+    default:
+      throw new Error(`Not able to map text encoding ${encoding}.`)
+  }
+}

@@ -5,6 +5,7 @@ import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
+import { parseEncoding } from '../lib/utils'
 
 export type CsvOptions = Options & {
   regexMatch?: RegExp
@@ -52,8 +53,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       throw new Error(`Unable to detect encodin for data in ${this}.`)
     }
 
-    // eslint-disable-next-line
-    const data = this.data.data.toString(encoding as BufferEncoding)
+    const data = this.data.data.toString(parseEncoding(encoding))
 
     if (options.regexMatch) {
       if (!options.regexMatch.test(data)) {
