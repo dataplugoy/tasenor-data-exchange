@@ -3,7 +3,7 @@ import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 
-describe.only('Analyzer', () => {
+describe('Analyzer', () => {
   it('deposit case', async () => {
 
     Analyzer.configure({
