@@ -6,6 +6,12 @@ import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ManualUploadDriverSettings } from '../types/DriverSettings'
 import { ManualUploadFlowState } from '../types/FlowState'
 import { Driver } from './Driver'
+import { num } from '@tasenor/common'
+
+export type PreProcessOptions = {
+  numericFields?: string[]
+  numericOrNullFields?: string[]
+}
 
 /**
  * A base class for drivers that use manual upload.
@@ -37,5 +43,32 @@ export class ManualUploadDriver extends Driver {
       _('Please select a statement to upload.'),
       this.options.userId
     )
+  }
+
+  /**
+   * Make checks and perform conversions to the selected fields.
+   * @param csv
+   * @param options
+   */
+  preProcess(csv: Record<string, string | number | null>[], options: PreProcessOptions): void {
+    options.numericFields && options.numericFields.forEach(field => {
+      csv.forEach(line => {
+        if (!(field in line)) {
+          throw new Error(`There is no field '${field}' on line ${JSON.stringify(line)}.`)
+        }
+        if (line[field] === '') {
+          throw new Error(`A field '${field}' is empty in line ${JSON.stringify(line)} (maybe you want to use 'numericOrNullFields' instead).`)
+        }
+        line[field] = num(`${line[field]}`)
+      })
+    })
+    options.numericOrNullFields && options.numericOrNullFields.forEach(field => {
+      csv.forEach(line => {
+        if (!(field in line)) {
+          throw new Error(`There is no field '${field}' on line ${JSON.stringify(line)}.`)
+        }
+        line[field] = line[field] === '' ? null : num(`${line[field]}`)
+      })
+    })
   }
 }

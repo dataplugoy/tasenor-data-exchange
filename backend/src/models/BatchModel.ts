@@ -68,6 +68,14 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   /**
+   * Similar to parseCsv(), but columnwise result.
+   * @param options
+   */
+  parseCsvColumns(options: Options = {}): Record<string,string>[] {
+    return this.parseCsv({ ...options, columns: true }) as unknown as Record<string,string>[]
+  }
+
+  /**
    * Get the services for this batch model.
    */
   async getServices(): Promise<Service[]> {
