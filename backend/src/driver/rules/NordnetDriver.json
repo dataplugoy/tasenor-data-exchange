@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Deposit",
+    "key": "TALLETUS",
+    "filter": "Tapahtumatyyppi == 'Buy'",
+    "result": {
+      "type": "'deposit'",
+      "value": "total"
+    }
+  }
+]

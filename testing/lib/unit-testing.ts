@@ -4,6 +4,12 @@ import { connect } from '../../backend/src/connect'
 import { cwd } from 'process'
 import path from 'path'
 import { BatchModel } from '../../backend/src/models/BatchModel'
+import { InputItemData } from '../../backend/src/types/API/InputItem'
+import { InputItemModel } from '../../backend/src/models/InputItemModel'
+import { JsonValue } from '@prisma/client/runtime/library'
+import { RunModel } from '../../backend/src/models/RunModel'
+import { RuleModel } from '../../backend/src/models/RuleModel'
+import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -39,4 +45,79 @@ export function createBatchFrom(filePath: string): BatchModel {
     endStock: {},
     flowPlanId: 0
   })
+}
+
+/**
+ * Generate rules from the original source data JSON file.
+ */
+export function createRulesFrom(filePath: string): Record<string, RuleModel[]> {
+  const rulesData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'backend', 'src', 'driver', 'rules', filePath)).toString('utf-8'))
+
+  const rules: Record<string, RuleModel[]> = {}
+  for (const ruleItem of rulesData) {
+    if (!rules[ruleItem.key]) {
+      rules[ruleItem.key] = []
+    }
+
+    const rule = new RuleModel({
+      filterView: {},
+      resultView: {},
+      ...ruleItem,
+      type: 'INPUT_SOURCE',
+      ownerId: 0
+    })
+
+    rules[ruleItem.key].push(rule)
+  }
+
+  return rules
+}
+
+/**
+ * Generate arguments for driver's unifyItem function from input data.
+ */
+export function unifyFrom(items: InputItemData[]): [FlowPlanModel, RunModel, InputItemModel[], Record<string, RuleModel[]>] {
+
+  const flowPlan = new FlowPlanModel({
+    id: 0,
+    created: new Date(),
+    updated: new Date(),
+    title: 'Unit Test Mock',
+    state: {},
+    projectId: 0,
+    lastStamp: null,
+    stock: {},
+  })
+
+  const inputItems = items.map(item => new InputItemModel({
+    id: 0,
+    created: new Date(),
+    updated: new Date(),
+    data: item as unknown as JsonValue,
+    runId: 0,
+    flowPlanId: 0,
+    batchId: 0,
+    error: null,
+    processed: false,
+    skipped: false,
+    hash: '',
+    skipReason: null
+  }))
+
+  const run = new RunModel({
+    id: 0,
+    created: new Date(),
+    updated: new Date(),
+    initialState: 'DATA_PARSED',
+    finalState: 'DATA_PARSED',
+    done: 0,
+    total: items.length,
+    error: null,
+    result: 'ALL_SUCCESS',
+    batchId: 0,
+  })
+
+  const rules = createRulesFrom('NordnetDriver.json')
+
+  return [flowPlan, run, inputItems, rules]
 }

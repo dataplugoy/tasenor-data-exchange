@@ -57,7 +57,7 @@ export class TestMockDriver extends Driver {
   }
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
-    const lines = batch.parseCsv()
+    const lines = batch.parseCsv() as string[][]
     let lineNumber = 1
     const items: InputItemData[] = []
 

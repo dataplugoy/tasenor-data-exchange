@@ -11,6 +11,7 @@ import { num } from '@tasenor/common'
 export type PreProcessOptions = {
   numericFields?: string[]
   numericOrNullFields?: string[]
+  requiredFields?: string[]
 }
 
 /**
@@ -51,6 +52,7 @@ export class ManualUploadDriver extends Driver {
    * @param options
    */
   preProcess(csv: { raw: string, record: Record<string, string | number | null>}[], options: PreProcessOptions): void {
+    // Convert to numeric fields. Value required.
     options.numericFields && options.numericFields.forEach(field => {
       csv.forEach(line => {
         if (!(field in line.record)) {
@@ -62,12 +64,23 @@ export class ManualUploadDriver extends Driver {
         line.record[field] = num(`${line.record[field]}`)
       })
     })
+
+    // Convert to numeric fields. Use null if value empty.
     options.numericOrNullFields && options.numericOrNullFields.forEach(field => {
       csv.forEach(line => {
         if (!(field in line.record)) {
           throw new Error(`There is no field '${field}' on line ${JSON.stringify(line.record)}.`)
         }
         line.record[field] = line.record[field] === '' ? null : num(`${line.record[field]}`)
+      })
+    })
+
+    // Check for required fields.
+    options.requiredFields && options.requiredFields.forEach(field => {
+      csv.forEach(line => {
+        if (!(field in line.record) || line.record[field] === '') {
+          throw new Error(`The required field '${field}' is missing on line ${JSON.stringify(line.record)}.`)
+        }
       })
     })
   }
