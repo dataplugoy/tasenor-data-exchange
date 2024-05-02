@@ -191,7 +191,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // TODO: This last stamp used in driver is not necessarily true if we allow old data to appear (like Lynx tax fixes).
       const data = await driver.fetchData(this)
 
-      if (typeof data !== 'string') {
+      if (typeof data !== 'string' && !(data instanceof Buffer)) {
         throw new Error(`Bad data type '${typeof data}' received from ${driver.type} driver.`)
       }
       await batch.setData(data)

@@ -27,7 +27,8 @@ export class ManualUploadDriver extends Driver {
     return {}
   }
 
-  async fetchData(flowPlan: FlowPlanModel): Promise<string> {
+  async fetchData(flowPlan: FlowPlanModel): Promise<Buffer> {
+    console.log('here')
     const batch = await BatchModel.getLatest(flowPlan)
     if (batch && batch.data.data !== null) {
       return batch.data.data

@@ -193,7 +193,7 @@ export class Driver {
    * Handler for actual data fetching.
    * @returns New data found.
    */
-  async fetchData(flowPlan: FlowPlanModel): Promise<string> {
+  async fetchData(flowPlan: FlowPlanModel): Promise<string | Buffer> {
     throw new Error(`Input source ${this.type} does not implement fetchData().`)
   }
 
