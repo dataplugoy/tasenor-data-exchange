@@ -6,6 +6,10 @@ import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
 
+export type CsvOptions = Options & {
+  regexMatch?: RegExp
+}
+
 export class BatchModel extends BaseModel<prisma.Batch> {
 
   static table = 'batch'
@@ -36,7 +40,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Get the CSV presentation of the data.
    */
-  parseCsv(options: Options = {}): string[][] | Record<string,string>[] {
+  parseCsv(options: CsvOptions = {}): string[][] | Record<string,string>[] {
     const records: string[][] = []
     const parser = parse(options)
 
@@ -49,6 +53,15 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     }
 
     const data = this.data.data.toString(encoding as BufferEncoding)
+
+    if (options.regexMatch) {
+      if (!options.regexMatch.test(data)) {
+        // TODO: It might be good idea to transfer this error in visible manner to UI.
+        //       Perhaps detect somehow automatically from batch failure?
+        //       An optional extra human readable error to display on the top of batch?
+        throw new Error(`Imported data in ${this} does not match regex ${options.regexMatch}.`)
+      }
+    }
 
     parser.on('readable', function() {
       let record
@@ -71,7 +84,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
    * Similar to parseCsv(), but columnwise result.
    * @param options
    */
-  parseCsvColumns(options: Options = {}): Record<string,string>[] {
+  parseCsvColumns(options: CsvOptions = {}): Record<string,string>[] {
     return this.parseCsv({ ...options, columns: true }) as unknown as Record<string,string>[]
   }
 

@@ -17,12 +17,17 @@ export class NordnetDriver extends ManualUploadDriver {
   }
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
-    const csv = batch.parseCsvColumns({ delimiter: '\t' })
+
+    const csv = batch.parseCsvColumns({
+      delimiter: '\t',
+      regexMatch: /^\s*Id\tKirjausp.iv.\sKauppap.iv.\sMaksup.iv./
+    })
+
     this.preProcess(csv, {
       numericFields: ['Summa', 'Kurssi', 'Määrä', 'Kokonaiskulut', 'Kokonaismäärä', 'Hankinta-arvo', 'Saldo', 'Vaihtokurssi'],
       numericOrNullFields: ['Välityspalkkio'],
     })
-    console.log(csv)
+
     return []
   }
 
