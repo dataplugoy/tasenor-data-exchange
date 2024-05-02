@@ -1,5 +1,17 @@
 [
   {
+    "name": "Deposit",
+    "key": "TALLETUS",
+    "filter": "Tapahtumatyyppi == 'TALLETUS'",
+    "result": {
+      "type": "'income'",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "account": "'NORDNET_DEPOSIT_FROM'",
+      "text": "Tapahtumateksti"
+    }
+  },
+  {
     "name": "Monthly Saving Fee",
     "key": "ETF_KK SÄÄSTÖN PALVELUMAKSU",
     "filter": "Tapahtumatyyppi == 'ETF_KK SÄÄSTÖN PALVELUMAKSU'",
@@ -7,7 +19,21 @@
       "type": "'expense'",
       "value": "Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_MONTHLY_SAVING_FEE'"
+      "account": "'NORDNET_MONTHLY_SAVING_FEE'",
+      "text": "Tapahtumateksti"
+    }
+  },
+  {
+    "name": "Stock Buy",
+    "key": "OSTO",
+    "filter": "Tapahtumatyyppi == 'OSTO'",
+    "result": {
+      "type": "'expense'",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "assetAmountIn": "Määrä",
+      "assetIn": "Arvopaperi",
+      "text": "Tapahtumateksti"
     }
   }
 ]

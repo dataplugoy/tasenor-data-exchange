@@ -56,8 +56,6 @@ export class NordnetDriver extends ManualUploadDriver {
 const TODO = {
   "rules": [
     {
-      "name": "Stock Buy",
-      "filter": "Tapahtumatyyppi == 'OSTO'",
       "result": [
         {
           "data": {
@@ -120,30 +118,6 @@ const TODO = {
           "asset": "$('Kokonaiskulut Valuutta')",
           "amount": "Kokonaiskulut",
           "reason": "'fee'"
-        }
-      ]
-    },
-    {
-      "name": "Monthly Saving Fee",
-      "filter": "Tapahtumatyyppi == 'ETF_KK SÄÄSTÖN PALVELUMAKSU'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'expense'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'statement'",
-          "asset": "'STOCK_BROKER_SERVICE_FEE'",
-          "amount": "-Summa",
-          "reason": "'expense'"
         }
       ]
     },
