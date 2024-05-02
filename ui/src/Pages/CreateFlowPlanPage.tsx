@@ -54,7 +54,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
           <TextField select label={t('Data Source')} value={input} onChange={e => setInput(e.target.value)}>
             {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK"><Trans>Fixed Test File</Trans></MenuItem>}
             <MenuItem value="ENABLE_BANKING"><Trans>Enable Banking Service</Trans></MenuItem>
-            <MenuItem value="MANUAL_UPLOAD"><Trans>Upload Files</Trans></MenuItem>
+            <MenuItem value="NORDNET"><Trans>Upload Nordnet Statement</Trans></MenuItem>
           </TextField>
 
           {

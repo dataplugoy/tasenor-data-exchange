@@ -20,7 +20,8 @@
           "enum": [
             "TEST_MOCK",
             "ENABLE_BANKING",
-            "MANUAL_UPLOAD"
+            "MANUAL_UPLOAD",
+            "NORDNET"
           ]
         },
         "settings": {

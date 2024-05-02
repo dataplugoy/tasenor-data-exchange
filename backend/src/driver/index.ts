@@ -6,6 +6,7 @@ import { Driver } from './Driver'
 import { DriverSettings } from '../types/DriverSettings'
 import { NoActionDriver } from './NoActionDriver'
 import { ManualUploadDriver } from './ManualUploadDriver'
+import { NordnetDriver } from './NordnetDriver'
 
 /**
  * Drivers implemented.
@@ -15,6 +16,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   NO_ACTION: NoActionDriver,
   ENABLE_BANKING: EnableBankingDriver,
   MANUAL_UPLOAD: ManualUploadDriver,
+  NORDNET: NordnetDriver,
 }
 
 /**
