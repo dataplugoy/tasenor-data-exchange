@@ -288,8 +288,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           }
 
           const unified = await driver.unifyItem(this, run, input, rules)
+
           await UnifiedItemModel.save({
-            data: unified as unknown as JsonObject,
+            data: unified.data as unknown as JsonObject,
             time: new Date(unified.time),
             processed: false,
             skipped: false,
