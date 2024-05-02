@@ -6,10 +6,12 @@ import path from 'path'
 import { BatchModel } from '../../backend/src/models/BatchModel'
 import { InputItemData } from '../../backend/src/types/API/InputItem'
 import { InputItemModel } from '../../backend/src/models/InputItemModel'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
 import { RunModel } from '../../backend/src/models/RunModel'
 import { RuleModel } from '../../backend/src/models/RuleModel'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
+import { UnifiedItemModel } from '../../backend/src/models/UnifiedItemModel'
+import { Driver } from '../../backend/src/driver/Driver'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -74,9 +76,9 @@ export function createRulesFrom(filePath: string): Record<string, RuleModel[]> {
 }
 
 /**
- * Generate arguments for driver's unifyItem function from input data.
+ * Generate arguments for driver's unifyItem() function from input data.
  */
-export function unifyFrom(items: InputItemData[]): [FlowPlanModel, RunModel, InputItemModel[], Record<string, RuleModel[]>] {
+export function unifyArgsFrom(items: InputItemData[]): [FlowPlanModel, RunModel, InputItemModel[], Record<string, RuleModel[]>] {
 
   const flowPlan = new FlowPlanModel({
     id: 0,
@@ -120,4 +122,32 @@ export function unifyFrom(items: InputItemData[]): [FlowPlanModel, RunModel, Inp
   const rules = createRulesFrom('NordnetDriver.json')
 
   return [flowPlan, run, inputItems, rules]
+}
+
+/**
+ * Run unifying test using the driver.
+ * @param items
+ */
+export async function unifyItems(driver: Driver, items: InputItemData[]): Promise<UnifiedItemModel[]> {
+  const unified: UnifiedItemModel[] = []
+  const [flowPlan, run, inputItems, rules] = unifyArgsFrom(items)
+  for (const input of inputItems) {
+    const item = await driver.unifyItem(flowPlan, run, input, rules)
+    unified.push(new UnifiedItemModel({
+      id: 0,
+      created: new Date(),
+      updated: new Date(),
+      time: new Date(item.time),
+      data: item.data as unknown as JsonObject,
+      stockChange: {},
+      processed: false,
+      skipped: false,
+      error: null,
+      inputId: 0,
+      flowPlanId: 0,
+      batchId: 0,
+      runId: 0,
+    }))
+  }
+  return unified
 }

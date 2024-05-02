@@ -84,7 +84,9 @@ export class NordnetDriver extends ManualUploadDriver {
   }
 }
 
-const TODO = {
+/*
+   TODO: Handle the remaining cases.
+
   "rules": [
     {
       "name": "Stock Sell",
@@ -273,3 +275,4 @@ const TODO = {
     }
   ]
 }
+*/
