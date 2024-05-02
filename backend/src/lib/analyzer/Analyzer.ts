@@ -10,13 +10,12 @@ import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
 import { sell } from './handlers/sell'
+import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
 import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
-
-// TODO: Plan and embed the rule-based steps here or elsewhere.
 
 /**
  * Running balances for accounts.
@@ -42,6 +41,7 @@ export class Analyzer {
   public buyHandler = buy.bind(this)
   public sellHandler = sell.bind(this)
   public expenseHandler = expense.bind(this)
+  public depositHandler = deposit.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)

@@ -29,6 +29,7 @@ describe('Nordnet', () => {
 
     // for (const unified of unifieds) {
     //   const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+    //   console.log(tx)
     // }
 
     expect(null).toBe(null)

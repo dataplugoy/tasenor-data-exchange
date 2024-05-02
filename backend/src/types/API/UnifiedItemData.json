@@ -49,6 +49,14 @@
       "description": "Ticker of the fee charged as a currency or other asset ticker.",
       "$ref": "Asset.json"
     },
+    "rates": {
+      "description": "Conversion rates for assets involved, if known.",
+      "$ref": "Rates.json"
+    },
+    "service": {
+      "description": "Name of the service providing the data.",
+      "type": "string"
+    },
     "taxType": {
       "description": "If tax must be calculated, this is the type of the tax.",
       "type": "string",
@@ -67,6 +75,10 @@
       "description": "If tax must be calculated, alternatively it can be percentage of the total of the transaction.",
       "type": "number"
     },
+    "text": {
+      "description": "Text of the original item if known.",
+      "type": "string"
+    },
     "value": {
       "description": "Total value of the transaction, if known.",
       "type": ["number", "string"],
@@ -75,14 +87,6 @@
     "valueAsset": {
       "description": "Asset used to determine the total value of the transaction.",
       "$ref": "Asset.json"
-    },
-    "text": {
-      "description": "Text of the original item if known.",
-      "type": "string"
-    },
-    "rates": {
-      "description": "Conversion rates for assets involved, if known.",
-      "$ref": "Rates.json"
     }
   }
 }

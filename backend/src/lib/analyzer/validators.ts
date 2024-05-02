@@ -1,4 +1,5 @@
 import { Asset, CryptoCurrency, Currency, isCurrency } from '@tasenor/common'
+// TODO: This is not working well. Need a function to give explicit language instead. Remove from here.
 import { t } from '../i18n/t'
 import { dec } from '../utils'
 import { Analyzer } from './Analyzer'

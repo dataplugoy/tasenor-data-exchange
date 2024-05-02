@@ -4,10 +4,11 @@
     "key": "TALLETUS",
     "filter": "Tapahtumatyyppi == 'TALLETUS'",
     "result": {
-      "type": "'income'",
+      "type": "'deposit'",
       "value": "Summa",
       "valueAsset": "Valuutta",
       "account": "'NORDNET_DEPOSIT_TO'",
+      "service": "Nordnet",
       "text": "Tapahtumateksti"
     }
   },
@@ -34,8 +35,7 @@
       "assetAmountIn": "Määrä",
       "assetIn": "Arvopaperi",
       "fee": "Kokonaiskulut",
-      "feeAsset": "$('Kokonaiskulut Valuutta')",
-      "text": "Tapahtumateksti"
+      "feeAsset": "$('Kokonaiskulut Valuutta')"
     }
   }
 ]

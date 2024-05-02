@@ -8,4 +8,4 @@
 /**
  * Main category of the transaction.
  */
-export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "dividend";
+export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "withdraw" | "deposit" | "dividend";

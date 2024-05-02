@@ -8,7 +8,7 @@
 /**
  * Main category of the transaction.
  */
-export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "dividend";
+export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "withdraw" | "deposit" | "dividend";
 /**
  * Account involved, if already known.
  */
@@ -60,6 +60,11 @@ export interface UnifiedItemData {
    */
   fee?: number | string;
   feeAsset?: Asset3;
+  rates?: Rates;
+  /**
+   * Name of the service providing the data.
+   */
+  service?: string;
   /**
    * If tax must be calculated, this is the type of the tax.
    */
@@ -74,15 +79,14 @@ export interface UnifiedItemData {
    */
   taxPercentage?: number;
   /**
+   * Text of the original item if known.
+   */
+  text?: string;
+  /**
    * Total value of the transaction, if known.
    */
   value?: number | string;
   valueAsset?: Asset5;
-  /**
-   * Text of the original item if known.
-   */
-  text?: string;
-  rates?: Rates;
 }
 /**
  * Conversion rates for assets involved, if known.
