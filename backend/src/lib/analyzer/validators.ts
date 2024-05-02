@@ -110,9 +110,9 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
 }
 
 /**
- * Resolve total value if not given explicitly.
+ * Resolve total value from assets if not given explicitly.
  */
-export async function validateValue(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined, canUseService: boolean): Promise<Decimal> {
+export async function validateValueOrAsset(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined, canUseService: boolean = false): Promise<Decimal> {
   const input = this.validateInput()
   if (input.value !== undefined && input.value !== null) {
     return dec(input.value)
@@ -126,4 +126,15 @@ export async function validateValue(this: Analyzer, asset: Asset | undefined = u
 
   const rate = await this.validateRate(asset, canUseService)
   return rate.mul(dec(amount))
+}
+
+/**
+ * Ensure that value is given.
+ */
+export async function validateValue(this: Analyzer): Promise<Decimal> {
+  const input = this.validateInput()
+  if (input.value !== undefined && input.value !== null) {
+    return dec(input.value)
+  }
+  this.validateError(`Value is missing`)
 }

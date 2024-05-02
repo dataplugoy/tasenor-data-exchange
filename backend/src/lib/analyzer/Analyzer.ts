@@ -7,9 +7,10 @@ import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
-import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue } from './validators'
+import { validateBasics, validateError, validateInput, validateRate, validateRequirdeField, validateRequired, validateText, validateValue, validateValueOrAsset } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
 import { sell } from './handlers/sell'
+import { expense } from './handlers/expense'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
@@ -40,6 +41,7 @@ export class Analyzer {
   // Bind handlers.
   public buyHandler = buy.bind(this)
   public sellHandler = sell.bind(this)
+  public expenseHandler = expense.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)
@@ -49,7 +51,8 @@ export class Analyzer {
   public validateRequired: (...fields: Array<keyof UnifiedItemData>) => void = validateRequired.bind(this)
   public validateText: (text: string, values: Record<string, string | undefined>) => string = validateText.bind(this)
   public validateRate: (asset: Asset, canUseService: boolean) => Promise<Decimal> = validateRate.bind(this)
-  public validateValue: (asset: Asset | undefined, amount: number | Decimal | undefined, canUseService: boolean) => Promise<Decimal> = validateValue.bind(this)
+  public validateValue: () => Promise<Decimal> = validateValue.bind(this)
+  public validateValueOrAsset: (asset: Asset | undefined, amount: number | Decimal | undefined, canUseService: boolean) => Promise<Decimal> = validateValueOrAsset.bind(this)
 
   /**
    * Initialize

@@ -22,7 +22,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
   this.validateBasics()
   this.validateRequired('assetIn', 'assetAmountIn')
   const text = this.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
-  const value = await this.validateValue(assetIn as Asset, dec(assetAmountIn), true)
+  const value = await this.validateValueOrAsset(assetIn as Asset, dec(assetAmountIn), true)
 
   return {
     time: time.toUTC().toISO() as Timestring,
