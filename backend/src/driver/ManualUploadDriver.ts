@@ -1,3 +1,4 @@
+import prisma from '@prisma/client'
 import { UploadRequired } from '../exceptions/AlertException'
 import { _ } from '../lib/i18n/t'
 import { BatchModel } from '../models/BatchModel'
@@ -14,8 +15,8 @@ export class ManualUploadDriver extends Driver {
   declare settings: ManualUploadDriverSettings
   declare state: ManualUploadFlowState
 
-  constructor(settings: ManualUploadDriverSettings) {
-    super('MANUAL_UPLOAD', settings)
+  constructor(settings: ManualUploadDriverSettings, type: prisma.DriverType = 'MANUAL_UPLOAD') {
+    super(settings, type)
   }
 
   canHandleInput(): boolean {

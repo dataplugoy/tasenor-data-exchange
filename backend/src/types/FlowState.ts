@@ -15,4 +15,7 @@ export type EnableBankingFlowState = {
 export type ManualUploadFlowState = {
 }
 
-export type FlowState = TestMockFlowState | NoActionFlowState | EnableBankingFlowState | ManualUploadFlowState
+export type NordnetFlowState = {
+}
+
+export type FlowState = TestMockFlowState | NoActionFlowState | EnableBankingFlowState | ManualUploadFlowState | NordnetFlowState

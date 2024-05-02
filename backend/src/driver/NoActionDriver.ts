@@ -11,7 +11,7 @@ export class NoActionDriver extends Driver {
   declare state: NoActionFlowState
 
   constructor(settings: NoActionDriverSettings) {
-    super('NO_ACTION', settings)
+    super(settings, 'NO_ACTION')
   }
 
   canHandleOutput(): boolean {

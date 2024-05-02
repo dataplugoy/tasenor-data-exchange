@@ -23,7 +23,7 @@ export class TestMockDriver extends Driver {
   declare state: TestMockFlowState
 
   constructor(settings: TestMockDriverSettings) {
-    super('TEST_MOCK', settings)
+    super(settings, 'TEST_MOCK')
   }
 
   canHandleInput(): boolean {

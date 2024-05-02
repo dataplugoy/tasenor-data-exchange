@@ -16,4 +16,7 @@ export type EnableBankingDriverSettings = {
 export type ManualUploadDriverSettings = {
 }
 
-export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings | ManualUploadDriverSettings
+export type NordnetDriverSettings = {
+}
+
+export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings | ManualUploadDriverSettings | NordnetDriverSettings

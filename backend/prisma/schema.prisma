@@ -115,6 +115,7 @@ enum DriverType {
   NO_ACTION
   ENABLE_BANKING
   MANUAL_UPLOAD
+  NORDNET
 }
 
 model InputSource {

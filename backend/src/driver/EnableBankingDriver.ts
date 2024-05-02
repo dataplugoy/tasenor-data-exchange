@@ -23,7 +23,7 @@ export class EnableBankingDriver extends Driver {
   declare state: EnableBankingFlowState
 
   constructor(settings: EnableBankingDriverSettings) {
-    super('ENABLE_BANKING', settings)
+    super(settings, 'ENABLE_BANKING')
   }
 
   canHandleInput(): boolean {

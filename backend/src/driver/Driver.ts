@@ -31,7 +31,7 @@ export class Driver {
   options: RuntimeOptions
   state: FlowState
 
-  constructor(type: prisma.DriverType, settings: DriverSettings) {
+  constructor(settings: DriverSettings, type: prisma.DriverType) {
     this.type = type
     this.settings = settings
   }
