@@ -86,7 +86,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
    * @param options
    */
   parseCsvColumns(options: CsvOptions = {}): { raw: string, record: Record<string, string>}[] {
-    return this.parseCsv({ ...options, columns: true, raw: true }) as unknown as { raw: string, record: Record<string, string>}[]
+    return this.parseCsv({ columns: true, raw: true, ...options }) as unknown as { raw: string, record: Record<string, string>}[]
   }
 
   /**

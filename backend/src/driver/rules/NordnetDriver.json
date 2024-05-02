@@ -7,7 +7,7 @@
       "type": "'income'",
       "value": "Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_DEPOSIT_FROM'",
+      "account": "'NORDNET_DEPOSIT_TO'",
       "text": "Tapahtumateksti"
     }
   },
@@ -17,7 +17,7 @@
     "filter": "Tapahtumatyyppi == 'ETF_KK SÄÄSTÖN PALVELUMAKSU'",
     "result": {
       "type": "'expense'",
-      "value": "Summa",
+      "value": "-Summa",
       "valueAsset": "Valuutta",
       "account": "'NORDNET_MONTHLY_SAVING_FEE'",
       "text": "Tapahtumateksti"
@@ -28,11 +28,13 @@
     "key": "OSTO",
     "filter": "Tapahtumatyyppi == 'OSTO'",
     "result": {
-      "type": "'expense'",
-      "value": "Summa",
+      "type": "'buy'",
+      "value": "-Summa",
       "valueAsset": "Valuutta",
       "assetAmountIn": "Määrä",
       "assetIn": "Arvopaperi",
+      "fee": "Kokonaiskulut",
+      "feeAsset": "$('Kokonaiskulut Valuutta')",
       "text": "Tapahtumateksti"
     }
   }

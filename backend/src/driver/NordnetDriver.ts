@@ -8,7 +8,6 @@ import { FlowPlanModel } from '../models/FlowPlanModel'
 import { RunModel } from '../models/RunModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { RuleModel } from '../models/RuleModel'
-import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 
 /**
@@ -28,7 +27,39 @@ export class NordnetDriver extends ManualUploadDriver {
     const csv = batch.parseCsvColumns({
       delimiter: '\t',
       raw: true,
-      regexMatch: /^\s*Id\tKirjausp.iv.\sKauppap.iv.\sMaksup.iv./
+      regexMatch: /^\s*Id\tKirjausp.iv.\sKauppap.iv.\sMaksup.iv./,
+      from: 2,
+      columns: [
+        'Id',
+        'Kirjauspäivä',
+        'Kauppapäivä',
+        'Maksupäivä',
+        'Salkku',
+        'Tapahtumatyyppi',
+        'Arvopaperi',
+        'Instrumenttityyppi',
+        'ISIN',
+        'Määrä',
+        'Kurssi',
+        'Korko',
+        'Kokonaiskulut',
+        'Kokonaiskulut Valuutta',
+        'Summa',
+        'Valuutta',
+        'Hankinta-arvo',
+        'Hankinta-arvo Valuutta',
+        'Tulos',
+        'Tulos Valuutta',
+        'Kokonaismäärä',
+        'Saldo',
+        'Vaihtokurssi',
+        'Tapahtumateksti',
+        'Mitätöintipäivä',
+        'Laskelma',
+        'Vahvistusnumero',
+        'Välityspalkkio',
+        'Välityspalkkio Valuutta',
+      ]
     })
 
     this.preProcess(csv, {
@@ -55,38 +86,6 @@ export class NordnetDriver extends ManualUploadDriver {
 
 const TODO = {
   "rules": [
-    {
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'trade'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'stock'",
-          "asset": "Arvopaperi",
-          "amount": "Määrä",
-          "reason": "'trade'"
-        },
-        {
-          "if": "Kokonaiskulut",
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "$('Kokonaiskulut Valuutta')",
-          "amount": "Kokonaiskulut",
-          "reason": "'fee'"
-        }
-      ]
-    },
     {
       "name": "Stock Sell",
       "filter": "Tapahtumatyyppi == 'MYYNTI'",
@@ -134,30 +133,6 @@ const TODO = {
           "asset": "Valuutta",
           "amount": "Summa",
           "reason": "'forex'"
-        }
-      ]
-    },
-    {
-      "name": "Deposit",
-      "filter": "Tapahtumatyyppi == 'TALLETUS'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'deposit'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'external'",
-          "asset": "Valuutta",
-          "amount": "-Summa",
-          "reason": "'deposit'"
         }
       ]
     },
