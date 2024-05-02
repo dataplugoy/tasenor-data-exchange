@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { BatchModel } from '../models/BatchModel'
 import { InputItemData } from '../types/API/InputItem'
 import { NordnetDriverSettings } from '../types/DriverSettings'
@@ -20,6 +21,7 @@ export class NordnetDriver extends ManualUploadDriver {
 
     const csv = batch.parseCsvColumns({
       delimiter: '\t',
+      raw: true,
       regexMatch: /^\s*Id\tKirjausp.iv.\sKauppap.iv.\sMaksup.iv./
     })
 
@@ -28,7 +30,14 @@ export class NordnetDriver extends ManualUploadDriver {
       numericOrNullFields: ['Välityspalkkio'],
     })
 
-    return []
+    return csv.map((line, index) => ({
+        line: index + 2,
+        original: line.raw,
+        time: DateTime.fromISO(`${line.record['Kirjauspäivä']}T12:00:00Z`).toUTC().toISO() as string,
+        text: line.record['Tapahtumateksti'] || line.record['Tapahtumatyyppi'],
+        total: line.record['Summa'],
+        fields: line.record
+      })
+    )
   }
-
 }

@@ -50,24 +50,24 @@ export class ManualUploadDriver extends Driver {
    * @param csv
    * @param options
    */
-  preProcess(csv: Record<string, string | number | null>[], options: PreProcessOptions): void {
+  preProcess(csv: { raw: string, record: Record<string, string | number | null>}[], options: PreProcessOptions): void {
     options.numericFields && options.numericFields.forEach(field => {
       csv.forEach(line => {
-        if (!(field in line)) {
-          throw new Error(`There is no field '${field}' on line ${JSON.stringify(line)}.`)
+        if (!(field in line.record)) {
+          throw new Error(`There is no field '${field}' on line ${JSON.stringify(line.record)}.`)
         }
-        if (line[field] === '') {
-          throw new Error(`A field '${field}' is empty in line ${JSON.stringify(line)} (maybe you want to use 'numericOrNullFields' instead).`)
+        if (line.record[field] === '') {
+          throw new Error(`A field '${field}' is empty in line ${JSON.stringify(line.record)} (maybe you want to use 'numericOrNullFields' instead).`)
         }
-        line[field] = num(`${line[field]}`)
+        line.record[field] = num(`${line.record[field]}`)
       })
     })
     options.numericOrNullFields && options.numericOrNullFields.forEach(field => {
       csv.forEach(line => {
-        if (!(field in line)) {
-          throw new Error(`There is no field '${field}' on line ${JSON.stringify(line)}.`)
+        if (!(field in line.record)) {
+          throw new Error(`There is no field '${field}' on line ${JSON.stringify(line.record)}.`)
         }
-        line[field] = line[field] === '' ? null : num(`${line[field]}`)
+        line.record[field] = line.record[field] === '' ? null : num(`${line.record[field]}`)
       })
     })
   }

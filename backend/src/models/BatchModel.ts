@@ -40,7 +40,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Get the CSV presentation of the data.
    */
-  parseCsv(options: CsvOptions = {}): string[][] | Record<string,string>[] {
+  parseCsv(options: CsvOptions = {}): string[][] | Record<string, string>[] | { raw: string, record: Record<string, string>}[] {
     const records: string[][] = []
     const parser = parse(options)
 
@@ -84,8 +84,8 @@ export class BatchModel extends BaseModel<prisma.Batch> {
    * Similar to parseCsv(), but columnwise result.
    * @param options
    */
-  parseCsvColumns(options: CsvOptions = {}): Record<string,string>[] {
-    return this.parseCsv({ ...options, columns: true }) as unknown as Record<string,string>[]
+  parseCsvColumns(options: CsvOptions = {}): { raw: string, record: Record<string, string>}[] {
+    return this.parseCsv({ ...options, columns: true, raw: true }) as unknown as { raw: string, record: Record<string, string>}[]
   }
 
   /**
