@@ -12,6 +12,11 @@ import { RuleModel } from '../../backend/src/models/RuleModel'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
 import { UnifiedItemModel } from '../../backend/src/models/UnifiedItemModel'
 import { Driver } from '../../backend/src/driver/Driver'
+import { Transaction } from '../../backend/src/types/API/Transaction'
+import { Stock } from '../../backend/src/lib/Stock'
+import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
+import { AnalyzerConfig } from '../../backend/src/lib/analyzer/AnalyzerConfig'
+import { DateTime } from 'luxon'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -149,5 +154,23 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
       runId: 0,
     }))
   }
+
+  unified.sort((a, b) => (a.data.time === b.data.time ? 0 : (a.data.time < b.data.time ? -1 : 1)))
+
   return unified
+}
+
+export async function analyzeItems(items: UnifiedItemModel[], config: AnalyzerConfig): Promise<Transaction[]> {
+  const stock = new Stock({})
+  const analyzer = new Analyzer(stock)
+  Analyzer.configure(config)
+
+  const txs: Transaction[] = []
+
+  for (const unified of items) {
+    const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+    txs.push(tx)
+  }
+
+  return txs
 }

@@ -13,7 +13,7 @@ import { AccountCode } from '../../../types/AccountCode'
  * @param time
  * @param input
  *
- * Requires fields `account`.
+ * Requires fields `account`, `service`.
  */
 export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 

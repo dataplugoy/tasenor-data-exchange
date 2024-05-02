@@ -8,8 +8,7 @@
       "value": "Summa",
       "valueAsset": "Valuutta",
       "account": "'NORDNET_DEPOSIT_TO'",
-      "service": "Nordnet",
-      "text": "Tapahtumateksti"
+      "service": "'Nordnet'"
     }
   },
   {
