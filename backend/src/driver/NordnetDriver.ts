@@ -79,7 +79,7 @@ export class NordnetDriver extends ManualUploadDriver {
   }
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {
-    return this.applyUnifyRules(flow, run, input, rules, input.fields['Tapahtumatyyppi'] as string)
+    return this.applyUnifyRules(flow, run, input, rules, input.fields.Tapahtumatyyppi as string)
   }
 }
 

@@ -262,7 +262,7 @@ export class Driver {
       : DateTime.fromISO(`${input.time}`).toUTC().toISO()
 
     return {
-      data: data,
+      data,
       time: `${time}`,
       processed: false,
       skipped: false,

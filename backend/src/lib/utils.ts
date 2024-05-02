@@ -53,8 +53,7 @@ export function chg(value: string | number | Decimal | undefined): string {
   return num.isNegative() ? num.toString() : '+' + num.toString()
 }
 
-
-  /**
+/**
    * Convert chardet encoding to the supported buffer encoding
    * "ascii" | "utf8" | "utf-8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
    */
