@@ -182,4 +182,167 @@ describe('Analyzer', () => {
       }
     )
   })
+
+
+  it('buying with fee in default currency', async () => {
+    Analyzer.configure({
+      currency: 'EUR',
+      language: 'en'
+    })
+
+    const stock = {
+    }
+    const input = {
+      'type': 'buy' as UnifiedItemType,
+      'value': 1000,
+      'assetIn': 'NORDEA' as Asset,
+      'assetAmountIn': 1,
+      'fee': 2
+    }
+
+    const services = [
+    ]
+
+    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+
+    expect(analyzer.toJSON()).toStrictEqual({
+        tx: {
+          time: '2000-01-01T00:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '-1000',
+              text: 'Bought +1 NORDEA',
+              extras: {}
+            },
+            {
+              account: 'ASSET_NORDEA',
+              amount: '998',
+              text: 'Bought +1 NORDEA',
+              extras: { asset: 'NORDEA', assetChange: '1' }
+            },
+            {
+              account: 'FEE_EUR',
+              amount: '2',
+              text: 'Bought +1 NORDEA',
+              extras: { }
+            }
+          ]
+        },
+        balances: { CURRENCY_EUR: -1000, ASSET_NORDEA: 998, FEE_EUR: 2 },
+        stock: { ASSET_NORDEA: { NORDEA: { amount: 1, value: 998 } } }
+      }
+    )
+  })
+
+
+  it('buying with fee in some other currency', async () => {
+    Analyzer.configure({
+      currency: 'EUR',
+      language: 'en'
+    })
+
+    const stock = {
+    }
+    const input = {
+      'type': 'buy' as UnifiedItemType,
+      'value': 5000,
+      'assetIn': 'BTC' as Asset,
+      'assetAmountIn': 0.1,
+      'fee': 2,
+      'feeAsset': 'USD'
+    }
+
+    const services = [
+      new JsonFileService({ url: 'file:///rates.json' })
+    ]
+
+    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+
+    expect(analyzer.toJSON()).toStrictEqual({
+        tx: {
+          time: '2000-01-01T00:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '-5000',
+              text: 'Bought +0.1 BTC',
+              extras: {}
+            },
+            {
+              account: 'ASSET_BTC',
+              amount: '4998.2',
+              text: 'Bought +0.1 BTC',
+              extras: { asset: 'BTC', assetChange: '0.1' }
+            },
+            {
+              account: 'FEE_USD',
+              amount: '1.8',
+              text: 'Bought +0.1 BTC',
+              extras: {}
+            }
+          ]
+        },
+        balances: { CURRENCY_EUR: -5000, ASSET_BTC: 4998.2, FEE_USD: 1.8 },
+        stock: { ASSET_BTC: { BTC: { amount: 0.1, value: 4998.2 } } }
+      }
+    )
+  })
+
+
+  it('buying with fee in assets', async () => {
+    Analyzer.configure({
+      currency: 'EUR',
+      language: 'en'
+    })
+
+    const stock = {
+    }
+    const input = {
+      'type': 'buy' as UnifiedItemType,
+      'value': 1000,
+      'assetIn': 'NORDEA' as Asset,
+      'assetAmountIn': 1,
+      'fee': 2,
+      'feeAsset': 'ETH'
+    }
+
+    const services = [
+      new JsonFileService({ url: 'file:///rates.json' })
+    ]
+
+    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+
+    expect(analyzer.toJSON()).toStrictEqual({
+        tx: {
+          time: '2000-01-01T00:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '-1000',
+              text: 'Bought +1 NORDEA',
+              extras: {}
+            },
+            {
+              account: 'ASSET_NORDEA',
+              amount: '-1000',
+              text: 'Bought +1 NORDEA',
+              extras: { asset: 'NORDEA', assetChange: '1' }
+            },
+            {
+              account: 'ASSET_FEE_ETH',
+              amount: '2000',
+              text: 'Bought +1 NORDEA',
+              extras: { asset: 'ETH', assetChange: '-2' }
+            }
+          ]
+        },
+        balances: { CURRENCY_EUR: -1000, ASSET_NORDEA: -1000, ASSET_FEE_ETH: 2000 },
+        stock: {
+          ASSET_NORDEA: { NORDEA: { amount: 1, value: -1000 } },
+          ASSET_FEE_ETH: { ETH: { amount: -2, value: 2000 } }
+        }
+      }
+    )
+  })
 })

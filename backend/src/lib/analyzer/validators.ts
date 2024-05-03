@@ -100,18 +100,24 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
   if (canUseService) {
     let rate
     const [prefix, body] = asset.split(':')
+    const queryAsset = (body === undefined ? asset : body) as Asset
+
     if (isCurrency(asset) || prefix === 'CURRENCY') {
+      if (this.currency === queryAsset) {
+        return new Decimal(1.0)
+      }
       rate = await this.askService({
         query: 'CURRENCY_RATES',
         time: this.lastTime,
-        currency: input.assetIn as Currency,
+        currency: queryAsset as Currency,
         valueCurrency: this.currency
       })
+
     } else {
       rate = await this.askService({
         query: 'CRYPTO_RATES',
         time: this.lastTime,
-        asset: input.assetIn as CryptoCurrency,
+        asset: queryAsset as CryptoCurrency,
         valueCurrency: this.currency
       })
     }
@@ -152,4 +158,20 @@ export async function validateValue(this: Analyzer): Promise<Decimal> {
     return dec(input.value)
   }
   this.validateError(`Value is missing`)
+}
+
+/**
+ * Check if the fee is given and calculate its value, determine asset used. Asset change returned if relevant.
+ */
+export async function validateFee(this: Analyzer, canUseService: boolean): Promise<[Decimal, Asset | null, Decimal | null]> {
+  const input = this.validateInput()
+  if (input.fee === undefined) {
+    return [new Decimal(0), null, null]
+  }
+  const fee = new Decimal(input.fee)
+  if (input.feeAsset !== undefined && input.feeAsset !== this.currency) {
+    const rate = await this.validateRate(input.feeAsset as Asset, canUseService)
+    return [rate.mul(fee), input.feeAsset as Asset, fee]
+  }
+  return [new Decimal(input.fee), null, null]
 }

@@ -125,7 +125,7 @@ describe('Nordnet', () => {
   })
 
 
-  test.only('sell', async () => {
+  test('sell', async () => {
 
     const driver = getDriver('NORDNET', {})
     const batch = createBatchFrom('Nordnet-sell.csv')
@@ -138,6 +138,6 @@ describe('Nordnet', () => {
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
 
-    console.dir(txs, {depth: null})
+    // console.dir(txs[0], {depth: null})
   })
 })

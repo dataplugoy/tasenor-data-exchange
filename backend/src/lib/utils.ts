@@ -20,7 +20,7 @@ export function dec(value: string | number | Decimal | undefined): Decimal {
  */
 export function toJSON(value: unknown, decimalsToString = false): JsonValue {
   const type = typeof value
-  if (value === null || type === 'string' || type === 'boolean' || type === 'number') {
+  if (value === null || value === undefined || type === 'string' || type === 'boolean' || type === 'number') {
     return value as JsonValue
   }
   if (type === 'object') {
@@ -41,6 +41,7 @@ export function toJSON(value: unknown, decimalsToString = false): JsonValue {
     {}
     )
   }
+
   throw new Error(`Invalid type ${type}.`)
 }
 
