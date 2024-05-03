@@ -148,11 +148,11 @@ export interface UnifiedItemData {
   assetValueIn?: number | string;
   assetOut?: Asset2;
   /**
-   * In case of selling some asset, this is the number of assets given.
+   * In case of selling some asset, this is the number of assets given (as positive number).
    */
   assetAmountOut?: number | string;
   /**
-   * In case of selling some asset, this is the value of assets in the default currency.
+   * In case of selling some asset, this is the value of assets in the default currency (as positive number).
    */
   assetValueOut?: number | string;
   /**

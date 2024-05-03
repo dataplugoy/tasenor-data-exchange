@@ -31,12 +31,12 @@
       "$ref": "Asset.json"
     },
     "assetAmountOut": {
-      "description": "In case of selling some asset, this is the number of assets given.",
+      "description": "In case of selling some asset, this is the number of assets given (as positive number).",
       "type": ["number", "string"],
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
     },
     "assetValueOut": {
-      "description": "In case of selling some asset, this is the value of assets in the default currency.",
+      "description": "In case of selling some asset, this is the value of assets in the default currency (as positive number).",
       "type": ["number", "string"],
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
     },

@@ -330,17 +330,17 @@ describe('Analyzer', () => {
               extras: { asset: 'NORDEA', assetChange: '1' }
             },
             {
-              account: 'ASSET_FEE_ETH',
+              account: 'ASSETFEE_ETH',
               amount: '2000',
               text: 'Bought +1 NORDEA',
               extras: { asset: 'ETH', assetChange: '-2' }
             }
           ]
         },
-        balances: { CURRENCY_EUR: -1000, ASSET_NORDEA: -1000, ASSET_FEE_ETH: 2000 },
+        balances: { CURRENCY_EUR: -1000, ASSET_NORDEA: -1000, ASSETFEE_ETH: 2000 },
         stock: {
           ASSET_NORDEA: { NORDEA: { amount: 1, value: -1000 } },
-          ASSET_FEE_ETH: { ETH: { amount: -2, value: 2000 } }
+          ASSETFEE_ETH: { ETH: { amount: -2, value: 2000 } }
         }
       }
     )

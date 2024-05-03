@@ -223,4 +223,20 @@ describe('Nordnet', () => {
     ]
     )
   })
+
+
+  test('dividend', async () => {
+
+    const driver = getDriver('NORDNET', {})
+    const batch = createBatchFrom('Nordnet-dividend.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(4)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(4)
+
+    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+
+  })
 })

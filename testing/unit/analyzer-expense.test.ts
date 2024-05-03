@@ -16,7 +16,7 @@ describe('Analyzer', () => {
     const input = {
       type: 'expense' as UnifiedItemType,
       value: 950,
-      account: 'RANDOM_EXPENSE',
+      account: 'EXPENSE_RANDOM',
       text: 'Random fee',
     }
 
@@ -33,7 +33,7 @@ describe('Analyzer', () => {
               text: 'Random fee',
             },
             {
-              account: 'RANDOM_EXPENSE',
+              account: 'EXPENSE_RANDOM',
               amount: '950',
               extras: {},
               text: 'Random fee',
@@ -42,7 +42,7 @@ describe('Analyzer', () => {
         },
         balances: {
           CURRENCY_EUR: -950,
-          RANDOM_EXPENSE: 950,
+          EXPENSE_RANDOM: 950,
         },
         stock: {}
       }

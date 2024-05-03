@@ -76,7 +76,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   if (!fee.eq(0)) {
     const useAsset = feeAsset !== null && !isCurrency(feeAsset)
     lines.push({
-      account: (useAsset ? `ASSET_FEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
+      account: (useAsset ? `ASSETFEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
       amount: dec(fee).toString(),
       text, // TODO: Add translated '(fee)' here?
       extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},
