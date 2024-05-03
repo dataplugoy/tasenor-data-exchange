@@ -67,6 +67,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       throw new Error(`Cannot parse CSV, since there is no encoding detected in ${this}.`)
     }
 
+    // eslint-disable-next-line
     const data = this.data.data.toString(this.data.encoding as BufferEncoding)
 
     if (options.regexMatch) {
