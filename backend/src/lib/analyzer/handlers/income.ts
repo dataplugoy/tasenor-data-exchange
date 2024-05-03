@@ -31,7 +31,6 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
     this.validateError(`Either 'account' or 'reason' must be given to determine income.`)
   }
 
-  // TODO: Decide received currency by valueAsset.
   let resultText = text || t(`INCOME_${reason}`, { asset: reasonAsset || 'UNKNOWN' })
   const resultAccount = account || `INCOME_${reason}` as AccountCode
 
@@ -39,7 +38,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `CURRENCY_${this.currency}` as AccountCode,
+        account: this.validateAccount(),
         amount: dec(value).toString(),
         text: resultText,
         extras: {},

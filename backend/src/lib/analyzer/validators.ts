@@ -5,6 +5,7 @@ import { dec } from '../utils'
 import { Analyzer } from './Analyzer'
 import Decimal from 'decimal.js'
 import { UnifiedItemData } from '../../types/API/UnifiedItem'
+import { AccountCode } from '../../types/AccountCode'
 
 /**
  * Throw a validation error.
@@ -174,4 +175,18 @@ export async function validateFee(this: Analyzer, canUseService: boolean): Promi
     return [rate.mul(fee), input.feeAsset as Asset, fee]
   }
   return [new Decimal(input.fee), null, null]
+}
+
+/**
+ * Figure out main account which is either based on `valueAsset` or default currency.
+ */
+export function validateAccount(this: Analyzer): AccountCode {
+  const input = this.validateInput()
+  if (input.valueAsset === undefined) {
+    return `CURRENCY_${this.currency}` as AccountCode
+  }
+  if (isCurrency(input.valueAsset)) {
+    return `CURRENCY_${input.valueAsset}` as AccountCode
+  }
+  return `ASSET_${input.valueAsset}` as AccountCode
 }

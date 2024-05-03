@@ -22,13 +22,12 @@ export async function expense(this: Analyzer, time: DateTime, input: UnifiedItem
 
   const { account, text } = input
   const value = await this.validateValue()
-  // TODO: Decide paid currency by valueAsset.
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `CURRENCY_${this.currency}` as AccountCode,
+        account: this.validateAccount(),
         amount: dec(value).negated().toString(),
         text: text as string,
         extras: {},

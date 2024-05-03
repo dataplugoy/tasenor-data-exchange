@@ -28,7 +28,7 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `CURRENCY_${this.currency}` as AccountCode,
+        account: this.validateAccount(),
         amount: dec(value).negated().toString(),
         text,
         extras: {},

@@ -35,7 +35,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
 
   const lines: TransactionLine[] = [
     {
-      account: `CURRENCY_${this.currency}` as AccountCode,
+      account: this.validateAccount(),
       amount: dec(value).minus(fee).toString(),
       text,
       extras: {},
