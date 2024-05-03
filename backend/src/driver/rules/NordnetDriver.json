@@ -7,7 +7,19 @@
       "type": "'deposit'",
       "value": "Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_DEPOSIT_TO'",
+      "account": "'NORDNET_CURRENCY_' + Valuutta",
+      "service": "'Nordnet'"
+    }
+  },
+  {
+    "name": "Withdrawal",
+    "filter": "Tapahtumatyyppi == 'NOSTO'",
+    "key": "NOSTO",
+    "result": {
+      "type": "'withdrawal'",
+      "value": "-Summa",
+      "valueAsset": "Valuutta",
+      "account": "'NORDNET_CURRENCY_' + Valuutta",
       "service": "'Nordnet'"
     }
   },
@@ -19,7 +31,7 @@
       "type": "'expense'",
       "value": "-Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_MONTHLY_SAVING_FEE'",
+      "account": "'NORDNET_FEE_MONTHLY_SAVING'",
       "text": "Tapahtumateksti"
     }
   },

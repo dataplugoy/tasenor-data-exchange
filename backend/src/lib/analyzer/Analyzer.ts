@@ -1,7 +1,6 @@
 import prisma from '@prisma/client'
 import { Stock, InitialStockData, StockData } from '../Stock'
 import { DateTime } from 'luxon'
-import { buy } from './handlers/buy'
 import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -9,10 +8,12 @@ import { dec, toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateAccount } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
+import { buy } from './handlers/buy'
 import { sell } from './handlers/sell'
 import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
 import { income } from './handlers/income'
+import { withdrawal } from './handlers/withdrawal'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
@@ -44,6 +45,7 @@ export class Analyzer {
   public expenseHandler = expense.bind(this)
   public depositHandler = deposit.bind(this)
   public incomeHandler = income.bind(this)
+  public withdrawalHandler = withdrawal.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)

@@ -2,5 +2,5 @@
   "$id": "Asset.json",
   "title": "Asset",
   "type": "string",
-  "pattern": "^(ASSET|CURRENCY|FEE|PROFIT|LOSS|ASSETFEE|EXPENSE|INCOME|DIVIDEND)_[-:A-Z._0-9]+$"
+  "pattern": "^(NORDNET_)?(ASSET|CURRENCY|FEE|PROFIT|LOSS|ASSETFEE|EXPENSE|INCOME|DIVIDEND)_[-:A-Z._0-9]+$"
 }

@@ -104,8 +104,6 @@ export class NordnetDriver extends ManualUploadDriver {
       ]
     },
     {
-      "name": "Withdrawal",
-      "filter": "Tapahtumatyyppi == 'NOSTO'",
       "result": [
         {
           "data": {
@@ -125,20 +123,6 @@ export class NordnetDriver extends ManualUploadDriver {
           "amount": "-Summa",
           "reason": "'withdrawal'"
         }
-      ]
-    },
-    {
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti",
-            "asset": "Arvopaperi",
-            "notes": [
-              "times(Määrä, Kurssi)"
-            ],
-            "currency": "Valuutta"
-          },
-        },
       ]
     },
     {

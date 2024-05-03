@@ -12,17 +12,19 @@ import { AccountCode } from '../../../types/AccountCode'
  * @param time
  * @param input
  *
- * Requires fields `account`, `service`.
+ * Requires field `service`.
+ * Optional field `account`.
  */
 export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
   this.validateBasics()
-  this.validateNotEmpty('account')
   this.validateNotEmpty('service')
 
   const { account, service } = input
   const value = await this.validateValue(true)
   const text = this.validateText('Deposit to {{service}}', { service })
+
+  const resultAccount = (account || `${service}_${this.validateAccount()}`) as AccountCode
 
   return {
     time: time.toUTC().toISO() as Timestring,
@@ -34,7 +36,7 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
         extras: {},
       },
       {
-        account: account as AccountCode,
+        account: resultAccount,
         amount: dec(value).toString(),
         text,
         extras: {},

@@ -28,7 +28,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_DEPOSIT_TO',
+            account: 'NORDNET_CURRENCY_EUR',
             amount: '800',
             text: 'Deposit to Nordnet',
             extras: {}
@@ -113,7 +113,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_MONTHLY_SAVING_FEE',
+            account: 'NORDNET_FEE_MONTHLY_SAVING',
             amount: '2.5',
             text: 'ETF-kuukausisaastosopimuksen palvelumaksu',
             extras: {}
@@ -310,5 +310,40 @@ describe('Nordnet', () => {
         }
       ]
     )
+  })
+
+
+  test.only('withdrawal', async () => {
+
+    const driver = getDriver('NORDNET', {})
+    const batch = createBatchFrom('Nordnet-withdrawal.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(1)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(1)
+
+    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+
+    expect(txs).toStrictEqual([
+      {
+        time: '2023-05-09T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '1930',
+            text: 'Withdrawal from Nordnet',
+            extras: {}
+          },
+          {
+            account: 'NORDNET_CURRENCY_EUR',
+            amount: '-1930',
+            text: 'Withdrawal from Nordnet',
+            extras: {}
+          }
+        ]
+      }
+    ])
   })
 })
