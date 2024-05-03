@@ -138,6 +138,89 @@ describe('Nordnet', () => {
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
 
-    // console.dir(txs[1], {depth: null})
+    expect(txs).toStrictEqual([
+      {
+        time: '2023-10-02T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-3607',
+            text: 'Bought +1000 MANTA',
+            extras: {}
+          },
+          {
+            account: 'ASSET_MANTA',
+            amount: '3600',
+            text: 'Bought +1000 MANTA',
+            extras: { asset: 'MANTA', assetChange: '1000' }
+          },
+          {
+            account: 'FEE_EUR',
+            amount: '7',
+            text: 'Bought +1000 MANTA',
+            extras: {}
+          }
+        ]
+      },
+      {
+        time: '2024-01-25T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '747.2',
+            text: 'Sold -177 MANTA',
+            extras: {}
+          },
+          {
+            account: 'ASSET_MANTA',
+            amount: '-637.2',
+            text: 'Sold -177 MANTA',
+            extras: { asset: 'MANTA', assetChange: '-177' }
+          },
+          {
+            account: 'PROFIT_MANTA',
+            amount: '-117',
+            text: 'Sold -177 MANTA',
+            extras: {}
+          },
+          {
+            account: 'FEE_EUR',
+            amount: '7',
+            text: 'Sold -177 MANTA',
+            extras: {}
+          }
+        ]
+      },
+      {
+        time: '2024-04-10T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '3554.12',
+            text: 'Sold -823 MANTA',
+            extras: {}
+          },
+          {
+            account: 'ASSET_MANTA',
+            amount: '-2962.8',
+            text: 'Sold -823 MANTA',
+            extras: { asset: 'MANTA', assetChange: '-823' }
+          },
+          {
+            account: 'PROFIT_MANTA',
+            amount: '-598.32',
+            text: 'Sold -823 MANTA',
+            extras: {}
+          },
+          {
+            account: 'FEE_EUR',
+            amount: '7',
+            text: 'Sold -823 MANTA',
+            extras: {}
+          }
+        ]
+      }
+    ]
+    )
   })
 })
