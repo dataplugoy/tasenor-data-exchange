@@ -17,6 +17,8 @@ import { Stock } from '../../backend/src/lib/Stock'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { AnalyzerConfig } from '../../backend/src/lib/analyzer/AnalyzerConfig'
 import { DateTime } from 'luxon'
+import chardet from 'chardet'
+import { parseEncoding } from '../../backend/src/lib/utils'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -39,6 +41,7 @@ export async function beforeModelTesting(): Promise<void> {
  */
 export function createBatchFrom(filePath: string): BatchModel {
   const data = fs.readFileSync(path.join(__dirname, '..', 'unit', 'data', filePath))
+  const encoding = chardet.detect(data)
   return new BatchModel({
     id: 0,
     created: new Date(),
@@ -47,6 +50,7 @@ export function createBatchFrom(filePath: string): BatchModel {
     number: 1,
     state: 'DATA_FETCHED',
     data,
+    encoding: parseEncoding(encoding as string),
     lastStamp: null,
     initialStock: {},
     endStock: {},

@@ -63,7 +63,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     if (this.data.data === null) {
       throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
     }
-    if (this.data.encoding === null) {
+    if (!this.data.encoding) {
       throw new Error(`Cannot parse CSV, since there is no encoding detected in ${this}.`)
     }
 
