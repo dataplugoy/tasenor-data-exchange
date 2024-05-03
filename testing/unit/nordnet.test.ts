@@ -138,6 +138,6 @@ describe('Nordnet', () => {
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
 
-    // console.dir(txs[0], {depth: null})
+    // console.dir(txs[1], {depth: null})
   })
 })

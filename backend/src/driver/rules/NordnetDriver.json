@@ -43,7 +43,7 @@
     "filter": "Tapahtumatyyppi == 'MYYNTI'",
     "result": {
       "type": "'sell'",
-      "value": "Summa",
+      "value": "Summa + Kokonaiskulut",
       "valueAsset": "Valuutta",
       "assetOut": "Arvopaperi",
       "assetAmountOut": "Määrä",

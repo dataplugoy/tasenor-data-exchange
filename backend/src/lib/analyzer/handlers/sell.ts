@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
-import { Asset, Timestring } from '@tasenor/common'
+import { Asset, Timestring, isCurrency } from '@tasenor/common'
 import { AccountCode } from '../../../types/AccountCode'
 import { TransactionLine } from '../../../types/API/TransactionLine'
 import { Transaction } from '../../../types/API/Transaction'
@@ -15,11 +15,13 @@ import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
  * @param input
  *
  * Requires fields `assetOut`, `assetAmountOut`.
+ * Optional fields `fee`, `feeAsset`.
  */
 export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
-  // TODO: Handle fee.
+
   // TODO: Short selling (but only allowed if a setting in project is true).
   const { assetOut, assetAmountOut } = input
+  const [fee, feeAsset, feeAssetChange] = await this.validateFee(true)
 
   this.validateBasics()
   this.validateRequired('assetOut', 'assetAmountOut')
@@ -35,7 +37,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   const lines: TransactionLine[] = [
     {
       account: `CURRENCY_${this.currency}` as AccountCode,
-      amount: dec(value).toString(),
+      amount: dec(value).minus(fee).toString(),
       text,
       extras: {},
     },
@@ -50,6 +52,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
     },
   ]
 
+  // Making profit.
   if (value.greaterThan(oldValue)) {
     lines.push({
       account: `PROFIT_${assetOut}` as AccountCode,
@@ -59,12 +62,24 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
     })
   }
 
+  // Making losses.
   if (oldValue.greaterThan(value)) {
     lines.push({
       account: `LOSS_${assetOut}` as AccountCode,
       amount: oldValue.minus(value).toString(),
       text,
       extras: {},
+    })
+  }
+
+  // Add fee.
+  if (!fee.eq(0)) {
+    const useAsset = feeAsset !== null && !isCurrency(feeAsset)
+    lines.push({
+      account: (useAsset ? `ASSET_FEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
+      amount: dec(fee).toString(),
+      text, // TODO: Add translated '(fee)' here?
+      extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},
     })
   }
 
