@@ -76,5 +76,16 @@
       "text": "Tapahtumateksti",
       "rates": "rates(Valuutta, Vaihtokurssi)"
     }
+  },
+  {
+    "name": "Interest Expenses",
+    "filter": "Tapahtumatyyppi == 'LAINAKORKO' or Tapahtumatyyppi == 'PÄÄOMIT YLIT.KORKO'",
+    "result": {
+      "type": "'expense'",
+      "value": "-Summa",
+      "valueAsset": "Valuutta",
+      "account": "'NORDNET_EXPENSE_INTEREST'",
+      "reason": "'INTEREST'"
+    }
   }
 ]

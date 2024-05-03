@@ -313,7 +313,7 @@ describe('Nordnet', () => {
   })
 
 
-  test.only('withdrawal', async () => {
+  test('withdrawal', async () => {
 
     const driver = getDriver('NORDNET', {})
     const batch = createBatchFrom('Nordnet-withdrawal.csv')
@@ -345,5 +345,22 @@ describe('Nordnet', () => {
         ]
       }
     ])
+  })
+
+
+  test('interest', async () => {
+
+    const driver = getDriver('NORDNET', {})
+    const batch = createBatchFrom('Nordnet-interest.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(2)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(2)
+
+    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+
+    console.dir(txs, {depth: null})
   })
 })

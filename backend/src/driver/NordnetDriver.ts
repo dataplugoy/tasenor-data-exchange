@@ -104,28 +104,6 @@ export class NordnetDriver extends ManualUploadDriver {
       ]
     },
     {
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'withdrawal'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'external'",
-          "asset": "Valuutta",
-          "amount": "-Summa",
-          "reason": "'withdrawal'"
-        }
-      ]
-    },
-    {
       "name": "Withholding Tax",
       "filter": "Tapahtumatyyppi == 'ENNAKKOPIDÄTYS'",
       "result": [
@@ -156,54 +134,6 @@ export class NordnetDriver extends ManualUploadDriver {
         }
       ]
     },
-    {
-      "name": "Interest Expenses",
-      "filter": "Tapahtumatyyppi == 'LAINAKORKO'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'expense'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'statement'",
-          "asset": "'INTEREST_EXPENSE'",
-          "amount": "-Summa",
-          "reason": "'expense'"
-        }
-      ]
-    },
-    {
-      "name": "Tapahtumatyyppi contains 'PÄÄOMIT YLIT.KORKO'",
-      "filter": "Tapahtumatyyppi == 'PÄÄOMIT YLIT.KORKO'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'expense'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'statement'",
-          "asset": "'INTEREST_EXPENSE'",
-          "amount": "-Summa",
-          "reason": "'expense'"
-        }
-      ]
-    }
   ]
 }
 */
