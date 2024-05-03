@@ -337,7 +337,7 @@ describe('Analyzer', () => {
     }
 
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
-    console.dir(analyzer.toJSON(), {depth: null})
+
     expect(analyzer.toJSON()).toStrictEqual({
       balances: { CURRENCY_EUR: 1990, ASSET_ETH: -2000, FEE_EUR: 10 },
       stock: { ASSET_ETH: { ETH: { amount: 3, value: 3000 } } },

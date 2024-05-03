@@ -21,7 +21,7 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
   this.validateNotEmpty('service')
 
   const { account, service } = input
-  const value = await this.validateValue()
+  const value = await this.validateValue(true)
   const text = this.validateText('Deposit to {{service}}', { service })
 
   return {

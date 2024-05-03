@@ -53,7 +53,7 @@ export class Analyzer {
   public validateRequired: (...fields: Array<keyof UnifiedItemData>) => void = validateRequired.bind(this)
   public validateText: (text: string, values: Record<string, string | undefined>) => string = validateText.bind(this)
   public validateRate: (asset: Asset, canUseService: boolean) => Promise<Decimal> = validateRate.bind(this)
-  public validateValue: () => Promise<Decimal> = validateValue.bind(this)
+  public validateValue: (canUseService: boolean) => Promise<Decimal> = validateValue.bind(this)
   public validateValueOrAsset: (asset: Asset | undefined, amount: number | Decimal | undefined, canUseService: boolean) => Promise<Decimal> = validateValueOrAsset.bind(this)
   public validateNotEmpty: (field: keyof UnifiedItemData) => void = validateNotEmpty.bind(this)
   public validateFee: (this: Analyzer, canUseService: boolean) => Promise<[Decimal, Asset | null, Decimal | null]> = validateFee.bind(this)

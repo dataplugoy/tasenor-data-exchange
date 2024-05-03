@@ -245,13 +245,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '9.78',
+              amount: '9.152124',
               text: 'OSINKO IQQH 0.0263 USD/OSAKE',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-9.78',
+              amount: '-9.152124',
               text: 'OSINKO IQQH 0.0263 USD/OSAKE',
               extras: {}
             }
@@ -262,13 +262,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '9.31',
+              amount: '8.712298',
               text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-9.31',
+              amount: '-8.712298',
               text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
               extras: {}
             }
@@ -279,13 +279,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '21.59',
+              amount: '19.832574',
               text: 'OSINKO IQQH 0.0447 USD/OSAKE',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-21.59',
+              amount: '-19.832574',
               text: 'OSINKO IQQH 0.0447 USD/OSAKE',
               extras: {}
             }
@@ -296,13 +296,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '18.82',
+              amount: '17.288052',
               text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-18.82',
+              amount: '-17.288052',
               text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
               extras: {}
             }

@@ -22,7 +22,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
   this.validateBasics()
 
   const { account, text, reason, reasonAsset } = input
-  const value = await this.validateValue()
+  const value = await this.validateValue(true)
 
   if (account === undefined && reason === undefined) {
     this.validateError(`Either 'account' or 'reason' must be given to determine income.`)

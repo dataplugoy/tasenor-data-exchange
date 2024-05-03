@@ -61,7 +61,8 @@
       "valueAsset": "Valuutta",
       "reason": "'DIVIDEND'",
       "reasonAsset": "Arvopaperi",
-      "text": "Tapahtumateksti"
+      "text": "Tapahtumateksti",
+      "rates": "rates(Valuutta, Vaihtokurssi)"
     }
   }
 ]

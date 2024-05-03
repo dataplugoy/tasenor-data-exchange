@@ -21,7 +21,7 @@ export async function expense(this: Analyzer, time: DateTime, input: UnifiedItem
   this.validateNotEmpty('text')
 
   const { account, text } = input
-  const value = await this.validateValue()
+  const value = await this.validateValue(true)
 
   return {
     time: time.toUTC().toISO() as Timestring,

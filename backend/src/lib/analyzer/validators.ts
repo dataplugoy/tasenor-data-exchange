@@ -153,9 +153,13 @@ export async function validateValueOrAsset(this: Analyzer, asset: Asset | undefi
 /**
  * Ensure that value is given.
  */
-export async function validateValue(this: Analyzer): Promise<Decimal> {
+export async function validateValue(this: Analyzer, canUseService: boolean = false): Promise<Decimal> {
   const input = this.validateInput()
   if (input.value !== undefined && input.value !== null) {
+    if (input.valueAsset && input.valueAsset !== this.currency) {
+      const rate = await this.validateRate(input.valueAsset as Asset, canUseService)
+      return rate.mul(dec(input.value))
+    }
     return dec(input.value)
   }
   this.validateError(`Value is missing`)
