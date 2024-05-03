@@ -361,6 +361,42 @@ describe('Nordnet', () => {
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
 
-    console.dir(txs, {depth: null})
+    expect(txs).toStrictEqual([
+      {
+        time: '2023-05-31T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-0.74',
+            text: 'Interest expense',
+            extras: {}
+          },
+          {
+            account: 'NORDNET_EXPENSE_INTEREST',
+            amount: '0.74',
+            text: 'Interest expense',
+            extras: {}
+          }
+        ]
+      },
+      {
+        time: '2023-05-31T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-0.52',
+            text: 'Interest expense',
+            extras: {}
+          },
+          {
+            account: 'NORDNET_EXPENSE_INTEREST',
+            amount: '0.52',
+            text: 'Interest expense',
+            extras: {}
+          }
+        ]
+      }
+    ]
+    )
   })
 })
