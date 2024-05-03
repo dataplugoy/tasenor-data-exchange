@@ -164,6 +164,10 @@ export interface UnifiedItemData {
    */
   fee?: number | string;
   feeAsset?: Asset3;
+  /**
+   * If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.
+   */
+  multipart?: string;
   rates?: Rates;
   /**
    * If income or expense have some specific reason, it can be determined here.

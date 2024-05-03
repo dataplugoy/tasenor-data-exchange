@@ -104,6 +104,21 @@ export class NordnetDriver extends ManualUploadDriver {
       ]
     },
     {
+      "name": "Forex Buy",
+      "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO'",
+      "result": [
+        {
+          "data": {
+            "text": "Tapahtumateksti"
+          },
+          "type": "'currency'",
+          "asset": "Valuutta",
+          "amount": "Summa",
+          "reason": "'forex'"
+        }
+      ]
+    },
+    {
       "name": "Withholding Tax",
       "filter": "Tapahtumatyyppi == 'ENNAKKOPIDÄTYS'",
       "result": [
@@ -116,21 +131,6 @@ export class NordnetDriver extends ManualUploadDriver {
           "type": "'statement'",
           "asset": "'WITHHOLDING_TAX'",
           "reason": "'tax'"
-        }
-      ]
-    },
-    {
-      "name": "Forex Buy",
-      "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'forex'"
         }
       ]
     },

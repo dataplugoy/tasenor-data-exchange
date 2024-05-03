@@ -16,5 +16,6 @@
   "RESULT_ALL_FAILED": "All Failed",
   "RESULT_NO_PROGRESS": "No Progress",
   "RESULT_WAITING": "Waiting",
-  "INCOME_DIVIDEND": "Dividend for {{asset}}"
+  "INCOME_DIVIDEND": "Dividend for {{asset}}",
+  "EXPENSE_INTEREST": "Interest expense"
 }

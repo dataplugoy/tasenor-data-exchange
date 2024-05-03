@@ -27,6 +27,7 @@ import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
+import { UnifiedItem } from '../types/API/UnifiedItem'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -246,6 +247,30 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Put partial parts together and append to the input list.
+   * @param inputs
+   * @param partial
+   */
+  static combineMultipart(partial: Record<string, UnifiedItem[]>): UnifiedItem[] {
+    const collect: Record<string, UnifiedItem> = {}
+
+    Object.keys(partial).forEach((id) => {
+      collect[id] = partial[id][0]
+      for (let i = 1; i < partial[id].length; i++) {
+        if (partial[id][i].time !== collect[id].time) {
+          throw new Error(`Multipart item ${JSON.stringify(partial[id][i])} has different timestamp than the other part ${JSON.stringify(collect[id])}.`)
+        }
+        if (partial[id][i].data.type !== collect[id].data.type) {
+          throw new Error(`Multipart item ${JSON.stringify(partial[id][i])} has different type than the other part ${JSON.stringify(collect[id])}.`)
+        }
+        Object.assign(collect[id].data, partial[id][i].data)
+      }
+    })
+
+    return Object.values(collect)
+  }
+
+  /**
    * Go through input items and convert them to the unified format using rules.
    * @param options
    * @param batch
@@ -257,6 +282,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     try {
       const driver = await this.getInputDriver(options)
       const inputs = await InputItemModel.findForBatch(batch.id, false)
+      const partial: Record<string, UnifiedItem[]> = {}
+
       let rules = await RuleModel.findForFlowByKey(this.id)
       if (RuleModel.count(rules) === 0) {
         rules = await driver.initializeRules(this)
@@ -290,17 +317,24 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           const unified = await driver.unifyItem(this, run, input, rules)
 
-          await UnifiedItemModel.save({
-            data: unified.data as unknown as JsonObject,
-            time: new Date(unified.time),
-            processed: false,
-            skipped: false,
-            error: null,
-            flowPlanId: input.data.flowPlanId,
-            batchId: input.data.batchId,
-            runId: run.id,
-            inputId: input.id,
-          })
+          if (unified.data.multipart !== undefined) {
+            if (!partial[unified.data.multipart]) {
+              partial[unified.data.multipart] = []
+            }
+            partial[unified.data.multipart].push(unified)
+          } else {
+            await UnifiedItemModel.save({
+              data: unified.data as unknown as JsonObject,
+              time: new Date(unified.time),
+              processed: false,
+              skipped: false,
+              error: null,
+              flowPlanId: this.id,
+              batchId: batch.id,
+              runId: run.id,
+              inputId: input.id,
+            })
+          }
           await input.success()
           done++
 
@@ -309,6 +343,22 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           error(`Handling of ${input} failed: ${err.stack}`)
           await input.fail(err)
         }
+      }
+
+      // Top up with the multipart items.
+      for (const item of FlowPlanModel.combineMultipart(partial)) {
+        await UnifiedItemModel.save({
+          data: item.data as unknown as JsonObject,
+          time: new Date(item.time),
+          stockChange: {},
+          processed: false,
+          skipped: false,
+          error: null,
+          flowPlanId: this.id,
+          batchId: batch.id,
+          runId: run.id,
+          inputId: 0, // TODO: What to do with this?
+        })
       }
 
       await run.result(done, total, skipped)

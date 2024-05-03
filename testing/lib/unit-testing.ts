@@ -19,6 +19,7 @@ import { AnalyzerConfig } from '../../backend/src/lib/analyzer/AnalyzerConfig'
 import { DateTime } from 'luxon'
 import chardet from 'chardet'
 import { parseEncoding } from '../../backend/src/lib/utils'
+import { UnifiedItem } from '../../backend/src/types/API/UnifiedItem'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -140,9 +141,36 @@ export function unifyArgsFrom(items: InputItemData[]): [FlowPlanModel, RunModel,
  */
 export async function unifyItems(driver: Driver, items: InputItemData[]): Promise<UnifiedItemModel[]> {
   const unified: UnifiedItemModel[] = []
+  const partial: Record<string, UnifiedItem[]> = {}
+
   const [flowPlan, run, inputItems, rules] = unifyArgsFrom(items)
   for (const input of inputItems) {
     const item = await driver.unifyItem(flowPlan, run, input, rules)
+    if (item.data.multipart !== undefined) {
+      if (!partial[item.data.multipart]) {
+        partial[item.data.multipart] = []
+      }
+      partial[item.data.multipart].push(item)
+    } else {
+      unified.push(new UnifiedItemModel({
+        id: 0,
+        created: new Date(),
+        updated: new Date(),
+        time: new Date(item.time),
+        data: item.data as unknown as JsonObject,
+        stockChange: {},
+        processed: false,
+        skipped: false,
+        error: null,
+        inputId: 0,
+        flowPlanId: 0,
+        batchId: 0,
+        runId: 0,
+      }))
+    }
+  }
+
+  FlowPlanModel.combineMultipart(partial).map(item => {
     unified.push(new UnifiedItemModel({
       id: 0,
       created: new Date(),
@@ -158,7 +186,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
       batchId: 0,
       runId: 0,
     }))
-  }
+  })
 
   unified.sort((a, b) => (a.data.time === b.data.time ? 0 : (a.data.time < b.data.time ? -1 : 1)))
 

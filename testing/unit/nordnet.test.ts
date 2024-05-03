@@ -399,4 +399,19 @@ describe('Nordnet', () => {
     ]
     )
   })
+
+  test.only('forex', async () => {
+
+    const driver = getDriver('NORDNET', {})
+    const batch = createBatchFrom('Nordnet-forex.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(4)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(2)
+
+    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    console.log(txs)
+  })
 })

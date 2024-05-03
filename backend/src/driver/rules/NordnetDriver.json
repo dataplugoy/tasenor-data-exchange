@@ -87,5 +87,25 @@
       "account": "'NORDNET_EXPENSE_INTEREST'",
       "reason": "'INTEREST'"
     }
+  },
+  {
+    "name": "Forex Sell",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI'",
+    "key": "VALUUTAN MYYNTI",
+    "multipart": "Vahvistusnumero",
+    "result": {
+      "type": "'todo'",
+      "multipart": "Vahvistusnumero"
+    }
+  },
+  {
+    "name": "Forex Buy",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO'",
+    "key": "VALUUTAN OSTO",
+    "multipart": "Vahvistusnumero",
+    "result": {
+      "type": "'todo'",
+      "multipart": "Vahvistusnumero"
+    }
   }
 ]

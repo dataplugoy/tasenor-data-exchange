@@ -49,6 +49,10 @@
       "description": "Ticker of the fee charged as a currency or other asset ticker.",
       "$ref": "Asset.json"
     },
+    "multipart": {
+      "description": "If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.",
+      "type": "string"
+    },
     "rates": {
       "description": "Conversion rates for assets involved, if known.",
       "$ref": "Rates.json"
