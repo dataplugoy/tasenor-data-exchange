@@ -59,6 +59,7 @@ export interface Batch {
   state: "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED";
   lastStamp: string | null;
   data: string;
+  encoding?: string;
   initialStock: {
     [k: string]: unknown;
   };

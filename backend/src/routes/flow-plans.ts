@@ -58,6 +58,7 @@ router.get('/:id',
         state: true,
         lastStamp: true,
         data: true,
+        encoding: true,
         initialStock: true,
         endStock: true,
         completed: true,
@@ -83,7 +84,8 @@ router.get('/:id',
       batches: batches.map(line => ({
         ...line,
         _count: undefined,
-        outputDeliveredCount: line._count.outputItems
+        outputDeliveredCount: line._count.outputItems,
+        data: line.data.toString(line.encoding)
       })
       )
     })

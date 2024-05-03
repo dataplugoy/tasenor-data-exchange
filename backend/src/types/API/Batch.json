@@ -32,6 +32,9 @@
     "data": {
       "type": "string"
     },
+    "encoding": {
+      "type": "string"
+    },
     "initialStock": {
       "type": "object"
     },

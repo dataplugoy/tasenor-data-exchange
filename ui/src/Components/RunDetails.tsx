@@ -1,5 +1,5 @@
 import React, { } from 'react'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { ResultItem, RunStepResult, isResultOutputItem, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
@@ -47,11 +47,11 @@ const RunStateIcon = (props: RunStateIconProps): React.JSX.Element => {
 
 const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
   const { batch } = props
+
   return (
-    <Box>
-      <Trans>Data received:</Trans>
-      <Box sx={{ border: '1px solid rgba(0,0,0,0.5)', backgroundColor: 'rgb(255,255,255,0.05)', px: 2 }}>
-        <pre>{batch.data}</pre>
+    <Box sx={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', my: 2 }}>
+      <Box sx={{ border: '1px solid rgba(0,0,0,0.5)', flex: '0 0 auto', backgroundColor: 'rgb(255,255,255,0.05)', p: 2  }}>
+        {batch.data.split('\n').map((line, idx) => <Typography key={idx} variant="body2">{line}</Typography>)}
       </Box>
     </Box>
   )

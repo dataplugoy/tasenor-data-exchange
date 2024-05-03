@@ -220,6 +220,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     try {
       const driver = await this.getInputDriver(options)
+      await batch.detectEncoding()
       const items = await driver.itemizeInput(batch)
 
       for (const data of items) {

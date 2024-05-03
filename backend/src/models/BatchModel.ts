@@ -6,6 +6,7 @@ import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
 import { parseEncoding } from '../lib/utils'
+import { log } from '@tasenor/common'
 
 export type CsvOptions = Options & {
   regexMatch?: RegExp
@@ -39,6 +40,22 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   /**
+   * Detect and save encoding for data.
+   */
+  async detectEncoding(): Promise<void> {
+    if (this.data.data === null) {
+      return
+    }
+    const encoding = chardet.detect(this.data.data)
+    if (!encoding) {
+      throw new Error(`Unable to detect encodin for data in ${this}.`)
+    }
+    this.data.encoding = parseEncoding(encoding)
+    log(`Encoding for ${this} seems to be ${JSON.stringify(this.data.encoding)}.`)
+    await BatchModel.update<prisma.Batch, BatchModel>(this, { encoding: this.data.encoding })
+  }
+
+  /**
    * Get the CSV presentation of the data.
    */
   async parseCsv(options: CsvOptions = {}): Promise<string[][] | Record<string, string>[] | { raw: string, record: Record<string, string>}[]> {
@@ -46,12 +63,11 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     if (this.data.data === null) {
       throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
     }
-    const encoding = chardet.detect(this.data.data)
-    if (!encoding) {
-      throw new Error(`Unable to detect encodin for data in ${this}.`)
+    if (this.data.encoding === null) {
+      throw new Error(`Cannot parse CSV, since there is no encoding detected in ${this}.`)
     }
 
-    const data = this.data.data.toString(parseEncoding(encoding))
+    const data = this.data.data.toString(this.data.encoding as BufferEncoding)
 
     if (options.regexMatch) {
       if (!options.regexMatch.test(data)) {

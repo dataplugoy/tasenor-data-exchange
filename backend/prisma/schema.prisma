@@ -164,6 +164,7 @@ model Batch{
   number      Int
   state       BatchState
   data        Bytes?
+  encoding    String?
   lastStamp   DateTime?
   initialStock Json           @default("{}")
   endStock    Json            @default("{}")

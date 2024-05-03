@@ -33,5 +33,8 @@ export const theme = createTheme({
       letterSpacing: '0.1em',
       textTransform: 'uppercase',
     },
+    body2: {
+      fontFamily: 'monospace'
+    }
   }
 })

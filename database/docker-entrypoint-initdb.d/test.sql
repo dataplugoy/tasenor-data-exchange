@@ -289,7 +289,8 @@ CREATE TABLE public.batches (
     "initialStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
     "endStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
     "flowPlanId" integer NOT NULL,
-    data bytea
+    data bytea,
+    encoding text
 );
 
 
@@ -926,7 +927,7 @@ COPY public.alerts (id, created, updated, "userId", type, method, url, payload, 
 -- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.batches (id, created, updated, completed, number, state, "lastStamp", "initialStock", "endStock", "flowPlanId", data) FROM stdin;
+COPY public.batches (id, created, updated, completed, number, state, "lastStamp", "initialStock", "endStock", "flowPlanId", data, encoding) FROM stdin;
 \.
 
 
