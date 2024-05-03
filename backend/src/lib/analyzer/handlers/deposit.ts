@@ -9,7 +9,6 @@ import { AccountCode } from '../../../types/AccountCode'
 /**
  * Deposit money from the main currency account to the target service.
  *
- * @param stock
  * @param time
  * @param input
  *

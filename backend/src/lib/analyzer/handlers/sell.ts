@@ -10,7 +10,6 @@ import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 /**
  * Sell an asset and remove it from the stock.
  *
- * @param stock
  * @param time
  * @param input
  *

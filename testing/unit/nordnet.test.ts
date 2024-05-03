@@ -238,5 +238,77 @@ describe('Nordnet', () => {
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
 
+    expect(txs).toStrictEqual(
+      [
+        {
+          time: '2023-05-31T12:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '9.78',
+              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
+              extras: {}
+            },
+            {
+              account: 'INCOME_DIVIDEND',
+              amount: '-9.78',
+              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
+              extras: {}
+            }
+          ]
+        },
+        {
+          time: '2023-05-31T12:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '9.31',
+              text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
+              extras: {}
+            },
+            {
+              account: 'INCOME_DIVIDEND',
+              amount: '-9.31',
+              text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
+              extras: {}
+            }
+          ]
+        },
+        {
+          time: '2023-11-30T12:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '21.59',
+              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              extras: {}
+            },
+            {
+              account: 'INCOME_DIVIDEND',
+              amount: '-21.59',
+              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              extras: {}
+            }
+          ]
+        },
+        {
+          time: '2023-11-30T12:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_EUR',
+              amount: '18.82',
+              text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
+              extras: {}
+            },
+            {
+              account: 'INCOME_DIVIDEND',
+              amount: '-18.82',
+              text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
+              extras: {}
+            }
+          ]
+        }
+      ]
+    )
   })
 })

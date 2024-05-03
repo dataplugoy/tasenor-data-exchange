@@ -9,7 +9,6 @@ import { AccountCode } from '../../../types/AccountCode'
 /**
  * Buy an asset and add it to the stock.
  *
- * @param stock
  * @param time
  * @param input
  *
@@ -23,6 +22,7 @@ export async function expense(this: Analyzer, time: DateTime, input: UnifiedItem
 
   const { account, text } = input
   const value = await this.validateValue()
+  // TODO: Decide paid currency by valueAsset.
 
   return {
     time: time.toUTC().toISO() as Timestring,

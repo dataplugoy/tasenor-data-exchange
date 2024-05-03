@@ -26,13 +26,17 @@ export type Asset2 = string;
  */
 export type Asset3 = string;
 /**
- * If tax must be calculated, this is the asset used (defaults to `valueAsset`)
+ * An asset triggering the income or expense.
  */
 export type Asset4 = string;
 /**
- * Asset used to determine the total value of the transaction.
+ * If tax must be calculated, this is the asset used (defaults to `valueAsset`)
  */
 export type Asset5 = string;
+/**
+ * Asset used to determine the total value of the transaction.
+ */
+export type Asset6 = string;
 
 export interface UnifiedItemData {
   type: UnifiedItemType;
@@ -62,6 +66,11 @@ export interface UnifiedItemData {
   feeAsset?: Asset3;
   rates?: Rates;
   /**
+   * If income or expense have some specific reason, it can be determined here.
+   */
+  reason?: string;
+  reasonAsset?: Asset4;
+  /**
    * Name of the service providing the data.
    */
   service?: string;
@@ -73,7 +82,7 @@ export interface UnifiedItemData {
    * If tax must be calculated, this is the amount of tax in tax assets.
    */
   taxAmount?: number | string;
-  taxAsset?: Asset4;
+  taxAsset?: Asset5;
   /**
    * If tax must be calculated, alternatively it can be percentage of the total of the transaction.
    */
@@ -86,7 +95,7 @@ export interface UnifiedItemData {
    * Total value of the transaction, if known.
    */
   value?: number | string;
-  valueAsset?: Asset5;
+  valueAsset?: Asset6;
 }
 /**
  * Conversion rates for assets involved, if known.

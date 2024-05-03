@@ -12,6 +12,7 @@ import { AnalyzerConfig } from './AnalyzerConfig'
 import { sell } from './handlers/sell'
 import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
+import { income } from './handlers/income'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
@@ -42,6 +43,7 @@ export class Analyzer {
   public sellHandler = sell.bind(this)
   public expenseHandler = expense.bind(this)
   public depositHandler = deposit.bind(this)
+  public incomeHandler = income.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)

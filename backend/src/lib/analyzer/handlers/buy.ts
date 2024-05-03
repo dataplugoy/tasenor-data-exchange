@@ -9,7 +9,6 @@ import { AccountCode } from '../../../types/AccountCode'
 /**
  * Buy an asset and add it to the stock.
  *
- * @param stock
  * @param time
  * @param input
  *

@@ -128,8 +128,6 @@ export class NordnetDriver extends ManualUploadDriver {
       ]
     },
     {
-      "name": "Dividend",
-      "filter": "Tapahtumatyyppi == 'OSINKO'",
       "result": [
         {
           "data": {
@@ -140,23 +138,7 @@ export class NordnetDriver extends ManualUploadDriver {
             ],
             "currency": "Valuutta"
           },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'dividend'"
         },
-        {
-          "data": {
-            "text": "Tapahtumateksti",
-            "notes": [
-              "times(Määrä, Kurssi)"
-            ]
-          },
-          "type": "'statement'",
-          "asset": "'LISTED_DIVIDEND'",
-          "amount": "null",
-          "reason": "'income'"
-        }
       ]
     },
     {

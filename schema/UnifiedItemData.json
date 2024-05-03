@@ -53,6 +53,15 @@
       "description": "Conversion rates for assets involved, if known.",
       "$ref": "Rates.json"
     },
+    "reason": {
+      "description": "If income or expense have some specific reason, it can be determined here.",
+      "type": "string",
+      "pattern": "^(DIVIDEND)$"
+    },
+    "reasonAsset": {
+      "description": "An asset triggering the income or expense.",
+      "$ref": "Asset.json"
+    },
     "service": {
       "description": "Name of the service providing the data.",
       "type": "string"

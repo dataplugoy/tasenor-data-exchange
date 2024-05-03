@@ -50,5 +50,18 @@
       "fee": "Kokonaiskulut",
       "feeAsset": "$('Kokonaiskulut Valuutta')"
     }
+  },
+  {
+    "name": "Dividend",
+    "key": "OSINKO",
+    "filter": "Tapahtumatyyppi == 'OSINKO'",
+    "result": {
+      "type": "'income'",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "reason": "'DIVIDEND'",
+      "reasonAsset": "Arvopaperi",
+      "text": "Tapahtumateksti"
+    }
   }
 ]
