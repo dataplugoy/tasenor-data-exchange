@@ -216,8 +216,9 @@ export class Driver {
     const rules: Record<string, RuleModel[]> = {}
 
     for (const ruleItem of rulesData) {
-      if (!rules[ruleItem.key]) {
-        rules[ruleItem.key] = []
+      const key = ruleItem.key || ''
+      if (!rules[key]) {
+        rules[key] = []
       }
 
       const rule = await RuleModel.save({
@@ -229,7 +230,7 @@ export class Driver {
       })
       log(`Created ${rule} called '${ruleItem.name}' for ${flow}.`)
 
-      rules[ruleItem.key].push(rule)
+      rules[key].push(rule)
     }
 
     return rules

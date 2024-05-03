@@ -57,10 +57,11 @@ export class RuleModel extends BaseModel<prisma.Rule> {
     const rules = await this.findForFlow(flowId)
 
     for (const rule of rules) {
-      if (!byKey[rule.data.key]) {
-        byKey[rule.data.key] = []
+      const key = rule.data.key || ''
+      if (!byKey[key]) {
+        byKey[key] = []
       }
-      byKey[rule.data.key].push(rule)
+      byKey[key].push(rule)
     }
 
     return byKey

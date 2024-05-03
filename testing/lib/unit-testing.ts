@@ -66,8 +66,9 @@ export function createRulesFrom(filePath: string): Record<string, RuleModel[]> {
 
   const rules: Record<string, RuleModel[]> = {}
   for (const ruleItem of rulesData) {
-    if (!rules[ruleItem.key]) {
-      rules[ruleItem.key] = []
+    const key = ruleItem.key || ''
+    if (!rules[key]) {
+      rules[key] = []
     }
 
     const rule = new RuleModel({
@@ -78,7 +79,7 @@ export function createRulesFrom(filePath: string): Record<string, RuleModel[]> {
       ownerId: 0
     })
 
-    rules[ruleItem.key].push(rule)
+    rules[key].push(rule)
   }
 
   return rules

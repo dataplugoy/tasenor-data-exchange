@@ -50,8 +50,8 @@ export function applyRules<T>(variables: Record<string, unknown>, rules: Record<
     }
   }
 
-  if (rules.undefined) {
-    const result = applyRuleKey('undefined')
+  if (rules['']) {
+    const result = applyRuleKey('')
     if (result !== undefined) {
       return result as T
     }
