@@ -88,40 +88,6 @@ export class NordnetDriver extends ManualUploadDriver {
 
   "rules": [
     {
-      "name": "Stock Sell",
-      "filter": "Tapahtumatyyppi == 'MYYNTI'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'trade'"
-        },
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'stock'",
-          "asset": "Arvopaperi",
-          "amount": "-Määrä",
-          "reason": "'trade'"
-        },
-        {
-          "if": "Kokonaiskulut",
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "$('Kokonaiskulut Valuutta')",
-          "amount": "Kokonaiskulut",
-          "reason": "'fee'"
-        }
-      ]
-    },
-    {
       "name": "Forex Sell",
       "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI'",
       "result": [

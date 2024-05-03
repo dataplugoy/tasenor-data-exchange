@@ -26,7 +26,11 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
   const value = await this.validateValueOrAsset(assetOut as Asset, dec(assetAmountOut), false)
   const account = `ASSET_${assetOut}` as AccountCode
-  const oldValue = this.stock.getValue(account, assetOut as Asset).mul(assetAmountOut as number)
+  const oldStockValue = this.stock.getValue(account, assetOut as Asset)
+  if (oldStockValue === null) {
+    throw new Error(`Unable to find asset ${assetOut} from the stock when trying to sell ${assetAmountOut} of them.`)
+  }
+  const oldValue = oldStockValue.mul(assetAmountOut as number)
 
   const lines: TransactionLine[] = [
     {

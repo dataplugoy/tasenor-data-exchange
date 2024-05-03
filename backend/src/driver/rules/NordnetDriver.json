@@ -36,5 +36,19 @@
       "fee": "Kokonaiskulut",
       "feeAsset": "$('Kokonaiskulut Valuutta')"
     }
+  },
+  {
+    "name": "Stock Sell",
+    "key": "MYYNTI",
+    "filter": "Tapahtumatyyppi == 'MYYNTI'",
+    "result": {
+      "type": "'sell'",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "assetOut": "Arvopaperi",
+      "assetAmountOut": "Määrä",
+      "fee": "Kokonaiskulut",
+      "feeAsset": "$('Kokonaiskulut Valuutta')"
+    }
   }
 ]

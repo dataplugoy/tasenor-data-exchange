@@ -123,4 +123,21 @@ describe('Nordnet', () => {
     ])
 
   })
+
+
+  test.only('sell', async () => {
+
+    const driver = getDriver('NORDNET', {})
+    const batch = createBatchFrom('Nordnet-sell.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(3)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(3)
+
+    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+
+    console.dir(txs, {depth: null})
+  })
 })

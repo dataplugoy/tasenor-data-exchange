@@ -173,6 +173,7 @@ export async function analyzeItems(items: UnifiedItemModel[], config: AnalyzerCo
 
   for (const unified of items) {
     const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+    analyzer.apply(tx)
     txs.push(tx)
   }
 

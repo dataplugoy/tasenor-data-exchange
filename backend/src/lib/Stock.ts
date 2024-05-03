@@ -65,12 +65,12 @@ export class Stock {
   }
 
   /**
-   * Get the current value per unit for an asset.
+   * Get the current value per unit for an asset or null if none available.
    * @param asset
    */
-  getValue(account: AccountCode, asset: Asset): Decimal {
+  getValue(account: AccountCode, asset: Asset): Decimal | null {
     const record = this.getAsset(account, asset)
-    return record.value.dividedBy(record.amount)
+    return record.amount.eq(0) ? null : record.value.dividedBy(record.amount)
   }
 
   /**
