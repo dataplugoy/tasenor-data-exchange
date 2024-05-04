@@ -1,5 +1,5 @@
 import React, { } from 'react'
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { RunStepResult } from '../Helpers/sorter'
 
@@ -15,11 +15,13 @@ interface DescribeStateChangeProps {
 export const DescribeStateChange = (props: DescribeStateChangeProps): React.JSX.Element => {
   const { result } = props
   const { initialState, finalState } = result.run
+  const theme = useTheme()
 
   const { t } = useTranslation()
+  const state = result.run.result
 
   return (
-    <Box sx={{ display: 'inline', color: initialState === finalState ? 'error.main' : undefined }}>
+    <Box sx={{ display: 'inline', color: state === 'WAITING' ? theme.palette.grey[600] : (initialState === finalState ? 'error.main' : undefined) }}>
       {t(`${initialState} - ${finalState}`)}
     </Box>
   )

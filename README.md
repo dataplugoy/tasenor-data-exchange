@@ -2,6 +2,12 @@
 
 [![TaDeX CI](https://github.com/dataplugoy/tasenor-data-exchange/actions/workflows/node.js.yml/badge.svg)](https://github.com/dataplugoy/tasenor-data-exchange/actions/workflows/node.js.yml)
 
+## Features
+
+* Infinite accuracy math.
+* Automatically handle different currencies.
+* Keep record for assets and calculate profits and losses.
+
 ## Database
 
 Development database is accessible with
@@ -33,10 +39,3 @@ To run test batch
 ```
 bin/tadex.mjs --user user@localhost run Test
 ```
-
-## Recommended API Workflow
-
-1. Define new schemas in JSON Schema.
-2. Create API on backend.
-3. Write API test for it.
-4. Implement UI that needs it.

@@ -11,7 +11,8 @@ export type RunResult =
   | "ALL_SKIPPED"
   | "PARTLY_FAIL"
   | "ALL_FAILED"
-  | "NO_PROGRESS";
+  | "NO_PROGRESS"
+  | "WAITING";
 
 export interface Run {
   id: number;
