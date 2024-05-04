@@ -283,6 +283,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const driver = await this.getInputDriver(options)
       const inputs = await InputItemModel.findForBatch(batch.id, false)
       const partial: Record<string, UnifiedItem[]> = {}
+      const partialID: Record<string, number> = {}
 
       let rules = await RuleModel.findForFlowByKey(this.id)
       if (RuleModel.count(rules) === 0) {
@@ -322,6 +323,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               partial[unified.data.multipart] = []
             }
             partial[unified.data.multipart].push(unified)
+            // Track the last input used for multipart. To reconstruct, find the same multipart
+            // fields from inputs with the same runID.
+            partialID[unified.data.multipart] = input.id
           } else {
             await UnifiedItemModel.save({
               data: unified.data as unknown as JsonObject,
@@ -357,7 +361,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           flowPlanId: this.id,
           batchId: batch.id,
           runId: run.id,
-          inputId: 0, // TODO: What to do with this? Drop all reference IDs that we don't use?
+          inputId: partialID[`${item.data.multipart}`]
         })
       }
 
