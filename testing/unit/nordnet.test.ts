@@ -400,7 +400,7 @@ describe('Nordnet', () => {
     )
   })
 
-  test.only('forex', async () => {
+  test('forex', async () => {
 
     const driver = getDriver('NORDNET', {})
     const batch = createBatchFrom('Nordnet-forex.csv')
@@ -412,6 +412,41 @@ describe('Nordnet', () => {
     expect(unifieds.length).toBe(2)
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
-    console.dir(txs, {depth: null})
+    expect(txs).toStrictEqual([
+      {
+        time: '2023-06-05T12:00:00.000Z',
+        lines: [
+          {
+            account: 'NORDNET_CURRENCY_EUR',
+            amount: '17.83',
+            text: 'Sold 19.09 USD in exhcange to EUR',
+            extras: {}
+          },
+          {
+            account: 'NORDNET_CURRENCY_USD',
+            amount: '-17.83',
+            text: 'Sold 19.09 USD in exhcange to EUR',
+            extras: {}
+          }
+        ]
+      },
+      {
+        time: '2024-02-07T12:00:00.000Z',
+        lines: [
+          {
+            account: 'NORDNET_CURRENCY_EUR',
+            amount: '37.52',
+            text: 'Sold 40.41 USD in exhcange to EUR',
+            extras: {}
+          },
+          {
+            account: 'NORDNET_CURRENCY_USD',
+            amount: '-37.52',
+            text: 'Sold 40.41 USD in exhcange to EUR',
+            extras: {}
+          }
+        ]
+      }
+    ])
   })
 })

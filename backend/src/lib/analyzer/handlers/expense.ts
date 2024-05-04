@@ -37,7 +37,7 @@ export async function expense(this: Analyzer, time: DateTime, input: UnifiedItem
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: this.validateAccount(),
+        account: this.validateValueAccount(false),
         amount: dec(value).negated().toString(),
         text: resultText,
         extras: {},

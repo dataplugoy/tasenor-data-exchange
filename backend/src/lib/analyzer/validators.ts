@@ -184,13 +184,29 @@ export async function validateFee(this: Analyzer, canUseService: boolean): Promi
 /**
  * Figure out main account which is either based on `valueAsset` or default currency.
  */
-export function validateAccount(this: Analyzer): AccountCode {
+export function validateValueAccount(this: Analyzer, withService: boolean): AccountCode {
   const input = this.validateInput()
   if (input.valueAsset === undefined) {
     return `CURRENCY_${this.currency}` as AccountCode
   }
+  const prefix = input.service && withService ? `${input.service.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_` : ''
   if (isCurrency(input.valueAsset)) {
-    return `CURRENCY_${input.valueAsset}` as AccountCode
+    return `${prefix}CURRENCY_${input.valueAsset}` as AccountCode
   }
-  return `ASSET_${input.valueAsset}` as AccountCode
+  return `${prefix}ASSET_${input.valueAsset}` as AccountCode
+}
+
+/**
+ * Figure out asset out account.
+ */
+export function validateAssetOutAccount(this: Analyzer, withService: boolean): AccountCode {
+  const input = this.validateInput()
+  if (!input.assetOut) {
+    this.validateError(`Cannot figure asset out account without 'assetOut'`)
+  }
+  const prefix = input.service && withService ? `${input.service.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_` : ''
+  if (isCurrency(input.assetOut)) {
+    return `${prefix}CURRENCY_${input.assetOut}` as AccountCode
+  }
+  return `${prefix}ASSET_${input.assetOut}` as AccountCode
 }

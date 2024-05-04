@@ -24,13 +24,13 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
   const value = await this.validateValue(true)
   const text = this.validateText('Deposit to {{service}}', { service })
 
-  const resultAccount = (account || `${service}_${this.validateAccount()}`) as AccountCode
+  const resultAccount = (account || `${service}_${this.validateValueAccount(false)}`) as AccountCode
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: this.validateAccount(),
+        account: this.validateValueAccount(false),
         amount: dec(value).negated().toString(),
         text,
         extras: {},

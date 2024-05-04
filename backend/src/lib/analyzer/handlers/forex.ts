@@ -30,14 +30,13 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: this.validateAccount(), // TODO: Rename validateValueAccount
+        account: this.validateValueAccount(true),
         amount: dec(value).toString(),
         text,
         extras: {},
       },
       {
-        // TODO: Make separate validate function. Set service prefix if given.
-        account: `CURRENCY_${assetOut}`,
+        account: this.validateAssetOutAccount(true),
         amount: dec(value).negated().toString(),
         text,
         extras: {},

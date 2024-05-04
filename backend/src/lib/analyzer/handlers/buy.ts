@@ -26,7 +26,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
 
   const lines: TransactionLine[] = [
     {
-      account: this.validateAccount(),
+      account: this.validateValueAccount(false),
       amount: dec(value).negated().toString(),
       text,
       extras: {},

@@ -38,7 +38,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: this.validateAccount(),
+        account: this.validateValueAccount(false),
         amount: dec(value).toString(),
         text: resultText,
         extras: {},
