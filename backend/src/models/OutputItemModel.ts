@@ -1,3 +1,4 @@
+import { Transaction } from '../types/API/Transaction'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 
@@ -60,6 +61,15 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
+   * Get the delivered output items for a flow plan.
+   * @param flowPlanId
+   * @returns
+   */
+  static async findForFlowPlan(flowPlanId: number): Promise<OutputItemModel[]> {
+    return await this.findMany<prisma.OutputItem, OutputItemModel>({ flowPlanId, delivered: true })
+  }
+
+  /**
    * Retrieve all output items.
    */
   static getAll(filter = {}, order = [{ created: 'asc' }]): Promise<OutputItemModel[]> {
@@ -74,5 +84,15 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   static async isDuplicate(output: OutputItemModel): Promise<boolean> {
     const items = await OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>({ flowPlanId: output.data.flowPlanId, hash: output.data.hash })
     return items.length > 1
+  }
+
+  /**
+   * Extract transactions and sort them from the models.
+   * @param output
+   */
+  static transactions(output: OutputItemModel[]): Transaction[] {
+    const txs = output.map(model => model.data.data as unknown as Transaction)
+    txs.sort((a, b) => (a.time === b.time ? 0 : (a.time < b.time ? -1 : 1)))
+    return txs
   }
 }

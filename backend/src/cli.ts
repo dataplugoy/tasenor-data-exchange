@@ -4,6 +4,12 @@ import { connect } from './connect'
 import { UserModel } from './models/UserModel'
 import { RuntimeOptions } from './types/RuntimeOptions'
 import { FlowPlanModel } from './models/FlowPlanModel'
+import { OutputItemModel } from './models/OutputItemModel'
+import { TransactionLine } from './types/API/Transaction'
+import { AccountCode } from './types/AccountCode'
+import { Timestring } from '@tasenor/common'
+import colors from 'colors/safe'
+import Decimal from 'decimal.js'
 
 /**
  * Get the flow plan.
@@ -45,7 +51,50 @@ async function executeRun(args) {
  * @param args
  */
 async function executeOutput(args) {
-  console.log(args)
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+  }
+  const plan = await flowPlan(args, options)
+  const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
+
+  // Sort the transactions by their accounts.
+  const accounts: Record<AccountCode, [Timestring, TransactionLine][]> = {}
+  OutputItemModel.transactions(outputItems).forEach(tx => {
+    tx.lines.forEach(line => {
+      // TODO: Combine accounts like LOSS_ASSET
+      accounts[line.account] = accounts[line.account] || []
+      accounts[line.account].push([tx.time, line])
+    })
+  })
+
+  // Initialize balances.
+  const balance: Record<AccountCode, Decimal> = {}
+  Object.keys(accounts).forEach(account => {
+    balance[account] = new Decimal(0)
+  })
+
+  // Display report.
+  console.log()
+  Object.keys(accounts).forEach(account => {
+    console.log(colors.green(account))
+    console.log('  ', balance[account])
+    accounts[account].forEach(([time, line]) => {
+      const { text, amount, extras } = line
+      const value = new Decimal(amount)
+      balance[account] = balance[account].plus(value)
+      // TODO: Debit, credit, balance
+      // TODO: Rounding of display values.
+      console.log('  ', value, text)
+      if (Object.keys(extras).length) {
+        console.log('  ', extras)
+      }
+    })
+    console.log('  ', balance[account])
+    // TODO: Totals and stock.
+    console.log()
+  })
 }
 
 export async function execute(...args: string[]): Promise<void> {

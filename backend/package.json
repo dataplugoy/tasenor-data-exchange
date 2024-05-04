@@ -24,6 +24,7 @@
     "bcrypt": "^5.1.1",
     "chardet": "^2.0.0",
     "clone": "^2.1.2",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "csv-parse": "^5.5.5",
     "decimal.js": "^10.4.3",
