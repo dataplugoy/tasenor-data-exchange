@@ -90,22 +90,27 @@
   },
   {
     "name": "Forex Sell",
-    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI'",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0",
     "key": "VALUUTAN MYYNTI",
     "multipart": "Vahvistusnumero",
     "result": {
-      "type": "'todo'",
-      "multipart": "Vahvistusnumero"
+      "type": "'forex'",
+      "multipart": "Vahvistusnumero",
+      "assetOut": "Valuutta",
+      "assetAmountOut": "-Summa",
+      "rates": "rates(Valuutta, Vaihtokurssi)"
     }
   },
   {
     "name": "Forex Buy",
-    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO'",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0",
     "key": "VALUUTAN OSTO",
     "multipart": "Vahvistusnumero",
     "result": {
-      "type": "'todo'",
-      "multipart": "Vahvistusnumero"
+      "type": "'forex'",
+      "multipart": "Vahvistusnumero",
+      "value": "Summa",
+      "valueAsset": "Valuutta"
     }
   }
 ]

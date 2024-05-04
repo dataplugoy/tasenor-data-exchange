@@ -357,7 +357,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           flowPlanId: this.id,
           batchId: batch.id,
           runId: run.id,
-          inputId: 0, // TODO: What to do with this?
+          inputId: 0, // TODO: What to do with this? Drop all reference IDs that we don't use?
         })
       }
 

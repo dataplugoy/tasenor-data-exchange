@@ -9,10 +9,11 @@ import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateAccount } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
 import { buy } from './handlers/buy'
-import { sell } from './handlers/sell'
 import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
+import { forex } from './handlers/forex'
 import { income } from './handlers/income'
+import { sell } from './handlers/sell'
 import { withdrawal } from './handlers/withdrawal'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
@@ -46,6 +47,7 @@ export class Analyzer {
   public depositHandler = deposit.bind(this)
   public incomeHandler = income.bind(this)
   public withdrawalHandler = withdrawal.bind(this)
+  public forexHandler = forex.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)

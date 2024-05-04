@@ -412,6 +412,6 @@ describe('Nordnet', () => {
     expect(unifieds.length).toBe(2)
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
-    console.log(txs)
+    console.dir(txs, {depth: null})
   })
 })
