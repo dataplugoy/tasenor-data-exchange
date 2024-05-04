@@ -571,7 +571,7 @@ CREATE TABLE public.rules (
     type public."RuleType" NOT NULL,
     "ownerId" integer NOT NULL,
     name text NOT NULL,
-    key text NOT NULL,
+    key text DEFAULT ''::text NOT NULL,
     priority integer DEFAULT 50 NOT NULL,
     filter jsonb NOT NULL,
     result jsonb NOT NULL,

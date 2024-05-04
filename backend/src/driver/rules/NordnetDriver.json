@@ -92,7 +92,6 @@
     "name": "Forex Sell",
     "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0",
     "key": "VALUUTAN MYYNTI",
-    "multipart": "Vahvistusnumero",
     "result": {
       "type": "'forex'",
       "service": "'Nordnet'",
@@ -106,7 +105,6 @@
     "name": "Forex Buy",
     "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0",
     "key": "VALUUTAN OSTO",
-    "multipart": "Vahvistusnumero",
     "result": {
       "type": "'forex'",
       "service": "'Nordnet'",
