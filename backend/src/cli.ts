@@ -3,35 +3,52 @@ import { BaseModel } from './models/BaseModel'
 import { connect } from './connect'
 import { UserModel } from './models/UserModel'
 import { RuntimeOptions } from './types/RuntimeOptions'
+import { FlowPlanModel } from './models/FlowPlanModel'
 
 /**
- * Execute one step of the named flow.
- * @param name Title of the flow to execute.
+ * Get the flow plan.
  */
-async function run(email: string, name: string, options: RuntimeOptions) {
-  const user = await UserModel.find(email)
+async function flowPlan(args, options: RuntimeOptions): Promise<FlowPlanModel> {
+  const user = await UserModel.find(args.user)
   if (!user) {
-    throw new Error(`User '${email}' not found.`)
+    throw new Error(`User '${args.user}' not found.`)
   }
 
-  const plan = await user.findFlowPlan(name)
+  const plan = await user.findFlowPlan(args.flow)
   if (!plan) {
-    throw new Error(`Flow plan '${name}' not found.`)
+    throw new Error(`Flow plan '${args.flow}' not found.`)
   }
 
   options.userId = user.id
 
+  return plan
+}
+
+/**
+ * Run the plan step(s).
+ * @param args
+ */
+async function executeRun(args) {
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+    repeat: args.count === 'all' ? 'MAX' : parseInt(args.count)
+  }
+
+  const plan = await flowPlan(args, options)
   await plan.run(options)
 }
 
 /**
- * Main entry point to the CLI.
- * @param args Command arguments.
+ * Display output.
+ * @param args
  */
+async function executeOutput(args) {
+  console.log(args)
+}
+
 export async function execute(...args: string[]): Promise<void> {
-  const commands = {
-    run
-  }
   const parser: ArgumentParser = new ArgumentParser({
     description: 'Tasenor Data Exchange command line tool'
   })
@@ -40,21 +57,22 @@ export async function execute(...args: string[]): Promise<void> {
   parser.add_argument('--auth', { help: 'Authorization code given by the 3rd party.', required: false })
   parser.add_argument('--db', { help: 'Database URL.', default: 'postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex' })
   parser.add_argument('--user', { help: 'Email of the TaDeX user.' })
-  parser.add_argument('command', { help: 'Command to execute', choices: Object.keys(commands) })
-  parser.add_argument('name', { help: 'Name of the flow' })
-  parser.add_argument('count', { help: 'Number of iteration or "all".', nargs: '?', default: '1' })
+
+  const subparser = parser.add_subparsers()
+
+  const run = subparser.add_parser('run', { description: 'Execute one or more steps on flow plan.' })
+  run.add_argument('flow', { help: 'Name of the flow' })
+  run.add_argument('count', { help: 'Number of iteration or "all".', nargs: '?', default: '1' })
+  run.set_defaults({ func: executeRun })
+
+  const output = subparser.add_parser('output', { description: 'Display output for a specific flow plan.' })
+  output.add_argument('flow', { help: 'Name of the flow' })
+  output.set_defaults({ func: executeOutput })
 
   const commandArgs = parser.parse_args(args)
 
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
 
-  const options: RuntimeOptions = {
-    userId: 0,
-    tracking: commandArgs.track || null,
-    auth: commandArgs.auth || null,
-    repeat: commandArgs.count === 'all' ? 'MAX' : parseInt(commandArgs.count)
-  }
-
-  await commands[commandArgs.command](commandArgs.user || '', commandArgs.name || '', options)
+  await commandArgs.func(commandArgs)
 }
