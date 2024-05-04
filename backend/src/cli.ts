@@ -10,6 +10,7 @@ import { AccountCode } from './types/AccountCode'
 import { Timestring } from '@tasenor/common'
 import colors from 'colors/safe'
 import Decimal from 'decimal.js'
+import { sprintf } from 'sprintf-js'
 
 /**
  * Get the flow plan.
@@ -78,21 +79,31 @@ async function executeOutput(args) {
   // Display report.
   console.log()
   Object.keys(accounts).forEach(account => {
-    console.log(colors.green(account))
-    console.log('  ', balance[account])
+    console.log(colors.blue(account))
+    console.log(colors.magenta(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
     accounts[account].forEach(([time, line]) => {
       const { text, amount, extras } = line
       const value = new Decimal(amount)
       balance[account] = balance[account].plus(value)
-      // TODO: Debit, credit, balance
-      // TODO: Rounding of display values.
-      console.log('  ', value, text)
+      const debit = value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
+      const credit = !value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
+      const total = sprintf('%.2f', balance[account].mul(100).round().div(100))
+      console.log('  ',
+        text.padEnd(40, ' ').substring(0, 40),
+        colors.green(debit.padStart(14)),
+        colors.red(credit.padStart(14)),
+        colors.magenta(total.padStart(14))
+      )
       if (Object.keys(extras).length) {
-        console.log('  ', extras)
+        if ('asset' in extras && 'assetChange' in extras) {
+          console.log(''.padStart(30), colors.cyan(`${extras.assetChange > 0 ? '+' : ''}${extras.assetChange}`), colors.cyan(extras.asset))
+        } else {
+          throw new Error(`Extras ${JSON.stringify(extras)} not yet supported.`)
+        }
       }
     })
-    console.log('  ', balance[account])
-    // TODO: Totals and stock.
+    console.log(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
+    // TODO: Stock totals and view.
     console.log()
   })
 }
