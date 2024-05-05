@@ -24,20 +24,20 @@ export async function withdrawal(this: Analyzer, time: DateTime, input: UnifiedI
   const value = await this.validateValue(true)
   const text = this.validateText('Withdrawal from {{service}}', { service })
 
-  const resultAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
+  const externalAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
         account: this.validateValueAccount(false),
-        amount: dec(value).toString(),
+        amount: dec(value).negated().toString(),
         text,
         extras: {},
       },
       {
-        account: resultAccount,
-        amount: dec(value).negated().toString(),
+        account: externalAccount,
+        amount: dec(value).toString(),
         text,
         extras: {},
       },

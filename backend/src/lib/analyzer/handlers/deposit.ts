@@ -23,20 +23,20 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
   const { account, service, valueAsset } = input
   const value = await this.validateValue(true)
   const text = this.validateText('Deposit to {{service}}', { service })
-  const resultAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
+  const externalAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
         account: this.validateValueAccount(false),
-        amount: dec(value).negated().toString(),
+        amount: dec(value).toString(),
         text,
         extras: {},
       },
       {
-        account: resultAccount,
-        amount: dec(value).toString(),
+        account: externalAccount,
+        amount: dec(value).negated().toString(),
         text,
         extras: {},
       },
