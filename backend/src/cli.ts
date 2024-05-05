@@ -182,7 +182,11 @@ async function executeOutput(args) {
       })
       throw Error('Comparison failed.')
     } else {
-      console.log(colors.green('Comparison matches.'))
+      console.log()
+      console.log(colors.green('+---------------------+'))
+      console.log(colors.green('| Comparison matches! |'))
+      console.log(colors.green('+---------------------+'))
+      console.log()
     }
   }
 }
