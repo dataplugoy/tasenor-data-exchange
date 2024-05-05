@@ -80,7 +80,7 @@ async function executeOutput(args) {
   console.log()
   Object.keys(accounts).forEach(account => {
     console.log(colors.blue(account))
-    console.log(colors.magenta(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
+    console.log(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
     accounts[account].forEach(([time, line]) => {
       const { text, amount, extras } = line
       const value = new Decimal(amount)
@@ -88,19 +88,22 @@ async function executeOutput(args) {
       const debit = value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
       const credit = !value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
       const total = sprintf('%.2f', balance[account].mul(100).round().div(100))
-      console.log('  ',
-        text.padEnd(40, ' ').substring(0, 40),
-        colors.green(debit.padStart(14)),
-        colors.red(credit.padStart(14)),
-        colors.magenta(total.padStart(14))
-      )
+      let extrasText = ''
       if (Object.keys(extras).length) {
         if ('asset' in extras && 'assetChange' in extras) {
-          console.log(''.padStart(30), colors.cyan(`${extras.assetChange > 0 ? '+' : ''}${extras.assetChange}`), colors.cyan(extras.asset))
+          extrasText = `${extras.assetChange > 0 ? '+' : ''}${extras.assetChange} ${extras.asset}`
         } else {
           throw new Error(`Extras ${JSON.stringify(extras)} not yet supported.`)
         }
       }
+      console.log('  ',
+        text.padEnd(40, ' ').substring(0, 40),
+        colors.green(debit.padStart(14)),
+        colors.red(credit.padStart(14)),
+        colors.magenta(total.padStart(14)),
+        ' ',
+        colors.cyan(extrasText)
+      )
     })
     console.log(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
     // TODO: Stock totals and view.
