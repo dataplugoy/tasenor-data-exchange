@@ -11,6 +11,8 @@ import { Timestring } from '@tasenor/common'
 import colors from 'colors/safe'
 import Decimal from 'decimal.js'
 import { sprintf } from 'sprintf-js'
+import { Stock } from './lib/Stock'
+import { Analyzer } from './lib/analyzer/Analyzer'
 
 /**
  * Get the flow plan.
@@ -52,6 +54,9 @@ async function executeRun(args) {
  * @param args
  */
 async function executeOutput(args) {
+  const stock = new Stock({})
+  const analyzer = new Analyzer(stock)
+
   const options: RuntimeOptions = {
     userId: 0,
     tracking: args.track || null,
@@ -63,6 +68,7 @@ async function executeOutput(args) {
   // Sort the transactions by their accounts.
   const accounts: Record<AccountCode, [Timestring, TransactionLine][]> = {}
   OutputItemModel.transactions(outputItems).forEach(tx => {
+    analyzer.apply(tx)
     tx.lines.forEach(line => {
       const account = line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
       accounts[account] = accounts[account] || []
@@ -96,7 +102,11 @@ async function executeOutput(args) {
           throw new Error(`Extras ${JSON.stringify(extras)} not yet supported.`)
         }
       }
-      console.log('  ',
+      if (args.time) {
+        console.log('  ', colors.gray(time))
+      }
+      console.log(
+        '  ',
         text.padEnd(40, ' ').substring(0, 40),
         colors.green(debit.padStart(14)),
         colors.red(credit.padStart(14)),
@@ -106,9 +116,27 @@ async function executeOutput(args) {
       )
     })
     console.log(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
-    // TODO: Stock totals and view.
+
     console.log()
   })
+
+  if (args.stock) {
+    console.log(colors.blue('STOCK SUMMARY'))
+    Object.values(stock.toJSON() as Record<string, Array<object>>).forEach(account => {
+      Object.keys(account).forEach(ticker => {
+        const amount = account[ticker].amount
+        const value = account[ticker].value
+        const avg = amount ? value / amount : 0
+        console.log(
+          '  ',
+          colors.cyan(ticker.padEnd(6)),
+          colors.magenta(sprintf('%.2f', avg).padEnd(8)),
+          colors.yellow(`${amount}`)
+        )
+      })
+    })
+    console.log()
+  }
 }
 
 export async function execute(...args: string[]): Promise<void> {
@@ -130,6 +158,8 @@ export async function execute(...args: string[]): Promise<void> {
 
   const output = subparser.add_parser('output', { description: 'Display output for a specific flow plan.' })
   output.add_argument('flow', { help: 'Name of the flow' })
+  output.add_argument('--time', { help: 'Show also timestamps.', required: false, action: 'store_true' })
+  output.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
   output.set_defaults({ func: executeOutput })
 
   const commandArgs = parser.parse_args(args)
