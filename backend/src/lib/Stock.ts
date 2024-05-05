@@ -35,6 +35,14 @@ export class Stock {
   }
 
   /**
+   * Get complete collection of data.
+   * @returns
+   */
+  getAll(): Record<AccountCode, StockData> {
+    return this.stock
+  }
+
+  /**
    * Get the record for an asset. Create if needed.
    * @param asset
    */

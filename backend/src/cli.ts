@@ -82,11 +82,20 @@ async function executeOutput(args) {
     balance[account] = new Decimal(0)
   })
 
-  // Display report.
-  console.log()
+  // Helper to pring.
+  const out = (...print): void => {
+    if (args.json) {
+      return
+    }
+    console.log(...print)
+  }
+
+  // Display report and collect it as JSON.
+  out()
+  const report: Record<string, string> = {}
   Object.keys(accounts).forEach(account => {
-    console.log(colors.blue(account))
-    console.log(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
+    out(colors.blue(account))
+    out(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
     accounts[account].forEach(([time, line]) => {
       const { text, amount, extras } = line
       const value = new Decimal(amount)
@@ -103,9 +112,9 @@ async function executeOutput(args) {
         }
       }
       if (args.time) {
-        console.log('  ', colors.gray(time))
+        out('  ', colors.gray(time))
       }
-      console.log(
+      out(
         '  ',
         text.padEnd(40, ' ').substring(0, 40),
         colors.green(debit.padStart(14)),
@@ -115,27 +124,34 @@ async function executeOutput(args) {
         colors.cyan(extrasText)
       )
     })
-    console.log(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
-
-    console.log()
+    out(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
+    report[account] = balance[account].toString()
+    out()
   })
 
   if (args.stock) {
-    console.log(colors.blue('STOCK SUMMARY'))
-    Object.values(stock.toJSON() as Record<string, Array<object>>).forEach(account => {
-      Object.keys(account).forEach(ticker => {
-        const amount = account[ticker].amount
-        const value = account[ticker].value
-        const avg = amount ? value / amount : 0
-        console.log(
+    out(colors.blue('STOCK SUMMARY'))
+    out()
+    const all = stock.getAll()
+    Object.keys(all).forEach(accountCode => {
+      Object.keys(all[accountCode]).forEach(ticker => {
+        const { amount, value } = all[accountCode][ticker]
+        const avg = amount.eq(0) ? 0 : value.div(amount)
+
+        out(
           '  ',
           colors.cyan(ticker.padEnd(6)),
           colors.magenta(sprintf('%.2f', avg).padEnd(8)),
           colors.yellow(`${amount}`)
         )
+        report[`${accountCode}: ${ticker}`] = `${amount} x ${avg}`
       })
     })
-    console.log()
+    out()
+  }
+
+  if (args.json) {
+    console.log(JSON.stringify(report, null, 2))
   }
 }
 
@@ -156,12 +172,13 @@ export async function execute(...args: string[]): Promise<void> {
   run.add_argument('count', { help: 'Number of iteration or "all".', nargs: '?', default: '1' })
   run.set_defaults({ func: executeRun })
 
-  const output = subparser.add_parser('output', { description: 'Display output for a specific flow plan.' })
-  output.add_argument('flow', { help: 'Name of the flow' })
-  output.add_argument('--time', { help: 'Show also timestamps.', required: false, action: 'store_true' })
-  output.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
-  output.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
-  output.set_defaults({ func: executeOutput })
+  const ledger = subparser.add_parser('ledger', { description: 'Display ledger report for a specific flow plan.' })
+  ledger.add_argument('flow', { help: 'Name of the flow' })
+  ledger.add_argument('--time', { help: 'Show also timestamps.', required: false, action: 'store_true' })
+  ledger.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
+  ledger.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
+  ledger.add_argument('--json', { help: 'Instead of normal display, print meaningful data as JSON.', required: false, action: 'store_true' })
+  ledger.set_defaults({ func: executeOutput })
 
   const commandArgs = parser.parse_args(args)
 
