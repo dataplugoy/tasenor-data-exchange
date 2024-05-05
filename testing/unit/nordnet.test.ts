@@ -23,13 +23,13 @@ describe('Nordnet', () => {
         lines: [
           {
             account: 'CURRENCY_EUR',
-            amount: '-800',
+            amount: '800',
             text: 'Deposit to Nordnet',
             extras: {}
           },
           {
             account: 'EXTERNAL_NORDNET_EUR',
-            amount: '800',
+            amount: '-800',
             text: 'Deposit to Nordnet',
             extras: {}
           }
@@ -332,13 +332,13 @@ describe('Nordnet', () => {
         lines: [
           {
             account: 'CURRENCY_EUR',
-            amount: '1930',
+            amount: '-1930',
             text: 'Withdrawal from Nordnet',
             extras: {}
           },
           {
             account: 'EXTERNAL_NORDNET_EUR',
-            amount: '-1930',
+            amount: '1930',
             text: 'Withdrawal from Nordnet',
             extras: {}
           }

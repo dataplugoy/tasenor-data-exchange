@@ -16,7 +16,7 @@ describe('Analyzer', () => {
     const input = {
       type: 'deposit' as UnifiedItemType,
       value: 1000,
-      account: 'DEPOSIT_TO',
+      account: 'EXTERNAL_DEPOSIT_FROM',
       service: 'Stock inc.',
     }
 
@@ -28,21 +28,21 @@ describe('Analyzer', () => {
           lines: [
             {
               account: 'CURRENCY_EUR',
-              amount: '-1000',
+              amount: '1000',
               extras: {},
               text: 'Deposit to Stock inc.',
             },
             {
-              account: 'DEPOSIT_TO',
-              amount: '1000',
+              account: 'EXTERNAL_DEPOSIT_FROM',
+              amount: '-1000',
               extras: {},
               text: 'Deposit to Stock inc.',
             },
           ]
         },
         balances: {
-          CURRENCY_EUR: -1000,
-          DEPOSIT_TO: 1000,
+          CURRENCY_EUR: 1000,
+          EXTERNAL_DEPOSIT_FROM: -1000,
         },
         stock: {}
       }
