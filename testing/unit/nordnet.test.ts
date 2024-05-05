@@ -28,7 +28,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_CURRENCY_EUR',
+            account: 'EXTERNAL_NORDNET_EUR',
             amount: '800',
             text: 'Deposit to Nordnet',
             extras: {}
@@ -113,7 +113,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_FEE_MONTHLY_SAVING',
+            account: 'FEE_MONTHLY_SAVING',
             amount: '2.5',
             text: 'ETF-kuukausisaastosopimuksen palvelumaksu',
             extras: {}
@@ -337,7 +337,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_CURRENCY_EUR',
+            account: 'EXTERNAL_NORDNET_EUR',
             amount: '-1930',
             text: 'Withdrawal from Nordnet',
             extras: {}
@@ -372,7 +372,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_EXPENSE_INTEREST',
+            account: 'EXPENSE_INTEREST',
             amount: '0.74',
             text: 'Interest expense',
             extras: {}
@@ -389,7 +389,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'NORDNET_EXPENSE_INTEREST',
+            account: 'EXPENSE_INTEREST',
             amount: '0.52',
             text: 'Interest expense',
             extras: {}
@@ -417,13 +417,13 @@ describe('Nordnet', () => {
         time: '2023-06-05T12:00:00.000Z',
         lines: [
           {
-            account: 'NORDNET_CURRENCY_EUR',
+            account: 'CURRENCY_EUR',
             amount: '17.83',
             text: 'Sold 19.09 USD in exhcange to EUR',
             extras: {}
           },
           {
-            account: 'NORDNET_CURRENCY_USD',
+            account: 'CURRENCY_USD',
             amount: '-17.83',
             text: 'Sold 19.09 USD in exhcange to EUR',
             extras: {}
@@ -434,13 +434,13 @@ describe('Nordnet', () => {
         time: '2024-02-07T12:00:00.000Z',
         lines: [
           {
-            account: 'NORDNET_CURRENCY_EUR',
+            account: 'CURRENCY_EUR',
             amount: '37.52',
             text: 'Sold 40.41 USD in exhcange to EUR',
             extras: {}
           },
           {
-            account: 'NORDNET_CURRENCY_USD',
+            account: 'CURRENCY_USD',
             amount: '-37.52',
             text: 'Sold 40.41 USD in exhcange to EUR',
             extras: {}

@@ -7,7 +7,6 @@
       "type": "'deposit'",
       "value": "Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_CURRENCY_' + Valuutta",
       "service": "'Nordnet'"
     }
   },
@@ -19,7 +18,6 @@
       "type": "'withdrawal'",
       "value": "-Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_CURRENCY_' + Valuutta",
       "service": "'Nordnet'"
     }
   },
@@ -31,7 +29,7 @@
       "type": "'expense'",
       "value": "-Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_FEE_MONTHLY_SAVING'",
+      "account": "'FEE_MONTHLY_SAVING'",
       "text": "Tapahtumateksti"
     }
   },
@@ -84,7 +82,7 @@
       "type": "'expense'",
       "value": "-Summa",
       "valueAsset": "Valuutta",
-      "account": "'NORDNET_EXPENSE_INTEREST'",
+      "account": "'EXPENSE_INTEREST'",
       "reason": "'INTEREST'"
     }
   },
@@ -94,7 +92,6 @@
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
-      "service": "'Nordnet'",
       "multipart": "Vahvistusnumero",
       "assetOut": "Valuutta",
       "assetAmountOut": "-Summa",
@@ -107,7 +104,6 @@
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
-      "service": "'Nordnet'",
       "multipart": "Vahvistusnumero",
       "value": "Summa",
       "valueAsset": "Valuutta"

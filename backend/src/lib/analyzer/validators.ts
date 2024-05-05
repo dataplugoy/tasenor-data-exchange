@@ -189,11 +189,10 @@ export function validateValueAccount(this: Analyzer, withService: boolean): Acco
   if (input.valueAsset === undefined) {
     return `CURRENCY_${this.currency}` as AccountCode
   }
-  const prefix = input.service && withService ? `${input.service.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_` : ''
   if (isCurrency(input.valueAsset)) {
-    return `${prefix}CURRENCY_${input.valueAsset}` as AccountCode
+    return `CURRENCY_${input.valueAsset}` as AccountCode
   }
-  return `${prefix}ASSET_${input.valueAsset}` as AccountCode
+  return `ASSET_${input.valueAsset}` as AccountCode
 }
 
 /**
@@ -204,9 +203,8 @@ export function validateAssetOutAccount(this: Analyzer, withService: boolean): A
   if (!input.assetOut) {
     this.validateError(`Cannot figure asset out account without 'assetOut'`)
   }
-  const prefix = input.service && withService ? `${input.service.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_` : ''
   if (isCurrency(input.assetOut)) {
-    return `${prefix}CURRENCY_${input.assetOut}` as AccountCode
+    return `CURRENCY_${input.assetOut}` as AccountCode
   }
-  return `${prefix}ASSET_${input.assetOut}` as AccountCode
+  return `ASSET_${input.assetOut}` as AccountCode
 }

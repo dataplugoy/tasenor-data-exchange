@@ -71,3 +71,10 @@ export function parseEncoding(encoding: string): 'ascii' | 'utf8' | 'utf-8' | 'u
       throw new Error(`Not able to map text encoding ${encoding}.`)
   }
 }
+
+/**
+ * Convert service provider name to uppercase and clean up.
+ */
+export function serviceName2Code(service: string): string {
+  return service.toUpperCase().replace(/[^A-Z0-9_]/g, '_')
+}

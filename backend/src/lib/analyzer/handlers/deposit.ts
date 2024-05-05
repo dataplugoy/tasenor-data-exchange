@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
+import { chg, dec, serviceName2Code } from '../../utils'
 import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction } from '../../../types/API/Transaction'
@@ -20,11 +20,10 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
   this.validateBasics()
   this.validateNotEmpty('service')
 
-  const { account, service } = input
+  const { account, service, valueAsset } = input
   const value = await this.validateValue(true)
   const text = this.validateText('Deposit to {{service}}', { service })
-
-  const resultAccount = (account || `${service}_${this.validateValueAccount(false)}`) as AccountCode
+  const resultAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
 
   return {
     time: time.toUTC().toISO() as Timestring,
