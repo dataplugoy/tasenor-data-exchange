@@ -195,12 +195,10 @@ export class Analyzer {
     tx.lines.forEach((line) => this.addBalance(line.account as AccountCode, dec(line.amount)))
 
     // Apply asset changes.
-    tx.lines.forEach((line) => {
-      if (line.extras.asset && line.extras.assetChange) {
-        const value = 'assetValue' in line.extras ? dec(line.extras.assetValueChange) : dec(line.amount)
-        this.addAsset(line.account as AccountCode, line.extras.asset as Asset, dec(line.extras.assetChange), value)
-      }
-    })
+    tx.lines.forEach((line) => line.extras.asset &&
+      line.extras.assetChange &&
+      this.addAsset(line.account as AccountCode, line.extras.asset as Asset, dec(line.extras.assetChange), dec(line.amount))
+    )
   }
 
   /**

@@ -242,5 +242,4 @@ export interface TransactionLine {
 export interface TransactionExtras {
   asset?: Asset7;
   assetChange?: number | string;
-  assetValueChange?: number | string;
 }

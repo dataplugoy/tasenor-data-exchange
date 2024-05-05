@@ -24,45 +24,44 @@ describe('Analyzer', () => {
 
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
-      balances: {
-        CRYPTO_ETH: -5000,
-        CURRENCY_EUR: 6000,
-        PROFIT_ETH: -1000,
+      "balances": {
+        "CRYPTO_ETH": -5000,
+        "CURRENCY_EUR": 6000,
+        "PROFIT_ETH": -1000,
       },
-      stock: {
-        CRYPTO_ETH: {
-          ETH: {
-            amount: 0,
-            value: 0,
+      "stock": {
+        "CRYPTO_ETH": {
+          "ETH": {
+            "amount": 0,
+            "value": 0,
           },
         },
       },
-      tx: {
-        lines: [
+      "tx": {
+        "lines": [
           {
-            account: 'CURRENCY_EUR',
-            amount: '6000',
-            extras: {},
-            text: 'Sold -5 ETH',
+            "account": "CURRENCY_EUR",
+            "amount": "6000",
+            "extras": {},
+            "text": "Sold -5 ETH",
           },
           {
-            account: 'CRYPTO_ETH',
-            amount: '-5000',
-            extras: {
-              asset: 'ETH',
-              assetChange: '-5',
-              assetValueChange: '-5000',
+            "account": "CRYPTO_ETH",
+            "amount": "-5000",
+            "extras": {
+              "asset": "ETH",
+              "assetChange": "-5",
             },
-            text: 'Sold -5 ETH',
+            "text": "Sold -5 ETH",
           },
           {
-            account: 'PROFIT_ETH',
-            amount: '-1000',
-            extras: {},
-            text: 'Sold -5 ETH',
+            "account": "PROFIT_ETH",
+            "amount": "-1000",
+            "extras": {},
+            "text": "Sold -5 ETH",
           },
         ],
-        time: '2000-01-01T00:00:00.000Z',
+        "time": "2000-01-01T00:00:00.000Z",
       }
     })
   })
@@ -89,45 +88,44 @@ describe('Analyzer', () => {
 
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
-      balances: {
-          CRYPTO_ETH: -5000,
-          CURRENCY_EUR: 4000,
-          LOSS_ETH: 1000,
+      "balances": {
+          "CRYPTO_ETH": -5000,
+          "CURRENCY_EUR": 4000,
+          "LOSS_ETH": 1000,
         },
-        stock: {
-          CRYPTO_ETH: {
-            ETH: {
-              amount: 0,
-              value: 0,
+        "stock": {
+          "CRYPTO_ETH": {
+            "ETH": {
+              "amount": 0,
+              "value": 0,
             },
           },
         },
-        tx: {
-          lines: [
+        "tx": {
+          "lines": [
             {
-              account: 'CURRENCY_EUR',
-              amount: '4000',
-              extras: {},
-              text: 'Sell some ETH',
+              "account": "CURRENCY_EUR",
+              "amount": "4000",
+              "extras": {},
+              "text": "Sell some ETH",
             },
             {
-              account: 'CRYPTO_ETH',
-              amount: '-5000',
-              extras: {
-                asset: 'ETH',
-                assetChange: '-5',
-                assetValueChange: '-5000',
+              "account": "CRYPTO_ETH",
+              "amount": "-5000",
+              "extras": {
+                "asset": "ETH",
+                "assetChange": "-5",
               },
-              text: 'Sell some ETH',
+              "text": "Sell some ETH",
             },
             {
-              account: 'LOSS_ETH',
-              amount: '1000',
-              extras: {},
-              text: 'Sell some ETH',
+              "account": "LOSS_ETH",
+              "amount": "1000",
+              "extras": {},
+              "text": "Sell some ETH",
             },
           ],
-          time: '2000-01-01T00:00:00.000Z',
+          "time": "2000-01-01T00:00:00.000Z",
         },
       }
     )
@@ -155,38 +153,37 @@ describe('Analyzer', () => {
 
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
-      balances: {
-          CRYPTO_ETH: -2000,
-          CURRENCY_EUR: 2000,
+      "balances": {
+          "CRYPTO_ETH": -2000,
+          "CURRENCY_EUR": 2000,
         },
-        stock: {
-          CRYPTO_ETH: {
-            ETH: {
-              amount: 3,
-              value: 3000,
+        "stock": {
+          "CRYPTO_ETH": {
+            "ETH": {
+              "amount": 3,
+              "value": 3000,
             },
           },
         },
-        tx: {
-          lines: [
+        "tx": {
+          "lines": [
             {
-              account: 'CURRENCY_EUR',
-              amount: '2000',
-              extras: {},
-              text: 'Sell some ETH',
+              "account": "CURRENCY_EUR",
+              "amount": "2000",
+              "extras": {},
+              "text": "Sell some ETH",
             },
             {
-              account: 'CRYPTO_ETH',
-              amount: '-2000',
-              extras: {
-                asset: 'ETH',
-                assetChange: '-2',
-                assetValueChange: '-2000',
+              "account": "CRYPTO_ETH",
+              "amount": "-2000",
+              "extras": {
+                "asset": "ETH",
+                "assetChange": "-2",
               },
-              text: 'Sell some ETH',
+              "text": "Sell some ETH",
             },
           ],
-          time: '2000-01-01T00:00:00.000Z',
+          "time": "2000-01-01T00:00:00.000Z",
         },
       }
     )
@@ -241,7 +238,7 @@ describe('Analyzer', () => {
             account: 'CRYPTO_ETH',
             amount: '-5000',
             text: 'Sold -5 ETH',
-            extras: { asset: 'ETH', assetChange: '-5', assetValueChange: '-5000', }
+            extras: { asset: 'ETH', assetChange: '-5' }
           },
           {
             account: 'PROFIT_ETH',
@@ -305,7 +302,7 @@ describe('Analyzer', () => {
               account: 'CRYPTO_ETH',
               amount: '-5000',
               text: 'Sold -5 ETH',
-              extras: { asset: 'ETH', assetChange: '-5', assetValueChange: '-5000', }
+              extras: { asset: 'ETH', assetChange: '-5' }
             },
             {
               account: 'LOSS_ETH',
@@ -364,7 +361,6 @@ describe('Analyzer', () => {
               extras: {
                 asset: 'ETH',
                 assetChange: '-2',
-                assetValueChange: '-2000',
               },
               text: 'Sold -2 ETH',
             },

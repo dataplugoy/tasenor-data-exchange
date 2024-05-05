@@ -175,7 +175,7 @@ describe('Nordnet', () => {
             account: 'STOCK_MANTA',
             amount: '-637.2',
             text: 'Sold -177 MANTA',
-            extras: { asset: 'MANTA', assetChange: '-177', assetValueChange: '-637.2' }
+            extras: { asset: 'MANTA', assetChange: '-177' }
           },
           {
             account: 'PROFIT_MANTA',
@@ -204,7 +204,7 @@ describe('Nordnet', () => {
             account: 'STOCK_MANTA',
             amount: '-2962.8',
             text: 'Sold -823 MANTA',
-            extras: { asset: 'MANTA', assetChange: '-823', assetValueChange: '-2962.8' }
+            extras: { asset: 'MANTA', assetChange: '-823' }
           },
           {
             account: 'PROFIT_MANTA',
