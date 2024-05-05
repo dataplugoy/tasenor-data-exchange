@@ -70,7 +70,7 @@ async function executeOutput(args) {
   OutputItemModel.transactions(outputItems).forEach(tx => {
     analyzer.apply(tx)
     tx.lines.forEach(line => {
-      const account = line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
+      const account = args.details ? line.account : line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
       accounts[account] = accounts[account] || []
       accounts[account].push([tx.time, line])
     })
@@ -160,6 +160,7 @@ export async function execute(...args: string[]): Promise<void> {
   output.add_argument('flow', { help: 'Name of the flow' })
   output.add_argument('--time', { help: 'Show also timestamps.', required: false, action: 'store_true' })
   output.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
+  output.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
   output.set_defaults({ func: executeOutput })
 
   const commandArgs = parser.parse_args(args)
