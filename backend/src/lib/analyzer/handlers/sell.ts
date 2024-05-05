@@ -47,6 +47,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
       extras: {
         asset: assetOut,
         assetChange: dec(assetAmountOut).negated().toString(),
+        assetValueChange: oldValue.negated().toString(),
       },
     },
   ]

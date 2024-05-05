@@ -10,4 +10,5 @@ export type Asset = string;
 export interface TransactionExtras {
   asset?: Asset;
   assetChange?: number | string;
+  assetValueChange?: number | string;
 }

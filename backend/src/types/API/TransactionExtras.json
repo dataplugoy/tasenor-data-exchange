@@ -9,6 +9,10 @@
     "assetChange": {
       "type": ["number", "string"],
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetValueChange": {
+      "type": ["number", "string"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
     }
   }
 }
