@@ -45,7 +45,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_RIZF',
+            account: 'STOCK_RIZF',
             amount: '140.73',
             text: 'Bought +38 RIZF',
             extras: { asset: 'RIZF', assetChange: '38' }
@@ -62,7 +62,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_WTEJ',
+            account: 'STOCK_WTEJ',
             amount: '91.63',
             text: 'Bought +3 WTEJ',
             extras: { asset: 'WTEJ', assetChange: '3' }
@@ -79,7 +79,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_W1TA',
+            account: 'STOCK_W1TA',
             amount: '236.16',
             text: 'Bought +8 W1TA',
             extras: { asset: 'W1TA', assetChange: '8' }
@@ -96,7 +96,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_IQQH',
+            account: 'STOCK_IQQH',
             amount: '316.14',
             text: 'Bought +43 IQQH',
             extras: { asset: 'IQQH', assetChange: '43' }
@@ -149,7 +149,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_MANTA',
+            account: 'STOCK_MANTA',
             amount: '3600',
             text: 'Bought +1000 MANTA',
             extras: { asset: 'MANTA', assetChange: '1000' }
@@ -172,7 +172,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_MANTA',
+            account: 'STOCK_MANTA',
             amount: '-637.2',
             text: 'Sold -177 MANTA',
             extras: { asset: 'MANTA', assetChange: '-177' }
@@ -201,7 +201,7 @@ describe('Nordnet', () => {
             extras: {}
           },
           {
-            account: 'ASSET_MANTA',
+            account: 'STOCK_MANTA',
             amount: '-2962.8',
             text: 'Sold -823 MANTA',
             extras: { asset: 'MANTA', assetChange: '-823' }

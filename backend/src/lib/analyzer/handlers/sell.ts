@@ -13,20 +13,20 @@ import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
  * @param time
  * @param input
  *
- * Requires fields `assetOut`, `assetAmountOut`.
+ * Requires fields `assetOut`, `assetAmountOut`, `assetTypeOut`.
  * Optional fields `fee`, `feeAsset`.
  */
 export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
   // TODO: Short selling (but only allowed if a setting in project is true).
-  const { assetOut, assetAmountOut } = input
+  const { assetOut, assetAmountOut, assetTypeOut } = input
   const [fee, feeAsset, feeAssetChange] = await this.validateFee(true)
 
   this.validateBasics()
-  this.validateRequired('assetOut', 'assetAmountOut')
+  this.validateRequired('assetOut', 'assetAmountOut', 'assetTypeOut')
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
   const value = await this.validateValueOrAsset(assetOut as Asset, dec(assetAmountOut), false)
-  const account = `ASSET_${assetOut}` as AccountCode
+  const account = `${assetTypeOut}_${assetOut}` as AccountCode
   const oldStockValue = this.stock.getValue(account, assetOut as Asset)
   if (oldStockValue === null) {
     throw new Error(`Unable to find asset ${assetOut} from the stock when trying to sell ${assetAmountOut} of them.`)
@@ -41,7 +41,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
       extras: {},
     },
     {
-      account: `ASSET_${assetOut}` as AccountCode,
+      account: `${assetTypeOut}_${assetOut}` as AccountCode,
       amount: dec(oldValue).negated().toString(),
       text,
       extras: {
@@ -75,7 +75,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   if (!fee.eq(0)) {
     const useAsset = feeAsset !== null && !isCurrency(feeAsset)
     lines.push({
-      account: (useAsset ? `ASSETFEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
+      account: (useAsset ? `CRYPTO_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
       amount: dec(fee).toString(),
       text, // TODO: Add translated '(fee)' here?
       extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},

@@ -26,6 +26,11 @@
       "type": ["number", "string"],
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
     },
+    "assetTypeIn": {
+      "description": "Type of the asset received.",
+      "type": "string",
+      "pattern": "^(STOCK|CRYPTO)$"
+    },
     "assetOut": {
       "description": "In case of selling some asset, this is the asset traded out.",
       "$ref": "Asset.json"
@@ -39,6 +44,11 @@
       "description": "In case of selling some asset, this is the value of assets in the default currency (as positive number).",
       "type": ["number", "string"],
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetTypeOut": {
+      "description": "Type of the asset given.",
+      "type": "string",
+      "pattern": "^(STOCK|CRYPTO)$"
     },
     "fee": {
       "description": "Amount of fee charged as a part of the transaction.",

@@ -43,6 +43,7 @@
       "valueAsset": "Valuutta",
       "assetAmountIn": "Määrä",
       "assetIn": "Arvopaperi",
+      "assetTypeIn": "'STOCK'",
       "fee": "Kokonaiskulut",
       "feeAsset": "$('Kokonaiskulut Valuutta')"
     }
@@ -57,6 +58,7 @@
       "valueAsset": "Valuutta",
       "assetOut": "Arvopaperi",
       "assetAmountOut": "Määrä",
+      "assetTypeOut": "'STOCK'",
       "fee": "Kokonaiskulut",
       "feeAsset": "$('Kokonaiskulut Valuutta')"
     }

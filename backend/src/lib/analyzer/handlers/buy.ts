@@ -12,14 +12,14 @@ import { AccountCode } from '../../../types/AccountCode'
  * @param time
  * @param input
  *
- * Requires fields `assetIn`, `assetAmountIn`.
+ * Requires fields `assetIn`, `assetAmountIn`, `assetTypeIn`.
  * Optional fields `fee`, `feeAsset`.
  */
 export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
-  const { assetIn, assetAmountIn } = input
+  const { assetIn, assetAmountIn, assetTypeIn } = input
 
   this.validateBasics()
-  this.validateRequired('assetIn', 'assetAmountIn')
+  this.validateRequired('assetIn', 'assetAmountIn', 'assetTypeIn')
   const text = this.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
   const value = await this.validateValueOrAsset(assetIn as Asset, dec(assetAmountIn), true)
   const [fee, feeAsset, feeAssetChange] = await this.validateFee(true)
@@ -32,7 +32,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       extras: {},
     },
     {
-      account: `ASSET_${assetIn}` as AccountCode,
+      account: `${assetTypeIn}_${assetIn}` as AccountCode,
       amount: dec(value).minus(fee).toString(),
       text,
       extras: {
@@ -46,7 +46,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     const useAsset = feeAsset !== null && !isCurrency(feeAsset)
 
     lines.push({
-      account: (useAsset ? `ASSETFEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
+      account: (useAsset ? `CRYPTOFEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
       amount: dec(fee).toString(),
       text, // TODO: Add translated '(fee)' here?
       extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},

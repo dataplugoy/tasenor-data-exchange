@@ -151,6 +151,10 @@ export interface UnifiedItemData {
    * In case of buying some asset, this is the value of assets in the default currency.
    */
   assetValueIn?: number | string;
+  /**
+   * Type of the asset received.
+   */
+  assetTypeIn?: string;
   assetOut?: Asset2;
   /**
    * In case of selling some asset, this is the number of assets given (as positive number).
@@ -160,6 +164,10 @@ export interface UnifiedItemData {
    * In case of selling some asset, this is the value of assets in the default currency (as positive number).
    */
   assetValueOut?: number | string;
+  /**
+   * Type of the asset given.
+   */
+  assetTypeOut?: string;
   /**
    * Amount of fee charged as a part of the transaction.
    */

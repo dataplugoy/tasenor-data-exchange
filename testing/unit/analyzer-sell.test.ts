@@ -12,24 +12,25 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as UnifiedItemType,
       'value': 6000,
       'assetOut': 'ETH' as Asset,
+      'assetTypeOut': 'CRYPTO',
       'assetAmountOut': 5,
     }
 
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       "balances": {
-        "ASSET_ETH": -5000,
+        "CRYPTO_ETH": -5000,
         "CURRENCY_EUR": 6000,
         "PROFIT_ETH": -1000,
       },
       "stock": {
-        "ASSET_ETH": {
+        "CRYPTO_ETH": {
           "ETH": {
             "amount": 0,
             "value": 0,
@@ -45,7 +46,7 @@ describe('Analyzer', () => {
             "text": "Sold -5 ETH",
           },
           {
-            "account": "ASSET_ETH",
+            "account": "CRYPTO_ETH",
             "amount": "-5000",
             "extras": {
               "asset": "ETH",
@@ -74,12 +75,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as UnifiedItemType,
       'value': 4000,
       'assetOut': 'ETH' as Asset,
+      'assetTypeOut': 'CRYPTO',
       'assetAmountOut': 5,
       'text': 'Sell some ETH'
     }
@@ -87,12 +89,12 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       "balances": {
-          "ASSET_ETH": -5000,
+          "CRYPTO_ETH": -5000,
           "CURRENCY_EUR": 4000,
           "LOSS_ETH": 1000,
         },
         "stock": {
-          "ASSET_ETH": {
+          "CRYPTO_ETH": {
             "ETH": {
               "amount": 0,
               "value": 0,
@@ -108,7 +110,7 @@ describe('Analyzer', () => {
               "text": "Sell some ETH",
             },
             {
-              "account": "ASSET_ETH",
+              "account": "CRYPTO_ETH",
               "amount": "-5000",
               "extras": {
                 "asset": "ETH",
@@ -138,12 +140,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as UnifiedItemType,
       'value': 2000,
       'assetOut': 'ETH' as Asset,
+      'assetTypeOut': 'CRYPTO',
       'assetAmountOut': 2,
       'text': 'Sell some ETH'
     }
@@ -151,11 +154,11 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       "balances": {
-          "ASSET_ETH": -2000,
+          "CRYPTO_ETH": -2000,
           "CURRENCY_EUR": 2000,
         },
         "stock": {
-          "ASSET_ETH": {
+          "CRYPTO_ETH": {
             "ETH": {
               "amount": 3,
               "value": 3000,
@@ -171,7 +174,7 @@ describe('Analyzer', () => {
               "text": "Sell some ETH",
             },
             {
-              "account": "ASSET_ETH",
+              "account": "CRYPTO_ETH",
               "amount": "-2000",
               "extras": {
                 "asset": "ETH",
@@ -195,12 +198,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as UnifiedItemType,
       'value': 6010,
       'assetOut': 'ETH' as Asset,
+      'assetTypeOut': 'CRYPTO',
       'assetAmountOut': 5,
       'fee': 10,
     }
@@ -210,12 +214,12 @@ describe('Analyzer', () => {
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
         CURRENCY_EUR: 6000,
-        ASSET_ETH: -5000,
+        CRYPTO_ETH: -5000,
         PROFIT_ETH: -1010,
         FEE_EUR: 10
       },
       stock: {
-        ASSET_ETH: {
+        CRYPTO_ETH: {
           ETH: {
             amount: 0,
             value: 0,
@@ -231,7 +235,7 @@ describe('Analyzer', () => {
             extras: {}
           },
           {
-            account: 'ASSET_ETH',
+            account: 'CRYPTO_ETH',
             amount: '-5000',
             text: 'Sold -5 ETH',
             extras: { asset: 'ETH', assetChange: '-5' }
@@ -263,12 +267,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as UnifiedItemType,
       'value': 4010,
       'assetOut': 'ETH' as Asset,
+      'assetTypeOut': 'CRYPTO',
       'assetAmountOut': 5,
       'fee': 10,
     }
@@ -276,9 +281,9 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
-      balances: { CURRENCY_EUR: 4000, ASSET_ETH: -5000, LOSS_ETH: 990, FEE_EUR: 10 },
+      balances: { CURRENCY_EUR: 4000, CRYPTO_ETH: -5000, LOSS_ETH: 990, FEE_EUR: 10 },
       stock: {
-          ASSET_ETH: {
+          CRYPTO_ETH: {
             ETH: {
               amount: 0,
               value: 0,
@@ -294,7 +299,7 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_ETH',
+              account: 'CRYPTO_ETH',
               amount: '-5000',
               text: 'Sold -5 ETH',
               extras: { asset: 'ETH', assetChange: '-5' }
@@ -326,12 +331,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
     const input = {
       'type': 'sell' as UnifiedItemType,
       'value': 2000,
       'assetOut': 'ETH' as Asset,
+      'assetTypeOut': 'CRYPTO',
       'assetAmountOut': 2,
       'fee': 10,
     }
@@ -339,8 +345,8 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
-      balances: { CURRENCY_EUR: 1990, ASSET_ETH: -2000, FEE_EUR: 10 },
-      stock: { ASSET_ETH: { ETH: { amount: 3, value: 3000 } } },
+      balances: { CURRENCY_EUR: 1990, CRYPTO_ETH: -2000, FEE_EUR: 10 },
+      stock: { CRYPTO_ETH: { ETH: { amount: 3, value: 3000 } } },
         tx: {
           lines: [
             {
@@ -350,7 +356,7 @@ describe('Analyzer', () => {
               text: 'Sold -2 ETH',
             },
             {
-              account: 'ASSET_ETH',
+              account: 'CRYPTO_ETH',
               amount: '-2000',
               extras: {
                 asset: 'ETH',

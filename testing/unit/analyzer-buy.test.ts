@@ -13,12 +13,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
     }
     const input = {
       'type': 'buy' as UnifiedItemType,
       'value': 15000,
       'assetIn': 'ETH' as Asset,
+      'assetTypeIn': 'CRYPTO',
       'assetAmountIn': 5,
       'text': 'Buy some ETH'
     }
@@ -36,15 +37,15 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_ETH',
+              account: 'CRYPTO_ETH',
               amount: "15000",
               text: 'Buy some ETH',
               extras: { asset: 'ETH', assetChange: "5" }
             }
           ]
         },
-        balances: { CURRENCY_EUR: -15000, ASSET_ETH: 15000 },
-        stock: { ASSET_ETH: { ETH: { amount: 10.5, value: 20000 } } }
+        balances: { CURRENCY_EUR: -15000, CRYPTO_ETH: 15000 },
+        stock: { CRYPTO_ETH: { ETH: { amount: 10.5, value: 20000 } } }
       }
     )
   })
@@ -58,12 +59,13 @@ describe('Analyzer', () => {
     })
 
     const stock = {
-      'ASSET_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
+      'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
     }
     const input = {
       'type': 'buy' as UnifiedItemType,
       'value': 15000,
       'assetIn': 'ETH' as Asset,
+      'assetTypeIn': 'CRYPTO',
       'assetAmountIn': 5
     }
 
@@ -80,15 +82,15 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_ETH',
+              account: 'CRYPTO_ETH',
               amount: "15000",
               text: 'Ostettu +5 ETH',
               extras: { asset: 'ETH', assetChange: "5" }
             }
           ]
         },
-        balances: { CURRENCY_EUR: -15000, ASSET_ETH: 15000 },
-        stock: { ASSET_ETH: { ETH: { amount: 10.5, value: 20000 } } }
+        balances: { CURRENCY_EUR: -15000, CRYPTO_ETH: 15000 },
+        stock: { CRYPTO_ETH: { ETH: { amount: 10.5, value: 20000 } } }
       }
     )
   })
@@ -106,6 +108,7 @@ describe('Analyzer', () => {
     const input = {
       'type': 'buy' as UnifiedItemType,
       'assetIn': 'ETH' as Asset,
+      'assetTypeIn': 'CRYPTO',
       'assetAmountIn': 5,
       'rates': {
         'ETH': 1000
@@ -125,15 +128,15 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_ETH',
+              account: 'CRYPTO_ETH',
               amount: "5000",
               text: 'Bought +5 ETH',
               extras: { asset: 'ETH', assetChange: "5" }
             }
           ]
         },
-        balances: { CURRENCY_EUR: -5000, ASSET_ETH: 5000 },
-        stock: { ASSET_ETH: { ETH: { amount: 5, value: 5000 } } }
+        balances: { CURRENCY_EUR: -5000, CRYPTO_ETH: 5000 },
+        stock: { CRYPTO_ETH: { ETH: { amount: 5, value: 5000 } } }
       }
     )
   })
@@ -150,6 +153,7 @@ describe('Analyzer', () => {
     const input = {
       'type': 'buy' as UnifiedItemType,
       'assetIn': 'BTC' as Asset,
+      'assetTypeIn': 'CRYPTO',
       'assetAmountIn': 1.1,
     }
 
@@ -170,15 +174,15 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_BTC',
+              account: 'CRYPTO_BTC',
               amount: "55000",
               text: 'Bought +1.1 BTC',
               extras: { asset: 'BTC', assetChange: "1.1" }
             }
           ]
         },
-        balances: { CURRENCY_EUR: -55000, ASSET_BTC: 55000 },
-        stock: { ASSET_BTC: { BTC: { amount: 1.1, value: 55000 } } }
+        balances: { CURRENCY_EUR: -55000, CRYPTO_BTC: 55000 },
+        stock: { CRYPTO_BTC: { BTC: { amount: 1.1, value: 55000 } } }
       }
     )
   })
@@ -196,6 +200,7 @@ describe('Analyzer', () => {
       'type': 'buy' as UnifiedItemType,
       'value': 1000,
       'assetIn': 'NORDEA' as Asset,
+      'assetTypeIn': 'STOCK',
       'assetAmountIn': 1,
       'fee': 2
     }
@@ -216,7 +221,7 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_NORDEA',
+              account: 'STOCK_NORDEA',
               amount: '998',
               text: 'Bought +1 NORDEA',
               extras: { asset: 'NORDEA', assetChange: '1' }
@@ -229,8 +234,8 @@ describe('Analyzer', () => {
             }
           ]
         },
-        balances: { CURRENCY_EUR: -1000, ASSET_NORDEA: 998, FEE_EUR: 2 },
-        stock: { ASSET_NORDEA: { NORDEA: { amount: 1, value: 998 } } }
+        balances: { CURRENCY_EUR: -1000, STOCK_NORDEA: 998, FEE_EUR: 2 },
+        stock: { STOCK_NORDEA: { NORDEA: { amount: 1, value: 998 } } }
       }
     )
   })
@@ -248,6 +253,7 @@ describe('Analyzer', () => {
       'type': 'buy' as UnifiedItemType,
       'value': 5000,
       'assetIn': 'BTC' as Asset,
+      'assetTypeIn': 'CRYPTO',
       'assetAmountIn': 0.1,
       'fee': 2,
       'feeAsset': 'USD'
@@ -270,7 +276,7 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_BTC',
+              account: 'CRYPTO_BTC',
               amount: '4998.2',
               text: 'Bought +0.1 BTC',
               extras: { asset: 'BTC', assetChange: '0.1' }
@@ -283,8 +289,8 @@ describe('Analyzer', () => {
             }
           ]
         },
-        balances: { CURRENCY_EUR: -5000, ASSET_BTC: 4998.2, FEE_USD: 1.8 },
-        stock: { ASSET_BTC: { BTC: { amount: 0.1, value: 4998.2 } } }
+        balances: { CURRENCY_EUR: -5000, CRYPTO_BTC: 4998.2, FEE_USD: 1.8 },
+        stock: { CRYPTO_BTC: { BTC: { amount: 0.1, value: 4998.2 } } }
       }
     )
   })
@@ -302,6 +308,7 @@ describe('Analyzer', () => {
       'type': 'buy' as UnifiedItemType,
       'value': 1000,
       'assetIn': 'NORDEA' as Asset,
+      'assetTypeIn': 'STOCK',
       'assetAmountIn': 1,
       'fee': 2,
       'feeAsset': 'ETH'
@@ -324,23 +331,23 @@ describe('Analyzer', () => {
               extras: {}
             },
             {
-              account: 'ASSET_NORDEA',
+              account: 'STOCK_NORDEA',
               amount: '-1000',
               text: 'Bought +1 NORDEA',
               extras: { asset: 'NORDEA', assetChange: '1' }
             },
             {
-              account: 'ASSETFEE_ETH',
+              account: 'CRYPTOFEE_ETH',
               amount: '2000',
               text: 'Bought +1 NORDEA',
               extras: { asset: 'ETH', assetChange: '-2' }
             }
           ]
         },
-        balances: { CURRENCY_EUR: -1000, ASSET_NORDEA: -1000, ASSETFEE_ETH: 2000 },
+        balances: { CURRENCY_EUR: -1000, STOCK_NORDEA: -1000, CRYPTOFEE_ETH: 2000 },
         stock: {
-          ASSET_NORDEA: { NORDEA: { amount: 1, value: -1000 } },
-          ASSETFEE_ETH: { ETH: { amount: -2, value: 2000 } }
+          STOCK_NORDEA: { NORDEA: { amount: 1, value: -1000 } },
+          CRYPTOFEE_ETH: { ETH: { amount: -2, value: 2000 } }
         }
       }
     )

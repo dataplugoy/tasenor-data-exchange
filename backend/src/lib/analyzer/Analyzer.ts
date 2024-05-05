@@ -138,7 +138,7 @@ export class Analyzer {
    */
   async analyze(time: DateTime, input: UnifiedItemData): Promise<Transaction> {
     await initI18N()
-    await changeLanguage(this.language)
+    await changeLanguage(this.language) // TODO: Not needed here. Always explicit.
     this.lastInput = input
     this.lastTime = time.toISO() as Timestring
     if (!this[`${input.type}Handler`]) {
