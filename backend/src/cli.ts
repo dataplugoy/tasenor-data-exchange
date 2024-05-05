@@ -7,14 +7,16 @@ import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
 import { TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
-import { Timestring, error } from '@tasenor/common'
+import { Timestring } from '@tasenor/common'
 import colors from 'colors/safe'
 import Decimal from 'decimal.js'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
 import { Analyzer } from './lib/analyzer/Analyzer'
+import { diff } from 'deep-object-diff'
 import fs from 'fs'
-import { detailedDiff, diff } from 'deep-object-diff'
+import path from 'path'
+import { BatchModel } from './models/BatchModel'
 
 /**
  * Get the flow plan.
@@ -36,6 +38,20 @@ async function flowPlan(args, options: RuntimeOptions): Promise<FlowPlanModel> {
 }
 
 /**
+ * Get the batch.
+ * @param args
+ * @param options
+ */
+async function batch(args, options: RuntimeOptions): Promise<BatchModel> {
+  const flow = await flowPlan(args, options)
+  const batch = await BatchModel.getLatest(flow)
+  if (!batch) {
+    throw new Error(`Cannot find any batches for ${flow}.`)
+  }
+  return batch
+}
+
+/**
  * Run the plan step(s).
  * @param args
  */
@@ -52,7 +68,7 @@ async function executeRun(args) {
 }
 
 /**
- * Display output.
+ * Ledger report.
  * @param args
  */
 async function executeOutput(args) {
@@ -171,6 +187,24 @@ async function executeOutput(args) {
   }
 }
 
+/**
+ * File upload.
+ * @param args
+ */
+async function executeUpload(args) {
+  const file = fs.readFileSync(args.path)
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+  }
+  const last = await batch(args, options)
+  await last.setData(file)
+  await last.detectEncoding()
+
+  console.log(`Set data for ${last}.`)
+}
+
 export async function execute(...args: string[]): Promise<void> {
   const parser: ArgumentParser = new ArgumentParser({
     description: 'Tasenor Data Exchange command line tool'
@@ -183,13 +217,15 @@ export async function execute(...args: string[]): Promise<void> {
 
   const subparser = parser.add_subparsers()
 
+  // Run command.
   const run = subparser.add_parser('run', { description: 'Execute one or more steps on flow plan.' })
-  run.add_argument('flow', { help: 'Name of the flow' })
+  run.add_argument('flow', { help: 'Name of the flow.' })
   run.add_argument('count', { help: 'Number of iteration or "all".', nargs: '?', default: '1' })
   run.set_defaults({ func: executeRun })
 
+  // Ledger command.
   const ledger = subparser.add_parser('ledger', { description: 'Display ledger report for a specific flow plan.' })
-  ledger.add_argument('flow', { help: 'Name of the flow' })
+  ledger.add_argument('flow', { help: 'Name of the flow.' })
   ledger.add_argument('--time', { help: 'Show also timestamps.', required: false, action: 'store_true' })
   ledger.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
   ledger.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
@@ -197,13 +233,22 @@ export async function execute(...args: string[]): Promise<void> {
   ledger.add_argument('--test', { help: 'Calculate result and compare result against the given JSON file.', required: false })
   ledger.set_defaults({ func: executeOutput })
 
+  // Upload command.
+  const upload = subparser.add_parser('upload', { description: 'Upload a file to the batch waiting.' })
+  upload.add_argument('flow', { help: 'Name of the flow.' })
+  upload.add_argument('path', { help: 'A path to the file to upload.' })
+  upload.set_defaults({ func: executeUpload })
+
+  // Prepare and execute.
   const commandArgs = parser.parse_args(args)
 
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
 
   if (!commandArgs.func) {
+    console.log(colors.red('Command is required.'))
     return
   }
+
   await commandArgs.func(commandArgs)
 }

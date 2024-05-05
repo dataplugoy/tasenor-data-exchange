@@ -92,7 +92,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     if (options.repeat === 'MAX') {
       return await this.run(options, counter + 1)
     } else {
-      return await this.run({ ...options, repeat: options.repeat - 1 }, counter + 1)
+      return await this.run({ ...options, repeat: (options.repeat || 0) - 1 }, counter + 1)
     }
   }
 
@@ -221,7 +221,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     try {
       const driver = await this.getInputDriver(options)
-      await batch.detectEncoding()
       const items = await driver.itemizeInput(batch)
 
       for (const data of items) {

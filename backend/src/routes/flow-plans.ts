@@ -85,7 +85,7 @@ router.get('/:id',
         ...line,
         _count: undefined,
         outputDeliveredCount: line._count.outputItems,
-        data: line.data.toString(line.encoding)
+        data: line.data === null ? null : line.data.toString(line.encoding)
       })
       )
     })
@@ -120,12 +120,14 @@ router.post('/:id/continue',
       error(`Cannot find any batches for ${res.locals.flowPlan}.`)
       return res.sendStatus(400)
     }
+    // TODO: We could verify that the state is waiting and data is not yet set for the batch.
 
     // Set the uploaded data.
     const { name, type, data } = req.body
     log(`Uploading a file '${name}' of type ${type} to ${batch}.`)
     const content = Buffer.from(data, 'hex')
     await batch.setData(content)
+    await batch.detectEncoding()
 
     // TODO: DRY. Same as in the `run`-url.
     try {
