@@ -64,9 +64,9 @@ async function executeOutput(args) {
   const accounts: Record<AccountCode, [Timestring, TransactionLine][]> = {}
   OutputItemModel.transactions(outputItems).forEach(tx => {
     tx.lines.forEach(line => {
-      // TODO: Combine accounts like LOSS_ASSET
-      accounts[line.account] = accounts[line.account] || []
-      accounts[line.account].push([tx.time, line])
+      const account = line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
+      accounts[account] = accounts[account] || []
+      accounts[account].push([tx.time, line])
     })
   })
 
