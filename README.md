@@ -4,9 +4,9 @@
 
 ## Features
 
-* Infinite accuracy math.
+* High accuracy math.
 * Automatically handle different currencies.
-* Keep record for assets and calculate profits and losses.
+* Keep record for assets bought and sold and calculate profits and losses.
 
 ## Database
 

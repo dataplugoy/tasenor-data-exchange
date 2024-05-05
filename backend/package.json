@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "csv-parse": "^5.5.5",
     "decimal.js": "^10.4.3",
+    "deep-object-diff": "^1.1.9",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "i18next": "^23.11.0",

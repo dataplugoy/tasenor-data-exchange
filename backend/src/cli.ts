@@ -7,12 +7,14 @@ import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
 import { TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
-import { Timestring } from '@tasenor/common'
+import { Timestring, error } from '@tasenor/common'
 import colors from 'colors/safe'
 import Decimal from 'decimal.js'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
 import { Analyzer } from './lib/analyzer/Analyzer'
+import fs from 'fs'
+import { detailedDiff, diff } from 'deep-object-diff'
 
 /**
  * Get the flow plan.
@@ -84,7 +86,7 @@ async function executeOutput(args) {
 
   // Helper to pring.
   const out = (...print): void => {
-    if (args.json) {
+    if (args.json || args.test) {
       return
     }
     console.log(...print)
@@ -153,6 +155,20 @@ async function executeOutput(args) {
   if (args.json) {
     console.log(JSON.stringify(report, null, 2))
   }
+  if (args.test) {
+    const test = JSON.parse(fs.readFileSync(args.test).toString())
+    const changes = Object.keys(diff(test, report))
+    if (changes.length) {
+      console.log(colors.red('Comparison failed:'))
+      console.log(colors.red('                        Correct     Current'))
+      changes.forEach(key => {
+        console.log('  ', colors.red(key.padEnd(20)), test[key], report[key])
+      })
+      throw Error('Comparison failed.')
+    } else {
+      console.log(colors.green('Comparison matches.'))
+    }
+  }
 }
 
 export async function execute(...args: string[]): Promise<void> {
@@ -178,6 +194,7 @@ export async function execute(...args: string[]): Promise<void> {
   ledger.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
   ledger.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
   ledger.add_argument('--json', { help: 'Instead of normal display, print meaningful data as JSON.', required: false, action: 'store_true' })
+  ledger.add_argument('--test', { help: 'Calculate result and compare result against the given JSON file.', required: false })
   ledger.set_defaults({ func: executeOutput })
 
   const commandArgs = parser.parse_args(args)
@@ -185,5 +202,8 @@ export async function execute(...args: string[]): Promise<void> {
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
 
+  if (!commandArgs.func) {
+    return
+  }
   await commandArgs.func(commandArgs)
 }
