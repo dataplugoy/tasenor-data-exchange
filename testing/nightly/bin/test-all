@@ -8,6 +8,23 @@ ROOT=`readlink -f "$FILE"`
 
 set -e
 
+#
+# Hilunki
+#
+
+cd "$ROOT/database"
+pnpm load
+
+cd "$ROOT"
+bin/tadex.mjs --user test@localhost run Nordnet
+bin/tadex.mjs --user test@localhost upload Nordnet testing/nightly/data/Hilunki.csv
+bin/tadex.mjs --user test@localhost run Nordnet all
+bin/tadex.mjs --user test@localhost ledger Nordnet --detail --stock --test testing/nightly/data/Hilunki.json
+
+#
+# Megalo
+#
+
 cd "$ROOT/database"
 pnpm load
 
