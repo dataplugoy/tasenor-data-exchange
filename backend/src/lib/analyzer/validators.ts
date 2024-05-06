@@ -208,3 +208,17 @@ export function validateAssetOutAccount(this: Analyzer, withService: boolean): A
   }
   return `ASSET_${input.assetOut}` as AccountCode
 }
+
+/**
+ * Figure out asset in account.
+ */
+export function validateAssetInAccount(this: Analyzer, withService: boolean): AccountCode {
+  const input = this.validateInput()
+  if (!input.assetIn) {
+    this.validateError(`Cannot figure asset out account without 'assetIn'`)
+  }
+  if (isCurrency(input.assetIn)) {
+    return `CURRENCY_${input.assetIn}` as AccountCode
+  }
+  return `ASSET_${input.assetIn}` as AccountCode
+}

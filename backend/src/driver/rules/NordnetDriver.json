@@ -89,8 +89,8 @@
     }
   },
   {
-    "name": "Forex Sell",
-    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0",
+    "name": "Forex Sell (Foreign to Local)",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
@@ -101,14 +101,37 @@
     }
   },
   {
-    "name": "Forex Buy",
-    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0",
+    "name": "Forex Buy (Foreign to Local)",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
       "multipart": "Vahvistusnumero",
       "value": "Summa",
       "valueAsset": "Valuutta"
+    }
+  },
+  {
+    "name": "Forex Sell (Local to Foreign)",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency == Valuutta",
+    "key": "VALUUTAN MYYNTI",
+    "result": {
+      "type": "'forex'",
+      "multipart": "Vahvistusnumero",
+      "value": "-Summa",
+      "valueAsset": "Valuutta"
+    }
+  },
+  {
+    "name": "Forex Buy (Local to Foreign)",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency != Valuutta",
+    "key": "VALUUTAN OSTO",
+    "result": {
+      "type": "'forex'",
+      "multipart": "Vahvistusnumero",
+      "assetIn": "Valuutta",
+      "assetAmountIn": "Summa",
+      "rates": "rates($('Kokonaiskulut Valuutta'), Vaihtokurssi)"
     }
   }
 ]

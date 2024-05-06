@@ -6,7 +6,7 @@ import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
-import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateValueAccount, validateAssetOutAccount } from './validators'
+import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateValueAccount, validateAssetOutAccount, validateAssetInAccount } from './validators'
 import { AnalyzerConfig } from './AnalyzerConfig'
 import { buy } from './handlers/buy'
 import { deposit } from './handlers/deposit'
@@ -63,6 +63,7 @@ export class Analyzer {
   public validateFee: (this: Analyzer, canUseService: boolean) => Promise<[Decimal, Asset | null, Decimal | null]> = validateFee.bind(this)
   public validateValueAccount: (this: Analyzer, withService: boolean) => AccountCode = validateValueAccount.bind(this)
   public validateAssetOutAccount: (this: Analyzer, withService: boolean) => AccountCode = validateAssetOutAccount.bind(this)
+  public validateAssetInAccount: (this: Analyzer, withService: boolean) => AccountCode = validateAssetInAccount.bind(this)
 
   /**
    * Initialize

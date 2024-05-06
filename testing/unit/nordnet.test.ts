@@ -6,7 +6,7 @@ describe('Nordnet', () => {
 
   test('deposit, buying, fee', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-deposit-buy-fee.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -127,7 +127,7 @@ describe('Nordnet', () => {
 
   test('sell', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-sell.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -227,7 +227,7 @@ describe('Nordnet', () => {
 
   test('dividend', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-dividend.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -315,7 +315,7 @@ describe('Nordnet', () => {
 
   test('withdrawal', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-withdrawal.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -350,7 +350,7 @@ describe('Nordnet', () => {
 
   test('interest', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-interest.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -402,7 +402,7 @@ describe('Nordnet', () => {
 
   test('forex', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-forex.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -451,9 +451,9 @@ describe('Nordnet', () => {
   })
 
 
-  test.only('forex 2', async () => {
+  test('forex 2', async () => {
 
-    const driver = getDriver('NORDNET', {})
+    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
     const batch = createBatchFrom('Nordnet-forex2.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -463,37 +463,38 @@ describe('Nordnet', () => {
     expect(unifieds.length).toBe(2)
 
     const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+
     expect(txs).toStrictEqual([
       {
-        time: '2023-06-05T12:00:00.000Z',
+        time: '2022-08-09T12:00:00.000Z',
         lines: [
           {
             account: 'CURRENCY_EUR',
-            amount: '17.83',
-            text: 'Sold 19.09 USD in exhcange to EUR',
+            amount: '-1973.14',
+            text: 'Bought 2013.06 USD in exhcange to EUR',
             extras: {}
           },
           {
             account: 'CURRENCY_USD',
-            amount: '-17.83',
-            text: 'Sold 19.09 USD in exhcange to EUR',
+            amount: '1973.14',
+            text: 'Bought 2013.06 USD in exhcange to EUR',
             extras: {}
           }
         ]
       },
       {
-        time: '2024-02-07T12:00:00.000Z',
+        time: '2022-08-10T12:00:00.000Z',
         lines: [
           {
             account: 'CURRENCY_EUR',
-            amount: '37.52',
-            text: 'Sold 40.41 USD in exhcange to EUR',
+            amount: '-15',
+            text: 'Bought 15.33 USD in exhcange to EUR',
             extras: {}
           },
           {
             account: 'CURRENCY_USD',
-            amount: '-37.52',
-            text: 'Sold 40.41 USD in exhcange to EUR',
+            amount: '15',
+            text: 'Bought 15.33 USD in exhcange to EUR',
             extras: {}
           }
         ]
