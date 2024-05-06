@@ -505,19 +505,37 @@ describe('Nordnet', () => {
   })
 
 
-  test('rename instrument', async () => {
+  test.only('rename instrument', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
-    const batch = createBatchFrom('Nordnet-forex2.csv')
+    const batch = createBatchFrom('Nordnet-rename.csv')
 
     const items = await driver.itemizeInput(batch)
-    expect(items.length).toBe(4)
+    expect(items.length).toBe(2)
 
     const unifieds = await unifyItems(driver, items)
-    expect(unifieds.length).toBe(2)
+    expect(unifieds.length).toBe(1)
 
     const txs = await analyzeItems(unifieds, projectSettings)
 
-    // expect(txs).toStrictEqual()
+    expect(txs).toStrictEqual([
+      {
+        time: '2018-10-01T12:00:00.000Z',
+        lines: [
+          {
+            account: 'STOCK_NDA1V',
+            amount: '-5003.39',
+            text: 'FUUSIO / MERGER NDA1V -> NDA FI',
+            extras: { asset: 'NDA1V', assetChange: '-549' }
+          },
+          {
+            account: 'STOCK_NDA FI',
+            amount: '5003.39',
+            text: 'FUUSIO / MERGER NDA1V -> NDA FI',
+            extras: { asset: 'NDA FI', assetChange: '549' }
+          }
+        ]
+      }
+    ])
   })
 })

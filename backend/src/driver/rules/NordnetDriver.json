@@ -133,5 +133,30 @@
       "assetAmountIn": "Summa",
       "rates": "rates($('Kokonaiskulut Valuutta'), Vaihtokurssi)"
     }
+  },
+  {
+    "name": "Instrument renaming",
+    "filter": "Tapahtumatyyppi == 'VAIHTO AP-OTTO'",
+    "key": "VAIHTO AP-OTTO",
+    "result": {
+      "type": "'rename'",
+      "multipart": "Vahvistusnumero",
+      "assetOut": "Arvopaperi",
+      "text": "Tapahtumateksti"
+    }
+  },
+  {
+    "name": "Instrument renaming",
+    "filter": "Tapahtumatyyppi == 'VAIHTO AP-JÄTTÖ'",
+    "key": "VAIHTO AP-JÄTTÖ",
+    "result": {
+      "type": "'rename'",
+      "multipart": "Vahvistusnumero",
+      "assetIn": "Arvopaperi",
+      "assetAmountIn": "Määrä",
+      "assetTypeIn": "'STOCK'",
+      "value": "Summa",
+      "valueAsset": "Valuutta"
+    }
   }
 ]

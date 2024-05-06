@@ -12,6 +12,7 @@ import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
 import { forex } from './handlers/forex'
 import { income } from './handlers/income'
+import { rename } from './handlers/rename'
 import { sell } from './handlers/sell'
 import { withdrawal } from './handlers/withdrawal'
 import { AccountCode } from '../../types/AccountCode'
@@ -48,6 +49,7 @@ export class Analyzer {
   public incomeHandler = income.bind(this)
   public withdrawalHandler = withdrawal.bind(this)
   public forexHandler = forex.bind(this)
+  public renameHandler = rename.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)
