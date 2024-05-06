@@ -45,7 +45,8 @@
       "assetIn": "Arvopaperi",
       "assetTypeIn": "'STOCK'",
       "fee": "Kokonaiskulut",
-      "feeAsset": "$('Kokonaiskulut Valuutta')"
+      "feeAsset": "$('Kokonaiskulut Valuutta')",
+      "rates": "rates(Valuutta, Vaihtokurssi)"
     }
   },
   {
@@ -60,7 +61,8 @@
       "assetAmountOut": "Määrä",
       "assetTypeOut": "'STOCK'",
       "fee": "Kokonaiskulut",
-      "feeAsset": "$('Kokonaiskulut Valuutta')"
+      "feeAsset": "$('Kokonaiskulut Valuutta')",
+      "rates": "rates(Valuutta, Vaihtokurssi)"
     }
   },
   {
@@ -86,7 +88,8 @@
       "value": "-Summa",
       "valueAsset": "Valuutta",
       "account": "'EXPENSE_INTEREST'",
-      "reason": "'INTEREST'"
+      "reason": "'INTEREST'",
+      "rates": "rates(Valuutta, Vaihtokurssi)"
     }
   },
   {
@@ -113,7 +116,7 @@
     }
   },
   {
-    "name": "Forex Sell (Local to Foreign)",
+    "name": "Forex Sell (Local to foreign)",
     "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency == Valuutta",
     "key": "VALUUTAN MYYNTI",
     "result": {
@@ -124,7 +127,7 @@
     }
   },
   {
-    "name": "Forex Buy (Local to Foreign)",
+    "name": "Forex Buy (Local to foreign)",
     "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency != Valuutta",
     "key": "VALUUTAN OSTO",
     "result": {
@@ -136,7 +139,7 @@
     }
   },
   {
-    "name": "Instrument renaming (old name)",
+    "name": "Instrument renaming (Old name)",
     "filter": "Tapahtumatyyppi == 'VAIHTO AP-OTTO'",
     "key": "VAIHTO AP-OTTO",
     "result": {
@@ -147,7 +150,7 @@
     }
   },
   {
-    "name": "Instrument renaming (new name)",
+    "name": "Instrument renaming (New name)",
     "filter": "Tapahtumatyyppi == 'VAIHTO AP-JÄTTÖ'",
     "key": "VAIHTO AP-JÄTTÖ",
     "result": {
@@ -161,7 +164,7 @@
     }
   },
   {
-    "name": "Instrument split (original instrument)",
+    "name": "Instrument split (Original instrument)",
     "filter": "Tapahtumatyyppi == 'SPLIT AP OTTO'",
     "key": "SPLIT AP OTTO",
     "result": {
@@ -173,7 +176,7 @@
     }
   },
   {
-    "name": "Instrument split (new instrument)",
+    "name": "Instrument split (New instrument)",
     "filter": "Tapahtumatyyppi == 'SPLIT AP JÄTTÖ'",
     "key": "SPLIT AP JÄTTÖ",
     "result": {
