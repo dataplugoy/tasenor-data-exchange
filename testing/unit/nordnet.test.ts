@@ -505,7 +505,7 @@ describe('Nordnet', () => {
   })
 
 
-  test.only('rename instrument', async () => {
+  test('rename instrument', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-rename.csv')
@@ -533,6 +533,41 @@ describe('Nordnet', () => {
             amount: '5003.39',
             text: 'FUUSIO / MERGER NDA1V -> NDA FI',
             extras: { asset: 'NDA FI', assetChange: '549' }
+          }
+        ]
+      }
+    ])
+  })
+
+
+  test('split', async () => {
+
+    const driver = getDriver('NORDNET', {}, projectSettings)
+    const batch = createBatchFrom('Nordnet-split.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(2)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(1)
+
+    const txs = await analyzeItems(unifieds, projectSettings)
+
+    expect(txs).toStrictEqual([
+      {
+        time: '2019-03-18T12:00:00.000Z',
+        lines: [
+          {
+            account: 'STOCK_CTY1S',
+            amount: '-5520.06',
+            text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
+            extras: { asset: 'CTY1S', assetChange: '-627' }
+          },
+          {
+            account: 'STOCK_CTY1S',
+            amount: '5520.06',
+            text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
+            extras: { asset: 'CTY1S', assetChange: '3135' }
           }
         ]
       }

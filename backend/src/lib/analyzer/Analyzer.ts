@@ -14,6 +14,7 @@ import { forex } from './handlers/forex'
 import { income } from './handlers/income'
 import { rename } from './handlers/rename'
 import { sell } from './handlers/sell'
+import { split } from './handlers/split'
 import { withdrawal } from './handlers/withdrawal'
 import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
@@ -50,6 +51,7 @@ export class Analyzer {
   public withdrawalHandler = withdrawal.bind(this)
   public forexHandler = forex.bind(this)
   public renameHandler = rename.bind(this)
+  public splitHandler = split.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)

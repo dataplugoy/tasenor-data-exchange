@@ -158,5 +158,30 @@
       "value": "Summa",
       "valueAsset": "Valuutta"
     }
+  },
+  {
+    "name": "Instrument split",
+    "filter": "Tapahtumatyyppi == 'SPLIT AP OTTO'",
+    "key": "SPLIT AP OTTO",
+    "result": {
+      "type": "'split'",
+      "multipart": "Vahvistusnumero",
+      "assetAmountIn": "Määrä",
+      "assetTypeIn": "'STOCK'",
+      "text": "Tapahtumateksti"
+    }
+  },
+  {
+    "name": "Instrument split",
+    "filter": "Tapahtumatyyppi == 'SPLIT AP JÄTTÖ'",
+    "key": "SPLIT AP JÄTTÖ",
+    "result": {
+      "type": "'split'",
+      "multipart": "Vahvistusnumero",
+      "assetIn": "Arvopaperi",
+      "assetAmountOut": "Määrä",
+      "value": "Summa",
+      "valueAsset": "Valuutta"
+    }
   }
 ]
