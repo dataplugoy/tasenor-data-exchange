@@ -15,11 +15,11 @@ import { Driver } from '../../backend/src/driver/Driver'
 import { Transaction } from '../../backend/src/types/API/Transaction'
 import { Stock } from '../../backend/src/lib/Stock'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
-import { AnalyzerConfig } from '../../backend/src/lib/analyzer/AnalyzerConfig'
 import { DateTime } from 'luxon'
 import chardet from 'chardet'
 import { parseEncoding } from '../../backend/src/lib/utils'
 import { UnifiedItem } from '../../backend/src/types/API/UnifiedItem'
+import { ProjectSettings } from '../../backend/src/types/API/Project'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -193,7 +193,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
   return unified
 }
 
-export async function analyzeItems(items: UnifiedItemModel[], config: AnalyzerConfig): Promise<Transaction[]> {
+export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings): Promise<Transaction[]> {
   const stock = new Stock({})
   const analyzer = new Analyzer(stock)
   Analyzer.configure(config)

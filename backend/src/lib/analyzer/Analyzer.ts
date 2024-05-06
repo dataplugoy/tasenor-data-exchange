@@ -7,7 +7,6 @@ import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
 import { changeLanguage, initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateValueAccount, validateAssetOutAccount, validateAssetInAccount } from './validators'
-import { AnalyzerConfig } from './AnalyzerConfig'
 import { buy } from './handlers/buy'
 import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
@@ -19,6 +18,7 @@ import { AccountCode } from '../../types/AccountCode'
 import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
 import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
+import { ProjectSettings } from '../../types/API/Project'
 
 /**
  * Running balances for accounts.
@@ -29,7 +29,7 @@ export type Balances = Partial<Record<AccountCode, Decimal>>
  * Core engine for tracking and calculating transactions from unified items.
  */
 export class Analyzer {
-  private static  config: AnalyzerConfig | null
+  private static  config: ProjectSettings | null
 
   private services: Record<prisma.ServiceType, Service[]>
 
@@ -124,7 +124,7 @@ export class Analyzer {
    * @param variable
    * @returns Value from configuration.
    */
-  static getConfig<T>(variable: keyof AnalyzerConfig): T {
+  static getConfig<T>(variable: keyof ProjectSettings): T {
     if (!Analyzer.config) {
       throw new Error(`Cannot get '${variable}' from analyzer, since configuration not set.`)
     }
@@ -225,7 +225,7 @@ export class Analyzer {
   /**
    * Set configuration for analyzers.
    */
-  static configure(config: AnalyzerConfig) {
+  static configure(config: ProjectSettings) {
     for (const c of ['language', 'currency']) {
       if (config[c] === undefined) {
         throw new Error(`A required configuration variable '${c}' is missing in ${JSON.stringify(config)}.`)

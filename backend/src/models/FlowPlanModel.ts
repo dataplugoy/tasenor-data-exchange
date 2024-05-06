@@ -19,7 +19,6 @@ import { OutputItemModel } from './OutputItemModel'
 import { toJSON } from '../lib/utils'
 import { OutputDestinationModel } from './OutputDestinationModel'
 import { AccountCode } from '../types/AccountCode'
-import { AnalyzerConfig } from '../lib/analyzer/AnalyzerConfig'
 import { Transaction } from '../types/API/Transaction'
 import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
@@ -407,7 +406,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       let done = 0
 
       const project = await this.getProject()
-      Analyzer.configure(project.settings as AnalyzerConfig)
+      Analyzer.configure(project.settings)
 
       // Unified items must be processed in order and batch must stop if one fails.
       const stock = new Stock(batch.data.initialStock as StockData)

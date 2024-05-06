@@ -4,9 +4,11 @@ import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
 
 describe('Nordnet', () => {
 
+  const projectSettings = { currency: 'EUR', language: 'en' }
+
   test('deposit, buying, fee', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-deposit-buy-fee.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -15,7 +17,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(6)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
 
     expect(txs).toStrictEqual([
       {
@@ -127,7 +129,7 @@ describe('Nordnet', () => {
 
   test('sell', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-sell.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -136,7 +138,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(3)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
 
     expect(txs).toStrictEqual([
       {
@@ -227,7 +229,7 @@ describe('Nordnet', () => {
 
   test('dividend', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-dividend.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -236,7 +238,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(4)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
 
     expect(txs).toStrictEqual(
       [
@@ -315,7 +317,7 @@ describe('Nordnet', () => {
 
   test('withdrawal', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-withdrawal.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -324,7 +326,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(1)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
 
     expect(txs).toStrictEqual([
       {
@@ -350,7 +352,7 @@ describe('Nordnet', () => {
 
   test('interest', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-interest.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -359,7 +361,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(2)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
 
     expect(txs).toStrictEqual([
       {
@@ -402,7 +404,7 @@ describe('Nordnet', () => {
 
   test('forex', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-forex.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -411,7 +413,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(2)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
     expect(txs).toStrictEqual([
       {
         time: '2023-06-05T12:00:00.000Z',
@@ -453,7 +455,7 @@ describe('Nordnet', () => {
 
   test('forex 2', async () => {
 
-    const driver = getDriver('NORDNET', {}, { currency: 'EUR', language: 'en' })
+    const driver = getDriver('NORDNET', {}, projectSettings)
     const batch = createBatchFrom('Nordnet-forex2.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -462,7 +464,7 @@ describe('Nordnet', () => {
     const unifieds = await unifyItems(driver, items)
     expect(unifieds.length).toBe(2)
 
-    const txs = await analyzeItems(unifieds, { currency: 'EUR', language: 'en' })
+    const txs = await analyzeItems(unifieds, projectSettings)
 
     expect(txs).toStrictEqual([
       {
@@ -500,5 +502,22 @@ describe('Nordnet', () => {
         ]
       }
     ])
+  })
+
+
+  test('rename instrument', async () => {
+
+    const driver = getDriver('NORDNET', {}, projectSettings)
+    const batch = createBatchFrom('Nordnet-forex2.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(4)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(2)
+
+    const txs = await analyzeItems(unifieds, projectSettings)
+
+    // expect(txs).toStrictEqual()
   })
 })
