@@ -27,7 +27,6 @@ import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
-import { ProjectSettings } from '../types/API/Project'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -227,7 +226,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const items = await driver.itemizeInput(batch)
 
       for (const data of items) {
-        const item = await InputItemModel.save({
+        await InputItemModel.save({
           data: data as unknown as JsonValue,
           hash: hash(data, { algorithm: 'sha1' }),
           flowPlanId: this.id,
