@@ -237,8 +237,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           processed: false,
           skipped: false,
         })
-        log(`${this} created ${item} for ${batch}.`)
       }
+      log(`${this} created ${items.length} input items for ${batch}.`)
       await run.result(items.length, items.length, 0, items.length > 0 ? 'ALL_SUCCESS' : 'NO_PROGRESS')
     } catch (err) {
       result = 'FAIL'
@@ -366,8 +366,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           runId: run.id,
           inputId: partialID[`${item.data.multipart}`]
         })
+        done++
       }
 
+      log(`${this} created ${done}/${total} (${skipped} skipped) unified items for ${batch}.`)
       await run.result(done, total, skipped)
 
       // Mark the last timestamp.
@@ -467,6 +469,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
       }
 
+      log(`${this} analyzed and created ${done}/${total} output items for ${batch}.`)
       await run.result(done, total, 0)
 
     } catch (err) {
@@ -505,6 +508,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
       }
 
+      log(`${this} delivered ${done}/${total} output items for ${batch}.`)
       await run.result(done, total, 0)
 
     } catch (err) {
