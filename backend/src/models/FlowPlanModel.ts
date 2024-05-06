@@ -423,14 +423,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
         try {
           // Analyze unprocessed.
-          let tx: Transaction
-          try {
-            tx = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
-            analyzer.apply(tx)
-          } catch (err) {
-            await unified.fail(err)
-            throw err
-          }
+          const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+          analyzer.apply(tx)
 
           // Update stock change.
           await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
@@ -464,6 +458,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           error(`Unifying input failed: ${err.stack}`)
           await unified.fail(err)
           await run.fail(err)
+          return result
         }
       }
 
