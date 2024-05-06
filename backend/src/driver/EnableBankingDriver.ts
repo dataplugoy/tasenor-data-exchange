@@ -6,6 +6,7 @@ import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationR
 import { EnableBankingFlowState } from '../types/FlowState'
 import { DateTime } from 'luxon'
 import { FlowPlanModel } from '../models/FlowPlanModel'
+import { ProjectSettings } from '../types/API/Project'
 
 /**
  * Helper to encode JSON as base64.
@@ -22,8 +23,8 @@ export class EnableBankingDriver extends Driver {
   declare settings: EnableBankingDriverSettings
   declare state: EnableBankingFlowState
 
-  constructor(settings: EnableBankingDriverSettings) {
-    super(settings, 'ENABLE_BANKING')
+  constructor(settings: EnableBankingDriverSettings, projectSettings: ProjectSettings) {
+    super(settings, projectSettings, 'ENABLE_BANKING')
   }
 
   canHandleInput(): boolean {

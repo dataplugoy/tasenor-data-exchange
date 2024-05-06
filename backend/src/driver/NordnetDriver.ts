@@ -9,6 +9,7 @@ import { RunModel } from '../models/RunModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { RuleModel } from '../models/RuleModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
+import { ProjectSettings } from '../types/API/Project'
 
 /**
  * A base class for drivers that use manual upload.
@@ -18,8 +19,8 @@ export class NordnetDriver extends ManualUploadDriver {
   declare settings: NordnetDriverSettings
   declare state: NordnetFlowState
 
-  constructor(settings: NordnetDriverSettings) {
-    super(settings, 'NORDNET')
+  constructor(settings: NordnetDriverSettings, projectSettings: ProjectSettings) {
+    super(settings, projectSettings, 'NORDNET')
   }
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
@@ -82,58 +83,3 @@ export class NordnetDriver extends ManualUploadDriver {
     return this.applyUnifyRules(flow, run, input, rules, input.fields.Tapahtumatyyppi as string)
   }
 }
-
-/*
-   TODO: Handle the remaining cases.
-
-  "rules": [
-    {
-      "name": "Forex Sell",
-      "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti",
-            "rates": "rates(Valuutta, Vaihtokurssi)"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'forex'"
-        }
-      ]
-    },
-    {
-      "name": "Forex Buy",
-      "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti"
-          },
-          "type": "'currency'",
-          "asset": "Valuutta",
-          "amount": "Summa",
-          "reason": "'forex'"
-        }
-      ]
-    },
-    {
-      "name": "Withholding Tax",
-      "filter": "Tapahtumatyyppi == 'ENNAKKOPIDÄTYS'",
-      "result": [
-        {
-          "data": {
-            "text": "Tapahtumateksti",
-            "currency": "Valuutta",
-            "currencyValue": "-Summa * 100"
-          },
-          "type": "'statement'",
-          "asset": "'WITHHOLDING_TAX'",
-          "reason": "'tax'"
-        }
-      ]
-    },
-  ]
-}
-*/

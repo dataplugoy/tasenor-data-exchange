@@ -7,6 +7,7 @@ import { DriverSettings } from '../types/DriverSettings'
 import { NoActionDriver } from './NoActionDriver'
 import { ManualUploadDriver } from './ManualUploadDriver'
 import { NordnetDriver } from './NordnetDriver'
+import { ProjectSettings } from '../types/API/Project'
 
 /**
  * Drivers implemented.
@@ -22,10 +23,10 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
 /**
  * Helper to instantiate a driver for a type.
  */
-export function getDriver(type: prisma.DriverType, settings: DriverSettings): Driver {
+export function getDriver(type: prisma.DriverType, settings: DriverSettings, projectSettings: ProjectSettings): Driver {
   const DriverConstructor = drivers[type]
   if (!DriverConstructor) {
     throw new Error(`Cannot find driver for input source type '${type}'.`)
   }
-  return new DriverConstructor(settings)
+  return new DriverConstructor(settings, projectSettings)
 }

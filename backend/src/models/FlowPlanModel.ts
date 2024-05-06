@@ -28,6 +28,7 @@ import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
+import { ProjectSettings } from '../types/API/Project'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -157,7 +158,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async getInputDriver(options: RuntimeOptions): Promise<Driver> {
     const source = await this.getSource()
-    const driver = source.getDriver()
+    const project = await this.getProject()
+    const driver = source.getDriver(project.settings)
 
     await driver.initialize(this.state, options)
 
@@ -169,7 +171,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async getOutputDriver(options: RuntimeOptions): Promise<Driver> {
     const destination = await this.getDestination()
-    const driver = destination.getDriver()
+    const project = await this.getProject()
+    const driver = destination.getDriver(project.settings)
 
     await driver.initialize(this.state, options)
 

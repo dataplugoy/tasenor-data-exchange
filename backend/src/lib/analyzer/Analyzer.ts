@@ -225,12 +225,12 @@ export class Analyzer {
    * Set configuration for analyzers.
    */
   static configure(config: AnalyzerConfig) {
-    Analyzer.config = config
     for (const c of ['language', 'currency']) {
       if (config[c] === undefined) {
         throw new Error(`A required configuration variable '${c}' is missing in ${JSON.stringify(config)}.`)
       }
     }
+    Analyzer.config = config
   }
 
   /**

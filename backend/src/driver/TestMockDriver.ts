@@ -13,6 +13,7 @@ import { RunModel } from '../models/RunModel'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
+import { ProjectSettings } from '../types/API/Project'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -22,8 +23,8 @@ export class TestMockDriver extends Driver {
   declare settings: TestMockDriverSettings
   declare state: TestMockFlowState
 
-  constructor(settings: TestMockDriverSettings) {
-    super(settings, 'TEST_MOCK')
+  constructor(settings: TestMockDriverSettings, projectSettings: ProjectSettings) {
+    super(settings, projectSettings, 'TEST_MOCK')
   }
 
   canHandleInput(): boolean {

@@ -3,6 +3,7 @@ import prisma from '@prisma/client'
 import { Driver } from '../driver/Driver'
 import { DriverSettings } from '../types/DriverSettings'
 import { getDriver } from '../driver'
+import { ProjectSettings } from '../types/API/Project'
 
 export class InputSourceModel extends BaseModel<prisma.InputSource> {
 
@@ -16,8 +17,8 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
   /**
    * Get the driver for this input source.
    */
-  getDriver(): Driver {
-    return getDriver(this.type, this.data.settings as DriverSettings)
+  getDriver(projectSettings: ProjectSettings): Driver {
+    return getDriver(this.type, this.data.settings as DriverSettings, projectSettings)
   }
 
   /**

@@ -19,6 +19,7 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
+import { ProjectSettings } from '../types/API/Project'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -28,12 +29,14 @@ export class Driver {
   type: prisma.DriverType
   settings: DriverSettings
   systemSettings: SettingsModel
+  projectSettings: ProjectSettings
   options: RuntimeOptions
   state: FlowState
 
-  constructor(settings: DriverSettings, type: prisma.DriverType) {
+  constructor(settings: DriverSettings, projectSettings: ProjectSettings, type: prisma.DriverType) {
     this.type = type
     this.settings = settings
+    this.projectSettings = projectSettings
   }
 
   /**
@@ -253,6 +256,7 @@ export class Driver {
       time: input.time,
       total: input.total,
       original: input.original,
+      ...this.projectSettings,
       ...input.fields
     }
 

@@ -7,6 +7,7 @@ import { ManualUploadDriverSettings } from '../types/DriverSettings'
 import { ManualUploadFlowState } from '../types/FlowState'
 import { Driver } from './Driver'
 import { num } from '@tasenor/common'
+import { ProjectSettings } from '../types/API/Project'
 
 export type PreProcessOptions = {
   numericFields?: string[]
@@ -22,8 +23,8 @@ export class ManualUploadDriver extends Driver {
   declare settings: ManualUploadDriverSettings
   declare state: ManualUploadFlowState
 
-  constructor(settings: ManualUploadDriverSettings, type: prisma.DriverType = 'MANUAL_UPLOAD') {
-    super(settings, type)
+  constructor(settings: ManualUploadDriverSettings, projectSettings: ProjectSettings, type: prisma.DriverType = 'MANUAL_UPLOAD') {
+    super(settings, projectSettings, type)
   }
 
   canHandleInput(): boolean {
