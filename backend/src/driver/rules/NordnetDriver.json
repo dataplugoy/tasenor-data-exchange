@@ -170,8 +170,7 @@
     "result": {
       "type": "'split'",
       "multipart": "Vahvistusnumero",
-      "assetAmountIn": "Määrä",
-      "assetTypeIn": "'STOCK'",
+      "assetAmountOut": "Määrä",
       "text": "Tapahtumateksti"
     }
   },
@@ -183,7 +182,8 @@
       "type": "'split'",
       "multipart": "Vahvistusnumero",
       "assetIn": "Arvopaperi",
-      "assetAmountOut": "Määrä",
+      "assetAmountIn": "Määrä",
+      "assetTypeIn": "'STOCK'",
       "value": "Summa",
       "valueAsset": "Valuutta"
     }

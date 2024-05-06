@@ -402,6 +402,7 @@ describe('Nordnet', () => {
     )
   })
 
+
   test('forex', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -561,13 +562,13 @@ describe('Nordnet', () => {
             account: 'STOCK_CTY1S',
             amount: '-5520.06',
             text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
-            extras: { asset: 'CTY1S', assetChange: '-627' }
+            extras: { asset: 'CTY1S', assetChange: '-3135' }
           },
           {
             account: 'STOCK_CTY1S',
             amount: '5520.06',
             text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
-            extras: { asset: 'CTY1S', assetChange: '3135' }
+            extras: { asset: 'CTY1S', assetChange: '627' }
           }
         ]
       }
