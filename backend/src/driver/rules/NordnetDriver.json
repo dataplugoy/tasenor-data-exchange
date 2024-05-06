@@ -136,7 +136,7 @@
     }
   },
   {
-    "name": "Instrument renaming",
+    "name": "Instrument renaming (old name)",
     "filter": "Tapahtumatyyppi == 'VAIHTO AP-OTTO'",
     "key": "VAIHTO AP-OTTO",
     "result": {
@@ -147,7 +147,7 @@
     }
   },
   {
-    "name": "Instrument renaming",
+    "name": "Instrument renaming (new name)",
     "filter": "Tapahtumatyyppi == 'VAIHTO AP-JÄTTÖ'",
     "key": "VAIHTO AP-JÄTTÖ",
     "result": {
@@ -161,7 +161,7 @@
     }
   },
   {
-    "name": "Instrument split",
+    "name": "Instrument split (original instrument)",
     "filter": "Tapahtumatyyppi == 'SPLIT AP OTTO'",
     "key": "SPLIT AP OTTO",
     "result": {
@@ -173,7 +173,7 @@
     }
   },
   {
-    "name": "Instrument split",
+    "name": "Instrument split (new instrument)",
     "filter": "Tapahtumatyyppi == 'SPLIT AP JÄTTÖ'",
     "key": "SPLIT AP JÄTTÖ",
     "result": {
