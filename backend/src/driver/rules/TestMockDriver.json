@@ -7,6 +7,7 @@
       "type": "'buy'",
       "assetIn": "third(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text))",
       "assetAmountIn": "num(second(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)))",
+      "assetTypeIn": "'CRYPTO'",
       "value": "total == null ? null : -total"
     }
   },
@@ -18,6 +19,7 @@
       "type": "'sell'",
       "assetOut": "third(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text))",
       "assetAmountOut": "num(second(regex('^([a-zA-Z]+) ([.0-9]+) ([a-zA-Z0-9]+)', text)))",
+      "assetTypeOut": "'CRYPTO'",
       "value": "total"
     }
   }
