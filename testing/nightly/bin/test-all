@@ -3,33 +3,11 @@
 # Run all nightly test scripts.
 #
 
-FILE=`dirname "${BASH_SOURCE[0]}"`/../../..
+FILE=`dirname "${BASH_SOURCE[0]}"`/..
 ROOT=`readlink -f "$FILE"`
 
 set -e
 
-#
-# Hilunki
-#
-
-cd "$ROOT/database"
-pnpm load
-
 cd "$ROOT"
-bin/tadex.mjs --user test@localhost run Nordnet
-bin/tadex.mjs --user test@localhost upload Nordnet testing/nightly/data/Hilunki.csv
-bin/tadex.mjs --user test@localhost run Nordnet all
-bin/tadex.mjs --user test@localhost ledger Nordnet --detail --stock --test testing/nightly/data/Hilunki.json
-
-#
-# Megalo
-#
-
-cd "$ROOT/database"
-pnpm load
-
-cd "$ROOT"
-bin/tadex.mjs --user test@localhost run Nordnet
-bin/tadex.mjs --user test@localhost upload Nordnet testing/nightly/data/Megalo.csv
-bin/tadex.mjs --user test@localhost run Nordnet all
-bin/tadex.mjs --user test@localhost ledger Nordnet --detail --stock --test testing/nightly/data/Megalo.json
+bin/test-megalo
+bin/test-hilunki
