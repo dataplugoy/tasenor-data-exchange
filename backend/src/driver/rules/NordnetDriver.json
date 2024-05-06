@@ -195,5 +195,17 @@
       "taxAmount": "-Summa",
       "taxAsset": "Valuutta"
     }
+  },
+  {
+    "name": "Interest Refund",
+    "filter": "Tapahtumatyyppi == 'DEBET KORON KORJ.'",
+    "key": "DEBET KORON KORJ.",
+    "result": {
+      "type": "'income'",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "account": "'EXPENSE_INTEREST'",
+      "reason": "'INTEREST_REFUND'"
+    }
   }
 ]

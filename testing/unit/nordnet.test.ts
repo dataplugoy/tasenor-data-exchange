@@ -614,4 +614,39 @@ describe('Nordnet', () => {
       }
     ])
   })
+
+
+  test('interest correction', async () => {
+
+    const driver = getDriver('NORDNET', {}, projectSettings)
+    const batch = createBatchFrom('Nordnet-interest-correction.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(1)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(1)
+
+    const txs = await analyzeItems(unifieds, projectSettings)
+
+    expect(txs).toStrictEqual([
+      {
+        time: '2019-07-01T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '0.01',
+            text: 'Interest expense refund',
+            extras: {}
+          },
+          {
+            account: 'EXPENSE_INTEREST',
+            amount: '-0.01',
+            text: 'Interest expense refund',
+            extras: {}
+          }
+        ]
+      }
+    ])
+  })
 })
