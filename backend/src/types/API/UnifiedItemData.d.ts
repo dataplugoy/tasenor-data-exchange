@@ -89,7 +89,7 @@ export interface UnifiedItemData {
   /**
    * If tax must be calculated, this is the type of the tax.
    */
-  taxType?: "vat";
+  taxType?: "vat" | "withholding";
   /**
    * If tax must be calculated, this is the amount of tax in tax assets.
    */

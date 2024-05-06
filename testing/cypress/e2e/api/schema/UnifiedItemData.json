@@ -83,7 +83,7 @@
     "taxType": {
       "description": "If tax must be calculated, this is the type of the tax.",
       "type": "string",
-      "enum": ["vat"]
+      "enum": ["vat", "withholding"]
     },
     "taxAmount": {
       "description": "If tax must be calculated, this is the amount of tax in tax assets.",

@@ -8,6 +8,7 @@
 * Automatically handle different currencies.
 * Keep record for assets bought and sold and calculate profits and losses.
 * Handle splits and stock renamings.
+* Comprehensive testing with real world data.
 
 ## Database
 

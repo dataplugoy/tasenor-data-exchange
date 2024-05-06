@@ -2,5 +2,5 @@
   "$id": "Asset.json",
   "title": "Asset",
   "type": "string",
-  "pattern": "^[-:A-Z._0-9]+$"
+  "pattern": "^[- :A-Z._0-9]+$"
 }

@@ -262,7 +262,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         if (partial[id][i].time !== collect[id].time) {
           throw new Error(`Multipart item ${JSON.stringify(partial[id][i])} has different timestamp than the other part ${JSON.stringify(collect[id])}.`)
         }
-        if (partial[id][i].data.type !== collect[id].data.type) {
+        if (partial[id][i].data.type && collect[id].data.type && partial[id][i].data.type !== collect[id].data.type) {
           throw new Error(`Multipart item ${JSON.stringify(partial[id][i])} has different type than the other part ${JSON.stringify(collect[id])}.`)
         }
         Object.assign(collect[id].data, partial[id][i].data)

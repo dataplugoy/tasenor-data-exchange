@@ -132,15 +132,11 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
 }
 
 /**
- * Resolve total value from assets if not given explicitly.
+ * Resolve value of an assets.
  */
-export async function validateValueOrAsset(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined, canUseService: boolean = false): Promise<Decimal> {
-  const input = this.validateInput()
-  if (input.value !== undefined && input.value !== null) {
-    return dec(input.value)
-  }
+export async function validateAsset(this: Analyzer, asset: Asset | undefined, amount: number | Decimal | undefined, canUseService: boolean = false): Promise<Decimal> {
   if (asset === undefined) {
-    this.validateError(`Cannot figure out value without any asset`)
+    this.validateError(`Cannot figure out value without asset`)
   }
   if (amount === undefined) {
     this.validateError(`Cannot figure out value without amount of the asset`)
@@ -148,6 +144,17 @@ export async function validateValueOrAsset(this: Analyzer, asset: Asset | undefi
 
   const rate = await this.validateRate(asset, canUseService)
   return rate.mul(dec(amount))
+}
+
+/**
+ * Resolve total value from assets if not given explicitly.
+ */
+export async function validateValueOrAsset(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined, canUseService: boolean = false): Promise<Decimal> {
+  const input = this.validateInput()
+  if (input.value !== undefined && input.value !== null) {
+    return dec(input.value)
+  }
+  return this.validateAsset(asset, amount, canUseService)
 }
 
 /**

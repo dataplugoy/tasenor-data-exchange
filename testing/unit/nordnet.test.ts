@@ -247,23 +247,6 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '9.152124',
-              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
-              extras: {}
-            },
-            {
-              account: 'INCOME_DIVIDEND',
-              amount: '-9.152124',
-              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
-              extras: {}
-            }
-          ]
-        },
-        {
-          time: '2023-05-31T12:00:00.000Z',
-          lines: [
-            {
-              account: 'CURRENCY_USD',
               amount: '8.712298',
               text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
               extras: {}
@@ -277,18 +260,18 @@ describe('Nordnet', () => {
           ]
         },
         {
-          time: '2023-11-30T12:00:00.000Z',
+          time: '2023-05-31T12:00:00.000Z',
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '19.832574',
-              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              amount: '9.152124',
+              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-19.832574',
-              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              amount: '-9.152124',
+              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
               extras: {}
             }
           ]
@@ -306,6 +289,23 @@ describe('Nordnet', () => {
               account: 'INCOME_DIVIDEND',
               amount: '-17.288052',
               text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
+              extras: {}
+            }
+          ]
+        },
+        {
+          time: '2023-11-30T12:00:00.000Z',
+          lines: [
+            {
+              account: 'CURRENCY_USD',
+              amount: '19.832574',
+              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              extras: {}
+            },
+            {
+              account: 'INCOME_DIVIDEND',
+              amount: '-19.832574',
+              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
               extras: {}
             }
           ]
@@ -568,6 +568,47 @@ describe('Nordnet', () => {
             amount: '5520.06',
             text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
             extras: { asset: 'CTY1S', assetChange: '3135' }
+          }
+        ]
+      }
+    ])
+  })
+
+
+  test('withholding tax', async () => {
+
+    const driver = getDriver('NORDNET', {}, projectSettings)
+    const batch = createBatchFrom('Nordnet-withholding-tax.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(2)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(1)
+
+    const txs = await analyzeItems(unifieds, projectSettings)
+
+    expect(txs).toStrictEqual([
+      {
+        time: '2020-04-09T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_SEK',
+            amount: '124.614',
+            text: 'OSINKO TELIA1 0,90 SEK/OSAKE',
+            extras: {}
+          },
+          {
+            account: 'INCOME_DIVIDEND',
+            amount: '-105.92236',
+            text: 'OSINKO TELIA1 0,90 SEK/OSAKE',
+            extras: {}
+          },
+          {
+            account: 'TAX_WITHHOLDING',
+            amount: '-18.69164',
+            text: 'OSINKO TELIA1 0,90 SEK/OSAKE',
+            extras: {}
           }
         ]
       }

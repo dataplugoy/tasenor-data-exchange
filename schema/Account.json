@@ -2,5 +2,5 @@
   "$id": "Asset.json",
   "title": "Asset",
   "type": "string",
-  "pattern": "^(STOCK|CRYPTO|CURRENCY|CRYPTOFEE|FEE|PROFIT|LOSS|EXPENSE|INCOME|DIVIDEND|EXTERNAL)_[-:A-Z._0-9]+$"
+  "pattern": "^(STOCK|CRYPTO|CURRENCY|CRYPTOFEE|FEE|PROFIT|LOSS|EXPENSE|INCOME|DIVIDEND|EXTERNAL|TAX)_[-:A-Z._0-9]+$"
 }

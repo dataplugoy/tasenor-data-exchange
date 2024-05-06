@@ -69,6 +69,7 @@
     "filter": "Tapahtumatyyppi == 'OSINKO'",
     "result": {
       "type": "'income'",
+      "multipart": "Vahvistusnumero",
       "value": "Summa",
       "valueAsset": "Valuutta",
       "reason": "'DIVIDEND'",
@@ -182,6 +183,17 @@
       "assetAmountOut": "Määrä",
       "value": "Summa",
       "valueAsset": "Valuutta"
+    }
+  },
+  {
+    "name": "Withholding Tax",
+    "filter": "Tapahtumatyyppi == 'ENNAKKOPIDÄTYS'",
+    "key": "ENNAKKOPIDÄTYS",
+    "result": {
+      "multipart": "Vahvistusnumero",
+      "taxType": "'withholding'",
+      "taxAmount": "-Summa",
+      "taxAsset": "Valuutta"
     }
   }
 ]

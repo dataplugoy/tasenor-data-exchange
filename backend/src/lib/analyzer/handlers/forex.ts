@@ -1,11 +1,9 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
-import { Asset, Timestring } from '@tasenor/common'
+import { dec } from '../../utils'
+import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction } from '../../../types/API/Transaction'
-import { AccountCode } from '../../../types/AccountCode'
-import { t } from '../../i18n/t'
 
 /**
  * Buy an asset and add it to the stock.
