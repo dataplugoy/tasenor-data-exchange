@@ -280,6 +280,7 @@ model OutputItem{
   hash        String          @db.VarChar(40)
   skipped     Boolean
   delivered   Boolean
+  remoteId    Json?
 
   error       String?
 

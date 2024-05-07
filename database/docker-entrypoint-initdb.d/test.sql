@@ -497,7 +497,8 @@ CREATE TABLE public.output_items (
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
-    hash character varying(40) NOT NULL
+    hash character varying(40) NOT NULL,
+    "remoteId" jsonb
 );
 
 
@@ -979,7 +980,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 -- Data for Name: output_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.output_items (id, created, updated, data, skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId", hash) FROM stdin;
+COPY public.output_items (id, created, updated, data, skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId", hash, "remoteId") FROM stdin;
 \.
 
 

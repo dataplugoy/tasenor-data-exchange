@@ -11,6 +11,9 @@ export interface OutputItem {
   id: number;
   data: Transaction;
   delivered: boolean;
+  remoteId?: {
+    [k: string]: unknown;
+  } | null;
   skipped: boolean;
   error: string | null;
   unifiedId: number;

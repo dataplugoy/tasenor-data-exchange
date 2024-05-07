@@ -14,6 +14,9 @@
     "delivered": {
       "type": "boolean"
     },
+    "remoteId": {
+      "type": ["object", "null"]
+    },
     "skipped": {
       "type": "boolean"
     },
