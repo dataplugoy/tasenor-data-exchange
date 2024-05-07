@@ -405,11 +405,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       let done = 0
 
       const project = await this.getProject()
-      Analyzer.configure(project.settings)
 
       // Unified items must be processed in order and batch must stop if one fails.
       const stock = new Stock(batch.data.initialStock as StockData)
-      const analyzer = new Analyzer(stock)
+      const analyzer = new Analyzer(project.settings, stock, {})
       analyzer.setServices(await batch.getServices())
 
       for (const unified of unifieds) {

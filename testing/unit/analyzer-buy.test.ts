@@ -5,12 +5,11 @@ import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 import { JsonFileService } from '../../backend/src/lib/services/JsonFileService'
 
 describe('Analyzer', () => {
-  it('simple buying case', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
+  const projectSettings = { currency: 'EUR', language: 'en' }
+  const projectSettingsFI = { currency: 'EUR', language: 'fi' }
+
+  it('simple buying case', async () => {
 
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
@@ -24,7 +23,7 @@ describe('Analyzer', () => {
       'text': 'Buy some ETH'
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {
@@ -53,11 +52,6 @@ describe('Analyzer', () => {
 
   it('buying with default texts', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'fi'
-    })
-
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5.5}}
     }
@@ -69,7 +63,7 @@ describe('Analyzer', () => {
       'assetAmountIn': 5
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettingsFI, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {
@@ -98,11 +92,6 @@ describe('Analyzer', () => {
 
   it('buying with implicit value in extras', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
-
     const stock = {
     }
     const input = {
@@ -115,7 +104,7 @@ describe('Analyzer', () => {
       }
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {
@@ -143,10 +132,6 @@ describe('Analyzer', () => {
 
 
   it('buying using rates from the service', async () => {
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
 
     const stock = {
     }
@@ -161,7 +146,7 @@ describe('Analyzer', () => {
       new JsonFileService({ url: 'file:///rates.json' })
     ]
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {
@@ -189,10 +174,6 @@ describe('Analyzer', () => {
 
 
   it('buying with fee in default currency', async () => {
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
 
     const stock = {
     }
@@ -208,7 +189,7 @@ describe('Analyzer', () => {
     const services = [
     ]
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {
@@ -242,10 +223,6 @@ describe('Analyzer', () => {
 
 
   it('buying with fee in some other currency', async () => {
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
 
     const stock = {
     }
@@ -263,7 +240,7 @@ describe('Analyzer', () => {
       new JsonFileService({ url: 'file:///rates.json' })
     ]
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {
@@ -297,10 +274,6 @@ describe('Analyzer', () => {
 
 
   it('buying with fee in assets', async () => {
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
 
     const stock = {
     }
@@ -318,7 +291,7 @@ describe('Analyzer', () => {
       new JsonFileService({ url: 'file:///rates.json' })
     ]
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {

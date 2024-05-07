@@ -4,12 +4,9 @@ import { Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 
 describe('Analyzer', () => {
-  it('income case', async () => {
+  const projectSettings = { currency: 'EUR', language: 'en' }
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
+  it('income case', async () => {
 
     const stock = {
     }
@@ -20,7 +17,7 @@ describe('Analyzer', () => {
       reason: 'DIVIDEND',
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
         tx: {

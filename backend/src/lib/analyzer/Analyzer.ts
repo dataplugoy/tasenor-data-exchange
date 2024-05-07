@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import prisma from '@prisma/client'
 import { Stock, InitialStockData, StockData } from '../Stock'
 import { DateTime } from 'luxon'
@@ -31,7 +32,6 @@ export type Balances = Partial<Record<AccountCode, Decimal>>
  * Core engine for tracking and calculating transactions from unified items.
  */
 export class Analyzer {
-  private static  config: ProjectSettings | null
 
   private services: Record<prisma.ServiceType, Service[]>
 
@@ -41,6 +41,7 @@ export class Analyzer {
   protected lastInput: UnifiedItemData | null
   protected lastTime: Timestring
   protected lastResult: Transaction | null
+  protected config: ProjectSettings
 
   // Bind handlers.
   public buyHandler = buy.bind(this)
@@ -74,7 +75,7 @@ export class Analyzer {
    * Initialize
    * @param stock
    */
-  constructor(stock: Stock, balances: Balances = {}) {
+  constructor(config: ProjectSettings, stock: Stock, balances: Balances) {
     this.services = {
       CRYPTO_RATES: [],
       CURRENCY_RATES: []
@@ -85,13 +86,27 @@ export class Analyzer {
     this.lastInput = null
     this.lastTime = '0000-00-00T00:00:00Z' as Timestring
     this.lastResult = null
+    this.configure(config)
+  }
+
+  /**
+   * Verify and set configuration.
+   */
+  private configure(config: ProjectSettings) {
+    for (const c of ['language', 'currency']) {
+      if (config[c] === undefined) {
+        throw new Error(`A required configuration variable '${c}' is missing in ${JSON.stringify(config)}.`)
+      }
+    }
+    this.config = config
   }
 
   get currency(): Currency {
-    return Analyzer.getConfig('currency') as Currency
+    return this.config.currency as Currency
   }
+
   get language(): Language {
-    return Analyzer.getConfig('language') as Language
+    return this.config.language as Language
   }
 
   /**
@@ -122,18 +137,6 @@ export class Analyzer {
       warning(`A service ${service.constructor.name} was not able to handle query ${JSON.stringify(query)}`)
     }
     throw new Error(`There is no service available to handle query ${JSON.stringify(query)}`)
-  }
-
-  /**
-   * Check that configuration is set and throw error if not.
-   * @param variable
-   * @returns Value from configuration.
-   */
-  static getConfig<T>(variable: keyof ProjectSettings): T {
-    if (!Analyzer.config) {
-      throw new Error(`Cannot get '${variable}' from analyzer, since configuration not set.`)
-    }
-    return Analyzer.config[variable] as T
   }
 
   /**
@@ -192,7 +195,7 @@ export class Analyzer {
 
     // Sanity check that total is zero.
     let sum = new Decimal(0)
-    tx.lines.forEach((line) => sum = sum.plus(line.amount))
+    tx.lines.forEach((line) => (sum = sum.plus(line.amount)))
     if (!sum.isZero()) {
       throw new Error(`Total ${sum} of the transaction is not zero: ${JSON.stringify(tx)}`)
     }
@@ -228,26 +231,14 @@ export class Analyzer {
   }
 
   /**
-   * Set configuration for analyzers.
-   */
-  static configure(config: ProjectSettings) {
-    for (const c of ['language', 'currency']) {
-      if (config[c] === undefined) {
-        throw new Error(`A required configuration variable '${c}' is missing in ${JSON.stringify(config)}.`)
-      }
-    }
-    Analyzer.config = config
-  }
-
-  /**
    * Create analyzer and execute one analysis (for easier unit testing).
    * @param stockData
    * @param input
    * @returns
    */
-  static async run(time: Timestring, stockData: InitialStockData, input: UnifiedItemData, services: undefined | Service[] = undefined): Promise<Analyzer> {
+  static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, services: undefined | Service[] = undefined): Promise<Analyzer> {
     const stock = new Stock(stockData)
-    const analyzer = new Analyzer(stock)
+    const analyzer = new Analyzer(settings, stock, {})
 
     if (services !== undefined) {
       analyzer.setServices(services)

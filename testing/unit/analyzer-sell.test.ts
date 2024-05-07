@@ -4,12 +4,10 @@ import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 
 describe('Analyzer', () => {
-  it('sell for profit', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
+  const projectSettings = { currency: 'EUR', language: 'en' }
+
+  it('sell for profit', async () => {
 
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
@@ -22,7 +20,7 @@ describe('Analyzer', () => {
       'assetAmountOut': 5,
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       "balances": {
         "CRYPTO_ETH": -5000,
@@ -69,11 +67,6 @@ describe('Analyzer', () => {
 
   it('sell for loss', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
-
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
@@ -86,7 +79,7 @@ describe('Analyzer', () => {
       'text': 'Sell some ETH'
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       "balances": {
           "CRYPTO_ETH": -5000,
@@ -134,11 +127,6 @@ describe('Analyzer', () => {
 
   it('sell for original price', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
-
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
@@ -151,7 +139,7 @@ describe('Analyzer', () => {
       'text': 'Sell some ETH'
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       "balances": {
           "CRYPTO_ETH": -2000,
@@ -192,11 +180,6 @@ describe('Analyzer', () => {
 
   it('sell for profit with a default currency fee', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
-
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
@@ -209,7 +192,7 @@ describe('Analyzer', () => {
       'fee': 10,
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
@@ -261,11 +244,6 @@ describe('Analyzer', () => {
 
   it('sell for loss with a default currency fee', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
-
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
@@ -278,7 +256,7 @@ describe('Analyzer', () => {
       'fee': 10,
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: { CURRENCY_EUR: 4000, CRYPTO_ETH: -5000, LOSS_ETH: 990, FEE_EUR: 10 },
@@ -325,11 +303,6 @@ describe('Analyzer', () => {
 
   it('sell for original price with a default currency fee', async () => {
 
-    Analyzer.configure({
-      currency: 'EUR',
-      language: 'en'
-    })
-
     const stock = {
       'CRYPTO_ETH': {'ETH': {'value': 5000, 'amount': 5}}
     }
@@ -342,7 +315,7 @@ describe('Analyzer', () => {
       'fee': 10,
     }
 
-    const analyzer = await Analyzer.run('2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: { CURRENCY_EUR: 1990, CRYPTO_ETH: -2000, FEE_EUR: 10 },
