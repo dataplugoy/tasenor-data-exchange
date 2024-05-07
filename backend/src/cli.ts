@@ -15,8 +15,8 @@ import { Stock } from './lib/Stock'
 import { Analyzer } from './lib/analyzer/Analyzer'
 import { diff } from 'deep-object-diff'
 import fs from 'fs'
-import path from 'path'
 import { BatchModel } from './models/BatchModel'
+import { sorted } from './lib/utils'
 
 /**
  * Get the flow plan.
@@ -111,7 +111,7 @@ async function executeOutput(args) {
   // Display report and collect it as JSON.
   out()
   const report: Record<string, string> = {}
-  Object.keys(accounts).forEach(account => {
+  sorted(Object.keys(accounts)).forEach(account => {
     out(colors.blue(account))
     out(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
     accounts[account].forEach(([time, line]) => {
@@ -151,7 +151,7 @@ async function executeOutput(args) {
     out(colors.blue('STOCK SUMMARY'))
     out()
     const all = stock.getAll()
-    Object.keys(all).forEach(accountCode => {
+    sorted(Object.keys(all) as AccountCode[]).forEach(accountCode => {
       Object.keys(all[accountCode]).forEach(ticker => {
         const { amount, value } = all[accountCode][ticker]
         const avg = amount.eq(0) ? 0 : value.div(amount)
