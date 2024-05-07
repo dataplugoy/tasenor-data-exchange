@@ -16,7 +16,7 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@preact/signals": "^1.2.3",
-    "@tasenor/common": "^1.13.8",
+    "@tasenor/common": "^1.13.14",
     "@tasenor/config": "^1.13.0",
     "@types/luxon": "^3.4.2",
     "axios": "^1.6.8",

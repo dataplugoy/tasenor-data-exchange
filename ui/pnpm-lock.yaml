@@ -24,8 +24,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3(preact@10.20.2)
       '@tasenor/common':
-        specifier: ^1.13.8
-        version: 1.13.8
+        specifier: ^1.13.14
+        version: 1.13.14
       '@tasenor/config':
         specifier: ^1.13.0
         version: 1.13.0
@@ -664,8 +664,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tasenor/common@1.13.8':
-    resolution: {integrity: sha512-HNKZKQtgsbRNSGiWYim9r+ueBU6ZJBD0KomSue+nWJpwk+eF6LSlfVIeOaj1h6hpWmP87DlonP66zpTsqFqk2g==}
+  '@tasenor/common@1.13.14':
+    resolution: {integrity: sha512-xpBtyJ5A2l69h7vjbBe7Y34hC5odD2/0JgEoqNnBN2S3R1e7d/vjdJAZkfmARMZTbU/HvhrAqwluTRMlp1fJVQ==}
 
   '@tasenor/config@1.13.0':
     resolution: {integrity: sha512-Y2N0uzIPb9kqd/MxA1hnz6WqvEXLikTqyA2uxFe/MW8JegqlcT4QgVBg3E3MIvrEShOH+ChAosrxOz7gEI/cFQ==}
@@ -2547,7 +2547,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.13.1':
     optional: true
 
-  '@tasenor/common@1.13.8':
+  '@tasenor/common@1.13.14':
     dependencies:
       axios: 1.6.8
       buffer: 6.0.3

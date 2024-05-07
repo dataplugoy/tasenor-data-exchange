@@ -79,15 +79,3 @@ export function parseEncoding(encoding: string): 'ascii' | 'utf8' | 'utf-8' | 'u
 export function serviceName2Code(service: string): string {
   return service.toUpperCase().replace(/[^A-Z0-9_]/g, '_')
 }
-
-// TODO: Move to tasenor common.
-/**
- * Return an array sorted.
- * @param arr
- * @returns
- */
-export function sorted<T>(arr: T[]): T[] {
-  const arr2 = clone(arr)
-  arr2.sort((a, b) => a === b ? 0 : (a < b ? -1 : 1))
-  return arr2
-}
