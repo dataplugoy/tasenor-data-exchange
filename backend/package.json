@@ -7,6 +7,7 @@
     "docker": "pnpm run migrate && pnpm run api",
     "fix": "eslint --fix src/**/*.ts",
     "lint": "eslint src/**/*.ts",
+    "prisma-client": "prisma generate",
     "migrate": "prisma db push --accept-data-loss"
   },
   "keywords": [],

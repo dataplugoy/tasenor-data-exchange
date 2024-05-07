@@ -3,11 +3,14 @@
 # Run all nightly test scripts.
 #
 
-FILE=`dirname "${BASH_SOURCE[0]}"`/..
+FILE=`dirname "${BASH_SOURCE[0]}"`/../../..
 ROOT=`readlink -f "$FILE"`
 
 set -e
 
-cd "$ROOT"
+cd "$ROOT/backend"
+pnpm run prisma-client
+
+cd "$ROOT/testing/nightly/"
 bin/test-megalo
 bin/test-hilunki
