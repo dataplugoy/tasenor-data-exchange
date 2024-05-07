@@ -49,11 +49,6 @@ export class TestMockDriver extends Driver {
     const filePath = path.join(this.root, url.pathname)
     const data = fs.readFileSync(filePath).toString('utf-8')
 
-    if (flowPlan.data.lastStamp) {
-      const stamp: string = DateTime.fromJSDate(flowPlan.data.lastStamp).toUTC().toISO()?.replace(/\.0+Z$/, '') as string
-      return data.split('\n').filter(line => line === '' || line >= stamp).join('\n')
-    }
-
     return data
   }
 

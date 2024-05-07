@@ -125,7 +125,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Check for completion.
       const futureState = Object.keys(this.functions)[idx + 2]
       if (futureState === undefined) {
-        log(`${batch} completed and is now in state ${nextState} and last time stamp ${batch.data.lastStamp}.`)
+        log(`${batch} completed and is now in state ${nextState} and the last time stamp ${DateTime.fromJSDate(batch.data.lastStamp as Date).toUTC().toISO()}.`)
         await BatchModel.update<prisma.Batch, BatchModel>(batch, { completed: new Date() })
         await this.setStamp(batch.data.lastStamp)
       } else {
@@ -293,6 +293,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const total = inputs.length
       let done = 0
       let skipped = 0
+
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
         try {
@@ -311,7 +312,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           // TODO: Here we possibly throw a question wether items can appear before the last time stamp.
           //       Need three configuration options: 'never', 'always', 'ask'.
           const time = new Date(data.time)
-          if (this.data.lastStamp && this.data.lastStamp > time) {
+          if (this.data.lastStamp && this.data.lastStamp >= time) {
             await input.skip('IN_THE_PAST')
             skipped++
             continue
@@ -370,7 +371,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       log(`${this} created ${done}/${total} (${skipped} skipped) unified items for ${batch}.`)
       await run.result(done, total, skipped)
 
-      // Mark the last timestamp.
+      // Mark the last timestamp to the batch.
       let lastStamp = this.data.lastStamp
       for (const input of inputs) {
         const data = input.data.data as unknown as InputItemData
@@ -379,6 +380,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           lastStamp = newStamp
         }
       }
+      log(`${batch} has not the last time stamp as ${DateTime.fromJSDate(lastStamp as Date).toUTC().toISO()}.`)
       await batch.setStamp(lastStamp)
 
     } catch (err) {
