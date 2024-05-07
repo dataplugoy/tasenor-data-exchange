@@ -290,7 +290,9 @@ CREATE TABLE public.batches (
     "endStock" jsonb DEFAULT '{}'::jsonb NOT NULL,
     "flowPlanId" integer NOT NULL,
     data bytea,
-    encoding text
+    encoding text,
+    "endBalance" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "initialBalance" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -330,7 +332,8 @@ CREATE TABLE public.flow_plans (
     state jsonb DEFAULT '{}'::jsonb NOT NULL,
     "projectId" integer NOT NULL,
     "lastStamp" timestamp(3) without time zone,
-    stock jsonb DEFAULT '{}'::jsonb NOT NULL
+    stock jsonb DEFAULT '{}'::jsonb NOT NULL,
+    balance jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -927,7 +930,7 @@ COPY public.alerts (id, created, updated, "userId", type, method, url, payload, 
 -- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.batches (id, created, updated, completed, number, state, "lastStamp", "initialStock", "endStock", "flowPlanId", data, encoding) FROM stdin;
+COPY public.batches (id, created, updated, completed, number, state, "lastStamp", "initialStock", "endStock", "flowPlanId", data, encoding, "endBalance", "initialBalance") FROM stdin;
 \.
 
 
@@ -935,10 +938,10 @@ COPY public.batches (id, created, updated, completed, number, state, "lastStamp"
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock) FROM stdin;
-1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}
-2	2024-04-28 08:55:30.01	2024-04-28 08:55:30.01	Upload Testing	{}	1	\N	{}
-3	2024-05-02 08:46:22.081	2024-05-02 08:46:22.081	Nordnet	{}	1	\N	{}
+COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock, balance) FROM stdin;
+1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}
+2	2024-04-28 08:55:30.01	2024-04-28 08:55:30.01	Upload Testing	{}	1	\N	{}	{}
+3	2024-05-02 08:46:22.081	2024-05-02 08:46:22.081	Nordnet	{}	1	\N	{}	{}
 \.
 
 

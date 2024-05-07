@@ -36,10 +36,16 @@
       "type": "string"
     },
     "initialStock": {
-      "type": "object"
+      "$ref": "StockData.json"
     },
     "endStock": {
-      "type": "object"
+      "$ref": "StockData.json"
+    },
+    "initialBalance": {
+      "$ref": "BalanceData.json"
+    },
+    "endBalance": {
+      "$ref": "BalanceData.json"
     },
     "completed": {
       "type": "boolean"

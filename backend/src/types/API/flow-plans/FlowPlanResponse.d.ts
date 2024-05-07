@@ -21,11 +21,16 @@ export interface FlowPlan {
     [k: string]: unknown;
   };
   lastStamp: string | null;
-  stock: {
-    [k: string]: unknown;
-  };
+  stock: StockData;
+  balance?: BalanceData;
   created?: string;
   updated?: string;
+}
+export interface StockData {
+  [k: string]: unknown;
+}
+export interface BalanceData {
+  [k: string]: unknown;
 }
 export interface Project {
   id?: number;
@@ -47,12 +52,10 @@ export interface Batch {
   lastStamp: string | null;
   data: string;
   encoding?: string;
-  initialStock: {
-    [k: string]: unknown;
-  };
-  endStock: {
-    [k: string]: unknown;
-  };
+  initialStock: StockData;
+  endStock: StockData;
+  initialBalance?: BalanceData;
+  endBalance?: BalanceData;
   completed: boolean;
   created?: string;
   updated?: string;

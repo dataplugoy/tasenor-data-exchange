@@ -99,6 +99,7 @@ model FlowPlan {
   project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   lastStamp   DateTime?
   stock       Json            @default("{}")
+  balance     Json            @default("{}")
 
   source      InputSource?
   destination OutputDestination?
@@ -168,6 +169,8 @@ model Batch{
   lastStamp   DateTime?
   initialStock Json           @default("{}")
   endStock    Json            @default("{}")
+  initialBalance Json           @default("{}")
+  endBalance  Json            @default("{}")
 
   flowPlanId  Int
   flowPlan    FlowPlan?       @relation(fields: [flowPlanId], references: [id])

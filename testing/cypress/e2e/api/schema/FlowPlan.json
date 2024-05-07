@@ -22,7 +22,10 @@
       "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
     },
     "stock": {
-      "type": "object"
+      "$ref": "StockData.json"
+    },
+    "balance": {
+      "$ref": "BalanceData.json"
     },
     "created": {
       "type": "string",

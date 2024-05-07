@@ -13,9 +13,14 @@ export interface FlowPlan {
     [k: string]: unknown;
   };
   lastStamp: string | null;
-  stock: {
-    [k: string]: unknown;
-  };
+  stock: StockData;
+  balance?: BalanceData;
   created?: string;
   updated?: string;
+}
+export interface StockData {
+  [k: string]: unknown;
+}
+export interface BalanceData {
+  [k: string]: unknown;
 }
