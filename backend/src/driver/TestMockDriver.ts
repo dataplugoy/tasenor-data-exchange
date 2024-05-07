@@ -13,6 +13,7 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
+import { RemoteId } from '../types/RemoteId'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -77,7 +78,7 @@ export class TestMockDriver extends Driver {
     return this.applyUnifyRules(flow, run, input, rules, input.fields.word1 as string)
   }
 
-  async deliverOutput(output: OutputItemModel): Promise<void> {
+  async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     const url = this.getURL()
     if (url.protocol !== 'file:') {
       throw new Error(`Bad protocol in URL '${this.settings.url}'.`)
@@ -92,5 +93,7 @@ export class TestMockDriver extends Driver {
     }
 
     fs.writeFileSync(filePath, JSON.stringify(output.data.data, null, 2) + '\n')
+
+    return filePath as RemoteId
   }
 }

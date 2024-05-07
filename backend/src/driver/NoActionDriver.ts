@@ -5,6 +5,7 @@ import { NoActionFlowState } from '../types/FlowState'
 import { Driver } from './Driver'
 import { Transaction } from '../types/API/Transaction'
 import { ProjectSettings } from '../types/API/Project'
+import { RemoteId } from '../types/RemoteId'
 
 export class NoActionDriver extends Driver {
 
@@ -19,12 +20,14 @@ export class NoActionDriver extends Driver {
     return true
   }
 
-  async deliverOutput(output: OutputItemModel): Promise<void> {
+  async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     const data = output.data.data as unknown as Transaction
     log('Output:')
     log(`        Time: ${JSON.stringify(data.time)}`)
     data.lines.forEach((line, idx) => {
       log(`        Line[${idx}]: ${JSON.stringify(line)}`)
     })
+
+    return 0 as RemoteId
   }
 }

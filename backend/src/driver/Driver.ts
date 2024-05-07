@@ -20,6 +20,7 @@ import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { ProjectSettings } from '../types/API/Project'
+import { RemoteId } from '../types/RemoteId'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -286,7 +287,10 @@ export class Driver {
     throw new Error(`Input source ${this.type} does not implement unifyItem().`)
   }
 
-  async deliverOutput(output: OutputItemModel): Promise<void> {
+  /**
+   * Handle transfer of the output item.
+   */
+  async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     throw new Error(`Input source ${this.type} does not implement deliverOutput().`)
   }
 }

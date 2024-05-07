@@ -1,4 +1,6 @@
+import { JsonValue } from '@prisma/client/runtime/library'
 import { Transaction } from '../types/API/Transaction'
+import { RemoteId } from '../types/RemoteId'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 
@@ -23,9 +25,10 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
    * Mark this nput as successfully handled.
    * @param state
    */
-  async success(): Promise<void> {
+  async success(remoteId: RemoteId): Promise<void> {
     this.data.delivered = true
-    await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { delivered: true })
+    this.data.remoteId = remoteId as JsonValue
+    await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { delivered: true, remoteId: remoteId as JsonValue })
   }
 
   /**

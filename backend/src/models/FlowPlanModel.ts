@@ -493,8 +493,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // We deliver output in any order.
       for (const item of output) {
         try {
-          await driver.deliverOutput(item)
-          await item.success()
+          const remoteId = await driver.deliverOutput(item)
+          await item.success(remoteId)
           done++
         } catch (err) {
           result = 'FAIL'
