@@ -5,6 +5,11 @@ import { Language } from '@tasenor/common'
 
 let initialized = false
 
+const translators = {
+  fi: i18next.getFixedT('fi', 'translations', ''),
+  en: i18next.getFixedT('en', 'translations', ''),
+}
+
 /**
  * Initialize i18n if not yet initialized.
  * @returns
@@ -47,8 +52,12 @@ export async function changeLanguage(lang: Language): Promise<void> {
  * @param values
  * @returns
  */
-export function t(s: string, values: Record<string, string> = {}): string {
-  return i18next.t(s, values)
+export function t(lang: Language, s: string, values: Record<string, string | number> = {}): string {
+  const fn = translators[lang]
+  if (!fn) {
+    throw new Error(`There is no translator for language '${lang}'.`)
+  }
+  return fn(s, values)
 }
 
 /**

@@ -30,7 +30,7 @@ export async function expense(this: Analyzer, time: DateTime, input: UnifiedItem
     this.validateError(`Either 'account' or 'reason' must be given to determine income.`)
   }
 
-  const resultText = text || t(`EXPENSE_${reason}`)
+  const resultText = text || t(this.language, `EXPENSE_${reason}`)
   const resultAccount = account || `EXPENSE_${reason}` as AccountCode
 
   return {

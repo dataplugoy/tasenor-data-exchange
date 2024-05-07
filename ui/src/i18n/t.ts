@@ -47,8 +47,15 @@ export async function changeLanguage(lang: Language): Promise<void> {
  * @param values
  * @returns
  */
-export function t(s: string, values: Record<string, string> = {}): string {
+export function tt(s: string, values: Record<string, string> = {}): string {
+  changeLanguage('fi')
   return i18next.t(s, values)
+}
+
+const finnish = i18next.getFixedT('fi', 'translations', '')
+
+export function t(lang: Language, s: string, values: Record<string, string | number> = {}): string {
+  return finnish(s)
 }
 
 /**

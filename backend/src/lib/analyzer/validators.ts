@@ -85,7 +85,7 @@ export function validateText(this: Analyzer, text: string, values: Record<string
     }
   })
 
-  return t(text, values as Record<string, string>)
+  return t(this.language, text, values as Record<string, string>)
 }
 
 /**
