@@ -20,3 +20,7 @@ bin/tadex.mjs run Nordnet
 bin/tadex.mjs upload Nordnet testing/nightly/data/Hilunki.csv
 bin/tadex.mjs run Nordnet all
 bin/tadex.mjs ledger Nordnet --detail --stock --test testing/nightly/data/Hilunki.json
+
+# To update answer file:
+#
+# bin/tadex.mjs ledger Nordnet --detail --stock --json > testing/nightly/data/Hilunki.json

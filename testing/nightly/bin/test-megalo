@@ -12,7 +12,11 @@ cd "$ROOT/database"
 pnpm load
 
 cd "$ROOT"
-bin/tadex.mjs --user test@localhost run Nordnet
-bin/tadex.mjs --user test@localhost upload Nordnet testing/nightly/data/Megalo.csv
-bin/tadex.mjs --user test@localhost run Nordnet all
-bin/tadex.mjs --user test@localhost ledger Nordnet --detail --stock --test testing/nightly/data/Megalo.json
+bin/tadex.mjs run Nordnet
+bin/tadex.mjs upload Nordnet testing/nightly/data/Megalo.csv
+bin/tadex.mjs run Nordnet all
+bin/tadex.mjs ledger Nordnet --detail --stock --test testing/nightly/data/Megalo.json
+
+# To update answer file:
+#
+# bin/tadex.mjs ledger Nordnet --detail --stock --json > testing/nightly/data/Megalo.json
