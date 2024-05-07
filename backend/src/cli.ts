@@ -5,7 +5,7 @@ import { UserModel } from './models/UserModel'
 import { RuntimeOptions } from './types/RuntimeOptions'
 import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
-import { TransactionLine } from './types/API/Transaction'
+import { TransactionExtras, TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
 import { Timestring, sorted } from '@tasenor/common'
 import colors from 'colors/safe'
@@ -16,6 +16,7 @@ import { diff } from 'deep-object-diff'
 import fs from 'fs'
 import { BatchModel } from './models/BatchModel'
 import Decimal from 'decimal.js'
+import { dec } from './lib/utils'
 
 Decimal.set({ precision: 50 })
 
@@ -69,10 +70,25 @@ async function executeRun(args) {
 }
 
 /**
+ * Render transaction extras.
+ */
+function renderExtras(extras: TransactionExtras): string {
+  let extrasText = ''
+  if (Object.keys(extras).length) {
+    if ('asset' in extras && 'assetChange' in extras && extras.assetChange) {
+      extrasText = `${dec(extras.assetChange).gte(0) ? '+' : ''}${extras.assetChange} ${extras.asset}`
+    } else {
+      throw new Error(`Extras ${JSON.stringify(extras)} not yet supported.`)
+    }
+  }
+  return extrasText
+}
+
+/**
  * Ledger report.
  * @param args
  */
-async function executeOutput(args) {
+async function executeLedger(args) {
   const stock = new Stock({})
   const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {})
 
@@ -101,7 +117,7 @@ async function executeOutput(args) {
     balance[account] = new Decimal(0)
   })
 
-  // Helper to pring.
+  // Helper to print.
   const out = (...print): void => {
     if (args.json || args.test) {
       return
@@ -122,14 +138,6 @@ async function executeOutput(args) {
       const debit = value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
       const credit = !value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
       const total = sprintf('%.2f', balance[account].mul(100).round().div(100))
-      let extrasText = ''
-      if (Object.keys(extras).length) {
-        if ('asset' in extras && 'assetChange' in extras) {
-          extrasText = `${extras.assetChange > 0 ? '+' : ''}${extras.assetChange} ${extras.asset}`
-        } else {
-          throw new Error(`Extras ${JSON.stringify(extras)} not yet supported.`)
-        }
-      }
       if (args.time) {
         out('  ', colors.gray(time))
       }
@@ -140,7 +148,7 @@ async function executeOutput(args) {
         colors.red(credit.padStart(14)),
         colors.magenta(total.padStart(14)),
         ' ',
-        colors.cyan(extrasText)
+        colors.cyan(renderExtras(extras))
       )
     })
     out(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
@@ -193,6 +201,50 @@ async function executeOutput(args) {
 }
 
 /**
+ * Journal report.
+ * @param args
+ */
+async function executeJournal(args) {
+  const stock = new Stock({})
+  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {})
+
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+  }
+  const plan = await flowPlan(args, options)
+  const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
+
+  // Helper to print.
+  const out = (...print): void => {
+    console.log(...print)
+  }
+
+  out()
+  OutputItemModel.transactions(outputItems).forEach(tx => {
+    analyzer.apply(tx)
+
+    out(colors.gray(tx.time))
+    tx.lines.forEach(line => {
+      const { account, text, amount, extras } = line
+      const value = new Decimal(amount)
+      const debit = value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
+      const credit = !value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
+      const ext = args.stock ? renderExtras(extras) : ''
+      out('  ',
+        colors.blue(account).padEnd(32).substring(0, 32),
+        text.padEnd(40).substring(0, 40),
+        colors.green(debit.padStart(14)),
+        colors.red(credit.padStart(14)),
+        colors.cyan(ext.padStart(14))
+      )
+    })
+    out()
+  })
+}
+
+/**
  * File upload.
  * @param args
  */
@@ -236,7 +288,13 @@ export async function execute(...args: string[]): Promise<void> {
   ledger.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
   ledger.add_argument('--json', { help: 'Instead of normal display, print meaningful data as JSON.', required: false, action: 'store_true' })
   ledger.add_argument('--test', { help: 'Calculate result and compare result against the given JSON file.', required: false })
-  ledger.set_defaults({ func: executeOutput })
+  ledger.set_defaults({ func: executeLedger })
+
+  // Journal command.
+  const journal = subparser.add_parser('journal', { description: 'Display journal report for a specific flow plan.' })
+  journal.add_argument('flow', { help: 'Name of the flow.' })
+  journal.add_argument('--stock', { help: 'Show stock changes.', required: false, action: 'store_true' })
+  journal.set_defaults({ func: executeJournal })
 
   // Upload command.
   const upload = subparser.add_parser('upload', { description: 'Upload a file to the batch waiting.' })
