@@ -73,7 +73,7 @@ async function executeRun(args) {
  */
 async function executeOutput(args) {
   const stock = new Stock({})
-  const analyzer = new Analyzer(stock)
+  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {})
 
   const options: RuntimeOptions = {
     userId: 0,
@@ -217,7 +217,7 @@ export async function execute(...args: string[]): Promise<void> {
   parser.add_argument('--track', { help: 'Store all data fetched to the given directory for easy replication.', required: false })
   parser.add_argument('--auth', { help: 'Authorization code given by the 3rd party.', required: false })
   parser.add_argument('--db', { help: 'Database URL.', default: 'postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex' })
-  parser.add_argument('--user', { help: 'Email of the TaDeX user.' })
+  parser.add_argument('--user', { help: 'Email of the TaDeX user.', default: 'test@localhost' })
 
   const subparser = parser.add_subparsers()
 
