@@ -1,6 +1,5 @@
 import { JsonValue } from '@prisma/client/runtime/library'
 import Decimal from 'decimal.js'
-import clone from 'clone'
 
 /**
  * Ensure number value is an Decimal instance.
