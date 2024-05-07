@@ -1,5 +1,4 @@
 import jwa from 'jwa'
-import { Driver } from './Driver'
 import { EnableBankingDriverSettings } from '../types/DriverSettings'
 import config from '../config'
 import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../types/EnableBanking'
@@ -7,6 +6,7 @@ import { EnableBankingFlowState } from '../types/FlowState'
 import { DateTime } from 'luxon'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ProjectSettings } from '../types/API/Project'
+import { InternetDriver } from './InternetDriver'
 
 /**
  * Helper to encode JSON as base64.
@@ -18,7 +18,7 @@ const jsonBase64 = (data: Record<string, any>) => {
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
-export class EnableBankingDriver extends Driver {
+export class EnableBankingDriver extends InternetDriver {
 
   declare settings: EnableBankingDriverSettings
   declare state: EnableBankingFlowState
