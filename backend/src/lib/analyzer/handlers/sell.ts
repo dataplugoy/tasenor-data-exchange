@@ -77,7 +77,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
     lines.push({
       account: (useAsset ? `CRYPTO_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
       amount: dec(fee).toString(),
-      text, // TODO: Add translated '(fee)' here?
+      text,
       extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},
     })
   }
