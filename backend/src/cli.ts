@@ -9,7 +9,6 @@ import { TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
 import { Timestring } from '@tasenor/common'
 import colors from 'colors/safe'
-import Decimal from 'decimal.js'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
 import { Analyzer } from './lib/analyzer/Analyzer'
@@ -17,6 +16,9 @@ import { diff } from 'deep-object-diff'
 import fs from 'fs'
 import { BatchModel } from './models/BatchModel'
 import { sorted } from './lib/utils'
+import Decimal from 'decimal.js'
+
+Decimal.set({ precision: 50 })
 
 /**
  * Get the flow plan.

@@ -7,6 +7,9 @@ import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
 import { error, log } from '@tasenor/common'
 import routes from './routes'
+import Decimal from 'decimal.js'
+
+Decimal.set({ precision: 50 })
 
 class TasenorDataExchangeServer {
   public app = express()
