@@ -61,7 +61,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
                 <Box sx={{ display: 'inline-block' }}>
                   <BatchBrogressBar state={batch.state}/>
                 </Box>
-                <Box sx={{ textAlign: 'center', fontWeight: 'bold', color: 'secondary.light' }}>{batch.outputDeliveredCount || ''}</Box>
+                <Box data-cy="output" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'secondary.light' }}>{batch.outputDeliveredCount || ''}</Box>
               </Box>
             </AccordionSummary>
             <AccordionDetails>
