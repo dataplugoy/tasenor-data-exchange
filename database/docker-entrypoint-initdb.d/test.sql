@@ -946,7 +946,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}	{}
 2	2024-04-28 08:55:30.01	2024-04-28 08:55:30.01	Upload Testing	{}	1	\N	{}	{}	{}
 3	2024-05-02 08:46:22.081	2024-05-02 08:46:22.081	Nordnet	{}	1	\N	{}	{}	{}
-4	2024-05-08 11:08:59.91	2024-05-08 15:16:24.635	Tasenor	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleExpenseAccount": true, "singleIncomekAccount": true, "singleProfitkAccount": true, "singleDividendAccount": true}}
+4	2024-05-08 11:08:59.91	2024-05-08 15:16:24.635	Tasenor	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleExpenseAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleDividendAccount": true}}
 \.
 
 
@@ -1506,4 +1506,3 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
-
