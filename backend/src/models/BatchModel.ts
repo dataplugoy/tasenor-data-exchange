@@ -147,8 +147,11 @@ export class BatchModel extends BaseModel<prisma.Batch> {
           number: latest ? latest.data.number + 1 : 1,
           state: 'BATCH_CREATED',
           data: null,
-          initialStock: latest ? latest.data.endStock : plan.data.stock,
-          endStock: latest ? latest.data.endStock : plan.data.stock,
+          initialStock: plan.data.stock,
+          initialBalance: plan.data.balance,
+          // Keep the original stock as long as we finish the batch.
+          endStock: plan.data.stock,
+          endBalance: plan.data.balance,
           flowPlanId: plan.id,
         }
       })

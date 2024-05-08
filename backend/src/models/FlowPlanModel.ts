@@ -27,6 +27,7 @@ import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
+import { BalanceData } from '../types/API/BalanceData'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -59,11 +60,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     return this.data.state as FlowState
   }
 
+  async setEndState(stock: JsonValue, balance: JsonValue): Promise<void> {
+    this.data.stock = stock
+    this.data.balance = balance
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { stock, balance })
+  }
+
   /**
    * Store the current plan state to DB.
    * @param state
    */
   async saveState(state: FlowState): Promise<void> {
+    this.data.state = state
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { state })
   }
 
@@ -128,6 +136,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         log(`${batch} completed and is now in state ${nextState} and the last time stamp ${DateTime.fromJSDate(batch.data.lastStamp as Date).toUTC().toISO()}.`)
         await BatchModel.update<prisma.Batch, BatchModel>(batch, { completed: new Date() })
         await this.setStamp(batch.data.lastStamp)
+        await this.setEndState(batch.data.endStock, batch.data.endBalance)
       } else {
         log(`${run} for ${batch} success and is now in state ${nextState}.`)
       }
@@ -410,7 +419,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       // Unified items must be processed in order and batch must stop if one fails.
       const stock = new Stock(batch.data.initialStock as StockDataRecord)
-      const analyzer = new Analyzer(project.settings, stock, {})
+      const analyzer = new Analyzer(project.settings, stock, batch.data.initialBalance as BalanceData)
       analyzer.setServices(await batch.getServices())
 
       for (const unified of unifieds) {
