@@ -1,5 +1,33 @@
 /// <reference types="cypress" />
-import { ajv } from '../../../backend/src/lib/validate'
+import Ajv from 'ajv'
+import Account from '../e2e/api/schema/Account.json'
+import Alert from '../e2e/api/schema/Alert.json'
+import AlertMethod from '../e2e/api/schema/AlertMethod.json'
+import AlertType from '../e2e/api/schema/AlertType.json'
+import Asset from '../e2e/api/schema/Asset.json'
+import BalanceData from '../e2e/api/schema/BalanceData.json'
+import Batch from '../e2e/api/schema/Batch.json'
+import DriverType from '../e2e/api/schema/DriverType.json'
+import FileUpload from '../e2e/api/schema/FileUpload.json'
+import FlowPlan from '../e2e/api/schema/FlowPlan.json'
+import InputItemData from '../e2e/api/schema/InputItemData.json'
+import InputItem from '../e2e/api/schema/InputItem.json'
+import OutputItem from '../e2e/api/schema/OutputItem.json'
+import Project from '../e2e/api/schema/Project.json'
+import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
+import Rates from '../e2e/api/schema/Rates.json'
+import Run from '../e2e/api/schema/Run.json'
+import RunResult from '../e2e/api/schema/RunResult.json'
+import Setup from '../e2e/api/schema/Setup.json'
+import SkipReason from '../e2e/api/schema/SkipReason.json'
+import StockData from '../e2e/api/schema/StockData.json'
+import TransactionExtras from '../e2e/api/schema/TransactionExtras.json'
+import Transaction from '../e2e/api/schema/Transaction.json'
+import TransactionLine from '../e2e/api/schema/TransactionLine.json'
+import UnifiedItemData from '../e2e/api/schema/UnifiedItemData.json'
+import UnifiedItem from '../e2e/api/schema/UnifiedItem.json'
+import UnifiedItemType from '../e2e/api/schema/UnifiedItemType.json'
+
 
 /**
  * Log in as normal user.
@@ -47,6 +75,36 @@ Cypress.Commands.add('apiCall', (method: string, url: string, body: Record<strin
 chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, any>, status = 200) {
   const res = this._obj
   expect(res.status).to.eq(status)
+
+  const ajv = new Ajv()
+
+  ajv.addSchema(Account)
+  ajv.addSchema(Alert)
+  ajv.addSchema(AlertMethod)
+  ajv.addSchema(AlertType)
+  ajv.addSchema(Asset)
+  ajv.addSchema(BalanceData)
+  ajv.addSchema(Batch)
+  ajv.addSchema(DriverType)
+  ajv.addSchema(FileUpload)
+  ajv.addSchema(FlowPlan)
+  ajv.addSchema(InputItemData)
+  ajv.addSchema(InputItem)
+  ajv.addSchema(OutputItem)
+  ajv.addSchema(Project)
+  ajv.addSchema(ProjectSettings)
+  ajv.addSchema(Rates)
+  ajv.addSchema(Run)
+  ajv.addSchema(RunResult)
+  ajv.addSchema(Setup)
+  ajv.addSchema(SkipReason)
+  ajv.addSchema(StockData)
+  ajv.addSchema(TransactionExtras)
+  ajv.addSchema(Transaction)
+  ajv.addSchema(TransactionLine)
+  ajv.addSchema(UnifiedItemData)
+  ajv.addSchema(UnifiedItem)
+  ajv.addSchema(UnifiedItemType)
 
   if (!ajv.validate(json, res.body)) {
     const errors = JSON.stringify(ajv.errors)
