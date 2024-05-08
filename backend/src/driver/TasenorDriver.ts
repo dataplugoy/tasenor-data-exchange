@@ -1,13 +1,14 @@
-import { DocumentModelData, EntryModel, EntryModelData, ID, PeriodModelData, Token } from '@tasenor/common'
+import { AccountModelData, AccountNumber, AdditionalTransferInfo, DocumentModelData, EntryModel, EntryModelData, ID, PeriodModelData, Token } from '@tasenor/common'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriverSettings } from '../types/DriverSettings'
 import { TasenorFlowState } from '../types/FlowState'
 import { RemoteId } from '../types/RemoteId'
 import { InternetDriver } from './InternetDriver'
-import { Transaction, TransactionLine } from '../types/API/Transaction'
+import { Transaction, TransactionExtras, TransactionLine } from '../types/API/Transaction'
 import { DateTime } from 'luxon'
 import { dec } from '../lib/utils'
+import { AccountCode } from '../types/AccountCode'
 
 export class TasenorDriver extends InternetDriver {
 
@@ -15,10 +16,12 @@ export class TasenorDriver extends InternetDriver {
   declare state: TasenorFlowState
 
   private periods: PeriodModelData[]
+  private accounts: Record<AccountNumber, AccountModelData>
 
   constructor(settings: TasenorDriverSettings, projectSettings: ProjectSettings) {
     super(settings, projectSettings, 'TASENOR')
     this.periods = []
+    this.accounts = {}
   }
 
   canHandleOutput(): boolean {
@@ -60,6 +63,52 @@ export class TasenorDriver extends InternetDriver {
       this.periods = await this.GET(`/db/${this.settings.database}/period`)
     }
     return this.periods
+  }
+
+  /**
+   * Load and store accounts.
+   */
+  async loadAccounts(): Promise<void> {
+    if (Object.keys(this.accounts).length === 0) {
+      const accs: AccountModelData[] = await this.GET(`/db/${this.settings.database}/account`)
+      this.accounts = {}
+      accs.forEach(acc => {
+        this.accounts[acc.number] = acc
+      })
+    }
+  }
+
+  /**
+   * Resolve remote account for a code.
+   * @param code
+   */
+  findAccount(code: AccountCode): AccountModelData {
+    // TODO: Get the mapping using account resolver and flow plan settings.
+    const map = {
+      CURRENCY_EUR: '3050',
+      CURRENCY_USD: '30505'
+    }
+    if (!map[code]) {
+      throw new Error(`Unable to resolve remote account for '${code}'.`)
+    }
+    const number = map[code]
+    if (!this.accounts[number]) {
+      throw new Error(`It seems that configured account '${number}' for '${code}' does not exist anymore.`)
+    }
+    return this.accounts[number]
+  }
+
+  /**
+   * Sort out the extras and transform them for Tasenor.
+   * @param extras
+   * @returns
+   */
+  resolveExtras(extras: TransactionExtras): AdditionalTransferInfo {
+    const ret: AdditionalTransferInfo = {}
+    Object.keys(extras).forEach(key => {
+      throw new Error(`TasenorDriver does not handle extra field '${key}' yet.s`)
+    })
+    return ret
   }
 
   /**
@@ -105,23 +154,41 @@ export class TasenorDriver extends InternetDriver {
 
     return {
       document_id: doc.id,
-      account_id: 0, // TODO: Resolve
+      account_id: this.findAccount(line.account as AccountCode).id,
       debit: amount >= 0 ? 1 : 0,
-      amount,
+      amount: Math.abs(amount),
       description: line.text,
       row_number: row,
-      data: {} // TODO: Resolve from extras
+      data: this.resolveExtras(line.extras)
     }
   }
 
+  /**
+   * Push new document to the period matching the time stamp.
+   * @param output
+   */
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
+    await this.loadAccounts()
+    // TODO: Throw in any step if it fails.
     const tx: Transaction = output.data.data as unknown as Transaction
     const period = await this.getPeriod(tx)
     const doc: DocumentModelData = await this.POST(`/db/${this.settings.database}/document`, this.getDoc(period, tx))
     let row = 1
-    for (const line of tx.lines) {
-      console.log(this.getEntry(doc, line, row++))
+
+    // Remote ID.
+    const ret = {
+      db: this.settings.database,
+      period: period.id,
+      doc: doc.id,
+      entries: [] as ID[]
     }
-    throw new Error(`NOT DONE YET.`)
+
+    for (const line of tx.lines) {
+      const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, this.getEntry(doc, line, row++))
+      ret.entries.push(out.id as ID)
+    }
+
+    // throw new Error(`NOT DONE YET.`)
+    return ret as unknown as RemoteId
   }
 }
