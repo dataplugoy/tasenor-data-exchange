@@ -15,6 +15,7 @@ import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
 import { RemoteId } from '../types/RemoteId'
 import { DateTime } from 'luxon'
+import { Setup } from '../types/API/Setup'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -24,8 +25,8 @@ export class TestMockDriver extends Driver {
   declare settings: TestMockDriverSettings
   declare state: TestMockFlowState
 
-  constructor(settings: TestMockDriverSettings, projectSettings: ProjectSettings) {
-    super(settings, projectSettings, 'TEST_MOCK')
+  constructor(settings: TestMockDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
+    super(settings, projectSettings, setup, 'TEST_MOCK')
   }
 
   canHandleInput(): boolean {

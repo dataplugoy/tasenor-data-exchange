@@ -9,6 +9,7 @@ import { Transaction, TransactionExtras, TransactionLine } from '../types/API/Tr
 import { DateTime } from 'luxon'
 import { dec } from '../lib/utils'
 import { AccountCode } from '../types/AccountCode'
+import { Setup } from '../types/API/Setup'
 
 export class TasenorDriver extends InternetDriver {
 
@@ -18,8 +19,8 @@ export class TasenorDriver extends InternetDriver {
   private periods: PeriodModelData[]
   private accounts: Record<AccountNumber, AccountModelData>
 
-  constructor(settings: TasenorDriverSettings, projectSettings: ProjectSettings) {
-    super(settings, projectSettings, 'TASENOR')
+  constructor(settings: TasenorDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
+    super(settings, projectSettings, setup, 'TASENOR')
     this.periods = []
     this.accounts = {}
   }
@@ -83,11 +84,8 @@ export class TasenorDriver extends InternetDriver {
    * @param code
    */
   findAccount(code: AccountCode): AccountModelData {
-    // TODO: Get the mapping using account resolver and flow plan settings.
-    const map = {
-      CURRENCY_EUR: '3050',
-      CURRENCY_USD: '30505'
-    }
+    // TODO: Use some resolver utility to handle this.
+    const map: Record<AccountCode, AccountNumber> = this.setup.accounts as Record<AccountCode, AccountNumber> || {}
     if (!map[code]) {
       throw new Error(`Unable to resolve remote account for '${code}'.`)
     }
@@ -188,7 +186,6 @@ export class TasenorDriver extends InternetDriver {
       ret.entries.push(out.id as ID)
     }
 
-     throw new Error(`NOT DONE YET.`)
     return ret as unknown as RemoteId
   }
 }

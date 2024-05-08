@@ -6,14 +6,15 @@ import { Driver } from './Driver'
 import { Transaction } from '../types/API/Transaction'
 import { ProjectSettings } from '../types/API/Project'
 import { RemoteId } from '../types/RemoteId'
+import { Setup } from '../types/API/Setup'
 
 export class NoActionDriver extends Driver {
 
   declare settings: NoActionDriverSettings
   declare state: NoActionFlowState
 
-  constructor(settings: NoActionDriverSettings, projectSettings: ProjectSettings) {
-    super(settings, projectSettings, 'NO_ACTION')
+  constructor(settings: NoActionDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
+    super(settings, projectSettings, setup, 'NO_ACTION')
   }
 
   canHandleOutput(): boolean {

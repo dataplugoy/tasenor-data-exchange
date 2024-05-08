@@ -9,6 +9,7 @@ import { ManualUploadDriver } from './ManualUploadDriver'
 import { NordnetDriver } from './NordnetDriver'
 import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriver } from './TasenorDriver'
+import { Setup } from '../types/API/Setup'
 
 /**
  * Drivers implemented.
@@ -25,10 +26,10 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
 /**
  * Helper to instantiate a driver for a type.
  */
-export function getDriver(type: prisma.DriverType, settings: DriverSettings, projectSettings: ProjectSettings): Driver {
+export function getDriver(type: prisma.DriverType, settings: DriverSettings, projectSettings: ProjectSettings, setup: Setup = {}): Driver {
   const DriverConstructor = drivers[type]
   if (!DriverConstructor) {
     throw new Error(`Cannot find driver for driver type '${type}'.`)
   }
-  return new DriverConstructor(settings, projectSettings)
+  return new DriverConstructor(settings, projectSettings, setup)
 }

@@ -20,6 +20,7 @@ import { UnifiedItem } from '../types/API/UnifiedItem'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { ProjectSettings } from '../types/API/Project'
 import { RemoteId } from '../types/RemoteId'
+import { Setup } from '../types/API/Setup'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -31,10 +32,12 @@ export class Driver {
   systemSettings: SettingsModel
   projectSettings: ProjectSettings
   options: RuntimeOptions
+  setup: Setup
   state: FlowState
 
-  constructor(settings: DriverSettings, projectSettings: ProjectSettings, type: prisma.DriverType) {
+  constructor(settings: DriverSettings, projectSettings: ProjectSettings, setup: Setup, type: prisma.DriverType) {
     this.type = type
+    this.setup = setup
     this.settings = settings
     this.projectSettings = projectSettings
   }

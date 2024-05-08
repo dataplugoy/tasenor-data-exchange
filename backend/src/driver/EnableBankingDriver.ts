@@ -7,6 +7,7 @@ import { DateTime } from 'luxon'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ProjectSettings } from '../types/API/Project'
 import { InternetDriver } from './InternetDriver'
+import { Setup } from '../types/API/Setup'
 
 /**
  * Helper to encode JSON as base64.
@@ -23,8 +24,8 @@ export class EnableBankingDriver extends InternetDriver {
   declare settings: EnableBankingDriverSettings
   declare state: EnableBankingFlowState
 
-  constructor(settings: EnableBankingDriverSettings, projectSettings: ProjectSettings) {
-    super(settings, projectSettings, 'ENABLE_BANKING')
+  constructor(settings: EnableBankingDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
+    super(settings, projectSettings, setup, 'ENABLE_BANKING')
   }
 
   canHandleInput(): boolean {

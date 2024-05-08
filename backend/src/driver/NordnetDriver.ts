@@ -10,6 +10,7 @@ import { InputItemModel } from '../models/InputItemModel'
 import { RuleModel } from '../models/RuleModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
+import { Setup } from '../types/API/Setup'
 
 /**
  * A driver to upload Nordnet data.
@@ -19,8 +20,8 @@ export class NordnetDriver extends ManualUploadDriver {
   declare settings: NordnetDriverSettings
   declare state: NordnetFlowState
 
-  constructor(settings: NordnetDriverSettings, projectSettings: ProjectSettings) {
-    super(settings, projectSettings, 'NORDNET')
+  constructor(settings: NordnetDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
+    super(settings, projectSettings, setup, 'NORDNET')
   }
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
