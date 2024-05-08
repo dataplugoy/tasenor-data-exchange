@@ -10,7 +10,7 @@ export type AssetRecord = {
   value: Decimal
 }
 
-export type StockData = Partial<Record<Asset, AssetRecord>>
+export type StockDataRecord = Partial<Record<Asset, AssetRecord>>
 
 export type InitialStockData = Record<AccountCode, Record<Asset, {
   amount: number | string | Decimal
@@ -19,7 +19,7 @@ export type InitialStockData = Record<AccountCode, Record<Asset, {
 
 export class Stock {
 
-  private stock: Record<AccountCode, StockData>
+  private stock: Record<AccountCode, StockDataRecord>
 
   constructor(init: InitialStockData) {
     this.stock = {}
@@ -38,7 +38,7 @@ export class Stock {
    * Get complete collection of data.
    * @returns
    */
-  getAll(): Record<AccountCode, StockData> {
+  getAll(): Record<AccountCode, StockDataRecord> {
     return this.stock
   }
 
@@ -85,8 +85,8 @@ export class Stock {
    * Calculate stock change information for a transaction.
    * @param tx
    */
-  getStockChange(tx: Transaction): Record<AccountCode, StockData> {
-    const out: Record<AccountCode, StockData> = {}
+  getStockChange(tx: Transaction): Record<AccountCode, StockDataRecord> {
+    const out: Record<AccountCode, StockDataRecord> = {}
     tx.lines.forEach(line => {
       if (line.extras.assetChange && line.extras.asset) {
         if (!(line.account in out)) {
@@ -110,7 +110,7 @@ export class Stock {
    * Add changes to the current stock.
    * @param changes
    */
-  apply(changes: Record<AccountCode, StockData>) {
+  apply(changes: Record<AccountCode, StockDataRecord>) {
     Object.keys(changes).forEach(account => {
       Object.keys(changes[account]).forEach(ticker => {
         this.addAsset(account as AccountCode, ticker as Asset, changes[account][ticker].amount, changes[account][ticker].value)

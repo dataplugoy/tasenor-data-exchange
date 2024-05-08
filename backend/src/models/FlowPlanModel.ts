@@ -11,7 +11,7 @@ import { RunModel } from './RunModel'
 import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
 import { RuleModel } from './RuleModel'
 import { UnifiedItemModel } from './UnifiedItemModel'
-import { Stock, StockData } from '../lib/Stock'
+import { Stock, StockDataRecord } from '../lib/Stock'
 import { Analyzer } from '../lib/analyzer/Analyzer'
 import { DateTime } from 'luxon'
 import { ProjectModel } from './ProjectModel'
@@ -409,7 +409,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const project = await this.getProject()
 
       // Unified items must be processed in order and batch must stop if one fails.
-      const stock = new Stock(batch.data.initialStock as StockData)
+      const stock = new Stock(batch.data.initialStock as StockDataRecord)
       const analyzer = new Analyzer(project.settings, stock, {})
       analyzer.setServices(await batch.getServices())
 
@@ -417,7 +417,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
         // Skip processed, but calculate current stock values.
         if (unified.data.processed) {
-          stock.apply(unified.data.stockChange as Record<AccountCode, StockData>)
+          stock.apply(unified.data.stockChange as Record<AccountCode, StockDataRecord>)
           done++
           continue
         }

@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import prisma from '@prisma/client'
-import { Stock, InitialStockData, StockData } from '../Stock'
+import { Stock, InitialStockData, StockDataRecord } from '../Stock'
 import { DateTime } from 'luxon'
 import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
@@ -22,11 +22,7 @@ import { Transaction } from '../../types/API/Transaction'
 import { UnifiedItemData } from '../../types/API/UnifiedItemData'
 import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
 import { ProjectSettings } from '../../types/API/Project'
-
-/**
- * Running balances for accounts.
- */
-export type Balances = Partial<Record<AccountCode, Decimal>>
+import { Balance } from '../Balance'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -36,7 +32,7 @@ export class Analyzer {
   private services: Record<prisma.ServiceType, Service[]>
 
   protected stock: Stock
-  protected balances: Balances
+  protected balance: Balance
   protected clock: Timestring
   protected lastInput: UnifiedItemData | null
   protected lastTime: Timestring
@@ -75,13 +71,13 @@ export class Analyzer {
    * Initialize
    * @param stock
    */
-  constructor(config: ProjectSettings, stock: Stock, balances: Balances) {
+  constructor(config: ProjectSettings, stock: Stock, balances: Balance | {}) {
     this.services = {
       CRYPTO_RATES: [],
       CURRENCY_RATES: []
     }
     this.stock = stock
-    this.balances = balances
+    this.balance = balances instanceof Balance ? balances : new Balance(balances)
     this.clock = '0000-00-00T00:00:00Z' as Timestring
     this.lastInput = null
     this.lastTime = '0000-00-00T00:00:00Z' as Timestring
@@ -160,18 +156,6 @@ export class Analyzer {
   }
 
   /**
-   * Change the balance for an account.
-   * @param account
-   * @param amount
-   */
-  addBalance(account: AccountCode, amount: Decimal): void {
-    if (!(account in this.balances)) {
-      this.balances[account] = new Decimal(0)
-    }
-    this.balances[account] = this.balances[account]?.plus(amount)
-  }
-
-  /**
    * Update stock.
    * @param asset
    * @param amount
@@ -200,7 +184,7 @@ export class Analyzer {
     }
 
     // Apply balance changes.
-    tx.lines.forEach((line) => this.addBalance(line.account as AccountCode, dec(line.amount)))
+    tx.lines.forEach((line) => this.balance.addBalance(line.account as AccountCode, dec(line.amount)))
 
     // Apply asset changes.
     tx.lines.forEach((line) => line.extras.asset &&
@@ -213,7 +197,7 @@ export class Analyzer {
    * Calculate stock change information for transaction.
    * @param tx
    */
-  getStockChange(tx: Transaction): Record<AccountCode, StockData> {
+  getStockChange(tx: Transaction): Record<AccountCode, StockDataRecord> {
     return this.stock.getStockChange(tx)
   }
 
@@ -224,7 +208,7 @@ export class Analyzer {
   toJSON(): JsonValue {
     return {
       tx: toJSON(this.lastResult),
-      balances: toJSON(this.balances),
+      balances: this.balance.toJSON(),
       stock: this.stock.toJSON()
     }
   }
