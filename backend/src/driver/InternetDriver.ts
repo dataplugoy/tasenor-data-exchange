@@ -32,11 +32,18 @@ export class InternetDriver extends Driver {
   }
 
   /**
+   * Get the base URL. Defaults to the system settings.
+   */
+  protected get baseUrl(): string {
+    return this.systemSettings.url
+  }
+
+  /**
    * Ensure that URL does not have double slash in the beginning.
    * @param url Local part of the URL.
    */
   private makeUrl(url: string): string {
-    const baseUrl = this.systemSettings.url.replace(/\/$/, '')
+    const baseUrl = this.baseUrl.replace(/\/$/, '')
     url = url.replace(/^\//, '')
     return `${baseUrl}/${url}`
   }
@@ -71,7 +78,7 @@ export class InternetDriver extends Driver {
     }
 
     const result = await axios(conf).catch(err => {
-      error('Request failed: ' + JSON.stringify(err.response.data))
+      error('Request failed:', err.toString())
       throw err
     })
 

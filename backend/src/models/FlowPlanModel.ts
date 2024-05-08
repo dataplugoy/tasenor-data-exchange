@@ -392,6 +392,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       log(`${batch} has not the last time stamp as ${DateTime.fromJSDate(lastStamp as Date).toUTC().toISO()}.`)
       await batch.setStamp(lastStamp)
 
+      // Do not pass the state from the input driver to the output driver.
+      await this.saveState({})
+
     } catch (err) {
       result = 'FAIL'
       error(`Unifying input failed: ${err.stack}`)
@@ -498,6 +501,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     try {
       const output = await OutputItemModel.findForBatch(batch.id, false)
       const driver = await this.getOutputDriver(options)
+      const state = await driver.autheticate()
+      await this.saveState(state)
       const total = output.length
       let done = 0
 

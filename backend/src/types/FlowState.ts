@@ -1,4 +1,4 @@
-import { Timestring } from '@tasenor/common'
+import { Timestring, Token } from '@tasenor/common'
 
 export type TestMockFlowState = {
 }
@@ -19,6 +19,7 @@ export type NordnetFlowState = {
 }
 
 export type TasenorFlowState = {
+  token: Token
 }
 
 export type FlowState = TestMockFlowState | NoActionFlowState | EnableBankingFlowState | ManualUploadFlowState | NordnetFlowState | TasenorFlowState
