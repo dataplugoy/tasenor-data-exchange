@@ -158,7 +158,8 @@ CREATE TYPE public."DriverType" AS ENUM (
     'ENABLE_BANKING',
     'NO_ACTION',
     'MANUAL_UPLOAD',
-    'NORDNET'
+    'NORDNET',
+    'TASENOR'
 );
 
 

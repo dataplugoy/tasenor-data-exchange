@@ -1,0 +1,15 @@
+{
+  "$id": "DriverType.json",
+  "title": "DriverType",
+  "type": {
+    "type": "string",
+    "enum": [
+      "ENABLE_BANKING",
+      "MANUAL_UPLOAD",
+      "NO_ACTION",
+      "NORDNET",
+      "TASENOR",
+      "TEST_MOCK"
+    ]
+  }
+}

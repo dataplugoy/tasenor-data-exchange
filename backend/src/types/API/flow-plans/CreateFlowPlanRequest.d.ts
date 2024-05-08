@@ -9,15 +9,18 @@ export interface CreateFlowPlanRequest {
   title: string;
   projectId: number;
   source: {
-    type: "TEST_MOCK" | "ENABLE_BANKING" | "MANUAL_UPLOAD" | "NORDNET";
+    type: DriverType;
     settings: {
       [k: string]: unknown;
     };
   };
   destination: {
-    type: "TEST_MOCK" | "NO_ACTION";
+    type: DriverType;
     settings: {
       [k: string]: unknown;
     };
   };
+}
+export interface DriverType {
+  [k: string]: unknown;
 }

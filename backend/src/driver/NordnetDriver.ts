@@ -12,7 +12,7 @@ import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
 
 /**
- * A base class for drivers that use manual upload.
+ * A driver to upload Nordnet data.
  */
 export class NordnetDriver extends ManualUploadDriver {
 

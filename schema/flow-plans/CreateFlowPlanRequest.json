@@ -16,13 +16,7 @@
       "required": ["type", "settings"],
       "properties": {
         "type": {
-          "type": "string",
-          "enum": [
-            "TEST_MOCK",
-            "ENABLE_BANKING",
-            "MANUAL_UPLOAD",
-            "NORDNET"
-          ]
+          "$ref": "DriverType.json"
         },
         "settings": {
           "type": "object"
@@ -35,11 +29,7 @@
       "required": ["type", "settings"],
       "properties": {
         "type": {
-          "type": "string",
-          "enum": [
-            "TEST_MOCK",
-            "NO_ACTION"
-          ]
+          "$ref": "DriverType.json"
         },
         "settings": {
           "type": "object"

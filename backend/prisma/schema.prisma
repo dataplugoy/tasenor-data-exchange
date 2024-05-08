@@ -117,6 +117,7 @@ enum DriverType {
   ENABLE_BANKING
   MANUAL_UPLOAD
   NORDNET
+  TASENOR
 }
 
 model InputSource {

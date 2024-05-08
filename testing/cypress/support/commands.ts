@@ -7,6 +7,7 @@ import AlertType from '../e2e/api/schema/AlertType.json'
 import Asset from '../e2e/api/schema/Asset.json'
 import BalanceData from '../e2e/api/schema/BalanceData.json'
 import Batch from '../e2e/api/schema/Batch.json'
+import DriverType from '../e2e/api/schema/DriverType.json'
 import FileUpload from '../e2e/api/schema/FileUpload.json'
 import FlowPlan from '../e2e/api/schema/FlowPlan.json'
 import InputItemData from '../e2e/api/schema/InputItemData.json'
@@ -83,6 +84,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(Asset)
   ajv.addSchema(BalanceData)
   ajv.addSchema(Batch)
+  ajv.addSchema(DriverType)
   ajv.addSchema(FileUpload)
   ajv.addSchema(FlowPlan)
   ajv.addSchema(InputItemData)
