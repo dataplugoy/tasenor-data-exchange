@@ -118,7 +118,7 @@ export class Stock {
     })
   }
 
-  toJSON(): JsonValue {
-    return toJSON(this.stock)
+  toJSON(decimalsToString = false): JsonValue {
+    return toJSON(this.stock, decimalsToString)
   }
 }

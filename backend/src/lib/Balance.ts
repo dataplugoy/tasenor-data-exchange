@@ -23,7 +23,7 @@ export class Balance {
     }
   }
 
-  toJSON(): JsonValue {
-    return toJSON(this.balance)
+  toJSON(decimalsToString = false): JsonValue {
+    return toJSON(this.balance, decimalsToString)
   }
 }

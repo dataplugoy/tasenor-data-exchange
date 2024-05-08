@@ -6,7 +6,7 @@ import Decimal from 'decimal.js'
 import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { dec, toJSON } from '../utils'
-import { changeLanguage, initI18N } from '../i18n/t'
+import { initI18N } from '../i18n/t'
 import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateValueAccount, validateAssetOutAccount, validateAssetInAccount, validateAsset } from './validators'
 import { buy } from './handlers/buy'
 import { deposit } from './handlers/deposit'
@@ -205,11 +205,11 @@ export class Analyzer {
    * Summarize state of the analyzer.
    * @returns Last transaction, stock and balances.
    */
-  toJSON(): JsonValue {
+  toJSON(decimalsToString = false): { tx: JsonValue, balances: JsonValue, stock: JsonValue } {
     return {
       tx: toJSON(this.lastResult),
-      balances: this.balance.toJSON(),
-      stock: this.stock.toJSON()
+      balances: this.balance.toJSON(decimalsToString),
+      stock: this.stock.toJSON(decimalsToString)
     }
   }
 

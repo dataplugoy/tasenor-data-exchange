@@ -48,13 +48,33 @@ export class TestMockDriver extends Driver {
     }
 
     let filePath = path.join(this.root, url.pathname)
-    switch (flowPlan.lastStamp && DateTime.fromJSDate(flowPlan.lastStamp).toFormat('yyyy-LL-dd')) {
-      case '2000-01-01':
-        filePath = path.join(
-          this.root,
-          path.dirname(url.pathname),
-          path.basename(url.pathname, path.extname(url.pathname)) + '-2' + path.extname(url.pathname)
-        )
+
+    const addPostfix = (postfix: string) => {
+      filePath = path.join(
+        this.root,
+        path.dirname(url.pathname),
+        path.basename(url.pathname, path.extname(url.pathname)) + postfix + path.extname(url.pathname)
+      )
+    }
+
+    if (flowPlan.lastStamp !== null) {
+      switch (flowPlan.lastStamp && DateTime.fromJSDate(flowPlan.lastStamp).toFormat('yyyy-LL-dd')) {
+        case '2000-01-01':
+          addPostfix('-2')
+          break
+        case '2001-02-01':
+          addPostfix('-3')
+          break
+        case '2001-03-01':
+          addPostfix('-4')
+          break
+        case '2001-04-01':
+          addPostfix('-5')
+          break
+        default:
+          console.log(flowPlan.lastStamp && DateTime.fromJSDate(flowPlan.lastStamp).toFormat('yyyy-LL-dd'))
+          return ''
+      }
     }
     const data = fs.readFileSync(filePath).toString('utf-8')
 

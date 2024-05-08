@@ -465,6 +465,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       log(`${this} analyzed and created ${done}/${total} output items for ${batch}.`)
       await run.result(done, total, 0)
+      const json = analyzer.toJSON(true)
+      await batch.setEndState(json.stock, json.balances)
 
     } catch (err) {
       result = 'FAIL'

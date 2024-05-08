@@ -1,3 +1,4 @@
+import { JsonValue } from '@prisma/client/runtime/library'
 import chardet from 'chardet'
 import { Options, parse } from 'csv-parse'
 import { BaseModel } from './BaseModel'
@@ -29,6 +30,12 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   async setStamp(lastStamp: Date | null): Promise<void> {
     this.data.lastStamp = lastStamp
     await BatchModel.update<prisma.Batch, BatchModel>(this, { lastStamp })
+  }
+
+  async setEndState(endStock: JsonValue, endBalance: JsonValue): Promise<void> {
+    this.data.endStock = endStock
+    this.data.endBalance = endBalance
+    await BatchModel.update<prisma.Batch, BatchModel>(this, { endStock, endBalance })
   }
 
   /**

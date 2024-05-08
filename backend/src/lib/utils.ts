@@ -25,7 +25,7 @@ export function toJSON(value: unknown, decimalsToString = false): JsonValue {
   }
   if (type === 'object') {
     if (value instanceof Array) {
-      return value.map(e => toJSON(e))
+      return value.map(e => toJSON(e, decimalsToString))
     }
     if (value instanceof Decimal) {
       return decimalsToString ? value.toString() : value.toNumber()
@@ -36,7 +36,7 @@ export function toJSON(value: unknown, decimalsToString = false): JsonValue {
         ? prev
         : {
             ...prev,
-            [cur]: toJSON((value as Object)[cur])
+            [cur]: toJSON((value as Object)[cur], decimalsToString)
           }),
     {}
     )
@@ -60,6 +60,7 @@ export function chg(value: string | number | Decimal | undefined): string {
    */
 export function parseEncoding(encoding: string): 'ascii' | 'utf8' | 'utf-8' | 'utf16le' | 'ucs2' | 'ucs-2' | 'base64' | 'latin1' | 'binary' | 'hex' {
   switch (encoding.toUpperCase()) {
+    case 'ASCII':
     case 'UTF-8':
       return 'utf-8'
     case 'ISO-8859-2':
