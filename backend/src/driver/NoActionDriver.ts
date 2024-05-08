@@ -17,6 +17,10 @@ export class NoActionDriver extends Driver {
     super(settings, projectSettings, setup, 'NO_ACTION')
   }
 
+  async autheticate(): Promise<NoActionFlowState> {
+    return this.state
+  }
+
   canHandleOutput(): boolean {
     return true
   }
