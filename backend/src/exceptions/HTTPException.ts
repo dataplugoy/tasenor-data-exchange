@@ -1,4 +1,3 @@
-import prisma from '@prisma/client'
 import { HttpMethod } from '@tasenor/common'
 
 /**
