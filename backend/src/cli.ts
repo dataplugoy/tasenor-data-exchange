@@ -5,7 +5,7 @@ import { UserModel } from './models/UserModel'
 import { RuntimeOptions } from './types/RuntimeOptions'
 import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
-import { TransactionExtras, TransactionLine } from './types/API/Transaction'
+import { Transaction, TransactionExtras, TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
 import { Timestring, sorted } from '@tasenor/common'
 import colors from 'colors/safe'
@@ -85,10 +85,11 @@ function renderExtras(extras: TransactionExtras): string {
 }
 
 /**
- * Ledger report.
+ * Collect data for report.
  * @param args
+ * @returns
  */
-async function executeLedger(args) {
+async function getData(args): Promise<[Stock, Transaction[]]> {
   const stock = new Stock({})
   const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {})
 
@@ -101,13 +102,32 @@ async function executeLedger(args) {
   const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
 
   // Sort the transactions by their accounts.
-  const accounts: Record<AccountCode, [Timestring, TransactionLine][]> = {}
-  OutputItemModel.transactions(outputItems).forEach(tx => {
+  const txs: Transaction[] = OutputItemModel.transactions(outputItems)
+  txs.forEach(tx => {
     analyzer.apply(tx)
     tx.lines.forEach(line => {
-      const account = args.details ? line.account : line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
-      accounts[account] = accounts[account] || []
-      accounts[account].push([tx.time, line])
+      if (!args.details) {
+        line.account = line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
+      }
+    })
+  })
+
+  return [stock, txs]
+}
+
+/**
+ * Ledger report.
+ * @param args
+ */
+async function executeLedger(args) {
+  const [stock, txs] = await getData(args)
+
+  // Sort the transactions by their accounts.
+  const accounts: Record<AccountCode, [Timestring, TransactionLine][]> = {}
+  txs.forEach(tx => {
+    tx.lines.forEach(line => {
+      accounts[line.account] = accounts[line.account] || []
+      accounts[line.account].push([tx.time, line])
     })
   })
 
@@ -205,16 +225,7 @@ async function executeLedger(args) {
  * @param args
  */
 async function executeJournal(args) {
-  const stock = new Stock({})
-  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {})
-
-  const options: RuntimeOptions = {
-    userId: 0,
-    tracking: args.track || null,
-    auth: args.auth || null,
-  }
-  const plan = await flowPlan(args, options)
-  const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
+  const [, txs] = await getData(args)
 
   // Helper to print.
   const out = (...print): void => {
@@ -222,9 +233,7 @@ async function executeJournal(args) {
   }
 
   out()
-  OutputItemModel.transactions(outputItems).forEach(tx => {
-    analyzer.apply(tx)
-
+  txs.forEach(tx => {
     out(colors.gray(tx.time))
     tx.lines.forEach(line => {
       const { account, text, amount, extras } = line
@@ -294,6 +303,7 @@ export async function execute(...args: string[]): Promise<void> {
   const journal = subparser.add_parser('journal', { description: 'Display journal report for a specific flow plan.' })
   journal.add_argument('flow', { help: 'Name of the flow.' })
   journal.add_argument('--stock', { help: 'Show stock changes.', required: false, action: 'store_true' })
+  journal.add_argument('--details', { help: 'Assign each stock to their own account.', required: false, action: 'store_true' })
   journal.set_defaults({ func: executeJournal })
 
   // Upload command.
