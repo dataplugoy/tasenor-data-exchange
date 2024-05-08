@@ -124,7 +124,6 @@ export class TasenorDriver extends InternetDriver {
   async getPeriod(tx: Transaction): Promise<PeriodModelData> {
     const periods = await this.getPeriods()
 
-    // TODO: Suboptimal. We could map by year and check the one with matching year first.
     for (const period of periods) {
       const start = DateTime.fromISO(period.start_date + 'T00:00:00Z').toUTC()
       const end = DateTime.fromISO(period.end_date + 'T23:59:59.999Z').toUTC()
