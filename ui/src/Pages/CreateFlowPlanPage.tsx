@@ -34,7 +34,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
   }
 
   const validateDestinationSettings = () => {
-    if (input === 'TASENOR') {
+    if (output === 'TASENOR') {
       if (!hostUrl || hostUrl === 'https://') return app.addError('Tasenor server API URL is required.')
       if (!user) return app.addError('Login email is required.')
       if (!password) return app.addError('Password is required.')
@@ -73,6 +73,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
         settings: destinationSettings,
       },
     }
+
     const res = await POST('/flow-plans', data)
     res && navigate(`/flow-plan/${res.id}`)
   }
