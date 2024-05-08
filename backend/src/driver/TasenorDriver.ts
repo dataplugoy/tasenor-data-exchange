@@ -1,4 +1,4 @@
-import { AccountModelData, AccountNumber, AdditionalTransferInfo, DocumentModelData, EntryModel, EntryModelData, ID, PeriodModelData, Token } from '@tasenor/common'
+import { AccountModelData, AccountNumber, AdditionalTransferInfo, DocumentModelData, EntryModelData, ID, PeriodModelData, Token } from '@tasenor/common'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriverSettings } from '../types/DriverSettings'
