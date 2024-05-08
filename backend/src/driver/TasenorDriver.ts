@@ -10,6 +10,7 @@ import { DateTime } from 'luxon'
 import { dec } from '../lib/utils'
 import { AccountCode } from '../types/AccountCode'
 import { Setup } from '../types/API/Setup'
+import { jwtDecode } from 'jwt-decode'
 
 export class TasenorDriver extends InternetDriver {
 
@@ -39,9 +40,15 @@ export class TasenorDriver extends InternetDriver {
 
   async autheticate(): Promise<TasenorFlowState> {
 
-    // TODO: Check if it is still valid.
     if (this.state.token) {
-      return this.state
+      const decoded = jwtDecode(this.state.token)
+      if (decoded.exp) {
+        const now = new Date().getTime()
+        // Leave 5 second marging.
+        if (now < decoded.exp * 1000 - 5000) {
+          return this.state
+        }
+      }
     }
 
     const res = await this.POST<{ token: Token }>('/auth', {
@@ -167,7 +174,7 @@ export class TasenorDriver extends InternetDriver {
    */
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     await this.loadAccounts()
-    // TODO: Throw in any step if it fails.
+
     const tx: Transaction = output.data.data as unknown as Transaction
     const period = await this.getPeriod(tx)
     const doc: DocumentModelData = await this.POST(`/db/${this.settings.database}/document`, this.getDoc(period, tx))
