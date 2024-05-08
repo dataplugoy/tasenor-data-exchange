@@ -21,29 +21,29 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
-        tx: {
-          time: '2000-01-01T00:00:00.000Z',
-          lines: [
-            {
-              account: 'CURRENCY_EUR',
-              amount: '-950',
-              extras: {},
-              text: 'Random fee',
-            },
-            {
-              account: 'EXPENSE_RANDOM',
-              amount: '950',
-              extras: {},
-              text: 'Random fee',
-            },
-          ]
-        },
-        balances: {
-          CURRENCY_EUR: -950,
-          EXPENSE_RANDOM: 950,
-        },
-        stock: {}
-      }
+      tx: {
+        time: '2000-01-01T00:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-950',
+            extras: {},
+            text: 'Random fee',
+          },
+          {
+            account: 'EXPENSE_RANDOM',
+            amount: '950',
+            extras: {},
+            text: 'Random fee',
+          },
+        ]
+      },
+      balances: {
+        CURRENCY_EUR: -950,
+        EXPENSE_RANDOM: 950,
+      },
+      stock: {}
+    }
     )
   })
 

@@ -26,9 +26,9 @@ import { ProjectSettings } from '../../backend/src/types/API/Project'
  */
 export async function beforeModelTesting(): Promise<void> {
 
-  const { spawnSync } = require( 'child_process' )
+  const { spawnSync } = require('child_process')
   const databaseDir = path.join(cwd(), '..', 'database')
-  const run = spawnSync('pnpm', [ '-C', databaseDir, 'load' ])
+  const run = spawnSync('pnpm', ['-C', databaseDir, 'load'])
   if (run.stderr.toString().trim() !== '') {
     throw new Error(`Database initialization failed: ${run.stderr.toString().trim()}`)
   }
@@ -55,6 +55,8 @@ export function createBatchFrom(filePath: string): BatchModel {
     lastStamp: null,
     initialStock: {},
     endStock: {},
+    initialBalance: {},
+    endBalance: {},
     flowPlanId: 0
   })
 }
@@ -100,6 +102,8 @@ export function unifyArgsFrom(items: InputItemData[]): [FlowPlanModel, RunModel,
     projectId: 0,
     lastStamp: null,
     stock: {},
+    balance: {},
+    setup: {},
   })
 
   const inputItems = items.map(item => new InputItemModel({
@@ -170,7 +174,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
     }
   }
 
-  FlowPlanModel.combineMultipart(partial).map(item => {
+  FlowPlanModel.combineMultipart(partial).forEach(item => {
     unified.push(new UnifiedItemModel({
       id: 0,
       created: new Date(),

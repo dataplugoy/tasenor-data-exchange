@@ -126,7 +126,6 @@ describe('Nordnet', () => {
 
   })
 
-
   test('sell', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -226,7 +225,6 @@ describe('Nordnet', () => {
     )
   })
 
-
   test('dividend', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -314,7 +312,6 @@ describe('Nordnet', () => {
     )
   })
 
-
   test('withdrawal', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -348,7 +345,6 @@ describe('Nordnet', () => {
       }
     ])
   })
-
 
   test('interest', async () => {
 
@@ -402,7 +398,6 @@ describe('Nordnet', () => {
     )
   })
 
-
   test('forex', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -452,7 +447,6 @@ describe('Nordnet', () => {
       }
     ])
   })
-
 
   test('forex 2', async () => {
 
@@ -505,7 +499,6 @@ describe('Nordnet', () => {
     ])
   })
 
-
   test('rename instrument', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -540,7 +533,6 @@ describe('Nordnet', () => {
     ])
   })
 
-
   test('split', async () => {
 
     const driver = getDriver('NORDNET', {}, projectSettings)
@@ -574,7 +566,6 @@ describe('Nordnet', () => {
       }
     ])
   })
-
 
   test('withholding tax', async () => {
 
@@ -615,7 +606,6 @@ describe('Nordnet', () => {
       }
     ])
   })
-
 
   test('interest correction', async () => {
 

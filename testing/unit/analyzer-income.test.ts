@@ -20,26 +20,26 @@ describe('Analyzer', () => {
     const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
-        tx: {
-          time: '2000-01-01T00:00:00.000Z',
-          lines: [
-            {
-              account: 'CURRENCY_EUR',
-              amount: '5',
-              text: 'Dividend for FOO',
-              extras: {}
-            },
-            {
-              account: 'INCOME_DIVIDEND',
-              amount: '-5',
-              text: 'Dividend for FOO',
-              extras: {}
-            }
-          ]
-        },
-        balances: { CURRENCY_EUR: 5, INCOME_DIVIDEND: -5 },
-        stock: {}
-      }
+      tx: {
+        time: '2000-01-01T00:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '5',
+            text: 'Dividend for FOO',
+            extras: {}
+          },
+          {
+            account: 'INCOME_DIVIDEND',
+            amount: '-5',
+            text: 'Dividend for FOO',
+            extras: {}
+          }
+        ]
+      },
+      balances: { CURRENCY_EUR: 5, INCOME_DIVIDEND: -5 },
+      stock: {}
+    }
     )
   })
 

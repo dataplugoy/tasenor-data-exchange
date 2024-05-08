@@ -1,4 +1,4 @@
-import { Token, mute, unmute } from '@tasenor/common'
+import { Token } from '@tasenor/common'
 import { expect, test } from 'vitest'
 import { compare, hash, sign, verify } from '../../backend/src/lib/crypt'
 

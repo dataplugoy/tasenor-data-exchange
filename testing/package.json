@@ -2,6 +2,8 @@
   "name": "@tasenor/tadex-testing",
   "scripts": {
     "test": "pnpm prepare && pnpm test-unit && pnpm test-ui",
+    "fix": "eslint --fix unit/**/*.ts lib/**/*.ts",
+    "lint": "eslint unit/**/*.ts lib/**/*.ts",
     "dev-unit": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex vitest",
     "dev-ui": "CYPRESS_URL=http://localhost:7301 cypress open --browser chrome --e2e",
     "test-unit": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex vitest --run",
@@ -13,8 +15,13 @@
   "devDependencies": {
     "@tasenor/config": "^1.13.1",
     "@types/node": "^20.12.4",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
     "ajv": "^8.12.0",
     "cypress": "^13.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-plugin-node": "^11.1.0",
     "typescript": "^5.4.4",
     "vitest": "^1.4.0"
   },
