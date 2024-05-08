@@ -42,7 +42,17 @@ export interface Setup {
   accounts?: {
     [k: string]: unknown;
   };
-  accountGrouping?: {};
+  accountGrouping?: {
+    singleStockAccount?: boolean;
+    singleCryptoAccount?: boolean;
+    singleFeeAccount?: boolean;
+    singleProfitAccount?: boolean;
+    singleLossAccount?: boolean;
+    singleIncomeAccount?: boolean;
+    singleExpenseAccount?: boolean;
+    singleDividendAccount?: boolean;
+    singleTaxAccount?: boolean;
+  };
 }
 export interface StockData {
   [k: string]: unknown;
