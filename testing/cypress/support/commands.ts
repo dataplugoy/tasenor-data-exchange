@@ -1,9 +1,11 @@
 /// <reference types="cypress" />
 import Ajv from 'ajv'
+import Account from '../e2e/api/schema/Account.json'
 import Alert from '../e2e/api/schema/Alert.json'
 import AlertMethod from '../e2e/api/schema/AlertMethod.json'
 import AlertType from '../e2e/api/schema/AlertType.json'
 import Asset from '../e2e/api/schema/Asset.json'
+import BalanceData from '../e2e/api/schema/BalanceData.json'
 import Batch from '../e2e/api/schema/Batch.json'
 import FileUpload from '../e2e/api/schema/FileUpload.json'
 import FlowPlan from '../e2e/api/schema/FlowPlan.json'
@@ -16,6 +18,7 @@ import Rates from '../e2e/api/schema/Rates.json'
 import Run from '../e2e/api/schema/Run.json'
 import RunResult from '../e2e/api/schema/RunResult.json'
 import SkipReason from '../e2e/api/schema/SkipReason.json'
+import StockData from '../e2e/api/schema/StockData.json'
 import TransactionExtras from '../e2e/api/schema/TransactionExtras.json'
 import Transaction from '../e2e/api/schema/Transaction.json'
 import TransactionLine from '../e2e/api/schema/TransactionLine.json'
@@ -73,10 +76,12 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
 
   const ajv = new Ajv()
 
+  ajv.addSchema(Account)
   ajv.addSchema(Alert)
   ajv.addSchema(AlertMethod)
   ajv.addSchema(AlertType)
   ajv.addSchema(Asset)
+  ajv.addSchema(BalanceData)
   ajv.addSchema(Batch)
   ajv.addSchema(FileUpload)
   ajv.addSchema(FlowPlan)
@@ -89,6 +94,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(Run)
   ajv.addSchema(RunResult)
   ajv.addSchema(SkipReason)
+  ajv.addSchema(StockData)
   ajv.addSchema(TransactionExtras)
   ajv.addSchema(Transaction)
   ajv.addSchema(TransactionLine)

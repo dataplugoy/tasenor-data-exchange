@@ -1,6 +1,6 @@
 {
-  "$id": "Asset.json",
-  "title": "Asset",
+  "$id": "Account.json",
+  "title": "Account",
   "type": "string",
   "pattern": "^(STOCK|CRYPTO|CURRENCY|CRYPTOFEE|FEE|PROFIT|LOSS|EXPENSE|INCOME|DIVIDEND|EXTERNAL|TAX)_[-:A-Z._0-9]+$"
 }
