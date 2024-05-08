@@ -14,6 +14,7 @@ import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
 import { RemoteId } from '../types/RemoteId'
+import { DateTime } from 'luxon'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -46,7 +47,15 @@ export class TestMockDriver extends Driver {
       throw new Error(`Bad protocol in URL '${this.settings.url}'.`)
     }
 
-    const filePath = path.join(this.root, url.pathname)
+    let filePath = path.join(this.root, url.pathname)
+    switch (flowPlan.lastStamp && DateTime.fromJSDate(flowPlan.lastStamp).toFormat('yyyy-LL-dd')) {
+      case '2000-01-01':
+        filePath = path.join(
+          this.root,
+          path.dirname(url.pathname),
+          path.basename(url.pathname, path.extname(url.pathname)) + '-2' + path.extname(url.pathname)
+        )
+    }
     const data = fs.readFileSync(filePath).toString('utf-8')
 
     return data
