@@ -15,16 +15,52 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('NO_ACTION')
   const [fileUrl, setFileUrl] = useState('file:///')
+  const [hostUrl, setHostUrl] = useState('https://')
+  const [user, setUser] = useState('')
+  const [password, setPassword] = useState('')
+  const [database, setDatabase] = useState('')
+
   const app = useApp()
   const POST = usePOST<CreateFlowPlanResponse>()
   const navigate = useNavigate()
+
+  const validateSourceSettings = () => {
+    if (input === 'TEST_MOCK') {
+      if (!fileUrl || fileUrl === 'file:///') return app.addError('File URL is required.')
+      return { url: fileUrl }
+    }
+
+    return {}
+  }
+
+  const validateDestinationSettings = () => {
+    if (input === 'TASENOR') {
+      if (!hostUrl || hostUrl === 'https://') return app.addError('Tasenor server API URL is required.')
+      if (!user) return app.addError('Login email is required.')
+      if (!password) return app.addError('Password is required.')
+      if (!database) return app.addError('Name of the database is required.')
+      return {
+        host: hostUrl,
+        user,
+        password,
+        database
+      }
+    }
+
+    return {}
+  }
 
   const onCreate = async () => {
     if (!title) return app.addError(t('Name is required.'))
     if (!input) return app.addError(t('Data source must be selected.'))
 
-    const sourceSettings = input === 'TEST_MOCK' ? { url: fileUrl } : {}
-    const destinationSettings = {}
+    const sourceSettings = validateSourceSettings()
+    const destinationSettings = validateDestinationSettings()
+
+    if (!sourceSettings || !destinationSettings) {
+      return
+    }
+
     const data = {
       title,
       projectId: app.project.id,
@@ -64,7 +100,17 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
           <TextField select label={t('Bookkeeping Destination')} value={output} onChange={e => setOutput(e.target.value)}>
             {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>}
             <MenuItem value="NO_ACTION"><Trans>Keep results in TaDeX</Trans></MenuItem>
+            <MenuItem value="TASENOR"><Trans>Upload results to Tasenor</Trans></MenuItem>
           </TextField>
+
+          {
+            output === 'TASENOR' && <>
+              <TextField autoComplete="off" required fullWidth onChange={e => setHostUrl(e.target.value)} value={hostUrl} name="url" label={t('Tasenor Server API URL')}/>
+              <TextField autoComplete="off" required fullWidth onChange={e => setUser(e.target.value)} value={user} name="user" label={t('Login Email')}/>
+              <TextField autoComplete="off" required fullWidth onChange={e => setPassword(e.target.value)} value={password} name="password" label={t('Password')} type="password"/>
+              <TextField autoComplete="off" required fullWidth onChange={e => setDatabase(e.target.value)} value={database} name="database" label={t('Name of the Database')}/>
+            </>
+          }
 
           <Button sx={{ mt: 2 }}onClick={onCreate} variant="outlined"><Trans>Create</Trans></Button>
 

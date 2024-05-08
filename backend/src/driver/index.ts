@@ -8,6 +8,7 @@ import { NoActionDriver } from './NoActionDriver'
 import { ManualUploadDriver } from './ManualUploadDriver'
 import { NordnetDriver } from './NordnetDriver'
 import { ProjectSettings } from '../types/API/Project'
+import { TasenorDriver } from './TasenorDriver'
 
 /**
  * Drivers implemented.
@@ -18,6 +19,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   ENABLE_BANKING: EnableBankingDriver,
   MANUAL_UPLOAD: ManualUploadDriver,
   NORDNET: NordnetDriver,
+  TASENOR: TasenorDriver,
 }
 
 /**
@@ -26,7 +28,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
 export function getDriver(type: prisma.DriverType, settings: DriverSettings, projectSettings: ProjectSettings): Driver {
   const DriverConstructor = drivers[type]
   if (!DriverConstructor) {
-    throw new Error(`Cannot find driver for input source type '${type}'.`)
+    throw new Error(`Cannot find driver for driver type '${type}'.`)
   }
   return new DriverConstructor(settings, projectSettings)
 }

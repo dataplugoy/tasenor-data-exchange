@@ -925,6 +925,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.alerts (id, created, updated, "userId", type, method, url, payload, delivered) FROM stdin;
+1	2024-05-08 11:18:34.677	2024-05-08 11:18:34.677	1	UPLOAD_REQUIRED	INTERACTIVE	/api/v1/flow-plans/4/continue	Please select a statement to upload.	2024-05-08 11:18:34.676
 \.
 
 
@@ -944,6 +945,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}
 2	2024-04-28 08:55:30.01	2024-04-28 08:55:30.01	Upload Testing	{}	1	\N	{}	{}
 3	2024-05-02 08:46:22.081	2024-05-02 08:46:22.081	Nordnet	{}	1	\N	{}	{}
+4	2024-05-08 11:08:59.91	2024-05-08 11:18:41.802	Tasenor	{}	1	\N	{}	{}
 \.
 
 
@@ -963,6 +965,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	TEST_MOCK	{"url": "file:///test.csv"}	1
 2	2024-04-28 08:55:30.026	2024-04-28 08:55:30.026	MANUAL_UPLOAD	{}	2
 3	2024-05-02 08:46:22.094	2024-05-02 08:46:22.094	NORDNET	{}	3
+4	2024-05-08 11:08:59.924	2024-05-08 11:08:59.924	NORDNET	{}	4
 \.
 
 
@@ -974,6 +977,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 1	2024-04-15 11:40:33.161	2024-04-25 12:45:18.235	NO_ACTION	{}	1
 2	2024-04-28 08:55:30.032	2024-04-28 08:55:30.032	NO_ACTION	{}	2
 3	2024-05-02 08:46:22.097	2024-05-02 08:46:22.097	NO_ACTION	{}	3
+4	2024-05-08 11:08:59.929	2024-05-08 11:17:59.283	TASENOR	{"host": "http://localhost:7205", "user": "user@localhost", "database": "tadex", "password": "Ayfiewchg872rt5sq2e4"}	4
 \.
 
 
@@ -999,6 +1003,23 @@ COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin
 --
 
 COPY public.rules (id, created, updated, type, "ownerId", name, key, priority, filter, result, "filterView", "resultView") FROM stdin;
+9	2024-05-08 11:18:41.962	2024-05-08 11:18:41.962	INPUT_SOURCE	4	Deposit	TALLETUS	50	"Tapahtumatyyppi == 'TALLETUS'"	{"type": "'deposit'", "value": "Summa", "service": "'Nordnet'", "valueAsset": "Valuutta"}	{}	{}
+10	2024-05-08 11:18:41.966	2024-05-08 11:18:41.966	INPUT_SOURCE	4	Withdrawal	NOSTO	50	"Tapahtumatyyppi == 'NOSTO'"	{"type": "'withdrawal'", "value": "-Summa", "service": "'Nordnet'", "valueAsset": "Valuutta"}	{}	{}
+11	2024-05-08 11:18:41.97	2024-05-08 11:18:41.97	INPUT_SOURCE	4	Monthly Saving Fee	ETF_KK SÄÄSTÖN PALVELUMAKSU	50	"Tapahtumatyyppi == 'ETF_KK SÄÄSTÖN PALVELUMAKSU'"	{"text": "Tapahtumateksti", "type": "'expense'", "value": "-Summa", "account": "'FEE_MONTHLY_SAVING'", "valueAsset": "Valuutta"}	{}	{}
+12	2024-05-08 11:18:41.973	2024-05-08 11:18:41.973	INPUT_SOURCE	4	Stock Buy	OSTO	50	"Tapahtumatyyppi == 'OSTO'"	{"fee": "Kokonaiskulut", "type": "'buy'", "rates": "rates(Valuutta, Vaihtokurssi)", "value": "-Summa", "assetIn": "Arvopaperi", "feeAsset": "$('Kokonaiskulut Valuutta')", "valueAsset": "Valuutta", "assetTypeIn": "'STOCK'", "assetAmountIn": "Määrä"}	{}	{}
+13	2024-05-08 11:18:41.977	2024-05-08 11:18:41.977	INPUT_SOURCE	4	Stock Sell	MYYNTI	50	"Tapahtumatyyppi == 'MYYNTI'"	{"fee": "Kokonaiskulut", "type": "'sell'", "rates": "rates(Valuutta, Vaihtokurssi)", "value": "Summa + Kokonaiskulut", "assetOut": "Arvopaperi", "feeAsset": "$('Kokonaiskulut Valuutta')", "valueAsset": "Valuutta", "assetTypeOut": "'STOCK'", "assetAmountOut": "Määrä"}	{}	{}
+14	2024-05-08 11:18:41.98	2024-05-08 11:18:41.98	INPUT_SOURCE	4	Dividend	OSINKO	50	"Tapahtumatyyppi == 'OSINKO'"	{"text": "Tapahtumateksti", "type": "'income'", "rates": "rates(Valuutta, Vaihtokurssi)", "value": "Summa", "reason": "'DIVIDEND'", "multipart": "Vahvistusnumero", "valueAsset": "Valuutta", "reasonAsset": "Arvopaperi"}	{}	{}
+15	2024-05-08 11:18:41.983	2024-05-08 11:18:41.983	INPUT_SOURCE	4	Interest Expenses		50	"Tapahtumatyyppi == 'LAINAKORKO' or Tapahtumatyyppi == 'PÄÄOMIT YLIT.KORKO'"	{"type": "'expense'", "rates": "rates(Valuutta, Vaihtokurssi)", "value": "-Summa", "reason": "'INTEREST'", "account": "'EXPENSE_INTEREST'", "valueAsset": "Valuutta"}	{}	{}
+16	2024-05-08 11:18:41.988	2024-05-08 11:18:41.988	INPUT_SOURCE	4	Forex Sell (Foreign to Local)	VALUUTAN MYYNTI	50	"Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta"	{"type": "'forex'", "rates": "rates(Valuutta, Vaihtokurssi)", "assetOut": "Valuutta", "multipart": "Vahvistusnumero", "assetAmountOut": "-Summa"}	{}	{}
+17	2024-05-08 11:18:41.992	2024-05-08 11:18:41.992	INPUT_SOURCE	4	Forex Buy (Foreign to Local)	VALUUTAN OSTO	50	"Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta"	{"type": "'forex'", "value": "Summa", "multipart": "Vahvistusnumero", "valueAsset": "Valuutta"}	{}	{}
+18	2024-05-08 11:18:41.995	2024-05-08 11:18:41.995	INPUT_SOURCE	4	Forex Sell (Local to foreign)	VALUUTAN MYYNTI	50	"Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency == Valuutta"	{"type": "'forex'", "value": "-Summa", "multipart": "Vahvistusnumero", "valueAsset": "Valuutta"}	{}	{}
+19	2024-05-08 11:18:41.998	2024-05-08 11:18:41.998	INPUT_SOURCE	4	Forex Buy (Local to foreign)	VALUUTAN OSTO	50	"Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency != Valuutta"	{"type": "'forex'", "rates": "rates($('Kokonaiskulut Valuutta'), Vaihtokurssi)", "assetIn": "Valuutta", "multipart": "Vahvistusnumero", "assetAmountIn": "Summa"}	{}	{}
+20	2024-05-08 11:18:42.002	2024-05-08 11:18:42.002	INPUT_SOURCE	4	Instrument renaming (Old name)	VAIHTO AP-OTTO	50	"Tapahtumatyyppi == 'VAIHTO AP-OTTO'"	{"text": "Tapahtumateksti", "type": "'rename'", "assetOut": "Arvopaperi", "multipart": "Vahvistusnumero"}	{}	{}
+21	2024-05-08 11:18:42.005	2024-05-08 11:18:42.005	INPUT_SOURCE	4	Instrument renaming (New name)	VAIHTO AP-JÄTTÖ	50	"Tapahtumatyyppi == 'VAIHTO AP-JÄTTÖ'"	{"type": "'rename'", "value": "Summa", "assetIn": "Arvopaperi", "multipart": "Vahvistusnumero", "valueAsset": "Valuutta", "assetTypeIn": "'STOCK'", "assetAmountIn": "Määrä"}	{}	{}
+22	2024-05-08 11:18:42.008	2024-05-08 11:18:42.008	INPUT_SOURCE	4	Instrument split (Original instrument)	SPLIT AP OTTO	50	"Tapahtumatyyppi == 'SPLIT AP OTTO'"	{"text": "Tapahtumateksti", "type": "'split'", "multipart": "Vahvistusnumero", "assetAmountOut": "Määrä"}	{}	{}
+23	2024-05-08 11:18:42.011	2024-05-08 11:18:42.011	INPUT_SOURCE	4	Instrument split (New instrument)	SPLIT AP JÄTTÖ	50	"Tapahtumatyyppi == 'SPLIT AP JÄTTÖ'"	{"type": "'split'", "value": "Summa", "assetIn": "Arvopaperi", "multipart": "Vahvistusnumero", "valueAsset": "Valuutta", "assetTypeIn": "'STOCK'", "assetAmountIn": "Määrä"}	{}	{}
+24	2024-05-08 11:18:42.014	2024-05-08 11:18:42.014	INPUT_SOURCE	4	Withholding Tax	ENNAKKOPIDÄTYS	50	"Tapahtumatyyppi == 'ENNAKKOPIDÄTYS'"	{"taxType": "'withholding'", "taxAsset": "Valuutta", "multipart": "Vahvistusnumero", "taxAmount": "-Summa"}	{}	{}
+25	2024-05-08 11:18:42.017	2024-05-08 11:18:42.017	INPUT_SOURCE	4	Interest Refund	DEBET KORON KORJ.	50	"Tapahtumatyyppi == 'DEBET KORON KORJ.'"	{"type": "'income'", "value": "Summa", "reason": "'INTEREST_REFUND'", "account": "'EXPENSE_INTEREST'", "valueAsset": "Valuutta"}	{}	{}
 \.
 
 
@@ -1028,6 +1049,7 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 1	NO_ACTION	\N	\N	\N	\N	\N	{}
 3	MANUAL_UPLOAD	\N	\N	\N	\N	\N	{}
 4	NORDNET	\N	\N	\N	\N	\N	{}
+5	TASENOR	\N	\N	\N	\N	\N	{}
 \.
 
 
@@ -1052,49 +1074,49 @@ COPY public.users (id, created, updated, email, password, name, address, zip, ci
 -- Name: alerts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.alerts_id_seq', 1, false);
+SELECT pg_catalog.setval('public.alerts_id_seq', 1, true);
 
 
 --
 -- Name: batches_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.batches_id_seq', 5, true);
+SELECT pg_catalog.setval('public.batches_id_seq', 6, true);
 
 
 --
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 3, true);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 4, true);
 
 
 --
 -- Name: input_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_items_id_seq', 8, true);
+SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
 
 
 --
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 3, true);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 4, true);
 
 
 --
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 3, true);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 4, true);
 
 
 --
 -- Name: output_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_items_id_seq', 8, true);
+SELECT pg_catalog.setval('public.output_items_id_seq', 10, true);
 
 
 --
@@ -1108,14 +1130,14 @@ SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
 -- Name: rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.rules_id_seq', 8, true);
+SELECT pg_catalog.setval('public.rules_id_seq', 25, true);
 
 
 --
 -- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.runs_id_seq', 45, true);
+SELECT pg_catalog.setval('public.runs_id_seq', 52, true);
 
 
 --
@@ -1129,14 +1151,14 @@ SELECT pg_catalog.setval('public.services_id_seq', 1, false);
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 4, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 5, true);
 
 
 --
 -- Name: unified_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.unified_items_id_seq', 6, true);
+SELECT pg_catalog.setval('public.unified_items_id_seq', 8, true);
 
 
 --
