@@ -17,6 +17,7 @@ import ProjectSettings from '../../src/types/API/ProjectSettings.json'
 import Rates from '../../src/types/API/Rates.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
+import Setup from '../../src/types/API/Setup.json'
 import SkipReason from '../../src/types/API/SkipReason.json'
 import StockData from '../../src/types/API/StockData.json'
 import TransactionExtras from '../../src/types/API/TransactionExtras.json'
@@ -27,7 +28,7 @@ import UnifiedItem from '../../src/types/API/UnifiedItem.json'
 import UnifiedItemType from '../../src/types/API/UnifiedItemType.json'
 import { error } from '@tasenor/common'
 
-const ajv = new Ajv()
+export const ajv = new Ajv()
 ajv.addSchema(Account)
 ajv.addSchema(Alert)
 ajv.addSchema(AlertMethod)
@@ -46,6 +47,7 @@ ajv.addSchema(ProjectSettings)
 ajv.addSchema(Rates)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
+ajv.addSchema(Setup)
 ajv.addSchema(SkipReason)
 ajv.addSchema(StockData)
 ajv.addSchema(TransactionExtras)

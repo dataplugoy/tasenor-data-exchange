@@ -1,0 +1,44 @@
+{
+  "$id": "Setup.json",
+  "title": "Setup",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Flow plan configuration.",
+  "properties": {
+    "accounts": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "accountGrouping": {
+      "type": "object",
+      "additionalProperties": false,
+      "singleStockAccount": {
+        "type": "boolean"
+      },
+      "singleCryptoAccount": {
+        "type": "boolean"
+      },
+      "singleFeeAccount": {
+        "type": "boolean"
+      },
+      "singleProfitAccount": {
+        "type": "boolean"
+      },
+      "singleLossAccount": {
+        "type": "boolean"
+      },
+      "singleIncomeAccount": {
+        "type": "boolean"
+      },
+      "singleExpenseAccount": {
+        "type": "boolean"
+      },
+      "singleDividendAccount": {
+        "type": "boolean"
+      },
+      "singleTaxAccount": {
+        "type": "boolean"
+      }
+    }
+  }
+}

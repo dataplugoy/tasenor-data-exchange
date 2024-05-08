@@ -188,7 +188,7 @@ export class TasenorDriver extends InternetDriver {
       ret.entries.push(out.id as ID)
     }
 
-    // throw new Error(`NOT DONE YET.`)
+     throw new Error(`NOT DONE YET.`)
     return ret as unknown as RemoteId
   }
 }

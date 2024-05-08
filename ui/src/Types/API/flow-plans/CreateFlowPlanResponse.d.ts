@@ -11,6 +11,7 @@ export interface FlowPlan {
   id: number;
   projectId: number;
   title: string;
+  setup?: Setup;
   state: {
     [k: string]: unknown;
   };
@@ -19,6 +20,15 @@ export interface FlowPlan {
   balance?: BalanceData;
   created?: string;
   updated?: string;
+}
+/**
+ * Flow plan configuration.
+ */
+export interface Setup {
+  accounts?: {
+    [k: string]: unknown;
+  };
+  accountGrouping?: {};
 }
 export interface StockData {
   [k: string]: unknown;

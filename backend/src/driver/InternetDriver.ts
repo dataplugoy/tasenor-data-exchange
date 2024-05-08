@@ -3,6 +3,7 @@ import fs from 'fs'
 import axios, { AxiosRequestConfig } from 'axios'
 import { HttpMethod, error, log } from '@tasenor/common'
 import { Driver } from './Driver'
+import { HTTPException } from '../exceptions/HTTPException'
 
 /**
  * A helper base class for drivers that needs HTTP requests and possibly authentication.
@@ -79,7 +80,7 @@ export class InternetDriver extends Driver {
 
     const result = await axios(conf).catch(err => {
       error('Request failed:', err.toString())
-      throw err
+      throw new HTTPException(method, url, err.toString())
     })
 
     if (storeDir && savePath) {
