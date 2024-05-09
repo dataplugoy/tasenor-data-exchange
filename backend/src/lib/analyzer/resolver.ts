@@ -18,12 +18,12 @@ const VARIABLE_MAP = {
  * @param setup
  * @param code
  */
-export function resolveAccount(setup: Setup, code: AccountCode) {
+export function resolveAccount(setup: Setup, code: AccountCode): AccountCode {
 
   const start = code.replace(/^([A-Z]+)_.*/, '$1')
   const v = VARIABLE_MAP[start]
   if (v && setup.accountGrouping && setup.accountGrouping[VARIABLE_MAP[start]]) {
-    return start
+    return start as AccountCode
   }
 
   return code

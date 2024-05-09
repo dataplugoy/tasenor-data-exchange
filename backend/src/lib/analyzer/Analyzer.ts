@@ -165,8 +165,16 @@ export class Analyzer {
    */
   resolveAccounts(tx: Transaction): void {
     tx.lines.forEach(line => {
-      line.account = resolveAccount(this.setup, line.account as AccountCode)
+      line.account = this.resolveAccount(line.account)
     })
+  }
+
+  /**
+   * Get the configured account code for a raw proposal.
+   * @param proposal
+   */
+  resolveAccount(proposal: string): AccountCode {
+    return resolveAccount(this.setup, proposal as AccountCode)
   }
 
   /**
@@ -176,7 +184,18 @@ export class Analyzer {
    * @param value
    */
   addAsset(account: AccountCode, asset: Asset, amount: Decimal, value: Decimal): void {
+    account = resolveAccount(this.setup, account)
     this.stock.addAsset(account, asset, amount, value)
+  }
+
+  /**
+   * Add to the balance.
+   * @param acc
+   * @param value
+   */
+  addBalance(account: AccountCode, value: number | string | Decimal) {
+    account = resolveAccount(this.setup, account)
+    this.balance.addBalance(account, value)
   }
 
   /**
@@ -198,7 +217,7 @@ export class Analyzer {
     }
 
     // Apply balance changes.
-    tx.lines.forEach((line) => this.balance.addBalance(line.account as AccountCode, dec(line.amount)))
+    tx.lines.forEach((line) => this.addBalance(line.account as AccountCode, dec(line.amount)))
 
     // Apply asset changes.
     tx.lines.forEach((line) => line.extras.asset &&
