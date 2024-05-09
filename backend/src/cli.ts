@@ -17,6 +17,7 @@ import fs from 'fs'
 import { BatchModel } from './models/BatchModel'
 import Decimal from 'decimal.js'
 import { dec } from './lib/utils'
+import { Setup } from './types/API/Setup'
 
 Decimal.set({ precision: 50 })
 
@@ -91,7 +92,6 @@ function renderExtras(extras: TransactionExtras): string {
  */
 async function getData(args): Promise<[Stock, Transaction[]]> {
   const stock = new Stock({})
-  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {})
 
   const options: RuntimeOptions = {
     userId: 0,
@@ -100,16 +100,14 @@ async function getData(args): Promise<[Stock, Transaction[]]> {
   }
   const plan = await flowPlan(args, options)
   const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
+  const setup = plan.data.setup as Setup
+
+  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {}, setup)
 
   // Sort the transactions by their accounts.
   const txs: Transaction[] = OutputItemModel.transactions(outputItems)
   txs.forEach(tx => {
     analyzer.apply(tx)
-    tx.lines.forEach(line => {
-      if (!args.details) {
-        line.account = line.account.replace(/^(FEE|STOCK|LOSS|PROFIT)_.*/, '$1')
-      }
-    })
   })
 
   return [stock, txs]
@@ -294,7 +292,6 @@ export async function execute(...args: string[]): Promise<void> {
   ledger.add_argument('flow', { help: 'Name of the flow.' })
   ledger.add_argument('--time', { help: 'Show also timestamps.', required: false, action: 'store_true' })
   ledger.add_argument('--stock', { help: 'Show stock summary in the end.', required: false, action: 'store_true' })
-  ledger.add_argument('--details', { help: 'Show each stock, expense etc in their own account.', required: false, action: 'store_true' })
   ledger.add_argument('--json', { help: 'Instead of normal display, print meaningful data as JSON.', required: false, action: 'store_true' })
   ledger.add_argument('--test', { help: 'Calculate result and compare result against the given JSON file.', required: false })
   ledger.set_defaults({ func: executeLedger })
@@ -303,7 +300,6 @@ export async function execute(...args: string[]): Promise<void> {
   const journal = subparser.add_parser('journal', { description: 'Display journal report for a specific flow plan.' })
   journal.add_argument('flow', { help: 'Name of the flow.' })
   journal.add_argument('--stock', { help: 'Show stock changes.', required: false, action: 'store_true' })
-  journal.add_argument('--details', { help: 'Assign each stock to their own account.', required: false, action: 'store_true' })
   journal.set_defaults({ func: executeJournal })
 
   // Upload command.

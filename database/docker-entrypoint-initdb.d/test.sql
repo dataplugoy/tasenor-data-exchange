@@ -946,6 +946,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}	{}
 4	2024-05-08 11:08:59.91	2024-05-08 15:16:24.635	Tasenor	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}
 3	2024-05-02 08:46:22.081	2024-05-09 07:50:14.182	Nordnet	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}
+5	2024-05-09 08:52:41.007	2024-05-09 08:53:41.792	Nightly Testing	{}	1	\N	{}	{}	{}
 \.
 
 
@@ -965,6 +966,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 1	2024-03-30 14:41:15.195	2024-04-02 17:06:29.167	TEST_MOCK	{"url": "file:///test.csv"}	1
 3	2024-05-02 08:46:22.094	2024-05-02 08:46:22.094	NORDNET	{}	3
 4	2024-05-08 11:08:59.924	2024-05-08 11:08:59.924	NORDNET	{}	4
+5	2024-05-09 08:54:24.336	2024-05-09 08:54:04.898	NORDNET	{}	5
 \.
 
 
@@ -976,6 +978,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 1	2024-04-15 11:40:33.161	2024-04-25 12:45:18.235	NO_ACTION	{}	1
 3	2024-05-02 08:46:22.097	2024-05-02 08:46:22.097	NO_ACTION	{}	3
 4	2024-05-08 11:08:59.929	2024-05-08 11:17:59.283	TASENOR	{"host": "http://localhost:7205", "user": "user@localhost", "database": "tadex", "password": "Ayfiewchg872rt5sq2e4"}	4
+5	2024-05-09 08:54:45.438	2024-05-09 08:54:26.574	NO_ACTION	{}	5
 \.
 
 
@@ -1086,7 +1089,7 @@ SELECT pg_catalog.setval('public.batches_id_seq', 6, true);
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 4, true);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 5, true);
 
 
 --
@@ -1100,14 +1103,14 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 4, true);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 5, true);
 
 
 --
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 4, true);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 5, true);
 
 
 --
