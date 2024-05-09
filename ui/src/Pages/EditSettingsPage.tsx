@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { FlowPlanResponse } from '../Types/API/flow-plans/FlowPlanResponse'
 import { useGET } from '../Hooks/useNet'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import { InputSource } from '../Types/API/InputSource'
+import { Clear } from '@mui/icons-material'
+import { AccountEditorCard } from '../Components/AccountEditorCard'
 
 export const EditSettingsPage = (): React.JSX.Element => {
   const params = useParams()
+  const navigate = useNavigate()
   const GET = useGET<FlowPlanResponse>()
   const GETInput = useGET<InputSource>()
   const GETOutput = useGET<OutputDestination>()
@@ -30,22 +33,28 @@ export const EditSettingsPage = (): React.JSX.Element => {
   }, [])
 
   return <Box>
-    <Typography variant="h1">
-      <Trans>Edit Settings</Trans>
+    <Typography variant="h1" sx={{ display: 'inline-block' }}>
+      <IconButton sx={{ mt: -0.8}} onClick={() => navigate('/settings')}><Clear/></IconButton> <Trans>Edit Settings</Trans>
     </Typography>
 
     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-      <Box sx={{ mt: 2 }}>
+      {setup && output && <AccountEditorCard setup={setup} output={output}/>}
+      <Box>
         <pre>
-        {JSON.stringify(setup, null, 2)}
+        {JSON.stringify(setup?.accounts, null, 2)}
         </pre>
       </Box>
-      <Box sx={{ mt: 2 }}>
+      <Box>
+        <pre>
+        {JSON.stringify(setup?.accountGrouping, null, 2)}
+        </pre>
+      </Box>
+      <Box>
         <pre>
         {JSON.stringify(input, null, 2)}
         </pre>
       </Box>
-      <Box sx={{ mt: 2 }}>
+      <Box>
         <pre>
         {JSON.stringify(output, null, 2)}
         </pre>

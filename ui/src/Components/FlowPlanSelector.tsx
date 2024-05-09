@@ -30,8 +30,13 @@ export const FlowPlanSelector = (): React.JSX.Element => {
           {plans.map(plan =>
             <Button
               key={plan.id}
-              sx={{ backgroundColor: 'secondary.main', color: 'secondary.contrastText' }}
+              sx={{
+                backgroundColor: 'secondary.main',
+                color: 'secondary.contrastText',
+                textTransform: 'none'
+              }}
               onClick={() => navigate(`/settings/${plan.id}`)}
+              variant="outlined"
             >
               {plan.title}
             </Button>

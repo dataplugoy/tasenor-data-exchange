@@ -38,4 +38,8 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
     }
     return OutputDestinationModel.create<prisma.OutputDestination, OutputDestinationModel>(data)
   }
+
+  static async get(id: number): Promise<OutputDestinationModel | null> {
+    return this.findUnique<prisma.OutputDestination, OutputDestinationModel>({ id })
+  }
 }
