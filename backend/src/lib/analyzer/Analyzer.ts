@@ -1,13 +1,18 @@
 /* eslint-disable no-use-before-define */
 import prisma from '@prisma/client'
-import { Stock, InitialStockData, StockDataRecord } from '../Stock'
-import { DateTime } from 'luxon'
-import Decimal from 'decimal.js'
-import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { dec, toJSON } from '../utils'
+import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
+import Decimal from 'decimal.js'
+import { DateTime } from 'luxon'
+import { ProjectSettings } from '../../types/API/Project'
+import { Transaction } from '../../types/API/Transaction'
+import { UnifiedItemData } from '../../types/API/UnifiedItemData'
+import { AccountCode } from '../../types/AccountCode'
+import { Balance } from '../Balance'
+import { InitialStockData, Stock, StockDataRecord } from '../Stock'
 import { initI18N } from '../i18n/t'
-import { validateBasics, validateError, validateInput, validateRate, validateRequiredField, validateRequired, validateText, validateValue, validateValueOrAsset, validateNotEmpty, validateFee, validateValueAccount, validateAssetOutAccount, validateAssetInAccount, validateAsset } from './validators'
+import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
+import { dec, toJSON } from '../utils'
 import { buy } from './handlers/buy'
 import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
@@ -17,12 +22,9 @@ import { rename } from './handlers/rename'
 import { sell } from './handlers/sell'
 import { split } from './handlers/split'
 import { withdrawal } from './handlers/withdrawal'
-import { AccountCode } from '../../types/AccountCode'
-import { Transaction } from '../../types/API/Transaction'
-import { UnifiedItemData } from '../../types/API/UnifiedItemData'
-import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
-import { ProjectSettings } from '../../types/API/Project'
-import { Balance } from '../Balance'
+import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validateBasics, validateError, validateFee, validateInput, validateNotEmpty, validateRate, validateRequired, validateRequiredField, validateText, validateValue, validateValueAccount, validateValueOrAsset } from './validators'
+import { Setup } from '../../types/API/Setup'
+import { resolveAccount } from './resolver'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -38,6 +40,7 @@ export class Analyzer {
   protected lastTime: Timestring
   protected lastResult: Transaction | null
   protected config: ProjectSettings
+  protected setup: Setup
 
   // Bind handlers.
   public buyHandler = buy.bind(this)
@@ -71,7 +74,7 @@ export class Analyzer {
    * Initialize
    * @param stock
    */
-  constructor(config: ProjectSettings, stock: Stock, balances: Balance | {}) {
+  constructor(config: ProjectSettings, stock: Stock, balances: Balance | {}, setup: Setup = {}) {
     this.services = {
       CRYPTO_RATES: [],
       CURRENCY_RATES: []
@@ -82,6 +85,7 @@ export class Analyzer {
     this.lastInput = null
     this.lastTime = '0000-00-00T00:00:00Z' as Timestring
     this.lastResult = null
+    this.setup = setup
     this.configure(config)
   }
 
@@ -149,10 +153,20 @@ export class Analyzer {
       throw new Error(`Analyzer does not yet implement input type '${input.type}'.`)
     }
     this.lastResult = await this[`${input.type}Handler`](time, input)
+    this.lastResult && this.resolveAccounts(this.lastResult)
     if (!this.lastResult) {
       throw new Error(`A function ${input.type} failed to produce the result.`)
     }
     return this.lastResult
+  }
+
+  /**
+   * Apply account naming rules from setup.
+   */
+  resolveAccounts(tx: Transaction): void {
+    tx.lines.forEach(line => {
+      line.account = resolveAccount(this.setup, line.account as AccountCode)
+    })
   }
 
   /**
@@ -221,7 +235,7 @@ export class Analyzer {
    */
   static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, services: undefined | Service[] = undefined): Promise<Analyzer> {
     const stock = new Stock(stockData)
-    const analyzer = new Analyzer(settings, stock, {})
+    const analyzer = new Analyzer(settings, stock, {}, {})
 
     if (services !== undefined) {
       analyzer.setServices(services)

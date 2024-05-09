@@ -54,7 +54,6 @@ test('Account resolver shortening nothing', async () => {
   expect(resolveAccount(setup, 'DIVIDEND_DUMMY' as AccountCode)).toBe('DIVIDEND_DUMMY')
 })
 
-
 test('Account resolver mixed shortening', async () => {
   const setup = {
     accountGrouping: {

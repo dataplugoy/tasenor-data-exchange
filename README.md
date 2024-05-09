@@ -39,5 +39,5 @@ pnpm run init
 
 To run test batch
 ```
-bin/tadex.mjs --user test@localhost run 'Unit Testing'
+bin/tadex.mjs run 'Unit Testing'
 ```

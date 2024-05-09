@@ -199,7 +199,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
 
 export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings): Promise<Transaction[]> {
   const stock = new Stock({})
-  const analyzer = new Analyzer(config, stock, {})
+  const analyzer = new Analyzer(config, stock, {}, {})
 
   const txs: Transaction[] = []
 

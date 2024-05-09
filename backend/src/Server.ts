@@ -5,7 +5,7 @@ import config, { Config } from './config'
 import { connect } from './connect'
 import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
-import { error, log } from '@tasenor/common'
+import { log } from '@tasenor/common'
 import routes from './routes'
 import Decimal from 'decimal.js'
 
@@ -57,7 +57,6 @@ class TasenorDataExchangeServer {
     })
 
     process.on('SIGTERM', () => {
-      this.db.$disconnect()
       process.exit()
     })
   }
