@@ -13,7 +13,7 @@ export interface Project {
   id?: number;
   userId: number;
   name: string;
-  settings?: ProjectSettings;
+  settings: ProjectSettings;
   created?: string;
   updated?: string;
 }

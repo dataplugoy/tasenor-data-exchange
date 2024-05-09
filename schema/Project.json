@@ -3,7 +3,7 @@
   "title": "Project",
   "type": "object",
   "additionalProperties": false,
-  "required": ["userId", "name"],
+  "required": ["userId", "name", "settings"],
   "properties": {
     "id": {
       "type": "integer"

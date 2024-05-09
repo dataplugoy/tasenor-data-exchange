@@ -1,0 +1,7 @@
+{
+  "title": "FlowPlanResponse",
+  "type": "array",
+  "items": {
+    "$ref": "FlowPlan.json"
+  }
+}

@@ -92,6 +92,18 @@ router.get('/:id',
   }
 )
 
+router.get('/',
+  authorize(),
+  async (req, res) => {
+    const plans = await FlowPlanModel.findForUser(res.locals.userId)
+    if (plans && plans instanceof Array) {
+      res.send(plans.map(p => p.data))
+    } else {
+      res.sendStatus(404)
+    }
+  }
+)
+
 router.get('/:id/run',
   authorize(),
   param('flowPlanId'),

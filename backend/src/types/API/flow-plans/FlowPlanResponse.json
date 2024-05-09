@@ -1,7 +1,6 @@
 {
   "title": "FlowPlanResponse",
   "allOf": [
-    { "$ref": "FlowPlan.json" },
     {
       "type": "object",
       "additionalProperties": false,
@@ -32,6 +31,7 @@
           }
         }
       }
-    }
+    },
+    { "$ref": "FlowPlan.json" }
   ]
 }
