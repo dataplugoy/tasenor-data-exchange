@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material'
-import { Trans, useTranslation } from 'react-i18next'
-import { Air, PlayArrow, Savings } from '@mui/icons-material'
-import { FlowPlan } from '../Types/API/FlowPlan'
-import { Project } from '../Types/API/Project'
+import React, { useEffect } from 'react'
+import { Card, CardContent, CardHeader, Typography } from '@mui/material'
+import { Trans } from 'react-i18next'
+import { Savings } from '@mui/icons-material'
 import { useGET } from '../Hooks/useNet'
-import { signalBatchUpdate } from '../Signals/updates'
-import { isAlert } from '../Types/isAlert'
-import { FileUploader } from './FileUploader'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 
@@ -22,7 +17,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
 
   useEffect(() => {
     GET(`/output-destinations/${output.id}/accounts`).then(res => {
-      console.log(res);
+      console.log(res)
     })
   }, [])
 

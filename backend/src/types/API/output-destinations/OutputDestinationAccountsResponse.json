@@ -1,0 +1,7 @@
+{
+  "title": "OutputDestinationAccountsResponse",
+  "type": "array",
+  "items": {
+    "$ref": "RemoteAccount.json"
+  }
+}

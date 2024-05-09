@@ -16,6 +16,7 @@ import OutputItem from '../e2e/api/schema/OutputItem.json'
 import Project from '../e2e/api/schema/Project.json'
 import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
 import Rates from '../e2e/api/schema/Rates.json'
+import RemoteAccount from '../e2e/api/schema/RemoteAccount.json'
 import Run from '../e2e/api/schema/Run.json'
 import RunResult from '../e2e/api/schema/RunResult.json'
 import Setup from '../e2e/api/schema/Setup.json'
@@ -94,6 +95,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(Project)
   ajv.addSchema(ProjectSettings)
   ajv.addSchema(Rates)
+  ajv.addSchema(RemoteAccount)
   ajv.addSchema(Run)
   ajv.addSchema(RunResult)
   ajv.addSchema(Setup)

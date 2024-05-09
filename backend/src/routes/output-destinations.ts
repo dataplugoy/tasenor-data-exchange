@@ -1,9 +1,7 @@
 import express from 'express'
 import { authorize } from '../lib/authorize'
-import { ProjectModel } from '../models/ProjectModel'
-import { FlowPlanModel } from '../models/FlowPlanModel'
 import { param } from '../lib/param'
-import { OutputItemModel } from '../models/OutputItemModel'
+import { error } from '@tasenor/common'
 
 const router = express.Router()
 
@@ -12,8 +10,13 @@ router.get('/:id/accounts',
   param('outputDestinationId'),
   async (_req, res) => {
     const driver = await res.locals.flowPlan.getOutputDriver({ userId: res.locals.userId })
-    // TODO: Ask accounts from driver.
-    res.send([])
+    try {
+      const accounts = await driver.fetchRemoteAccounts()
+      res.send(accounts)
+    } catch (err) {
+      error(err)
+      res.sendStatus(502)
+    }
   }
 )
 

@@ -15,6 +15,7 @@ import OutputItem from '../../src/types/API/OutputItem.json'
 import Project from '../../src/types/API/Project.json'
 import ProjectSettings from '../../src/types/API/ProjectSettings.json'
 import Rates from '../../src/types/API/Rates.json'
+import RemoteAccount from '../../src/types/API/RemoteAccount.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
 import Setup from '../../src/types/API/Setup.json'
@@ -45,6 +46,7 @@ ajv.addSchema(OutputItem)
 ajv.addSchema(Project)
 ajv.addSchema(ProjectSettings)
 ajv.addSchema(Rates)
+ajv.addSchema(RemoteAccount)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
 ajv.addSchema(Setup)

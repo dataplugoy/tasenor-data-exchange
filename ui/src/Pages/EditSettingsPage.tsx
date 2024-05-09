@@ -34,7 +34,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
 
   return <Box>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
-      <IconButton sx={{ mt: -0.8}} onClick={() => navigate('/settings')}><Clear/></IconButton> <Trans>Edit Settings</Trans>
+      <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/settings')}><Clear/></IconButton> <Trans>Edit Settings</Trans>
     </Typography>
 
     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>

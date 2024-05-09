@@ -1,0 +1,21 @@
+{
+  "$id": "RemoteAccount.json",
+  "title": "RemoteAccount",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["number", "name"],
+  "properties": {
+    "number": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "$ref": "Account.json"
+      }
+    }
+  }
+}

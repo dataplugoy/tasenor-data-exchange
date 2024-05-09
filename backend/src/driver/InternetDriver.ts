@@ -79,7 +79,7 @@ export class InternetDriver extends Driver {
     }
 
     const result = await axios(conf).catch(err => {
-      error('Request failed:', err.toString())
+      error(`Request ${method} ${url} failed:`, err.toString())
       throw new HTTPException(method, url, err.toString())
     })
 

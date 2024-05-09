@@ -21,6 +21,7 @@ import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { ProjectSettings } from '../types/API/Project'
 import { RemoteId } from '../types/RemoteId'
 import { Setup } from '../types/API/Setup'
+import { RemoteAccount } from '../types/API/RemoteAccount'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -100,6 +101,13 @@ export class Driver {
    */
   async fetchData(flowPlan: FlowPlanModel): Promise<string | Buffer> {
     throw new Error(`Input source ${this.type} does not implement fetchData().`)
+  }
+
+  /**
+   * Fetch available accounts from the remote.
+   */
+  async fetchRemoteAccounts(): Promise<RemoteAccount[]> {
+    throw new Error(`Output destination ${this.type} does not implement fetchRemoteAccounts().`)
   }
 
   /**

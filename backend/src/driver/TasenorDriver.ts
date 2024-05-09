@@ -11,6 +11,8 @@ import { dec } from '../lib/utils'
 import { AccountCode } from '../types/AccountCode'
 import { Setup } from '../types/API/Setup'
 import { jwtDecode } from 'jwt-decode'
+import { RemoteAccount } from '../types/API/RemoteAccount'
+import { Account } from '../types/API/Account'
 
 export class TasenorDriver extends InternetDriver {
 
@@ -55,6 +57,7 @@ export class TasenorDriver extends InternetDriver {
       user: this.settings.user,
       password: this.settings.password
     })
+
     if (res && res.token) {
       return { token: res.token }
     }
@@ -84,6 +87,31 @@ export class TasenorDriver extends InternetDriver {
         this.accounts[acc.number] = acc
       })
     }
+  }
+
+  async fetchRemoteAccounts(): Promise<RemoteAccount[]> {
+    const hints = (acc: AccountModelData): Account[] => {
+      const ret: Account[] = []
+      if (acc.data.currency) {
+        ret.push(`CURRENCY_${acc.data.currency}`)
+      }
+      if (acc.type === 'REVENUE') {
+        ret.push('INCOME')
+      }
+      if (acc.type === 'EXPENSE') {
+        ret.push('EXPENSE')
+      }
+      return ret
+    }
+
+    this.state = await this.autheticate()
+    await this.loadAccounts()
+
+    return Object.values(this.accounts).map(account => ({
+      number: account.number,
+      name: account.name,
+      hints: hints(account)
+    }))
   }
 
   /**
