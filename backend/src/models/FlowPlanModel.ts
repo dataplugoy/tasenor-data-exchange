@@ -300,7 +300,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       if (RuleModel.count(rules) === 0) {
         rules = await driver.initializeRules(this)
       }
-      const total = inputs.length
+      let total = inputs.length
       let done = 0
       let skipped = 0
 
@@ -338,6 +338,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             // Track the last input used for multipart. To reconstruct, find the same multipart
             // fields from inputs with the same runID.
             partialID[unified.data.multipart] = input.id
+            total--
           } else {
             await UnifiedItemModel.save({
               data: unified.data as unknown as JsonObject,
@@ -350,10 +351,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               runId: run.id,
               inputId: input.id,
             })
+            done++
           }
           await input.success()
-          done++
-
         } catch (err) {
           result = 'FAIL'
           error(`Handling of ${input} failed: ${err.stack}`)
@@ -376,6 +376,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           inputId: partialID[`${item.data.multipart}`]
         })
         done++
+        total++
       }
 
       log(`${this} created ${done}/${total} (${skipped} skipped) unified items for ${batch}.`)
