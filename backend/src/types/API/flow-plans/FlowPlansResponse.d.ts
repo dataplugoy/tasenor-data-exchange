@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type FlowPlanResponse = FlowPlan[];
+export type FlowPlansResponse = FlowPlan[];
 
 export interface FlowPlan {
   id: number;

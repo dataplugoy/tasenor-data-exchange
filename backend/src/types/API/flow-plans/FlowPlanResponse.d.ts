@@ -5,48 +5,14 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type FlowPlanResponse = {
+export type FlowPlanResponse = FlowPlan & {
   project: Project;
 } & {
   batches: (Batch & {
     outputDeliveredCount: number;
   })[];
-} & FlowPlan;
+};
 
-export interface Project {
-  id?: number;
-  userId: number;
-  name: string;
-  settings: ProjectSettings;
-  created?: string;
-  updated?: string;
-}
-export interface ProjectSettings {
-  language: string;
-  currency: string;
-}
-export interface Batch {
-  id: number;
-  flowPlanId: number;
-  number: number;
-  state: "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED";
-  lastStamp: string | null;
-  data: string;
-  encoding?: string;
-  initialStock: StockData;
-  endStock: StockData;
-  initialBalance?: BalanceData;
-  endBalance?: BalanceData;
-  completed: boolean;
-  created?: string;
-  updated?: string;
-}
-export interface StockData {
-  [k: string]: unknown;
-}
-export interface BalanceData {
-  [k: string]: unknown;
-}
 export interface FlowPlan {
   id: number;
   projectId: number;
@@ -79,4 +45,38 @@ export interface Setup {
     singleDividendAccount?: boolean;
     singleTaxAccount?: boolean;
   };
+}
+export interface StockData {
+  [k: string]: unknown;
+}
+export interface BalanceData {
+  [k: string]: unknown;
+}
+export interface Project {
+  id?: number;
+  userId: number;
+  name: string;
+  settings: ProjectSettings;
+  created?: string;
+  updated?: string;
+}
+export interface ProjectSettings {
+  language: string;
+  currency: string;
+}
+export interface Batch {
+  id: number;
+  flowPlanId: number;
+  number: number;
+  state: "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED";
+  lastStamp: string | null;
+  data: string;
+  encoding?: string;
+  initialStock: StockData;
+  endStock: StockData;
+  initialBalance?: BalanceData;
+  endBalance?: BalanceData;
+  completed: boolean;
+  created?: string;
+  updated?: string;
 }

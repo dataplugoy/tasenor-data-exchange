@@ -10,6 +10,8 @@ import { FlowPlanPage } from './Pages/FlowPlanPage'
 import { RegisterPage } from './Pages/RegisterPage'
 import { CreateFlowPlanPage } from './Pages/CreateFlowPlanPage'
 import { ResultsPage } from './Pages/ResultsPage'
+import { SettingsPage } from './Pages/SettingsPage'
+import { EditSettingsPage } from './Pages/EditSettingsPage'
 
 export const App = (): React.JSX.Element => {
 
@@ -29,9 +31,13 @@ export const App = (): React.JSX.Element => {
             <Routes>
               <Route path="/" element={<IndexPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
+              <Route path="/home/:id" element={<HomePage/>}/>
               <Route path="/home" element={<HomePage/>}/>
               <Route path="/register" element={<RegisterPage/>}/>
+              <Route path="/results/:id" element={<ResultsPage/>}/>
               <Route path="/results" element={<ResultsPage/>}/>
+              <Route path="/settings/:id" element={<EditSettingsPage/>}/>
+              <Route path="/settings" element={<SettingsPage/>}/>
               <Route path="/flow-plan/new" element={<CreateFlowPlanPage/>}/>
               <Route path="/flow-plan/:id" element={<FlowPlanPage/>}/>
             </Routes>
