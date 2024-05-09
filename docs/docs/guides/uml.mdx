@@ -19,11 +19,13 @@ classDiagram
       +country: string
       +last_seen: DateTime
       +settings: json
+      +admin: boolean
       +projects: Project[]
       +services: Service[]
     }
 
     class Service{
+      +user: User
       +type: enum
       +name: string
       +driver: enum
@@ -50,6 +52,8 @@ classDiagram
       +state: json
       +lastStamp: DateTime
       +stock: json
+      +balance: json
+      +setup: json
     }
     Project "1" *-- "0..*" FlowPlan
 
@@ -89,39 +93,49 @@ classDiagram
       +flowPlan: FlowPlan
       +state: enum
       +data: string
+      +encoding: string
       +lastStamp: DateTime
       +initialStock: json
       +endStock: json
+      +initialBalance: json
+      +endBalance: json
       +runs: Run[]
-      +parsed: InputItem[]
-      +generated: OutputItem[]
+      +inputItems: InputItem[]
+      +outputItems: OutputItem[]
       +completed: DateTime
     }
     FlowPlan "1" *-- "0..*" Batch
 
 
     class InputItem{
-      +batch: Batch
-      +run: Run
       +data: json
+      +hash: string
+      +processed: boolean
       +error: string
       +converted: boolean
       +skipped: boolean
       +skipReson: enum
+      +unifiedItem: UnifiedItem
+      +batch: Batch
+      +run: Run
+      +flowPlan: FlowPlan
     }
     Batch "1" *-- "0..*" InputItem
     Run "1" *-- "0..*" InputItem
 
 
     class UnifiedItem{
-      +batch: Batch
-      +run: Run
-      +input: InputItem
+      +time: DateTime
       +data: json
       +stockChange: json
       +error: string
       +skipped: boolean
       +processed: boolean
+      +outputItem: OutputItem
+      +batch: Batch
+      +run: Run
+      +input: InputItem
+      +flowPlan: FlowPlan
     }
     Batch "1" *-- "0..*" UnifiedItem
     Run "1" *-- "0..*" UnifiedItem
@@ -129,15 +143,18 @@ classDiagram
 
 
     class OutputItem{
-      +batch: Batch
-      +run: Run
       +number: integer
-      +input: InputItem
       +data: json
+      +hash: string
       +error: string
       +skipped: boolean
       +processed: boolean
       +delivered: boolean
+      +remoteId: json
+      +batch: Batch
+      +run: Run
+      +unified: UnifiedItem
+      +flowPlan: FlowPlan
     }
     Batch "1" *-- "0..*" OutputItem
     UnifiedItem "1" o-- "0..1" OutputItem
@@ -147,6 +164,7 @@ classDiagram
       +initialState: enum
       +finalState: enum
       +inputs: InputItem[]
+      +unifiedItems: UnifiedItem[]
       +outputs: OutputItem[]
       +error: string
       +done: integer
@@ -161,10 +179,22 @@ classDiagram
       +type: InputSourceType
       +url: string
       +certificate: string
+      +apiKey: string
       +user: string
       +password: string
       +options: json
     }
 
     Settings "1" -- "1" InputSource
+
+    class Alert{
+      +user: User
+      +type: enum
+      +method: enum
+      +url: string
+      +payload: string
+      +delivered: DateTune
+    }
+
+    Alert "0..*" --* "1" User
 ```
