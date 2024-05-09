@@ -104,6 +104,32 @@ router.get('/',
   }
 )
 
+router.get('/:id/input',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    const input = await InputSourceModel.findForFlow(res.locals.id)
+    if (input) {
+      res.send(input.data)
+    } else {
+      res.sendStatus(404)
+    }
+  }
+)
+
+router.get('/:id/output',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    const output = await OutputDestinationModel.findForFlow(res.locals.id)
+    if (output) {
+      res.send(output.data)
+    } else {
+      res.sendStatus(404)
+    }
+  }
+)
+
 router.get('/:id/run',
   authorize(),
   param('flowPlanId'),
