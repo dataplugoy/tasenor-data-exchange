@@ -19,5 +19,5 @@
   "INCOME_DIVIDEND": "Dividend for {{asset}}",
   "INCOME_INTEREST_REFUND": "Interest expense refund",
   "EXPENSE_INTEREST": "Interest expense",
-  "CURRENCY_ACCOUNT": "Account for storing currency {{currency}}"
+  "CURRENCY_ACCOUNT": "Account for currency {{currency}}"
 }

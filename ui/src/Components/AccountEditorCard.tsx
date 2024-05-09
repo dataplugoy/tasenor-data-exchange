@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Card, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material'
+import { Autocomplete, Box, Card, CardContent, CardHeader, CircularProgress, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Savings } from '@mui/icons-material'
 import { useGET } from '../Hooks/useNet'
@@ -25,17 +25,28 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
 
 interface AccountEditProps {
   code: Account
-  loading?: boolean
   remote?: RemoteAccount
+  options: RemoteAccount[]
 }
 
 const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
-  const { code, remote, loading } = props
-  return <Box>
-    <AccountDescription code={code}/> <br/>
-    {remote && remote.number} {remote && remote.name}
-    {loading && <CircularProgress color="secondary" size={20}/>}
-  </Box>
+  const { code, remote, options } = props
+
+  return <Autocomplete
+    options={options}
+    getOptionLabel={(option) => `${option.number} ${option.name}`}
+    value={remote}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        label={<AccountDescription code={code}/>}
+        inputProps={{
+          ...params.inputProps,
+          autoComplete: 'off'
+        }}
+      />
+    )}
+  />
 }
 
 interface AccountEditorCardProps {
@@ -66,10 +77,14 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
       />
       <CardContent>
         {
-          Object.keys(accounts).map(code => <React.Fragment key={code}>
-              <AccountEdit code={code} remote={remotes[accounts[code]]} loading={loading}/>
-            </React.Fragment>
-          )
+          loading && <CircularProgress color="secondary" size={40}/>
+        }
+        {
+          !loading && Object.keys(accounts).map(code => (
+            <Box sx={{ my: 1.5 }} key={code}>
+              <AccountEdit code={code} remote={remotes[accounts[code]]} options={Object.values(remotes)}/>
+            </Box>
+          ))
         }
       </CardContent>
     </Card>
