@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Autocomplete, Box, Card, CardContent, CardHeader, CircularProgress, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, Card, CardContent, CardHeader, CircularProgress, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Savings } from '@mui/icons-material'
 import { useGET } from '../Hooks/useNet'
@@ -18,7 +18,7 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
   const { code } = props
   let text = code
   if (/^CURRENCY_/.test(code)) {
-    text = t('CURRENCY_ACCOUNT', { currency: code.substring(9)})
+    text = t('CURRENCY_ACCOUNT', { currency: code.substring(9) })
   }
   return <Box component="span">{text}</Box>
 }
@@ -27,15 +27,19 @@ interface AccountEditProps {
   code: Account
   remote?: RemoteAccount
   options: RemoteAccount[]
+  onChange: (acc: AccountNumber | null) => void
 }
 
 const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
-  const { code, remote, options } = props
+  const { code, remote, options, onChange } = props
+
+  // TODO: Sort out remotes according to hints.
 
   return <Autocomplete
     options={options}
     getOptionLabel={(option) => `${option.number} ${option.name}`}
     value={remote}
+    onChange={(_, value) => onChange(value ? value.number as AccountNumber : null)}
     renderInput={(params) => (
       <TextField
         {...params}
@@ -59,6 +63,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
   const GET = useGET<RemoteAccount[]>()
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
   const [loading, setLoading] = useState(true)
+  const [accounts, setAccounts] = useState<Record<Account, AccountNumber>>(setup.accounts as Record<Account, AccountNumber> || {})
 
   useEffect(() => {
     GET(`/output-destinations/${output.id}/accounts`).then(res => {
@@ -67,7 +72,14 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
     })
   }, [])
 
-  const accounts: Record<AccountNumber, RemoteAccount> = setup.accounts as Record<AccountNumber, RemoteAccount> || {}
+  const onChange = (code: Account, number: AccountNumber | null): void => {
+    setAccounts({ ...accounts, [code]: number } as Record<Account, AccountNumber>)
+  }
+
+  const onSave = (): void => {
+    // TODO: Implement.
+    console.log(`PATCH /flow-plans/${output.flowPlanId}/setup`, { accounts })
+  }
 
   return (
     <Card>
@@ -77,15 +89,21 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
       />
       <CardContent>
         {
-          loading && <CircularProgress color="secondary" size={40}/>
+          loading && <Box><CircularProgress color="secondary" size={40}/></Box>
         }
         {
           !loading && Object.keys(accounts).map(code => (
             <Box sx={{ my: 1.5 }} key={code}>
-              <AccountEdit code={code} remote={remotes[accounts[code]]} options={Object.values(remotes)}/>
+              <AccountEdit
+                code={code}
+                remote={remotes[accounts[code]]}
+                options={Object.values(remotes)}
+                onChange={(val) => onChange(code, val)}
+              />
             </Box>
           ))
         }
+        <Button disabled={loading} onClick={onSave}><Trans>Save</Trans></Button>
       </CardContent>
     </Card>
   )
