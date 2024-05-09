@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useApp } from '../Hooks/useApp'
 import { Box, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { useParams } from 'react-router-dom'

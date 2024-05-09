@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, CardContent, CardHeader, Typography } from '@mui/material'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { Air } from '@mui/icons-material'
 import { useGET } from '../Hooks/useNet'
 import { FlowPlansResponse } from '../Types/API/flow-plans/FlowPlansResponse'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { useNavigate } from 'react-router-dom'
 
-export const FlowPlanSelector = (props): React.JSX.Element => {
+export const FlowPlanSelector = (): React.JSX.Element => {
 
   const GET = useGET<FlowPlansResponse>()
   const [plans, setPlans] = useState<FlowPlan[]>([])
