@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Autocomplete, Box, Button, Card, CardContent, CardHeader, CircularProgress, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
-import { Savings } from '@mui/icons-material'
+import { Map } from '@mui/icons-material'
 import { useGET, usePATCH } from '../Hooks/useNet'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
@@ -89,7 +89,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
   return (
     <Card>
       <CardHeader
-        avatar={<Savings sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
+        avatar={<Map sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
         title={<Typography variant="subtitle1"><Trans>Account Mapping</Trans></Typography>}
       />
       <CardContent>
