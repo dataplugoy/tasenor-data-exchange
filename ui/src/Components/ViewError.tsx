@@ -1,5 +1,6 @@
 import React, { } from 'react'
 import { Box } from '@mui/material'
+import { warning } from '@tasenor/common'
 
 interface ViewErrorProps {
   error: string
@@ -14,7 +15,7 @@ export const ViewError = (props: ViewErrorProps): React.JSX.Element => {
   const { error } = props
 
   function fixFile(fileName: string): string {
-    if (/^node:\w+/.test(fileName)) {
+    if (/^(node:\w+|Error:)/.test(fileName)) {
       return fileName
     }
     for (const subPath of ['@tasenor/common/src', 'backend/src', 'node_modules/@prisma/client/', 'node_modules/.pnpm']) {
@@ -24,7 +25,8 @@ export const ViewError = (props: ViewErrorProps): React.JSX.Element => {
       }
     }
 
-    throw new Error(`Cannot trim file path '${fileName}'.`)
+    warning(`Cannot trim file path '${fileName}'.`)
+    return fileName
   }
 
   function trim(idx: number, line: string) {

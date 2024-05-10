@@ -137,10 +137,26 @@ export class TasenorDriver extends InternetDriver {
    * @param extras
    * @returns
    */
-  resolveExtras(extras: TransactionExtras): AdditionalTransferInfo {
+  resolveExtras(line: TransactionLine): AdditionalTransferInfo {
+    const { extras } = line
     const ret: AdditionalTransferInfo = {}
     Object.keys(extras).forEach(key => {
-      throw new Error(`TasenorDriver does not handle extra field '${key}' yet.s`)
+      switch (key) {
+        case 'asset':
+          break
+        case 'assetChange':
+          ret.stock = {
+            change: {
+              [`${extras.asset}`]: {
+                amount: dec(extras.assetChange).toNumber(),
+                value: dec(line.amount).toNumber(),
+              }
+            }
+          }
+          break
+        default:
+          throw new Error(`TasenorDriver does not handle extra field '${key}' yet in ${JSON.stringify(extras)}.`)
+      }
     })
     return ret
   }
@@ -189,10 +205,10 @@ export class TasenorDriver extends InternetDriver {
       document_id: doc.id,
       account_id: this.findAccount(line.account as AccountCode).id,
       debit: amount >= 0 ? 1 : 0,
-      amount: Math.abs(amount),
+      amount: Math.abs(amount) * 100,
       description: line.text,
       row_number: row,
-      data: this.resolveExtras(line.extras)
+      data: this.resolveExtras(line)
     }
   }
 
@@ -225,7 +241,7 @@ export class TasenorDriver extends InternetDriver {
     try {
     let row = 1
       for (const line of tx.lines) {
-        const entry = this.getEntry(doc, line, row++)
+        const entry = this.getEntry(document, line, row++)
         const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, entry)
         ret.entries.push(out.id as ID)
       }
