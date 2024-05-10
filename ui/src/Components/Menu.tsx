@@ -10,7 +10,6 @@ export const Menu = (): React.JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [languageMenu, setLanguageMenu] = useState(true)
   const open = Boolean(anchorEl)
 
   const onLogout = () => {
