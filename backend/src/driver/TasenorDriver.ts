@@ -203,24 +203,40 @@ export class TasenorDriver extends InternetDriver {
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     await this.loadAccounts()
 
-    // TODO: Rollback if entry saving fails.
+    // Dry run first to check that accounts are configured.
     const tx: Transaction = output.data.data as unknown as Transaction
     const period = await this.getPeriod(tx)
-    const doc: DocumentModelData = await this.POST(`/db/${this.settings.database}/document`, this.getDoc(period, tx))
-    let row = 1
+    const doc = this.getDoc(period, tx)
+    for (const line of tx.lines) {
+      this.getEntry(doc, line, 1)
+    }
+
+    // Do the actual saving.
+    const document: DocumentModelData = await this.POST(`/db/${this.settings.database}/document`, doc)
 
     // Remote ID.
     const ret = {
       db: this.settings.database,
       period: period.id,
-      doc: doc.id,
+      doc: document.id,
       entries: [] as ID[]
     }
 
-    for (const line of tx.lines) {
-      const entry = this.getEntry(doc, line, row++)
-      const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, entry)
-      ret.entries.push(out.id as ID)
+    try {
+    let row = 1
+      for (const line of tx.lines) {
+        const entry = this.getEntry(doc, line, row++)
+        const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, entry)
+        ret.entries.push(out.id as ID)
+      }
+    } catch (err) {
+      // Roll back changes made.
+      for (const id of ret.entries) {
+        await this.DELETE(`/db/${this.settings.database}/entry/${id}`)
+      }
+      await this.DELETE(`/db/${this.settings.database}/document/${document.id}`)
+
+      throw err
     }
 
     return ret as unknown as RemoteId
