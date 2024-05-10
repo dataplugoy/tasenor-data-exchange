@@ -29,6 +29,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "fast-glob": "^3.3.2",
     "json-schema-to-typescript": "^13.1.2",
     "jwa": "^2.0.0",
     "tsx": "^4.7.1"
