@@ -26,6 +26,7 @@ export const Menu = (): React.JSX.Element => {
   const onSelect = (lang: 'en' | 'fi') => {
     localStorage.setItem('language', lang)
     onClose()
+    window.location.reload()
   }
 
   if (!app.auth.token) {
