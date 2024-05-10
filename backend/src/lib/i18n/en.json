@@ -19,5 +19,10 @@
   "INCOME_DIVIDEND": "Dividend for {{asset}}",
   "INCOME_INTEREST_REFUND": "Interest expense refund",
   "EXPENSE_INTEREST": "Interest expense",
-  "CURRENCY_ACCOUNT": "Account for currency {{currency}}"
+  "CURRENCY_ACCOUNT": "Account for currency {{currency}}",
+  "FEE_ACCOUNT": "General purpose account for fees charged",
+  "STOCK_ACCOUNT": "An account to keep value of the stocks bought",
+  "INCOME_ACCOUNT": "General purpose account for any income",
+  "EXPENSE_ACCOUNT": "General purpose account for other expenses",
+  "NORDNET_ACCOUNT": "Bank account used to transfer {{currency}} currency to/from Nordnet"
 }

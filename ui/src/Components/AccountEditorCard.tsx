@@ -21,6 +21,12 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
   if (/^CURRENCY_/.test(code)) {
     text = t('CURRENCY_ACCOUNT', { currency: code.substring(9) })
   }
+  if (/^EXTERNAL_NORDNET_/.test(code)) {
+    text = t('NORDNET_ACCOUNT', { currency: code.substring(17) })
+  }
+  if (!/_/.test(code)) {
+    text = t(`${code}_ACCOUNT`)
+  }
   return <Box component="span">{text}</Box>
 }
 
@@ -33,14 +39,14 @@ interface AccountEditProps {
 
 const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
   const { code, remote, options, onChange } = props
-
+  const none = { number: '', name: '' }
   // TODO: Sort out remotes according to hints.
 
   return <Autocomplete
-    options={options}
-    getOptionLabel={(option) => `${option.number} ${option.name}`}
-    value={remote}
-    onChange={(_, value) => onChange(value ? value.number as AccountNumber : null)}
+    options={options.concat(none)}
+    getOptionLabel={(option) => option.number === '' && option.name === '' ? '—' : `${option.number} ${option.name}`}
+    value={remote || none}
+    onChange={(_, value) => onChange(value && value.number !== '' ? value.number as AccountNumber : null)}
     renderInput={(params) => (
       <TextField
         {...params}
