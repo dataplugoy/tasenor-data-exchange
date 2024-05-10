@@ -8,6 +8,12 @@ const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const I18N_DIR = path.join(ROOT, 'backend', 'src', 'lib', 'i18n')
 const IGNORE_FILES = [`!${ROOT}/ui/node_modules`, `!${ROOT}/backend/node_modules`, '!**/*.d.ts']
 const PATTERNS = {
+  'backend/**/*.ts': [
+    /\bt\('(.*?)'[) ,]/,
+    /\bt\("(.*?)"[) ,]/,
+    /\bvalidateText\('(.*?)'[) ,]/,
+    /\bvalidateText\("(.*?)"[) ,]/,
+  ],
   'ui/**/*.ts': [
     /\bt\('(.*?)'[) ,]/,
     /\bt\("(.*?)"[) ,]/,
@@ -71,7 +77,6 @@ function updateTranslation(file, lang) {
   const updated = {}
 
   const missing = new Set()
-  const created = new Set()
   const unused = new Set()
   const existing = new Set()
 
@@ -106,7 +111,7 @@ function updateTranslation(file, lang) {
   fs.writeFileSync(file, JSON.stringify(updated, null, 2) + '\n')
 
   console.log(file)
-  console.log(`  Existing: ${existing.size}  Missing: ${missing.size}  Created: ${created.size}  Unused: ${unused.size}`)
+  console.log(`  Existing: ${existing.size}  Missing: ${missing.size} Unused: ${unused.size}`)
 }
 
 /**
