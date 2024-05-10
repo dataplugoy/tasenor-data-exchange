@@ -1,6 +1,6 @@
-import { AppBar, Toolbar, Button, Box } from '@mui/material'
-import { AccountTree, Home, Logout, MiscellaneousServices, Rule, Settings } from '@mui/icons-material'
-import React from 'react'
+import { AppBar, Toolbar, Button, Box, IconButton, Menu as MuiMenu, MenuItem } from '@mui/material'
+import { AccountTree, Home, Language, Logout, MiscellaneousServices, Rule, Settings } from '@mui/icons-material'
+import React, { useState } from 'react'
 import { Trans } from 'react-i18next'
 import { DEFAULT_USER, useApp } from '../Hooks/useApp'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -9,9 +9,23 @@ export const Menu = (): React.JSX.Element => {
   const app = useApp()
   const navigate = useNavigate()
   const location = useLocation()
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [languageMenu, setLanguageMenu] = useState(true)
+  const open = Boolean(anchorEl)
+
   const onLogout = () => {
     app.setAuth({ token: null, user: DEFAULT_USER })
     navigate('/')
+  }
+  const onOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const onClose = () => {
+    setAnchorEl(null)
+  }
+  const onSelect = (lang: 'en' | 'fi') => {
+    localStorage.setItem('language', lang)
+    onClose()
   }
 
   if (!app.auth.token) {
@@ -23,7 +37,7 @@ export const Menu = (): React.JSX.Element => {
 
   return (
     <AppBar position="static">
-      <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 2fr' }}>
+      <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 2fr auto' }}>
         <Button startIcon={<Home />} onClick={() => navigate(`/home${add}`)}><Trans>Dashboard</Trans></Button>
         <Button startIcon={<Rule />} onClick={() => navigate(`/results${add}`)}><Trans>Results</Trans></Button>
         <Button startIcon={<AccountTree />}><Trans>Rules</Trans></Button>
@@ -32,7 +46,38 @@ export const Menu = (): React.JSX.Element => {
         <Box sx={{ textAlign: 'right' }}>
           <Button startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>
         </Box>
+        <IconButton onClick={onOpen}><Language sx={{ color: 'primary.main' }}/></IconButton>
       </Toolbar>
+      <MuiMenu
+        data-cy="language-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={onClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem
+          sx={{ width: '5rem', color: '#f0f0f0' }}
+          data-cy="language-selector-EN"
+          onClick={() => onSelect('en')}
+        >
+            EN
+        </MenuItem>
+        <MenuItem
+          sx={{ width: '5rem', color: '#f0f0f0' }}
+          data-cy="language-selector-FI"
+          onClick={() => onSelect('fi')}
+        >
+            FI
+        </MenuItem>
+      </MuiMenu>
+
     </AppBar>
   )
 }

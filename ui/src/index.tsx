@@ -9,15 +9,17 @@ import { I18nextProvider } from 'react-i18next'
 import en from './i18n/en.json'
 import fi from './i18n/fi.json'
 
-i18next.init({
-  resources: {
-    en: {
-      translations: en
-    },
-    fi: {
-      translations: fi
-    },
+const resources = {
+  en: {
+    translations: en
   },
+  fi: {
+    translations: fi
+  },
+}
+
+i18next.init({
+  resources,
 
   fallbackLng: 'en',
   debug: false,
@@ -37,6 +39,11 @@ i18next.init({
     useSuspense: true
   }
 })
+
+const language = localStorage.getItem('language') || navigator.language.substring(0, 2)
+if (language in resources) {
+  i18next.changeLanguage(language)
+}
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <I18nextProvider i18n={ i18next }>
