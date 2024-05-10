@@ -1,4 +1,3 @@
-import { HttpMethod } from '@tasenor/common'
 import { Account } from '../types/API/Account'
 
 /**
