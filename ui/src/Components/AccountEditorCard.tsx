@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Autocomplete, Box, Button, Card, CardContent, CardHeader, CircularProgress, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Savings } from '@mui/icons-material'
-import { useGET } from '../Hooks/useNet'
+import { useGET, usePATCH } from '../Hooks/useNet'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
 import { AccountNumber } from '@tasenor/common'
 import { Account } from '../Types/API/Account'
+import { useApp } from '../Hooks/useApp'
 
 interface AccountDescriptionProps {
   code: Account
@@ -61,6 +62,9 @@ interface AccountEditorCardProps {
 export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Element => {
   const { setup, output } = props
   const GET = useGET<RemoteAccount[]>()
+  const PATCH = usePATCH<Setup>()
+  const app = useApp()
+  const { t } = useTranslation()
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
   const [loading, setLoading] = useState(true)
   const [accounts, setAccounts] = useState<Record<Account, AccountNumber>>(setup.accounts as Record<Account, AccountNumber> || {})
@@ -77,8 +81,9 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
   }
 
   const onSave = (): void => {
-    // TODO: Implement.
-    console.log(`PATCH /flow-plans/${output.flowPlanId}/setup`, { accounts })
+    PATCH(`/flow-plans/${output.flowPlanId}/setup`, { accounts }).then(res => {
+      if (res) app.addInfo(t('Account configuration saved'))
+    })
   }
 
   return (

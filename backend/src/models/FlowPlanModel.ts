@@ -78,11 +78,20 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
   /**
    * Update the latest time stamp.
-   * @param state
+   * @param lastStamp
    */
   async setStamp(lastStamp: Date | null): Promise<void> {
     this.data.lastStamp = lastStamp
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { lastStamp })
+  }
+
+  /**
+   * Update the setup fields.
+   * @param state
+   */
+  async updateSetup(patch: Partial<Setup>): Promise<void> {
+    Object.assign(this.data.setup as object, patch)
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
   }
 
   /**

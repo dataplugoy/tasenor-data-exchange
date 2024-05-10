@@ -6,6 +6,7 @@ import { BatchModel } from '../models/BatchModel'
 import { param } from '../lib/param'
 import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlanRequest.json'
 import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
+import UpdateSetupRequest from '../../src/types/API/flow-plans/UpdateSetupRequest.json'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { AlertException } from '../exceptions/AlertException'
@@ -178,6 +179,16 @@ router.post('/:id/continue',
         res.status(202).send(alert.data)
       }
     }
+  }
+)
+
+router.patch('/:id/setup',
+  authorize(),
+  param('flowPlanId'),
+  validate(UpdateSetupRequest),
+  async (req, res) => {
+    await res.locals.flowPlan.updateSetup(req.body)
+    res.send(res.locals.flowPlan.data.setup)
   }
 )
 

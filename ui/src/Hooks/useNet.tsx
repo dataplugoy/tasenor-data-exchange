@@ -42,6 +42,17 @@ export function useGET<T>() {
 }
 
 /**
+ * Execute PATCH request and handle errors.
+ * @returns
+ */
+export function usePATCH<T>() {
+  const { t } = useTranslation()
+  const app = useApp()
+
+  return (url: string, data: Record<string, unknown>): Promise<T | null> => request<T | null>(t, app, 'PATCH', url, data)
+}
+
+/**
  * Execute POST request and handle errors.
  * @returns
  */

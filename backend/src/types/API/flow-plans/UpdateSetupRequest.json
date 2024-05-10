@@ -1,0 +1,6 @@
+{
+  "title": "UpdateSetupRequest",
+  "allOf": [
+    { "$ref": "Setup.json" }
+  ]
+}
