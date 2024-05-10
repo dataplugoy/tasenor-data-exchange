@@ -5,7 +5,7 @@ import { TasenorDriverSettings } from '../types/DriverSettings'
 import { TasenorFlowState } from '../types/FlowState'
 import { RemoteId } from '../types/RemoteId'
 import { InternetDriver } from './InternetDriver'
-import { Transaction, TransactionExtras, TransactionLine } from '../types/API/Transaction'
+import { Transaction, TransactionLine } from '../types/API/Transaction'
 import { DateTime } from 'luxon'
 import { dec } from '../lib/utils'
 import { AccountCode } from '../types/AccountCode'
@@ -239,7 +239,7 @@ export class TasenorDriver extends InternetDriver {
     }
 
     try {
-    let row = 1
+      let row = 1
       for (const line of tx.lines) {
         const entry = this.getEntry(document, line, row++)
         const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, entry)
