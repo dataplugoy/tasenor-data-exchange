@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
-import { error, log } from '@tasenor/common'
+import { AccountNumber, error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'
@@ -29,6 +29,8 @@ import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { BalanceData } from '../types/API/BalanceData'
 import { Setup } from '../types/API/Setup'
+import { Account } from '../types/API/Account'
+import { AccountException } from '../exceptions/AccountException'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -509,6 +511,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   private async deliverOutput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     let result: 'OK' | 'FAIL' = 'OK'
 
+    const unknownRemoteAccounts: Set<Account> = new Set()
+
     try {
       const output = await OutputItemModel.findForBatch(batch.id, false)
       const driver = await this.getOutputDriver(options)
@@ -526,6 +530,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         } catch (err) {
           result = 'FAIL'
           await item.fail(err)
+          if (err instanceof AccountException) {
+            unknownRemoteAccounts.add(err.code)
+          }
         }
       }
 
@@ -536,6 +543,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       result = 'FAIL'
       error(`Delivering output failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
+    }
+
+    // Record missing accounts as null in setup for now.
+    if (unknownRemoteAccounts.size) {
+      const accounts: Record<Account, unknown> = (this.data.setup as Setup).accounts || {}
+      unknownRemoteAccounts.forEach(code => {
+        if (!(code in accounts)) {
+          accounts[code] = null
+        }
+      })
+      log(`Updating setup to denote missing accounts: ${JSON.stringify([...unknownRemoteAccounts].join(', '))}`)
+      await this.updateSetup({ accounts })
     }
 
     return result

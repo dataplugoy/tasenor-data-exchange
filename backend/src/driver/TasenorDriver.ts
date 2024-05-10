@@ -13,6 +13,7 @@ import { Setup } from '../types/API/Setup'
 import { jwtDecode } from 'jwt-decode'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { Account } from '../types/API/Account'
+import { AccountException } from '../exceptions/AccountException'
 
 export class TasenorDriver extends InternetDriver {
 
@@ -80,6 +81,7 @@ export class TasenorDriver extends InternetDriver {
    * Load and store accounts.
    */
   async loadAccounts(): Promise<void> {
+    await this.autheticate()
     if (Object.keys(this.accounts).length === 0) {
       const accs: AccountModelData[] = await this.GET(`/db/${this.settings.database}/account`)
       this.accounts = {}
@@ -119,10 +121,9 @@ export class TasenorDriver extends InternetDriver {
    * @param code
    */
   findAccount(code: AccountCode): AccountModelData {
-    // TODO: Use some resolver utility to handle this.
     const map: Record<AccountCode, AccountNumber> = this.setup.accounts as Record<AccountCode, AccountNumber> || {}
     if (!map[code]) {
-      throw new Error(`Unable to resolve remote account for '${code}'.`)
+      throw new AccountException(code)
     }
     const number = map[code]
     if (!this.accounts[number]) {
@@ -202,6 +203,7 @@ export class TasenorDriver extends InternetDriver {
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     await this.loadAccounts()
 
+    // TODO: Rollback if entry saving fails.
     const tx: Transaction = output.data.data as unknown as Transaction
     const period = await this.getPeriod(tx)
     const doc: DocumentModelData = await this.POST(`/db/${this.settings.database}/document`, this.getDoc(period, tx))
@@ -216,7 +218,8 @@ export class TasenorDriver extends InternetDriver {
     }
 
     for (const line of tx.lines) {
-      const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, this.getEntry(doc, line, row++))
+      const entry = this.getEntry(doc, line, row++)
+      const out: EntryModelData = await this.POST(`/db/${this.settings.database}/entry`, entry)
       ret.entries.push(out.id as ID)
     }
 

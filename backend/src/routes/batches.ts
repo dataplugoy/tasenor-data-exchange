@@ -13,24 +13,14 @@ const router = express.Router()
 
 router.get('/:id',
   authorize(),
-  param('id'),
+  param('batchId'),
   async (req, res) => {
-    const userId = res.locals.userId
-    const batchId = res.locals.id
-    const batch = await BatchModel.get(batchId)
-    const flowPlan = batch && await FlowPlanModel.get(batch.data.flowPlanId)
-    const project = flowPlan && await ProjectModel.get(flowPlan.data.projectId)
+    const runs = (await RunModel.findForBatch(res.locals.id)).map(run => run.data)
+    const inputs = (await InputItemModel.findForBatch(res.locals.id)).map(input => input.data)
+    const unifieds = (await UnifiedItemModel.findForBatch(res.locals.id)).map(unified => unified.data)
+    const outputs = (await OutputItemModel.findForBatch(res.locals.id)).map(output => output.data)
 
-    if (!batch || !flowPlan || !project || project.data.userId !== userId) {
-      return res.sendStatus(404)
-    }
-
-    const runs = (await RunModel.findForBatch(batchId)).map(run => run.data)
-    const inputs = (await InputItemModel.findForBatch(batch.id)).map(input => input.data)
-    const unifieds = (await UnifiedItemModel.findForBatch(batch.id)).map(unified => unified.data)
-    const outputs = (await OutputItemModel.findForBatch(batch.id)).map(output => output.data)
-
-    res.send({ ...batch.data, runs, inputs, unifieds, outputs })
+    res.send({ ...res.locals.batch.data, runs, inputs, unifieds, outputs })
   }
 )
 
