@@ -17,7 +17,7 @@ export const FlowPlanSelector = (): React.JSX.Element => {
     GET('/flow-plans').then(res => {
       res && setPlans(res)
     })
-  })
+  }, [])
 
   return (
     <>

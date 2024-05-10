@@ -44,7 +44,7 @@ const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
 
   return <Autocomplete
     options={options.concat(none)}
-    getOptionLabel={(option) => option.number === '' && option.name === '' ? '—' : `${option.number} ${option.name}`}
+    getOptionLabel={(option) => option.number === '' && option.name === '' ? '' : `${option.number} ${option.name}`}
     value={remote || none}
     onChange={(_, value) => onChange(value && value.number !== '' ? value.number as AccountNumber : null)}
     renderInput={(params) => (
@@ -75,11 +75,17 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
   const [loading, setLoading] = useState(true)
   const [accounts, setAccounts] = useState<Record<Account, AccountNumber>>(setup.accounts as Record<Account, AccountNumber> || {})
 
+  const hasRemoteAccounts = ['TASENOR'].includes(output.type)
+
   useEffect(() => {
-    GET(`/output-destinations/${output.id}/accounts`).then(res => {
-      res && setRemotes(res.reduce((prev, cur) => ({ ...prev, [cur.number]: cur }), {}))
+    if (hasRemoteAccounts) {
+      GET(`/output-destinations/${output.id}/accounts`).then(res => {
+        res && setRemotes(res.reduce((prev, cur) => ({ ...prev, [cur.number]: cur }), {}))
+        setLoading(false)
+      })
+    } else {
       setLoading(false)
-    })
+    }
   }, [])
 
   const onChange = (code: Account, number: AccountNumber | null): void => {
@@ -103,7 +109,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
           loading && <Box><CircularProgress color="secondary" size={40}/></Box>
         }
         {
-          !loading && Object.keys(accounts).map(code => (
+          !loading && hasRemoteAccounts && Object.keys(accounts).map(code => (
             <Box sx={{ my: 1.5 }} key={code}>
               <AccountEdit
                 code={code}
@@ -114,7 +120,16 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
             </Box>
           ))
         }
-        <Button disabled={loading} onClick={onSave}><Trans>Save</Trans></Button>
+        {
+          !hasRemoteAccounts && <Box>
+            <Trans>The selected bookkeeping destination does not need account mapping.</Trans>
+          </Box>
+        }
+        {
+          hasRemoteAccounts &&
+            <Button disabled={loading || !hasRemoteAccounts} onClick={onSave}><Trans>Save</Trans></Button>
+        }
+
       </CardContent>
     </Card>
   )
