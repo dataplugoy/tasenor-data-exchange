@@ -24,5 +24,14 @@
   "FEE_ACCOUNT": "General purpose account for fees charged",
   "STOCK_ACCOUNT": "An account to keep value of the stocks bought",
   "INCOME_ACCOUNT": "General purpose account for any income",
-  "EXPENSE_ACCOUNT": "General purpose account for other expenses"
+  "EXPENSE_ACCOUNT": "General purpose account for other expenses",
+  "TOGGLE_SINGLE_FEE_ACCOUNT": "Use the same account for all fees",
+  "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes",
+  "TOGGLE_SINGLE_LOSS_ACCOUNT": "Use the same account for all losses",
+  "TOGGLE_SINGLE_STOCK_ACCOUNT": "Use the same account for all stocks",
+  "TOGGLE_SINGLE_CRYPTO_ACCOUNT": "Use the same account for all crypto currencies",
+  "TOGGLE_SINGLE_INCOME_ACCOUNT": "Use the same account for any income",
+  "TOGGLE_SINGLE_PROFIT_ACCOUNT": "Use the same account for all profits",
+  "TOGGLE_SINGLE_EXPENSE_ACCOUNT": "Use the same account for any expense",
+  "TOGGLE_SINGLE_DIVIDEND_ACCOUNT": "Use the same account for all dividends"
 }

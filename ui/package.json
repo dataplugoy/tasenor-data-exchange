@@ -20,6 +20,7 @@
     "@tasenor/config": "^1.13.0",
     "@types/luxon": "^3.4.2",
     "axios": "^1.6.8",
+    "change-case": "^5.4.4",
     "clone": "^2.1.2",
     "i18next": "^23.10.1",
     "luxon": "^3.4.4",

@@ -94,7 +94,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
 
   const onSave = (): void => {
     PATCH(`/flow-plans/${output.flowPlanId}/setup`, { accounts }).then(res => {
-      if (res) app.addInfo(t('Account configuration saved'))
+      if (res) app.addInfo(t('Flow plan settings saved'))
     })
   }
 

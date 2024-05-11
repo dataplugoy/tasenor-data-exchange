@@ -9,6 +9,7 @@ import { OutputDestination } from '../Types/API/OutputDestination'
 import { InputSource } from '../Types/API/InputSource'
 import { Clear } from '@mui/icons-material'
 import { AccountEditorCard } from '../Components/AccountEditorCard'
+import { AccountGroupingCard } from '../Components/AccountGroupingCard'
 
 export const EditSettingsPage = (): React.JSX.Element => {
   const params = useParams()
@@ -39,11 +40,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
 
     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
       {setup && output && <AccountEditorCard setup={setup} output={output}/>}
-      <Box>
-        <pre>
-        {JSON.stringify(setup?.accounts, null, 2)}
-        </pre>
-      </Box>
+      {setup && output && <AccountGroupingCard setup={setup} output={output}/>}
       <Box>
         <pre>
         {JSON.stringify(setup?.accountGrouping, null, 2)}
