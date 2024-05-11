@@ -127,7 +127,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
         }
         {
           hasRemoteAccounts &&
-            <Button disabled={loading || !hasRemoteAccounts} onClick={onSave}><Trans>Save</Trans></Button>
+            <Button disabled={loading} onClick={onSave}><Trans>Save</Trans></Button>
         }
 
       </CardContent>

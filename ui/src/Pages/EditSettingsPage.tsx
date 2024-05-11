@@ -43,11 +43,6 @@ export const EditSettingsPage = (): React.JSX.Element => {
       {setup && output && <AccountGroupingCard setup={setup} output={output}/>}
       <Box>
         <pre>
-        {JSON.stringify(setup?.accountGrouping, null, 2)}
-        </pre>
-      </Box>
-      <Box>
-        <pre>
         {JSON.stringify(input, null, 2)}
         </pre>
       </Box>

@@ -49,6 +49,7 @@ export const AccountGroupingCard = (props: AccountGroupingCardProps): React.JSX.
   }
 
   // TODO: DRY: Move one component higher and share with AccountEditorCard.
+  // TODO: Save everything even from other windows.
   const onSave = (): void => {
     PATCH(`/flow-plans/${output.flowPlanId}/setup`, { accountGrouping }).then(res => {
       if (res) app.addInfo(t('Flow plan settings saved'))
@@ -61,16 +62,28 @@ export const AccountGroupingCard = (props: AccountGroupingCardProps): React.JSX.
       title={<Typography variant="subtitle1"><Trans>Account Grouping</Trans></Typography>}
     />
     <CardContent>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleFeeAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleTaxAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleLossAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleStockAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleCryptoAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleIncomeAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleProfitAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleExpenseAccount"/>
-      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleDividendAccount"/>
-      <Button disabled={!hasRemoteAccounts} onClick={onSave}><Trans>Save</Trans></Button>
+      {
+        hasRemoteAccounts && <>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleFeeAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleTaxAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleLossAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleStockAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleCryptoAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleIncomeAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleProfitAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleExpenseAccount"/>
+          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleDividendAccount"/>
+        </>
+      }
+        {
+          !hasRemoteAccounts && <Box>
+            <Trans>The selected bookkeeping destination does not need account grouping.</Trans>
+          </Box>
+        }
+      {
+        hasRemoteAccounts &&
+          <Button disabled={!hasRemoteAccounts} onClick={onSave}><Trans>Save</Trans></Button>
+      }
     </CardContent>
   </Card>
 }
