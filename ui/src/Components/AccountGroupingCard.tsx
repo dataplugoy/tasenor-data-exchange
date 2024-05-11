@@ -8,7 +8,6 @@ import { usePATCH } from '../Hooks/useNet'
 import { useApp } from '../Hooks/useApp'
 import { Group } from '@mui/icons-material'
 
-
 interface AccountGroupingToggleProps {
   setup: Setup
   variable: string
