@@ -13,7 +13,7 @@ export const authorize = () => {
     }
     const payload = verify(token, 'tadex-api')
     if (!payload) {
-      return res.sendStatus(403)
+      return res.sendStatus(401)
     }
 
     res.locals.token = token

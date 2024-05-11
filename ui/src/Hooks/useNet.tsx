@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { AppContextProps, useApp } from './useApp'
+import { AppContextProps, DEFAULT_AUTH, useApp } from './useApp'
 import { HttpMethod } from '@tasenor/common'
 import { useTranslation } from 'react-i18next'
 
@@ -26,6 +26,10 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
     .catch(err => {
       const msg = err.response && err.response.data && err.response.data.message ? t(err.response.data.message) : err.message
       app.addError(msg)
+      if (err.response.status === 401) {
+        app.setAuth(DEFAULT_AUTH)
+        document.location = '/'
+      }
       return null
     }) as T
 }

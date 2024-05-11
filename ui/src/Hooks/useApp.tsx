@@ -23,6 +23,8 @@ export const DEFAULT_PROJECT = {
   }
 }
 
+export const DEFAULT_AUTH = { token: null, user: DEFAULT_USER }
+
 /**
  * Severity of the message.
  */
@@ -59,7 +61,7 @@ export interface AppContextProps {
 export const AppContext = React.createContext<AppContextProps>({
   messages: [],
   project: DEFAULT_PROJECT,
-  auth: { token: null, user: DEFAULT_USER },
+  auth: DEFAULT_AUTH,
   addInfo: () => {},
   addWarning: () => {},
   addError: () => {},
@@ -79,7 +81,7 @@ export const AppProvider = (props: { children: ReactNode }): React.JSX.Element =
   const [messages, setMessages] = useState<Message[]>([])
   const [timer, setTimer] = useState<null|NodeJS.Timeout>(null)
   const [project, setProject] = useLocalStorage<ProjectResponse>('project', DEFAULT_PROJECT)
-  const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', { token: null, user: DEFAULT_USER })
+  const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', DEFAULT_AUTH)
 
   const addMessage = (type: MessageType, text: string) => {
     if (timer) clearTimeout(timer)
