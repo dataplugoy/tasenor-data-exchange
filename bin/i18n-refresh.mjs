@@ -38,7 +38,7 @@ const FIXED_ENTRIES = new Set([
 ])
 
 const sentences = new Set()
-const codes = new Set()
+const codes = new Set(Object.keys(JSON.parse(fs.readFileSync(path.join(I18N_DIR, 'en.json')).toString('utf-8'))))
 
 /**
  * Read in a file and find matches.
@@ -118,8 +118,6 @@ function updateTranslation(file, lang) {
  * Update all translation files.
  */
 async function main() {
-  const en = JSON.parse(fs.readFileSync(path.join(I18N_DIR, 'en.json')).toString('utf-8'))
-
   for (const [pattern, regexes] of Object.entries(PATTERNS)) {
     for (const file of await glob([path.join(ROOT, pattern)].concat(IGNORE_FILES))) {
       scanFile(file, regexes)
