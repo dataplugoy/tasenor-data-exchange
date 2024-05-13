@@ -81,7 +81,7 @@ export class TasenorDriver extends InternetDriver {
    * Load and store accounts.
    */
   async loadAccounts(): Promise<void> {
-    await this.autheticate()
+    this.state = await this.autheticate()
     if (Object.keys(this.accounts).length === 0) {
       const accs: AccountModelData[] = await this.GET(`/db/${this.settings.database}/account`)
       this.accounts = {}
