@@ -11,6 +11,7 @@ import { Clear } from '@mui/icons-material'
 import { AccountEditorCard } from '../Components/AccountEditorCard'
 import { AccountGroupingCard } from '../Components/AccountGroupingCard'
 import { useApp } from '../Hooks/useApp'
+import { InputSettingsCard } from '../Components/InputSettingsCard'
 
 export const EditSettingsPage = (): React.JSX.Element => {
   const params = useParams()
@@ -52,6 +53,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
       {setup && output && <AccountEditorCard onSave={onSave} hasRemoteAccounts={hasRemoteAccounts} setup={setup} output={output}/>}
       {setup && output && <AccountGroupingCard onSave={onSave} hasRemoteAccounts={hasRemoteAccounts} setup={setup} output={output}/>}
+      {setup && input && <InputSettingsCard setup={setup} input={input}/>}
       <Box>
         <pre>
         {JSON.stringify(input, null, 2)}
