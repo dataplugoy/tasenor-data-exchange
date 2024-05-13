@@ -4,8 +4,6 @@ import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import * as changeCase from 'change-case'
 import { Trans, useTranslation } from 'react-i18next'
-import { usePATCH } from '../Hooks/useNet'
-import { useApp } from '../Hooks/useApp'
 import { Group } from '@mui/icons-material'
 
 interface AccountGroupingToggleProps {
@@ -32,28 +30,21 @@ const AccountGroupingToggle = (props: AccountGroupingToggleProps): React.JSX.Ele
 interface AccountGroupingCardProps {
   setup: Setup
   output: OutputDestination
+  hasRemoteAccounts: boolean
+  onSave: (update: Partial<Setup>) => void
 }
 
 export const AccountGroupingCard = (props: AccountGroupingCardProps): React.JSX.Element => {
-  const { setup, output } = props
-  const PATCH = usePATCH<Setup>()
-  const app = useApp()
-  const { t } = useTranslation()
+  const { setup, hasRemoteAccounts } = props
   const accountGrouping = setup.accountGrouping || {}
-  // DRY: Same as account editor card.
-  const hasRemoteAccounts = ['TASENOR'].includes(output.type)
 
   const onChange = (variable: string, state: boolean) => {
     accountGrouping[variable] = state
     setup.accountGrouping = accountGrouping
   }
 
-  // TODO: DRY: Move one component higher and share with AccountEditorCard.
-  // TODO: Save everything even from other windows.
   const onSave = (): void => {
-    PATCH(`/flow-plans/${output.flowPlanId}/setup`, { accountGrouping }).then(res => {
-      if (res) app.addInfo(t('Flow plan settings saved'))
-    })
+    props.onSave({ accountGrouping })
   }
 
   return <Card>

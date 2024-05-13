@@ -8,7 +8,6 @@ import { OutputDestination } from '../Types/API/OutputDestination'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
 import { AccountNumber } from '@tasenor/common'
 import { Account } from '../Types/API/Account'
-import { useApp } from '../Hooks/useApp'
 
 interface AccountDescriptionProps {
   code: Account
@@ -63,19 +62,16 @@ const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
 interface AccountEditorCardProps {
   setup: Setup
   output: OutputDestination
+  hasRemoteAccounts: boolean
+  onSave: (update: Partial<Setup>) => void
 }
 
 export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Element => {
-  const { setup, output } = props
+  const { setup, output, hasRemoteAccounts} = props
   const GET = useGET<RemoteAccount[]>()
-  const PATCH = usePATCH<Setup>()
-  const app = useApp()
-  const { t } = useTranslation()
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
   const [loading, setLoading] = useState(true)
   const [accounts, setAccounts] = useState<Record<Account, AccountNumber>>(setup.accounts as Record<Account, AccountNumber> || {})
-
-  const hasRemoteAccounts = ['TASENOR'].includes(output.type)
 
   useEffect(() => {
     if (hasRemoteAccounts) {
@@ -93,9 +89,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
   }
 
   const onSave = (): void => {
-    PATCH(`/flow-plans/${output.flowPlanId}/setup`, { accounts }).then(res => {
-      if (res) app.addInfo(t('Flow plan settings saved'))
-    })
+    props.onSave({ accounts })
   }
 
   return (
