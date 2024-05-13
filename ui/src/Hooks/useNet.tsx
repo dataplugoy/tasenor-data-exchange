@@ -4,6 +4,7 @@ import { HttpMethod } from '@tasenor/common'
 import { useTranslation } from 'react-i18next'
 
 const API_VERSION = 'v1'
+const cache: Record<string, Promise<any>> = {}
 
 /**
  * Helper to run HTTP requests.
@@ -16,14 +17,20 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
     headers.Authorization = `Bearer ${app.auth.token}`
   }
 
-  return axios({
+  if (method === 'GET' && url in cache) return cache[url]
+
+  const promise = axios({
     method,
     url: `/api/${API_VERSION}${url}`,
     data,
     headers,
   })
-    .then(res => res.data)
+    .then(res => {
+      if (method === 'GET') delete cache[url]
+      return res.data
+    })
     .catch(err => {
+      if (method === 'GET') delete cache[url]
       const msg = err.response && err.response.data && err.response.data.message ? t(err.response.data.message) : err.message
       app.addError(msg)
       if (err.response.status === 401) {
@@ -31,7 +38,13 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
         document.location = '/'
       }
       return null
-    }) as T
+    })
+
+  if (method === 'GET') {
+    cache[url] = promise
+  }
+
+  return promise
 }
 
 /**
