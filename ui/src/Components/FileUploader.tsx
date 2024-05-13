@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { Backdrop, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { UploadFile } from '@mui/icons-material'
 import { useApp } from '../Hooks/useApp'
@@ -111,29 +111,38 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
   }
 
   return (
-    <Dialog open={visible} fullWidth>
-      <DialogTitle>{title}</DialogTitle>
+    <Box>
+      <Dialog open={visible} fullWidth>
+        <DialogTitle>{title}</DialogTitle>
 
-      <DialogContent>
+        <DialogContent>
 
-        <DialogContentText sx={{ mb: 2 }}>
-          {text}
-        </DialogContentText>
-        <input id="file-uploader-input" disabled={!visible} type="file" multiple={false} hidden onChange={(e) => onFileChange(e)}/>
-        <label htmlFor="file-uploader-input">
-        <Button component="span" startIcon={<UploadFile/>}>
-          <Trans>Select a File</Trans>
-        </Button>
-        </label>
-        <Box sx={{ mt: 2, color: upload ? 'white' : 'rgba(0,0,0,0.5)' }}>
-          <Trans>File Selected:</Trans> {upload ? upload.name : t('No file seleced.')}
-        </Box>
-      </DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            {text}
+          </DialogContentText>
+          <input id="file-uploader-input" disabled={!visible} type="file" multiple={false} hidden onChange={(e) => onFileChange(e)}/>
+          <label htmlFor="file-uploader-input">
+          <Button component="span" startIcon={<UploadFile/>}>
+            <Trans>Select a File</Trans>
+          </Button>
+          </label>
+          <Box sx={{ mt: 2, color: upload ? 'white' : 'rgba(0,0,0,0.5)' }}>
+            <Trans>File Selected:</Trans> {upload ? upload.name : t('No file seleced.')}
+          </Box>
+        </DialogContent>
 
-      <DialogActions>
-        <Button variant="outlined" disabled={uploading} onClick={onCancel}><Trans>Cancel</Trans></Button>
-        <Button variant="outlined" disabled={!upload || uploading} onClick={onUpload}><Trans>Upload</Trans></Button>
-      </DialogActions>
-    </Dialog>
+        <DialogActions>
+          <Button variant="outlined" disabled={uploading} onClick={onCancel}><Trans>Cancel</Trans></Button>
+          <Button variant="outlined" disabled={!upload || uploading} onClick={onUpload}><Trans>Upload</Trans></Button>
+        </DialogActions>
+      </Dialog>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1 }}
+        open={uploading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </Box>
   )
 }
