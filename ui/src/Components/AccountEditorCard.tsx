@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Autocomplete, Box, Button, Card, CardContent, CardHeader, CircularProgress, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Map } from '@mui/icons-material'
-import { useGET, usePATCH } from '../Hooks/useNet'
+import { useGET } from '../Hooks/useNet'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
@@ -67,7 +67,7 @@ interface AccountEditorCardProps {
 }
 
 export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Element => {
-  const { setup, output, hasRemoteAccounts} = props
+  const { setup, output, hasRemoteAccounts } = props
   const GET = useGET<RemoteAccount[]>()
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
   const [loading, setLoading] = useState(true)

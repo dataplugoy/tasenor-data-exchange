@@ -7,6 +7,11 @@ import { OutputDestination } from '../Types/API/OutputDestination'
 import { useApp } from '../Hooks/useApp'
 import { usePATCH } from '../Hooks/useNet'
 
+interface OutputSettingsCardProps {
+  setup: Setup
+  output: OutputDestination
+}
+
 type TasenorOutputSettingsCardProps = OutputSettingsCardProps & {
   onSave: (changes: Record<string, unknown>) => void
 }
@@ -35,11 +40,6 @@ const TasenorOutputSettingsCard = (props: TasenorOutputSettingsCardProps): React
       <TextField sx={{ my: 0.7 }} required onChange={e => setDatabase(e.target.value)} fullWidth value={database} name="database" label={t('Tasenor Database')}/>
       <Button onClick={onSave}><Trans>Save</Trans></Button>
   </Box>
-}
-
-interface OutputSettingsCardProps {
-  setup: Setup
-  output: OutputDestination
 }
 
 export const OutputSettingsCard = (props: OutputSettingsCardProps): React.JSX.Element => {
