@@ -23,6 +23,15 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
   }
 
   /**
+   * Change settings.
+   * @param patch
+   */
+  async updateSettings(patch: Record<string, unknown>): Promise<void> {
+    Object.assign(this.data.settings as object, patch)
+    await OutputDestinationModel.update<prisma.OutputDestination, OutputDestinationModel>(this, { settings: this.data.settings })
+  }
+
+  /**
    * Get the input source information for a flow.
    * @param flow
    * @returns

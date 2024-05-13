@@ -2,6 +2,8 @@ import express from 'express'
 import { authorize } from '../lib/authorize'
 import { param } from '../lib/param'
 import { error } from '@tasenor/common'
+import OutputDestinationSettingsRequest from '../../src/types/API/output-destinations/OutputDestinationSettingsRequest.json'
+import { validate } from '../lib/validate'
 
 const router = express.Router()
 
@@ -17,6 +19,16 @@ router.get('/:id/accounts',
       error(err)
       res.sendStatus(502)
     }
+  }
+)
+
+router.patch('/:id/settings',
+  authorize(),
+  param('outputDestinationId'),
+  validate(OutputDestinationSettingsRequest),
+  async (req, res) => {
+    await res.locals.outputDestination.updateSettings(req.body)
+    res.send(res.locals.outputDestination.data.settings)
   }
 )
 
