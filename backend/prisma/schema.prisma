@@ -213,6 +213,7 @@ model Run{
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
   outputItems OutputItem[]
+  errorItems  ItemError[]
 
   @@map(name: "runs")
 }
@@ -233,7 +234,6 @@ model InputItem{
   skipped     Boolean
   skipReason  SkipReason?
 
-  error       String?
   unifiedItem UnifiedItem?
 
   flowPlanId  Int
@@ -258,7 +258,6 @@ model UnifiedItem{
   processed   Boolean
   skipped     Boolean
 
-  error       String?
   outputItem  OutputItem?
 
   inputId     Int             @unique
@@ -284,8 +283,6 @@ model OutputItem{
   delivered   Boolean
   remoteId    Json?
 
-  error       String?
-
   unifiedId   Int             @unique
   unified     UnifiedItem     @relation(fields: [unifiedId], references: [id])
   flowPlanId  Int
@@ -298,6 +295,20 @@ model OutputItem{
   @@map(name: "output_items")
   @@index([flowPlanId, hash])
   @@index([flowPlanId, delivered, created])
+}
+
+model ItemError{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  runId       Int
+  run         Run             @relation(fields: [runId], references: [id])
+  itemId      Int
+  error       String
+
+  @@map(name: "item_errors")
+  @@index([runId, itemId])
 }
 
 enum RuleType {

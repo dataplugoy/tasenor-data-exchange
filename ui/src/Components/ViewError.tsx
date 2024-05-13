@@ -18,7 +18,7 @@ export const ViewError = (props: ViewErrorProps): React.JSX.Element => {
     if (/^(node:\w+|Error:)/.test(fileName)) {
       return fileName
     }
-    for (const subPath of ['@tasenor/common/src', 'backend/src', 'node_modules/@prisma/client/', 'node_modules/.pnpm']) {
+    for (const subPath of ['@tasenor/common/src', 'backend/src', 'node_modules/@prisma/client/', 'node_modules/.pnpm', '/var/app/src']) {
       const i = fileName.indexOf(subPath)
       if (i >= 0) {
         return fileName.substring(i)

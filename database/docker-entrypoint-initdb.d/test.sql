@@ -28,6 +28,7 @@ ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_destinations DROP CONSTRAINT IF EXISTS "output_destinations_flowPlanId_fkey";
+ALTER TABLE IF EXISTS ONLY public.item_errors DROP CONSTRAINT IF EXISTS "item_errors_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS "input_sources_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_runId_fkey";
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS "input_items_flowPlanId_fkey";
@@ -43,6 +44,7 @@ DROP INDEX IF EXISTS public."output_items_unifiedId_key";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_hash_idx";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_delivered_created_idx";
 DROP INDEX IF EXISTS public."output_destinations_flowPlanId_key";
+DROP INDEX IF EXISTS public."item_errors_runId_itemId_idx";
 DROP INDEX IF EXISTS public."input_sources_flowPlanId_key";
 DROP INDEX IF EXISTS public."input_items_flowPlanId_hash_idx";
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
@@ -54,6 +56,7 @@ ALTER TABLE IF EXISTS ONLY public.rules DROP CONSTRAINT IF EXISTS rules_pkey;
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS projects_pkey;
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS output_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.output_destinations DROP CONSTRAINT IF EXISTS output_destinations_pkey;
+ALTER TABLE IF EXISTS ONLY public.item_errors DROP CONSTRAINT IF EXISTS item_errors_pkey;
 ALTER TABLE IF EXISTS ONLY public.input_sources DROP CONSTRAINT IF EXISTS input_sources_pkey;
 ALTER TABLE IF EXISTS ONLY public.input_items DROP CONSTRAINT IF EXISTS input_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS flow_plans_pkey;
@@ -68,6 +71,7 @@ ALTER TABLE IF EXISTS public.rules ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.projects ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.output_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.output_destinations ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.item_errors ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_sources ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.input_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.flow_plans ALTER COLUMN id DROP DEFAULT;
@@ -91,6 +95,8 @@ DROP SEQUENCE IF EXISTS public.output_items_id_seq;
 DROP TABLE IF EXISTS public.output_items;
 DROP SEQUENCE IF EXISTS public.output_destinations_id_seq;
 DROP TABLE IF EXISTS public.output_destinations;
+DROP SEQUENCE IF EXISTS public.item_errors_id_seq;
+DROP TABLE IF EXISTS public.item_errors;
 DROP SEQUENCE IF EXISTS public.input_sources_id_seq;
 DROP TABLE IF EXISTS public.input_sources;
 DROP SEQUENCE IF EXISTS public.input_items_id_seq;
@@ -374,7 +380,6 @@ CREATE TABLE public.input_items (
     data jsonb NOT NULL,
     processed boolean NOT NULL,
     skipped boolean NOT NULL,
-    error text,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
@@ -446,6 +451,44 @@ ALTER SEQUENCE public.input_sources_id_seq OWNED BY public.input_sources.id;
 
 
 --
+-- Name: item_errors; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.item_errors (
+    id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
+    "runId" integer NOT NULL,
+    "itemId" integer NOT NULL,
+    error text NOT NULL
+);
+
+
+ALTER TABLE public.item_errors OWNER TO dev;
+
+--
+-- Name: item_errors_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.item_errors_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_errors_id_seq OWNER TO dev;
+
+--
+-- Name: item_errors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.item_errors_id_seq OWNED BY public.item_errors.id;
+
+
+--
 -- Name: output_destinations; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -494,7 +537,6 @@ CREATE TABLE public.output_items (
     data jsonb NOT NULL,
     skipped boolean NOT NULL,
     delivered boolean NOT NULL,
-    error text,
     "unifiedId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
@@ -745,7 +787,6 @@ CREATE TABLE public.unified_items (
     data jsonb NOT NULL,
     processed boolean NOT NULL,
     skipped boolean NOT NULL,
-    error text,
     "inputId" integer NOT NULL,
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
@@ -859,6 +900,13 @@ ALTER TABLE ONLY public.input_sources ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: item_errors id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.item_errors ALTER COLUMN id SET DEFAULT nextval('public.item_errors_id_seq'::regclass);
+
+
+--
 -- Name: output_destinations id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -954,7 +1002,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 -- Data for Name: input_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.input_items (id, created, updated, data, processed, skipped, error, "flowPlanId", "batchId", "runId", hash, "skipReason") FROM stdin;
+COPY public.input_items (id, created, updated, data, processed, skipped, "flowPlanId", "batchId", "runId", hash, "skipReason") FROM stdin;
 \.
 
 
@@ -967,6 +1015,14 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 3	2024-05-02 08:46:22.094	2024-05-02 08:46:22.094	NORDNET	{}	3
 4	2024-05-08 11:08:59.924	2024-05-08 11:08:59.924	NORDNET	{}	4
 5	2024-05-09 08:54:24.336	2024-05-09 08:54:04.898	NORDNET	{}	5
+\.
+
+
+--
+-- Data for Name: item_errors; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.item_errors (id, created, updated, "runId", "itemId", error) FROM stdin;
 \.
 
 
@@ -986,7 +1042,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 -- Data for Name: output_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.output_items (id, created, updated, data, skipped, delivered, error, "unifiedId", "flowPlanId", "batchId", "runId", hash, "remoteId") FROM stdin;
+COPY public.output_items (id, created, updated, data, skipped, delivered, "unifiedId", "flowPlanId", "batchId", "runId", hash, "remoteId") FROM stdin;
 \.
 
 
@@ -1058,7 +1114,7 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, "time", data, processed, skipped, error, "inputId", "flowPlanId", "batchId", "runId", "stockChange") FROM stdin;
+COPY public.unified_items (id, created, updated, "time", data, processed, skipped, "inputId", "flowPlanId", "batchId", "runId", "stockChange") FROM stdin;
 \.
 
 
@@ -1104,6 +1160,13 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
 --
 
 SELECT pg_catalog.setval('public.input_sources_id_seq', 5, true);
+
+
+--
+-- Name: item_errors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.item_errors_id_seq', 1, false);
 
 
 --
@@ -1210,6 +1273,14 @@ ALTER TABLE ONLY public.input_sources
 
 
 --
+-- Name: item_errors item_errors_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.item_errors
+    ADD CONSTRAINT item_errors_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: output_destinations output_destinations_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -1293,6 +1364,13 @@ CREATE INDEX "input_items_flowPlanId_hash_idx" ON public.input_items USING btree
 --
 
 CREATE UNIQUE INDEX "input_sources_flowPlanId_key" ON public.input_sources USING btree ("flowPlanId");
+
+
+--
+-- Name: item_errors_runId_itemId_idx; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX "item_errors_runId_itemId_idx" ON public.item_errors USING btree ("runId", "itemId");
 
 
 --
@@ -1405,6 +1483,14 @@ ALTER TABLE ONLY public.input_items
 
 ALTER TABLE ONLY public.input_sources
     ADD CONSTRAINT "input_sources_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: item_errors item_errors_runId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.item_errors
+    ADD CONSTRAINT "item_errors_runId_fkey" FOREIGN KEY ("runId") REFERENCES public.runs(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
