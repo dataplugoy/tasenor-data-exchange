@@ -13,7 +13,6 @@ export interface InputItem {
   processed: boolean;
   skipped: boolean;
   skipReason: SkipReason;
-  error: string | null;
   flowPlanId: number;
   batchId: number;
   runId: number;

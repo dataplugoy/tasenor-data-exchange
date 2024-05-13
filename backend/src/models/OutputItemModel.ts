@@ -3,6 +3,8 @@ import { Transaction } from '../types/API/Transaction'
 import { RemoteId } from '../types/RemoteId'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
+import { RunModel } from './RunModel'
+import { ItemErrorModel } from './ItemErrorModel'
 
 export class OutputItemModel extends BaseModel<prisma.OutputItem> {
 
@@ -16,9 +18,8 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   /**
    * Mark this run as a failure.
    */
-  async fail(err: Error): Promise<void> {
-    this.data.error = err.stack || err.message
-    await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { error: err.stack || err.message })
+  async fail(run: RunModel, err: Error): Promise<void> {
+    await ItemErrorModel.fail(run, this, err)
   }
 
   /**

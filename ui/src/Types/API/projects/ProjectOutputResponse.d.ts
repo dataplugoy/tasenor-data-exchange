@@ -16,7 +16,6 @@ export interface OutputItem {
     [k: string]: unknown;
   } | null;
   skipped: boolean;
-  error: string | null;
   unifiedId: number;
   flowPlanId: number;
   batchId: number;

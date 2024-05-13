@@ -24,9 +24,6 @@
     "skipped": {
       "type": "boolean"
     },
-    "error": {
-      "type": ["string", "null"]
-    },
     "inputId": {
       "type": "integer"
     },

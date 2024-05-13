@@ -20,9 +20,6 @@
     "skipReason": {
       "$ref": "SkipReason.json"
     },
-    "error": {
-      "type": ["string", "null"]
-    },
     "flowPlanId": {
       "type": "integer"
     },

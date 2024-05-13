@@ -3,6 +3,8 @@ import prisma from '@prisma/client'
 import { ShortDate, Timestring } from '@tasenor/common'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { SkipReason } from '../types/API/InputItem'
+import { RunModel } from './RunModel'
+import { ItemErrorModel } from './ItemErrorModel'
 
 export class InputItemModel extends BaseModel<prisma.InputItem> {
 
@@ -40,9 +42,8 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   /**
    * Mark this input handling as a failure.
    */
-  async fail(err: Error): Promise<void> {
-    this.data.error = err.stack || err.message
-    await InputItemModel.update<prisma.InputItem, InputItemModel>(this, { error: err.stack || err.message })
+  async fail(run: RunModel, err: Error): Promise<void> {
+    await ItemErrorModel.fail(run, this, err)
   }
 
   /**

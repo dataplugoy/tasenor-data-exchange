@@ -356,7 +356,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               time: new Date(unified.time),
               processed: false,
               skipped: false,
-              error: null,
               flowPlanId: this.id,
               batchId: batch.id,
               runId: run.id,
@@ -368,7 +367,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         } catch (err) {
           result = 'FAIL'
           error(`Handling of ${input} failed: ${err.stack}`)
-          await input.fail(err)
+          await input.fail(run, err)
         }
       }
 
@@ -380,7 +379,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           stockChange: {},
           processed: false,
           skipped: false,
-          error: null,
           flowPlanId: this.id,
           batchId: batch.id,
           runId: run.id,
@@ -482,7 +480,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         } catch (err) {
           result = 'FAIL'
           error(`Unifying input failed: ${err.stack}`)
-          await unified.fail(err)
+          await unified.fail(run, err)
           await run.fail(err)
           return result
         }
@@ -529,7 +527,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           done++
         } catch (err) {
           result = 'FAIL'
-          await item.fail(err)
+          await item.fail(run, err)
           if (err instanceof AccountException) {
             unknownRemoteAccounts.add(err.code)
           }

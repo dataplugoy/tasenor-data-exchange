@@ -2,6 +2,8 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
+import { RunModel } from './RunModel'
+import { ItemErrorModel } from './ItemErrorModel'
 
 export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
 
@@ -19,9 +21,8 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
   /**
    * Mark this run as a failure.
    */
-  async fail(err: Error): Promise<void> {
-    this.data.error = err.stack || err.message
-    await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { error: err.stack || err.message })
+  async fail(run: RunModel, err: Error): Promise<void> {
+    await ItemErrorModel.fail(run, this, err)
   }
 
   /**

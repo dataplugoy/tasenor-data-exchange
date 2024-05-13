@@ -20,9 +20,6 @@
     "skipped": {
       "type": "boolean"
     },
-    "error": {
-      "type": ["string", "null"]
-    },
     "unifiedId": {
       "type": "integer"
     },

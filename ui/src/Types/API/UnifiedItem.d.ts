@@ -47,7 +47,6 @@ export interface UnifiedItem {
   };
   processed: boolean;
   skipped: boolean;
-  error: string | null;
   inputId: number;
   flowPlanId?: number;
   batchId: number;

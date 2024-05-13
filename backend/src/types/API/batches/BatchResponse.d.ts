@@ -109,7 +109,6 @@ export interface InputItem {
   processed: boolean;
   skipped: boolean;
   skipReason: SkipReason;
-  error: string | null;
   flowPlanId: number;
   batchId: number;
   runId: number;
@@ -135,7 +134,6 @@ export interface UnifiedItem {
   };
   processed: boolean;
   skipped: boolean;
-  error: string | null;
   inputId: number;
   flowPlanId?: number;
   batchId: number;
@@ -228,7 +226,6 @@ export interface OutputItem {
     [k: string]: unknown;
   } | null;
   skipped: boolean;
-  error: string | null;
   unifiedId: number;
   flowPlanId: number;
   batchId: number;
