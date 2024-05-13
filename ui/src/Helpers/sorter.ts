@@ -1,11 +1,12 @@
 import { InputItem } from '../Types/API/InputItem'
+import { ItemError } from '../Types/API/ItemError'
 import { OutputItem } from '../Types/API/OutputItem'
 import { Run } from '../Types/API/Run'
 import { UnifiedItem } from '../Types/API/UnifiedItem'
 
-export type ResultInputItem = { type: 'InputItem' } & InputItem
-export type ResultUnifiedItem = { type: 'UnifiedItem' } & UnifiedItem
-export type ResultOutputItem = { type: 'OutputItem' } & OutputItem
+export type ResultInputItem = { type: 'InputItem', error: null | ItemError } & InputItem
+export type ResultUnifiedItem = { type: 'UnifiedItem', error: null | ItemError } & UnifiedItem
+export type ResultOutputItem = { type: 'OutputItem', error: null | ItemError } & OutputItem
 
 export type ResultItem = ResultInputItem | ResultUnifiedItem | ResultOutputItem
 
@@ -50,10 +51,24 @@ export function sortRuns(
   runs: Run[],
   inputs: Record<number, InputItem[]>,
   unifieds: Record<number, UnifiedItem[]>,
-  outputs: Record<number, OutputItem[]>): RunStepResult[] {
+  outputs: Record<number, OutputItem[]>,
+  errors: ItemError[]): RunStepResult[] {
 
   const results: RunStepResult[] = []
   let lastSuccess: null | RunStepResult = null
+
+  // Sort out errors per run and item.
+  const sortedErrors: Record<number, Record<number, ItemError>> = {}
+  errors.forEach(err => {
+    sortedErrors[err.runId] = sortedErrors[err.runId] || {}
+    sortedErrors[err.runId][err.itemId] = err
+  })
+  function err(run, item) {
+    if (sortedErrors[run.id] && sortedErrors[run.id][item.id]) {
+      return sortedErrors[run.id][item.id]
+    }
+    return null
+  }
 
   // Handle in chronological order.
   for (let i = runs.length - 1; i >= 0; i--) {
@@ -64,13 +79,13 @@ export function sortRuns(
 
     // Categorize items.
     (inputs[run.id] || []).forEach((item: InputItem) => {
-      items.push({ type: 'InputItem', ...item })
+      items.push({ type: 'InputItem', ...item, error: err(run, item) })
     });
     (unifieds[run.id] || []).forEach(item => {
-      items.push({ type: 'UnifiedItem', ...item })
+      items.push({ type: 'UnifiedItem', ...item, error: err(run, item) })
     });
     (outputs[run.id] || []).forEach(item => {
-      items.push({ type: 'OutputItem', ...item })
+      items.push({ type: 'OutputItem', ...item, error: err(run, item) })
     })
 
     if (hasProgressed) {
@@ -81,7 +96,7 @@ export function sortRuns(
     } else {
       // Pass last known items for further investigation.
       step = `FAILED_AFTER_${run.finalState}`
-      items = lastSuccess?.items || []
+      items = (lastSuccess?.items || []).map(item => ({ ...item, error: err(run, item) }))
     }
 
     // Collect the results.

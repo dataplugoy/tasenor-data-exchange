@@ -13,6 +13,8 @@ export type BatchResponse = Batch & {
   unifieds?: UnifiedItem[];
 } & {
   outputs?: OutputItem[];
+} & {
+  errors?: ItemError[];
 };
 export type RunResult =
   | "ALL_SUCCESS"
@@ -246,4 +248,12 @@ export interface TransactionLine {
 export interface TransactionExtras {
   asset?: Asset6;
   assetChange?: number | string;
+}
+export interface ItemError {
+  id?: number;
+  runId: number;
+  itemId: number;
+  error: string;
+  created?: string;
+  updated?: string;
 }

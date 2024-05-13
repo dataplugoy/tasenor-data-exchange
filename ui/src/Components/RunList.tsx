@@ -16,6 +16,7 @@ import { ResultIndicator } from './ResultIndicator'
 import clone from 'clone'
 import { RunDetails } from './RunDetails'
 import { whenBatchUpdates } from '../Signals/updates'
+import { ItemError } from '../Types/API/ItemError'
 
 interface RunListProps {
   batch: Batch
@@ -30,6 +31,7 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   const [inputs, setInputs] = useState<Record<number, InputItem[]>>({})
   const [unifieds, setUnifieds] = useState<Record<number, UnifiedItem[]>>({})
   const [outputs, setOutputs] = useState<Record<number, OutputItem[]>>({})
+  const [errors, setErrors] = useState<ItemError[]>([])
   const [opened, setOpened] = useState<Set<number>>(new Set())
 
   const updateRunList = async () => {
@@ -38,6 +40,7 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
       setInputs((res?.inputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
       setUnifieds((res?.unifieds || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
       setOutputs((res?.outputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
+      setErrors(res?.errors || [])
     })
   }
 
@@ -55,7 +58,7 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
     setOpened(clone(opened))
   }
 
-  const sorted = sortRuns(runs, inputs, unifieds, outputs)
+  const sorted = sortRuns(runs, inputs, unifieds, outputs, errors)
 
   return (
     <Box>

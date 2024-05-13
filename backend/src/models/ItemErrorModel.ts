@@ -27,4 +27,13 @@ export class ItemErrorModel extends BaseModel<prisma.ItemError> {
     await ItemErrorModel.create<prisma.ItemError, ItemErrorModel>(data)
   }
 
+  /**
+   * Find errors for a list of runs.
+   * @param batchId
+   * @param processed
+   */
+  static async findForRuns(runIds: number[]): Promise<prisma.ItemError[]> {
+    return ItemErrorModel.db.findMany<prisma.ItemError, ItemErrorModel>({ where: { runId: { in: runIds }}})
+  }
+
 }

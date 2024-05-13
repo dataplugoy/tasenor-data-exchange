@@ -138,7 +138,7 @@ function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): 
         items.map((item, idx) => {
           return item.error !== null && <Box key={idx}>
             {JSON.stringify(item.data, null, 2)}
-            <ViewError error={item.error}/>
+            <ViewError error={item.error.error}/>
           </Box>
         })
       }

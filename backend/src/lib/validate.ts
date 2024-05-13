@@ -11,6 +11,7 @@ import FileUpload from '../../src/types/API/FileUpload.json'
 import FlowPlan from '../../src/types/API/FlowPlan.json'
 import InputItemData from '../../src/types/API/InputItemData.json'
 import InputItem from '../../src/types/API/InputItem.json'
+import ItemError from '../../src/types/API/ItemError.json'
 import OutputItem from '../../src/types/API/OutputItem.json'
 import Project from '../../src/types/API/Project.json'
 import ProjectSettings from '../../src/types/API/ProjectSettings.json'
@@ -42,6 +43,7 @@ ajv.addSchema(FileUpload)
 ajv.addSchema(FlowPlan)
 ajv.addSchema(InputItemData)
 ajv.addSchema(InputItem)
+ajv.addSchema(ItemError)
 ajv.addSchema(OutputItem)
 ajv.addSchema(Project)
 ajv.addSchema(ProjectSettings)

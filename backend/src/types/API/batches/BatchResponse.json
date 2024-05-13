@@ -41,6 +41,16 @@
           "items": { "$ref": "OutputItem.json" }
         }
       }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": { "$ref": "ItemError.json" }
+        }
+      }
     }
   ]
 }
