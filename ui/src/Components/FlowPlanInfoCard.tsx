@@ -5,7 +5,7 @@ import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useGET } from '../Hooks/useNet'
-import { signalBatchUpdate } from '../Signals/updates'
+import { signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
 import { isAlert } from '../Types/isAlert'
 import { FileUploader } from './FileUploader'
 
@@ -25,7 +25,9 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
   const onRun = async () => {
     setRunning(true)
+    const interval = setInterval(signalRunUpdate, 1000)
     const res = await GET(`/flow-plans/${plan.id}/run`)
+    clearInterval(interval)
     setRunning(false)
     if (isAlert(res)) {
       if (res.type === 'UPLOAD_REQUIRED') {

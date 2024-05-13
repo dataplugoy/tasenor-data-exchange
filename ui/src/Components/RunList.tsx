@@ -15,7 +15,7 @@ import { sortRuns } from '../Helpers/sorter'
 import { ResultIndicator } from './ResultIndicator'
 import clone from 'clone'
 import { RunDetails } from './RunDetails'
-import { whenBatchUpdates } from '../Signals/updates'
+import { whenBatchUpdates, whenRunUpdates, whenUploadUpdates } from '../Signals/updates'
 import { ItemError } from '../Types/API/ItemError'
 
 interface RunListProps {
@@ -47,6 +47,8 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   useEffect(() => {
     updateRunList()
     whenBatchUpdates(updateRunList)
+    whenUploadUpdates(updateRunList)
+    whenRunUpdates(updateRunList)
   }, [])
 
   const onToggle = (id: number) => {

@@ -4,6 +4,7 @@ import { Backdrop, Box, Button, CircularProgress, Dialog, DialogActions, DialogC
 import { Trans, useTranslation } from 'react-i18next'
 import { UploadFile } from '@mui/icons-material'
 import { useApp } from '../Hooks/useApp'
+import { signalUploadUpdate } from '../Signals/updates'
 
 /**
  * Format of the returned file data from the file uploader component.
@@ -92,6 +93,7 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
    */
   const onUpload = async () => {
     setUploading(true)
+    const interval = setInterval(signalUploadUpdate, 1000)
     await axios.post(`${url}?token=${app.auth.token}`, upload).then(resp => {
       setUploading(false)
       setUpload(null)
@@ -101,6 +103,7 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
       console.error(err)
       app.addError(t('File uploading failed.'))
     })
+    clearInterval(interval)
   }
 
   /**
