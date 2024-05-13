@@ -33,7 +33,7 @@ export class ItemErrorModel extends BaseModel<prisma.ItemError> {
    * @param processed
    */
   static async findForRuns(runIds: number[]): Promise<prisma.ItemError[]> {
-    return ItemErrorModel.db.findMany<prisma.ItemError, ItemErrorModel>({ where: { runId: { in: runIds }}})
+    return ItemErrorModel.db.findMany<prisma.ItemError, ItemErrorModel>({ where: { runId: { in: runIds } } })
   }
 
 }

@@ -6,7 +6,6 @@ import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { param } from '../lib/param'
 import { ItemErrorModel } from '../models/ItemErrorModel'
-import prisma from '@prisma/client'
 
 const router = express.Router()
 
