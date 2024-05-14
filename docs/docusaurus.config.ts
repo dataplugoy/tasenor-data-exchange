@@ -54,6 +54,13 @@ const config: Config = {
   },
 
   themeConfig: {
+
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
+    },
+
     navbar: {
       title: 'Tasenor Data Exchange',
       logo: {
