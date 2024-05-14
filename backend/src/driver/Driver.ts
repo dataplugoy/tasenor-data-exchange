@@ -1,7 +1,7 @@
 import path from 'path'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../models/SettingsModel'
-import { isShortDate, log } from '@tasenor/common'
+import { isShortDate } from '@tasenor/common'
 import { DriverSettings } from '../types/DriverSettings'
 import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'

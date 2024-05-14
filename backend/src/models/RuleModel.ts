@@ -71,7 +71,7 @@ export class RuleModel extends BaseModel<prisma.Rule> {
       if (lastModified > sourceRules[0].data.created) {
         for (const rule of sourceRules) {
           log(`Time stamp changed. Removing old rule ${rule}.`)
-          await this.db.delete({ where: { id: rule.id }})
+          await this.db.delete({ where: { id: rule.id } })
         }
       } else {
         return sourceRules
