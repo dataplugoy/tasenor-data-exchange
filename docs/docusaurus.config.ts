@@ -54,17 +54,69 @@ const config: Config = {
   },
 
   themeConfig: {
-    image: 'logo.png',
     navbar: {
       title: 'Tasenor Data Exchange',
+      logo: {
+        alt: 'Site Logo',
+        src: 'logo.png',
+        width: 32,
+        height: 32,
+      },
       items: process.env.NODE_ENV === 'dev' ? [
+        {
+          to: '/',
+          position: 'left',
+          label: 'Home',
+        },
+        {
+          to: 'service',
+          position: 'left',
+          label: 'Service',
+        },
+        {
+          to: 'team',
+          position: 'left',
+          label: 'Team',
+        },
+        {
+          to: 'contact',
+          position: 'left',
+          label: 'Contact',
+        },
         {
           type: 'docSidebar',
           sidebarId: 'docSidebarId',
           position: 'left',
           label: 'Documentation',
         },
-      ]: []
+      ]: [
+        {
+          to: '/',
+          position: 'left',
+          label: 'Home',
+        },
+        {
+          to: 'service',
+          position: 'left',
+          label: 'Service',
+        },
+        {
+          to: 'team',
+          position: 'left',
+          label: 'Team',
+        },
+        {
+          to: 'contact',
+          position: 'left',
+          label: 'Contact',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'docSidebarId',
+          position: 'left',
+          label: 'Documentation',
+        },
+      ]
     },
 
     footer: {
