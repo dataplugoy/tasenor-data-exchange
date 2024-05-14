@@ -73,7 +73,6 @@ export class TestMockDriver extends Driver {
           addPostfix('-5')
           break
         default:
-          console.log(flowPlan.lastStamp && DateTime.fromJSDate(flowPlan.lastStamp).toFormat('yyyy-LL-dd'))
           return ''
       }
     }

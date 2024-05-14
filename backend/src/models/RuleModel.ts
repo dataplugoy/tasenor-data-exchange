@@ -46,10 +46,7 @@ export class RuleModel extends BaseModel<prisma.Rule> {
     if (!source) {
       throw new Error(`Cannot find input source for flow ${flowPlanId}.`)
     }
-    let sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
-    if (sourceRules.length === 0) {
-      this.initializeRules(flowPlanId, source, driver)
-    }
+    const sourceRules = await this.refreshRules(flowPlanId, source, driver)
     const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flowPlanId, type: 'FLOW' }, [{ priority: 'desc' }])
 
     return sourceRules.concat(flowRules)
@@ -58,19 +55,35 @@ export class RuleModel extends BaseModel<prisma.Rule> {
   /**
    * Load rules to the database.
    */
-  private static async initializeRules(flowPlanId: number, source: InputSourceModel, driver: Driver): Promise<Record<string, RuleModel[]>> {
-    log(`Initializing rules for ${source}.`)
+  private static async refreshRules(flowPlanId: number, source: InputSourceModel, driver: Driver): Promise<RuleModel[]> {
+
+    const sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
 
     const rulePath = path.join(__dirname, '..', 'driver', 'rules', `${driver.constructor.name}.json`)
+
+    // Delete old if file changed.
+    if (sourceRules.length) {
+
+      const fd = fs.openSync(rulePath, 'r')
+      const lastModified = fs.fstatSync(fd).mtime
+      fs.closeSync(fd)
+
+      if (lastModified > sourceRules[0].data.created) {
+        for (const rule of sourceRules) {
+          log(`Time stamp changed. Removing old rule ${rule}.`)
+          await this.db.delete({ where: { id: rule.id }})
+        }
+      } else {
+        return sourceRules
+      }
+    }
+
     const rulesData = JSON.parse(fs.readFileSync(rulePath, 'utf-8'))
-    const rules: Record<string, RuleModel[]> = {}
+    const rules: RuleModel[] = []
+
+    log(`Initializing rules for ${source}.`)
 
     for (const ruleItem of rulesData) {
-      const key = ruleItem.key || ''
-      if (!rules[key]) {
-        rules[key] = []
-      }
-
       const rule = await RuleModel.save({
         filterView: {},
         resultView: {},
@@ -80,7 +93,7 @@ export class RuleModel extends BaseModel<prisma.Rule> {
       })
       log(`Created ${rule} called '${ruleItem.name}' for flow plan #${flowPlanId}.`)
 
-      rules[key].push(rule)
+      rules.push(rule)
     }
 
     return rules
