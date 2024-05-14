@@ -1,5 +1,4 @@
 import path from 'path'
-import fs from 'fs'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../models/SettingsModel'
 import { isShortDate, log } from '@tasenor/common'
@@ -10,7 +9,6 @@ import { BatchModel } from '../models/BatchModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { RuleModel } from '../models/RuleModel'
-import { InputSourceModel } from '../models/InputSourceModel'
 import { applyRules } from '../lib/rules'
 import { RunModel } from '../models/RunModel'
 import { DateTime } from 'luxon'
@@ -118,38 +116,6 @@ export class Driver {
   }
 
   /**
-   * Load rules to the database.
-   */
-  async initializeRules(flow: FlowPlanModel): Promise<Record<string, RuleModel[]>> {
-    const source = await InputSourceModel.findForFlow(flow.id)
-    log(`Initializing rules for ${source}.`)
-
-    const rulePath = path.join(__dirname, 'rules', `${this.constructor.name}.json`)
-    const rulesData = JSON.parse(fs.readFileSync(rulePath, 'utf-8'))
-    const rules: Record<string, RuleModel[]> = {}
-
-    for (const ruleItem of rulesData) {
-      const key = ruleItem.key || ''
-      if (!rules[key]) {
-        rules[key] = []
-      }
-
-      const rule = await RuleModel.save({
-        filterView: {},
-        resultView: {},
-        ...ruleItem,
-        type: 'INPUT_SOURCE',
-        ownerId: source?.id
-      })
-      log(`Created ${rule} called '${ruleItem.name}' for ${flow}.`)
-
-      rules[key].push(rule)
-    }
-
-    return rules
-  }
-
-  /**
    * Helper to implement rule based handling for unifying input items.
    * @param flow
    * @param input
@@ -181,7 +147,6 @@ export class Driver {
       time: `${time}`,
       processed: false,
       skipped: false,
-      error: null,
       flowPlanId: input.data.flowPlanId,
       batchId: input.data.batchId,
       runId: run.id,

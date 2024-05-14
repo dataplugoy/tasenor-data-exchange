@@ -1,6 +1,10 @@
+import path from 'path'
+import fs from 'fs'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { InputSourceModel } from './InputSourceModel'
+import { log } from '@tasenor/common'
+import { Driver } from '../driver/Driver'
 
 export class RuleModel extends BaseModel<prisma.Rule> {
 
@@ -37,14 +41,49 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlow(flowId: number): Promise<RuleModel[]> {
-    const source = await InputSourceModel.findForFlow(flowId)
+  static async findForFlow(flowPlanId: number, driver: Driver): Promise<RuleModel[]> {
+    const source = await InputSourceModel.findForFlow(flowPlanId)
     if (!source) {
-      throw new Error(`Cannot find input source for flow ${flowId}.`)
+      throw new Error(`Cannot find input source for flow ${flowPlanId}.`)
     }
-    const sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
-    const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flowId, type: 'FLOW' }, [{ priority: 'desc' }])
+    let sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
+    if (sourceRules.length === 0) {
+      this.initializeRules(flowPlanId, source, driver)
+    }
+    const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flowPlanId, type: 'FLOW' }, [{ priority: 'desc' }])
+
     return sourceRules.concat(flowRules)
+  }
+
+  /**
+   * Load rules to the database.
+   */
+  private static async initializeRules(flowPlanId: number, source: InputSourceModel, driver: Driver): Promise<Record<string, RuleModel[]>> {
+    log(`Initializing rules for ${source}.`)
+
+    const rulePath = path.join(__dirname, '..', 'driver', 'rules', `${driver.constructor.name}.json`)
+    const rulesData = JSON.parse(fs.readFileSync(rulePath, 'utf-8'))
+    const rules: Record<string, RuleModel[]> = {}
+
+    for (const ruleItem of rulesData) {
+      const key = ruleItem.key || ''
+      if (!rules[key]) {
+        rules[key] = []
+      }
+
+      const rule = await RuleModel.save({
+        filterView: {},
+        resultView: {},
+        ...ruleItem,
+        type: 'INPUT_SOURCE',
+        ownerId: source?.id
+      })
+      log(`Created ${rule} called '${ruleItem.name}' for flow plan #${flowPlanId}.`)
+
+      rules[key].push(rule)
+    }
+
+    return rules
   }
 
   /**
@@ -52,9 +91,9 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlowByKey(flowId: number): Promise<Record<string, RuleModel[]>> {
+  static async findForFlowByKey(flowId: number, driver: Driver): Promise<Record<string, RuleModel[]>> {
     const byKey: Record<string, RuleModel[]> = {}
-    const rules = await this.findForFlow(flowId)
+    const rules = await this.findForFlow(flowId, driver)
 
     for (const rule of rules) {
       const key = rule.data.key || ''

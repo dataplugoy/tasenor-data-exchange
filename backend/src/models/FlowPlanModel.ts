@@ -307,10 +307,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const partial: Record<string, UnifiedItem[]> = {}
       const partialID: Record<string, number> = {}
 
-      let rules = await RuleModel.findForFlowByKey(this.id)
-      if (RuleModel.count(rules) === 0) {
-        rules = await driver.initializeRules(this)
-      }
+      const rules = await RuleModel.findForFlowByKey(this.id, driver)
       let total = inputs.length
       let done = 0
       let skipped = 0
