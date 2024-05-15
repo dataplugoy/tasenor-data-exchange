@@ -18,8 +18,8 @@ nav.navbar {
 .navbar__title {
   color: #E3D344;
 
-  letter-spacing: 1px;
-
+  letter-spacing: 0.05rem;
+  font-size: 18pt;
   font-family: "Red Hat Display", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
@@ -31,10 +31,28 @@ nav.navbar {
 a.navbar__item.navbar__link {
   color: #fff;
 
-  letter-spacing: 2px;
-
+  letter-spacing: 0.1rem;
+  font-size: 16pt;
   font-family: "Montserrat", sans-serif ;
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
+}
+
+a.demo-button {
+  background-color: #4294d4;
+  border: #255fb0 3px solid;
+  color: white;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 2rem;
+  margin-right: 6rem;
+  margin-left: 8rem;
+
+  letter-spacing: 0.1rem;
+  font-size: 16pt;
+  font-weight: 900;
+  font-family: "Red Hat Display", sans-serif;
+
+  text-transform: uppercase;
 }

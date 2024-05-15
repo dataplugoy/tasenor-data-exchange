@@ -89,29 +89,35 @@ const config: Config = {
       items: process.env.NODE_ENV === 'dev' ? [
         {
           to: '/',
-          position: 'left',
+          position: 'right',
           label: 'Home',
         },
         {
           to: 'service',
-          position: 'left',
+          position: 'right',
           label: 'Service',
         },
         {
           to: 'team',
-          position: 'left',
+          position: 'right',
           label: 'Team',
         },
         {
           to: 'contact',
-          position: 'left',
+          position: 'right',
           label: 'Contact',
         },
         {
           type: 'docSidebar',
           sidebarId: 'docSidebarId',
-          position: 'left',
+          position: 'right',
           label: 'Documentation',
+        },
+        {
+          to: 'https://tadex.stg.tasenor.com/app/register',
+          class: 'demo-button',
+          position: 'right',
+          label: 'Try Demo',
         },
       ]: [
         {
