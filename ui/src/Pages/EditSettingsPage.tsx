@@ -85,8 +85,8 @@ export const EditSettingsPage = (): React.JSX.Element => {
       </DialogContent>
 
       <DialogActions>
-        <Button variant="outlined" onClick={() => setDeleting(false)}><Trans>Cancel</Trans></Button>
-        <Button onClick={onDelete}><Trans>Delete</Trans></Button>
+        <Button data-cy="DialogButton-Cancel" variant="outlined" onClick={() => setDeleting(false)}><Trans>Cancel</Trans></Button>
+        <Button data-cy="DialogButton-Delete" onClick={onDelete}><Trans>Delete</Trans></Button>
       </DialogActions>
     </Dialog>
 

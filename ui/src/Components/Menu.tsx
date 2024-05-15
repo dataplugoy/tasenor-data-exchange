@@ -38,15 +38,15 @@ export const Menu = (): React.JSX.Element => {
   return (
     <AppBar position="static">
       <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 2fr auto' }}>
-        <Button startIcon={<Home />} onClick={() => navigate(`/home${add}`)}><Trans>Dashboard</Trans></Button>
-        <Button startIcon={<Rule />} onClick={() => navigate(`/results${add}`)}><Trans>Results</Trans></Button>
-        <Button startIcon={<AccountTree />}><Trans>Rules</Trans></Button>
-        <Button startIcon={<MiscellaneousServices />}><Trans>Services</Trans></Button>
-        <Button startIcon={<Settings />} onClick={() => navigate(`/settings${add}`)}><Trans>Settings</Trans></Button>
+        <Button data-cy="Menu-Dashboard" startIcon={<Home />} onClick={() => navigate(`/home${add}`)}><Trans>Dashboard</Trans></Button>
+        <Button data-cy="Menu-Results" startIcon={<Rule />} onClick={() => navigate(`/results${add}`)}><Trans>Results</Trans></Button>
+        <Button data-cy="Menu-Rules" startIcon={<AccountTree />}><Trans>Rules</Trans></Button>
+        <Button data-cy="Menu-Services" startIcon={<MiscellaneousServices />}><Trans>Services</Trans></Button>
+        <Button data-cy="Menu-Settings" startIcon={<Settings />} onClick={() => navigate(`/settings${add}`)}><Trans>Settings</Trans></Button>
         <Box sx={{ textAlign: 'right' }}>
-          <Button startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>
+          <Button data-cy="Menu-Logout" startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>
         </Box>
-        <IconButton onClick={onOpen}><Language sx={{ color: 'primary.main' }}/></IconButton>
+        <IconButton data-cy="Menu-Language" onClick={onOpen}><Language sx={{ color: 'primary.main' }}/></IconButton>
       </Toolbar>
       <MuiMenu
         data-cy="language-menu"

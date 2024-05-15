@@ -1,4 +1,4 @@
-describe('Flow Plan', () => {
+describe('Flow Plans', () => {
   it('Log in to the system and run batches', () => {
     cy.login()
 
@@ -45,5 +45,23 @@ describe('Flow Plan', () => {
     cy.get('body').should('not.contain', 'Rules')
     cy.get('body').should('not.contain', 'Logout')
     cy.get('body').should('contain', 'Login')
+  })
+
+  it('Create and delete flow plan', () => {
+    cy.login()
+
+    cy.get('[data-cy="Data Flow Plans"]').contains('Create New').click()
+    cy.get('input[name="name"]').type('Testing Deletion')
+    cy.get('[data-cy="Data Source"]').click()
+    cy.get('[data-value="TEST_MOCK"]').click()
+    cy.get('input[name="fileUrl"]').type('does/not/matter.csv')
+
+    cy.get('button').contains('Create').click()
+    cy.get('body').should('contain', 'Data Flow Plan: Testing Deletion')
+
+    cy.get('[data-cy="Menu-Settings"]').click()
+    cy.get('button').contains('Delete This Flow Plan').click()
+    cy.get('[data-cy="DialogButton-Delete"]').click()
+
   })
 })
