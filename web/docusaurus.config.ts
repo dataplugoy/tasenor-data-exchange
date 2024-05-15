@@ -122,29 +122,13 @@ const config: Config = {
       ]: [
         {
           to: '/',
-          position: 'left',
+          position: 'right',
           label: 'Home',
         },
         {
           to: 'service',
-          position: 'left',
+          position: 'right',
           label: 'Service',
-        },
-        {
-          to: 'team',
-          position: 'left',
-          label: 'Team',
-        },
-        {
-          to: 'contact',
-          position: 'left',
-          label: 'Contact',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'docSidebarId',
-          position: 'left',
-          label: 'Documentation',
         },
       ]
     },
@@ -153,7 +137,7 @@ const config: Config = {
       style: 'dark',
       links: [
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Dataplug Oy`,
+      copyright: `${new Date().getFullYear()} Copyright © Dataplug Oy`,
     },
 
     prism: {

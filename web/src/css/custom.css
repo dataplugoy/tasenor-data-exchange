@@ -59,5 +59,14 @@ a.demo-button {
 
 
 .footer.footer {
+  margin-top: -7px;
   background-color: #004AAD;
+  color: #E3D344;
+
+  letter-spacing: 0.08rem;
+  font-size: 12pt;
+  font-family: "Montserrat", sans-serif ;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
 }
