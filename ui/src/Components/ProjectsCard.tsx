@@ -14,7 +14,7 @@ export const ProjectsCard = (props: ProjectsCardProps): React.JSX.Element => {
   const app = useApp()
 
   return (
-    <Card>
+    <Card data-cy="Projects">
       <CardHeader
         avatar={<AccountTree sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
         title={<Typography variant="subtitle1"><Trans>Projects</Trans></Typography>}

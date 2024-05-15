@@ -45,10 +45,10 @@ export const RegisterPage = (): React.JSX.Element => {
       <TextField fullWidth onChange={e => setName(e.target.value)} value={name} name="name" label={t('Name')}/>
       <TextField fullWidth onChange={e => setAddress(e.target.value)} value={address} name="address" label={t('Address')}/>
       <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <TextField onChange={e => setZip(e.target.value)} value={zip} name="name" label={t('Zip')}/>
-        <TextField onChange={e => setCity(e.target.value)} value={city} name="name" label={t('City')}/>
+        <TextField onChange={e => setZip(e.target.value)} value={zip} name="zip" label={t('Zip')}/>
+        <TextField onChange={e => setCity(e.target.value)} value={city} name="city" label={t('City')}/>
       </Box>
-      <TextField fullWidth onChange={e => setCountry(e.target.value)} value={country} name="address" label={t('Country')}/>
+      <TextField fullWidth onChange={e => setCountry(e.target.value)} value={country} name="country" label={t('Country')}/>
 
       <Button sx={{ mt: 2 }} onClick={onRegister} variant="outlined"><Trans>Register</Trans></Button>
     </Box>

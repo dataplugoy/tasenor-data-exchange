@@ -1,4 +1,13 @@
 {
   "user": "test@localhost",
-  "password": "pass"
+  "password": "pass",
+  "register": {
+    "user": "registered@localhost",
+    "password": "passPASS1",
+      "name": "Registered Tester",
+      "address": "Testroad 11",
+      "city": "New York",
+      "zip": "12345",
+      "country": "USA"
+  }
 }

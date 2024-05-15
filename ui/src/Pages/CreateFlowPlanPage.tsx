@@ -86,16 +86,18 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
       <Box sx={{ mt: 5, textAlign: 'center', ml: '35%' }}>
         <Box sx={{ display: 'grid', textAlign: 'left', gridTemplateColumns: '50%', rowGap: '1rem' }}>
-          <TextField autoComplete="off" required fullWidth onChange={e => setTitle(e.target.value)} value={title} name="title" label={t('Name')}/>
+          <TextField autoComplete="off" required fullWidth onChange={e => setTitle(e.target.value)} value={title} name="name" label={t('Name')}/>
 
-          <TextField select label={t('Data Source')} value={input} onChange={e => setInput(e.target.value)}>
+          <TextField data-cy="Data Source" select label={t('Data Source')} value={input} onChange={e => setInput(e.target.value)}>
             {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK"><Trans>Fixed Test File</Trans></MenuItem>}
             <MenuItem value="ENABLE_BANKING"><Trans>Enable Banking Service</Trans></MenuItem>
             <MenuItem value="NORDNET"><Trans>Upload Nordnet Statement</Trans></MenuItem>
           </TextField>
 
           {
-            input === 'TEST_MOCK' && <TextField autoComplete="off" required fullWidth onChange={e => setFileUrl(e.target.value)} value={fileUrl} name="fileUrl" label={t('File URL')}/>
+            input === 'TEST_MOCK' && <>
+              <TextField autoComplete="off" required fullWidth onChange={e => setFileUrl(e.target.value)} value={fileUrl} name="fileUrl" label={t('File URL')}/>
+            </>
           }
 
           <TextField select label={t('Bookkeeping Destination')} value={output} onChange={e => setOutput(e.target.value)}>

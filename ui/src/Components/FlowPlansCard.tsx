@@ -22,7 +22,7 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
   }
 
   return (
-    <Card>
+    <Card data-cy="Data Flow Plans">
       <CardHeader
         avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
         title={<Typography variant="subtitle1"><Trans>Data Flow Plans</Trans></Typography>}
