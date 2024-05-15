@@ -10,3 +10,31 @@
 [data-theme='dark']:root {
   background-color: #222;
 }
+
+nav.navbar {
+  background-color: #131345;
+}
+
+.navbar__title {
+  color: #E3D344;
+
+  letter-spacing: 1px;
+
+  font-family: "Red Hat Display", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+
+  text-transform: uppercase;
+}
+
+a.navbar__item.navbar__link {
+  color: #fff;
+
+  letter-spacing: 2px;
+
+  font-family: "Montserrat", sans-serif ;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
