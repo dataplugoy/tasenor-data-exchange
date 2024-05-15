@@ -1,5 +1,11 @@
 import { Alert } from './API/Alert'
+import { UploadAlert } from './Classes/UploadAlert'
 
+/**
+ * Check if an object is Alert data.
+ * @param obj
+ * @returns
+ */
 export function isAlert(obj: unknown): obj is Alert {
   if (typeof obj !== 'object' || obj === null) {
     return false
@@ -14,4 +20,14 @@ export function isAlert(obj: unknown): obj is Alert {
   }
 
   return obj.method === 'INTERACTIVE'
+}
+
+/**
+ * Instantiate selected alert class.
+ * @param alert
+ */
+export function getAlert(alert: Alert) {
+  if (alert.type === 'UPLOAD_REQUIRED') {
+    return new UploadAlert(alert)
+  }
 }

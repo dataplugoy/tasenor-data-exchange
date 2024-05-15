@@ -6,7 +6,7 @@ import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useGET } from '../Hooks/useNet'
 import { signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
-import { isAlert } from '../Types/isAlert'
+import { isAlert } from '../Types/alerts'
 import { FileUploader } from './FileUploader'
 
 interface FlowPlanInfoProps {
@@ -19,19 +19,23 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const { plan, project, button } = props
   const [running, setRunning] = useState(false)
   const GET = useGET()
-  const [upload, setUpload] = useState('')
+  const [text, setText] = useState('')
   const [uploadUrl, setUploadUrl] = useState('')
   const { t } = useTranslation()
 
   const onRun = async () => {
+
     setRunning(true)
     const interval = setInterval(signalRunUpdate, 1000)
     const res = await GET(`/flow-plans/${plan.id}/run`)
     clearInterval(interval)
     setRunning(false)
+
     if (isAlert(res)) {
+      // Perhaps make alert handler doing the most. Pass onUploadCancel and onUploadSuccess among other things.
+      // Implement toggle query first.
       if (res.type === 'UPLOAD_REQUIRED') {
-        setUpload(res.payload)
+        setText(res.payload)
         setUploadUrl(res.url)
       }
     } else {
@@ -40,18 +44,19 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   }
 
   const onUploadCancel = async () => {
-    setUpload('')
+    setText('')
     signalBatchUpdate()
   }
 
   const onUploadSuccess = async () => {
-    setUpload('')
+    setText('')
     signalBatchUpdate()
   }
 
   return (
     <>
-      <FileUploader onCancel={onUploadCancel} onSuccess={onUploadSuccess} visible={!!upload} text={upload} url={uploadUrl} title={t('Upload a File')}/>
+      <FileUploader onCancel={onUploadCancel} onSuccess={onUploadSuccess} visible={!!text} text={text} url={uploadUrl} title={t('Upload a File')}/>
+
       <Card>
         <CardHeader
           avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
