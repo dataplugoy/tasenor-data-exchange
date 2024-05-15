@@ -130,6 +130,12 @@ const config: Config = {
           position: 'right',
           label: 'Service',
         },
+        {
+          to: 'https://tadex.stg.tasenor.com/app/register',
+          class: 'demo-button',
+          position: 'right',
+          label: 'Try Demo',
+        },
       ]
     },
 
