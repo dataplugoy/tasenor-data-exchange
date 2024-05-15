@@ -35,6 +35,13 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
   }
 
   /**
+   * Delete this item.
+   */
+  async destroy(): Promise<void> {
+    await UnifiedItemModel.delete(this.id)
+  }
+
+  /**
    * Update stock chane for this item.
    * @param stockChange
    */
@@ -50,6 +57,16 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    */
   static async save(data: Partial<prisma.UnifiedItem>): Promise<UnifiedItemModel> {
     return UnifiedItemModel.create<prisma.UnifiedItem, UnifiedItemModel>(data)
+  }
+
+  /**
+   * Get the unified items for the run.
+   * @param run
+   * @returns
+   */
+  static async findForRun(runId: number): Promise<UnifiedItemModel[]> {
+    const items = await this.findMany<prisma.UnifiedItem, UnifiedItemModel>({ runId })
+    return items
   }
 
   /**

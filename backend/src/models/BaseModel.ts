@@ -160,4 +160,11 @@ export class BaseModel<T extends MinimalModel> {
     const items = await this.db.findMany({ where: condition, orderBy: order })
     return items.map(item => this.instantiate<T, C>(item))
   }
+
+  /**
+   * Delete the instance from the database.
+   */
+  static async delete(id: number): Promise<void> {
+    await this.db.delete({ where: { id } })
+  }
 }

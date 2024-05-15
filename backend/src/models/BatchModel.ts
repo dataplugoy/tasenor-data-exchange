@@ -39,6 +39,17 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   /**
+   * Delete this and everything related.
+   */
+  async destroy(): Promise<void> {
+    const runs = await RunModel.findForBatch(this.id)
+    for (const run of runs) {
+      await run.destroy()
+    }
+    await BatchModel.delete(this.id)
+  }
+
+  /**
    * Initialize running.
    */
   async startRun(): Promise<RunModel> {

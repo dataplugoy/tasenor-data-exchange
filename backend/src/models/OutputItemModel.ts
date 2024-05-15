@@ -33,12 +33,28 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
+   * Delete this item.
+   */
+  async destroy(): Promise<void> {
+    await OutputItemModel.delete(this.id)
+  }
+
+  /**
    * Save item to the DB.
    * @param data
    * @returns
    */
   static async save(data: Partial<prisma.OutputItem>): Promise<OutputItemModel> {
     return OutputItemModel.create<prisma.OutputItem, OutputItemModel>(data)
+  }
+
+  /**
+   * Get the output items for the run.
+   * @param run
+   * @returns
+   */
+  static async findForRun(runId): Promise<OutputItemModel[]> {
+    return await this.findMany<prisma.OutputItem, OutputItemModel>({ runId })
   }
 
   /**

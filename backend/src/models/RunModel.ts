@@ -3,6 +3,10 @@ import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
 import { RunResult } from '../types/API/Run'
 import { AlertException } from '../exceptions/AlertException'
+import { InputItemModel } from './InputItemModel'
+import { UnifiedItemModel } from './UnifiedItemModel'
+import { ItemErrorModel } from './ItemErrorModel'
+import { OutputItemModel } from './OutputItemModel'
 
 export class RunModel extends BaseModel<prisma.Run> {
 
@@ -32,6 +36,29 @@ export class RunModel extends BaseModel<prisma.Run> {
   async success(state: prisma.BatchState): Promise<void> {
     this.data.finalState = state
     await RunModel.update<prisma.Run, RunModel>(this, { finalState: state })
+  }
+
+  /**
+   * Delete this and everything related.
+   */
+  async destroy(): Promise<void> {
+    const errors = await ItemErrorModel.findForRun(this.id)
+    for (const item of errors) {
+      await item.destroy()
+    }
+    const inputs = await InputItemModel.findForRun(this.id)
+    for (const item of inputs) {
+      await item.destroy()
+    }
+    const unifieds = await UnifiedItemModel.findForRun(this.id)
+    for (const item of unifieds) {
+      await item.destroy()
+    }
+    const outputs = await OutputItemModel.findForRun(this.id)
+    for (const item of outputs) {
+      await item.destroy()
+    }
+    await RunModel.delete(this.id)
   }
 
   /**

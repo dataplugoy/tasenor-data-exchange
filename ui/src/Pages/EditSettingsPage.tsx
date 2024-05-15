@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FlowPlanResponse } from '../Types/API/flow-plans/FlowPlanResponse'
-import { useGET, usePATCH } from '../Hooks/useNet'
+import { useDELETE, useGET, usePATCH } from '../Hooks/useNet'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import { InputSource } from '../Types/API/InputSource'
@@ -19,11 +19,13 @@ export const EditSettingsPage = (): React.JSX.Element => {
   const navigate = useNavigate()
   const GET = useGET<FlowPlanResponse>()
   const PATCH = usePATCH<Setup>()
+  const DELETE = useDELETE()
   const GETInput = useGET<InputSource>()
   const GETOutput = useGET<OutputDestination>()
   const [setup, setSetup] = useState<Setup|null>(null)
   const [output, setOutput] = useState<OutputDestination|null>(null)
   const [input, setInput] = useState<InputSource|null>(null)
+  const [deleting, setDeleting] = useState(false)
   const hasRemoteAccounts = ['TASENOR'].includes(`${output?.type}`)
   const app = useApp()
   const { t } = useTranslation()
@@ -46,6 +48,13 @@ export const EditSettingsPage = (): React.JSX.Element => {
     })
   }
 
+  const onDelete = async () => {
+    // TODO: Move backdrop from FileUploader.tsx to useApp and use here.
+    setDeleting(false)
+    await DELETE(`/flow-plans/${params.id}`)
+    navigate('/')
+  }
+
   return <Box>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
       <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/settings')}><Clear/></IconButton> <Trans>Edit Settings</Trans>
@@ -57,6 +66,29 @@ export const EditSettingsPage = (): React.JSX.Element => {
       {setup && input && <InputSettingsCard setup={setup} input={input}/>}
       {setup && output && <OutputSettingsCard setup={setup} output={output}/>}
     </Box>
+
+    <Box sx={{ mt: 3 }}>
+      <Button color="error" variant="text" onClick={() => setDeleting(true)}>Delete This Flow Plan</Button>
+    </Box>
+
+    <Dialog open={deleting} fullWidth>
+      <DialogTitle>Deleting the Flow Plan</DialogTitle>
+
+      <DialogContent>
+        <DialogContentText sx={{ mb: 2 }}>
+          <Trans>This does not delete possible transactions created on any remote site.</Trans><> </>
+          <Trans>However, all data and history will be deleted from this site.</Trans><> </>
+          <Box component="span" sx={{ fontWeight: 'bold' }}>
+            <Trans sx={{}}>Are You sure?</Trans>
+          </Box>
+        </DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button variant="outlined" onClick={() => setDeleting(false)}><Trans>Cancel</Trans></Button>
+        <Button onClick={onDelete}><Trans>Delete</Trans></Button>
+      </DialogActions>
+    </Dialog>
 
   </Box>
 }

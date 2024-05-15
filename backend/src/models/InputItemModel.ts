@@ -40,6 +40,13 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
   }
 
   /**
+   * Delete this item.
+   */
+  async destroy(): Promise<void> {
+    await InputItemModel.delete(this.id)
+  }
+
+  /**
    * Mark this input handling as a failure.
    */
   async fail(run: RunModel, err: Error): Promise<void> {
@@ -81,6 +88,16 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    */
   static async findForBatch(batchId: number, processed: boolean | undefined = undefined): Promise<InputItemModel[]> {
     const items = await this.findMany<prisma.InputItem, InputItemModel>({ batchId, processed })
+    return items
+  }
+
+  /**
+   * Get the input items for the run.
+   * @param run
+   * @returns
+   */
+  static async findForRun(runId: number): Promise<InputItemModel[]> {
+    const items = await this.findMany<prisma.InputItem, InputItemModel>({ runId })
     return items
   }
 

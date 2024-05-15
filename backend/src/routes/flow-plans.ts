@@ -193,4 +193,13 @@ router.patch('/:id/setup',
   }
 )
 
+router.delete('/:id',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    await res.locals.flowPlan.destroy()
+    res.sendStatus(204)
+  }
+)
+
 export default router

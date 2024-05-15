@@ -11,6 +11,13 @@ export class ItemErrorModel extends BaseModel<prisma.ItemError> {
   static construct = ItemErrorModel
 
   /**
+   * Delete this item.
+   */
+  async destroy(): Promise<void> {
+    await ItemErrorModel.delete(this.id)
+  }
+
+  /**
    * Add an item specific error for a run.
    * @param run
    * @param item
@@ -29,11 +36,17 @@ export class ItemErrorModel extends BaseModel<prisma.ItemError> {
 
   /**
    * Find errors for a list of runs.
-   * @param batchId
-   * @param processed
+   * @param runIds
    */
   static async findForRuns(runIds: number[]): Promise<prisma.ItemError[]> {
     return ItemErrorModel.db.findMany<prisma.ItemError, ItemErrorModel>({ where: { runId: { in: runIds } } })
   }
 
+  /**
+   * Find errors for a run.
+   * @param runId
+   */
+  static async findForRun(runId: number): Promise<ItemErrorModel[]> {
+    return await this.findMany<prisma.ItemError, ItemErrorModel>({ runId })
+  }
 }

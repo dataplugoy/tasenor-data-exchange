@@ -88,6 +88,21 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Delete this and everything related.
+   */
+  async destroy(): Promise<void> {
+    const batches = await BatchModel.findForFlow(this.id)
+    const source = await this.getSource()
+    const destination = await this.getDestination()
+    await source.destroy()
+    await destination.destroy()
+    for (const batch of batches) {
+      await batch.destroy()
+    }
+    FlowPlanModel.delete(this.id)
+  }
+
+  /**
    * Update the setup fields.
    * @param state
    */

@@ -23,6 +23,13 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
   }
 
   /**
+   * Delete this and everything related.
+   */
+  async destroy(): Promise<void> {
+    await OutputDestinationModel.delete(this.id)
+  }
+
+  /**
    * Change settings.
    * @param patch
    */

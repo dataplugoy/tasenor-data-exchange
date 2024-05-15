@@ -79,3 +79,14 @@ export function usePOST<T>() {
 
   return (url: string, data: Record<string, unknown>): Promise<T | null> => request<T | null>(t, app, 'POST', url, data)
 }
+
+/**
+ * Execute DELETE request and handle errors.
+ * @returns
+ */
+export function useDELETE<T>() {
+  const { t } = useTranslation()
+  const app = useApp()
+
+  return (url: string): Promise<T | null> => request<T | null>(t, app, 'DELETE', url)
+}

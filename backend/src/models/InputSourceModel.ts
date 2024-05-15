@@ -23,6 +23,13 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
   }
 
   /**
+   * Delete this and everything related.
+   */
+  async destroy(): Promise<void> {
+    await InputSourceModel.delete(this.id)
+  }
+
+  /**
    * Get the input source information for a flow.
    * @param flow
    * @returns
