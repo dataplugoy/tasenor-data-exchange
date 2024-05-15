@@ -2,7 +2,7 @@ import { AppBar, Toolbar, Button, Box, IconButton, Menu as MuiMenu, MenuItem } f
 import { AccountTree, Home, Language, Logout, MiscellaneousServices, Rule, Settings } from '@mui/icons-material'
 import React, { useState } from 'react'
 import { Trans } from 'react-i18next'
-import { DEFAULT_USER, useApp } from '../Hooks/useApp'
+import { DEFAULT_PROJECT, DEFAULT_USER, useApp } from '../Hooks/useApp'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 export const Menu = (): React.JSX.Element => {
@@ -14,6 +14,7 @@ export const Menu = (): React.JSX.Element => {
 
   const onLogout = () => {
     app.setAuth({ token: null, user: DEFAULT_USER })
+    app.setProject(DEFAULT_PROJECT)
     navigate('/')
   }
   const onOpen = (event: React.MouseEvent<HTMLElement>) => {
