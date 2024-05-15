@@ -61,15 +61,15 @@ services:
       VIRTUAL_PORT: 7302
     command: pnpm run docker
 
-  tadex-docs:
-    container_name: tadex-docs
+  tadex-web:
+    container_name: tadex-web
     build:
-      context: docs
+      context: web
     ports:
       - 7304:7304
     environment:
       PORT: 7304
       NODE_ENV: dev
-      VIRTUAL_HOST: tadex-docs.localhost
+      VIRTUAL_HOST: tadex-web.localhost
       VIRTUAL_PORT: 7304
     command: pnpm run docker

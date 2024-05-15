@@ -1,5 +1,5 @@
 {
-  "name": "@tasenor/tadex-docs",
+  "name": "@tasenor/tadex-web",
   "description": "TaDeX documentation",
   "scripts": {
     "dev": "NODE_ENV=dev docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify",

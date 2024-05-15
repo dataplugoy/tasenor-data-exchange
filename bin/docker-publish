@@ -67,14 +67,14 @@ if [ "$1" == latest ]; then
   echo docker push dataplug/tasenor:tadex-db-latest
   docker push dataplug/tasenor:tadex-db-latest
 
-  echo docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-${VERSION}
-  docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-${VERSION}
-  echo docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-latest
-  docker tag tasenor-data-exchange-tadex-docs:latest dataplug/tasenor:tadex-docs-latest
-  echo docker push dataplug/tasenor:tadex-docs-${VERSION}
-  docker push dataplug/tasenor:tadex-docs-${VERSION}
-  echo docker push dataplug/tasenor:tadex-docs-latest
-  docker push dataplug/tasenor:tadex-docs-latest
+  echo docker tag tasenor-data-exchange-tadex-web:latest dataplug/tasenor:tadex-web-${VERSION}
+  docker tag tasenor-data-exchange-tadex-web:latest dataplug/tasenor:tadex-web-${VERSION}
+  echo docker tag tasenor-data-exchange-tadex-web:latest dataplug/tasenor:tadex-web-latest
+  docker tag tasenor-data-exchange-tadex-web:latest dataplug/tasenor:tadex-web-latest
+  echo docker push dataplug/tasenor:tadex-web-${VERSION}
+  docker push dataplug/tasenor:tadex-web-${VERSION}
+  echo docker push dataplug/tasenor:tadex-web-latest
+  docker push dataplug/tasenor:tadex-web-latest
 
 elif [ "$1" == prod ]; then
 
