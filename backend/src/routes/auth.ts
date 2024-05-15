@@ -38,7 +38,7 @@ router.post('/',
       }
     }
 
-    res.status(401).send({ message: 'Invalid user or password.' })
+    res.status(403).send({ message: 'Invalid user or password.' })
   }
 )
 
