@@ -25,6 +25,7 @@ router.post('/',
     const project = await ProjectModel.get(projectId)
 
     if (!project || project.data.userId !== userId) {
+      error('Project missing or different user.')
       return res.sendStatus(400)
     }
 
