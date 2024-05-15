@@ -1,6 +1,6 @@
 import express from 'express'
 import { UserModel } from '../models/UserModel'
-import { compare, sign } from '../lib/crypt'
+import { compare, hash, sign } from '../lib/crypt'
 import AuthRequest from '../../src/types/API/auth/AuthRequest.json'
 import RegisterRequest from '../../src/types/API/auth/RegisterRequest.json'
 import { ProjectModel } from '../models/ProjectModel'
@@ -62,7 +62,15 @@ router.post('/register',
     if (!name) {
       return res.status(400).send({ message: 'Name is required.' })
     }
-    const user = await UserModel.save({ email, password, name, address, zip, city, country })
+    const user = await UserModel.save({
+      email,
+      password: await hash(password),
+      name,
+      address,
+      zip,
+      city,
+      country
+    })
     const token = await sign({ id: user.id }, 'tadex-api')
 
     const project = await ProjectModel.save({ userId: user.id, name: projectName, settings: { currency: 'EUR', language: 'fi' } })

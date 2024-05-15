@@ -1187,7 +1187,7 @@ SELECT pg_catalog.setval('public.output_items_id_seq', 10, true);
 -- Name: projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
+SELECT pg_catalog.setval('public.projects_id_seq', 2, false);
 
 
 --
@@ -1229,7 +1229,7 @@ SELECT pg_catalog.setval('public.unified_items_id_seq', 8, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+SELECT pg_catalog.setval('public.users_id_seq', 2, false);
 
 
 --
@@ -1592,4 +1592,3 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
-
