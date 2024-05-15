@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
-import { usePOST } from '../Hooks/useNet'
+import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { useApp } from '../Hooks/useApp'
 import { useNavigate } from 'react-router-dom'
+import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 
 export const RegisterPage = (): React.JSX.Element => {
 
@@ -18,6 +19,7 @@ export const RegisterPage = (): React.JSX.Element => {
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
   const POST = usePOST<AuthResponse>()
+  const GET = useGET<ProjectResponse>()
   const app = useApp()
   const navigate = useNavigate()
 
@@ -31,7 +33,10 @@ export const RegisterPage = (): React.JSX.Element => {
     POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project') }).then(async (res) => {
       if (res) {
         app.setAuth(res)
-        navigate('/')
+        GET(`/projects/${res.user.settings.projectId}?token=${res.token}`).then(res => {
+          res && app.setProject(res)
+          navigate('/')
+        })
       }
     })
   }
