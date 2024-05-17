@@ -14,11 +14,11 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
   const navigate = useNavigate()
 
   const onClickRow = (id: number) => {
-    navigate(`/flow-plan/${id}`)
+    navigate(`/flow-plans/${id}`)
   }
 
   const onCreateNew = () => {
-    navigate('/flow-plan/new')
+    navigate('/flow-plans/new')
   }
 
   return (
