@@ -4,8 +4,7 @@ import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { InputSourceModel } from './InputSourceModel'
 import { log } from '@tasenor/common'
-import { Driver } from '../driver/Driver'
-import { FlowPlanModel } from './FlowPlanModel'
+import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
 
 export class RuleModel extends BaseModel<prisma.Rule> {
 
@@ -18,6 +17,17 @@ export class RuleModel extends BaseModel<prisma.Rule> {
 
   get result(): string {
     return this.data.result as string
+  }
+
+  get name(): string {
+    return this.data.name
+  }
+
+  /**
+   * Delete this and everything related.
+   */
+  async destroy(): Promise<void> {
+    await RuleModel.delete(this.id)
   }
 
   /**
@@ -33,7 +43,11 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param data
    * @returns
    */
-  static async save(data: Partial<prisma.InputItem>): Promise<RuleModel> {
+  static async save(data: RuleModel | Partial<prisma.Rule>): Promise<RuleModel> {
+    if (data instanceof RuleModel) {
+      await RuleModel.update<prisma.Rule, RuleModel>(data, data.data)
+      return data
+    }
     return RuleModel.create<prisma.Rule, RuleModel>(data)
   }
 

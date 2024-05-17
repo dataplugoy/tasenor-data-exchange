@@ -9,7 +9,7 @@ const cache: Record<string, Promise<any>> = {}
 /**
  * Helper to run HTTP requests.
  */
-async function request<T>(t, app: AppContextProps, method: HttpMethod, url: string, data: Record<string, unknown> | undefined = undefined): Promise<T> {
+async function request<T>(t, app: AppContextProps, method: HttpMethod, url: string, data: unknown[] | Record<string, unknown> | undefined = undefined): Promise<T> {
 
   const headers: { Authorization?: string } = {}
 
@@ -27,6 +27,7 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
   })
     .then(res => {
       if (method === 'GET') delete cache[url]
+      if (res.status === 204) return true
       return res.data
     })
     .catch(err => {
@@ -66,7 +67,7 @@ export function usePATCH<T>() {
   const { t } = useTranslation()
   const app = useApp()
 
-  return (url: string, data: Record<string, unknown>): Promise<T | null> => request<T | null>(t, app, 'PATCH', url, data)
+  return (url: string, data: unknown[] | Record<string, unknown>): Promise<T | null> => request<T | null>(t, app, 'PATCH', url, data)
 }
 
 /**

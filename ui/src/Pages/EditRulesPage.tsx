@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, IconButton, Typography } from '@mui/material'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Clear } from '@mui/icons-material'
 import { RulesEditor } from '../Components/RulesEditor'
-import { useGET } from '../Hooks/useNet'
+import { useGET, usePATCH } from '../Hooks/useNet'
 import { FlowPlanRulesResponse } from '../Types/API/flow-plans/FlowPlanRulesResponse'
 import { EditableRule } from '../Types/EditableRule'
+import { useApp } from '../Hooks/useApp'
 
 export const EditRulesPage = (): React.JSX.Element => {
   const params = useParams()
   const navigate = useNavigate()
   const GET = useGET<FlowPlanRulesResponse>()
+  const PATCH = usePATCH()
   const [rules, setRules] = useState<EditableRule[]>([])
+  const app = useApp()
+  const { t } = useTranslation()
 
   useEffect(() => {
     GET(`/flow-plans/${params.id}/rules`).then(res => {
@@ -26,7 +30,9 @@ export const EditRulesPage = (): React.JSX.Element => {
   }, [])
 
   const onSave = () => {
-    // TODO: Saving.
+    PATCH(`/flow-plans/${params.id}/rules`, rules).then(res => {
+      if (res) app.addInfo(t('Rules saved succssfully.'))
+    })
   }
 
   const onDownload = () => {

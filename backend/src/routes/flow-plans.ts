@@ -211,10 +211,52 @@ router.get('/:id/rules',
   authorize(),
   param('flowPlanId'),
   async (req, res) => {
-    const source = await res.locals.flowPlan.getSource()
     const name = await res.locals.flowPlan.getInputDriverName()
     const rules = await RuleModel.findForFlow(res.locals.id, `${name}.json`)
     res.send(rules.map(rule => rule.data))
+  }
+)
+
+router.patch('/:id/rules',
+  authorize(),
+  param('flowPlanId'),
+  // TODO: Validate.
+  async (req, res) => {
+    const name = await res.locals.flowPlan.getInputDriverName()
+    const rules = await (await RuleModel.findForFlow(res.locals.id, `${name}.json`)).reduce((prev, cur) => ({...prev, [cur.name]: cur}), {})
+    const oldRules = new Set(Object.keys(rules))
+
+    for (const rule of req.body) {
+      if (oldRules.has(rule.name)) {
+        log(`Updating old rule ${rules[rule.name]}`)
+        const {filter, key, result} = rule
+        rules[rule.name].data.filter = filter
+        rules[rule.name].data.key = key || null
+        rules[rule.name].data.result = result
+        RuleModel.save(rules[rule.name])
+        oldRules.delete(rule.name)
+      } else {
+        RuleModel.save({
+          type: 'INPUT_SOURCE',
+          ownerId: res.locals.id,
+          name: rule.name,
+          key: rule.key || null,
+          priority: 50,
+          filter: rule.filter,
+          result: rule.result,
+          filterView: {},
+          resultView: {},
+        })
+        log(`Creating new rule ${JSON.stringify(rule)}.`)
+      }
+    }
+
+    for (const name of [...oldRules]) {
+      log(`Removing ${rules[name]}`)
+      await rules[name].destroy()
+    }
+
+    res.sendStatus(204)
   }
 )
 
