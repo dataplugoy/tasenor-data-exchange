@@ -35,7 +35,7 @@ a.navbar__item.navbar__link {
   font-size: 16pt;
   font-family: "Montserrat", sans-serif ;
   font-optical-sizing: auto;
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
 }
 
@@ -67,6 +67,6 @@ a.demo-button {
   font-size: 12pt;
   font-family: "Montserrat", sans-serif ;
   font-optical-sizing: auto;
-  font-weight: 300;
+  font-weight: 500;
   font-style: normal;
 }
