@@ -10,6 +10,7 @@ import { NordnetDriver } from './NordnetDriver'
 import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriver } from './TasenorDriver'
 import { Setup } from '../types/API/Setup'
+import { SPankkiDriver } from './SPankkiDriver'
 
 /**
  * Drivers implemented.
@@ -21,6 +22,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   MANUAL_UPLOAD: ManualUploadDriver,
   NORDNET: NordnetDriver,
   TASENOR: TasenorDriver,
+  S_PANKKI: SPankkiDriver,
 }
 
 /**

@@ -119,6 +119,7 @@ enum DriverType {
   MANUAL_UPLOAD
   NORDNET
   TASENOR
+  S_PANKKI
 }
 
 model InputSource {

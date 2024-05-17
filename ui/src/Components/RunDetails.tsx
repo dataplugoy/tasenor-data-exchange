@@ -48,6 +48,7 @@ const RunStateIcon = (props: RunStateIconProps): React.JSX.Element => {
 const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
   const { batch } = props
 
+  // TODO: Copy this display block to general component.
   return (
     <Box sx={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', my: 2 }}>
       <Box sx={{ border: '1px solid rgba(0,0,0,0.5)', flex: '0 0 auto', backgroundColor: 'rgb(255,255,255,0.05)', p: 2 }}>

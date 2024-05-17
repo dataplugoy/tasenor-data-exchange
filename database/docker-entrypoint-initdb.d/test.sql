@@ -165,7 +165,8 @@ CREATE TYPE public."DriverType" AS ENUM (
     'NO_ACTION',
     'MANUAL_UPLOAD',
     'NORDNET',
-    'TASENOR'
+    'TASENOR',
+    'S_PANKKI'
 );
 
 
@@ -1107,6 +1108,7 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 3	MANUAL_UPLOAD	\N	\N	\N	\N	\N	{}
 4	NORDNET	\N	\N	\N	\N	\N	{}
 5	TASENOR	\N	\N	\N	\N	\N	{}
+6	S_PANKKI	\N	\N	\N	\N	\N	{}
 \.
 
 
@@ -1215,7 +1217,7 @@ SELECT pg_catalog.setval('public.services_id_seq', 1, false);
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 5, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 6, true);
 
 
 --
@@ -1592,3 +1594,4 @@ ALTER TABLE ONLY public.unified_items
 --
 -- PostgreSQL database dump complete
 --
+

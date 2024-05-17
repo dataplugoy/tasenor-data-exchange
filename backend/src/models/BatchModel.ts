@@ -87,7 +87,8 @@ export class BatchModel extends BaseModel<prisma.Batch> {
 
     // eslint-disable-next-line
     const data = this.data.data.toString(this.data.encoding as BufferEncoding)
-
+    console.log(this.data.data)
+console.log(/^Kirjausp/.test(data))
     if (options.regexMatch) {
       if (!options.regexMatch.test(data)) {
         // TODO: It might be good idea to transfer this error in visible manner to UI.

@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Dummy placeholder",
+    "key": "MATCH NOTHING",
+    "filter": "false",
+    "result": {
+      "type": "'income'",
+      "value": "Summa",
+      "valueAsset": "'EUR'",
+      "text": "'This will not happen.'"
+    }
+  }
+]

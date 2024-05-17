@@ -19,6 +19,9 @@ export type ManualUploadDriverSettings = {
 export type NordnetDriverSettings = {
 }
 
+export type SPankkiDriverSettings = {
+}
+
 export type TasenorDriverSettings = {
   host: string
   user: string
@@ -26,4 +29,4 @@ export type TasenorDriverSettings = {
   database: string
 }
 
-export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings | ManualUploadDriverSettings | NordnetDriverSettings | TasenorDriverSettings
+export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings | ManualUploadDriverSettings | NordnetDriverSettings | SPankkiDriverSettings | TasenorDriverSettings

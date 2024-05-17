@@ -17,7 +17,8 @@
         "TEST_MOCK",
         "ENABLE_BANKING",
         "MANUAL_UPLOAD",
-        "NORDNET"
+        "NORDNET",
+        "S_PANKKI"
       ]
     },
     "settings": {

@@ -8,6 +8,7 @@
     "NO_ACTION",
     "NORDNET",
     "TASENOR",
-    "TEST_MOCK"
+    "TEST_MOCK",
+    "S_PANKKI"
   ]
 }

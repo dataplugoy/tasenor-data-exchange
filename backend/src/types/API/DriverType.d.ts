@@ -5,4 +5,11 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type DriverType = "ENABLE_BANKING" | "MANUAL_UPLOAD" | "NO_ACTION" | "NORDNET" | "TASENOR" | "TEST_MOCK";
+export type DriverType =
+  | "ENABLE_BANKING"
+  | "MANUAL_UPLOAD"
+  | "NO_ACTION"
+  | "NORDNET"
+  | "TASENOR"
+  | "TEST_MOCK"
+  | "S_PANKKI";
