@@ -1,0 +1,51 @@
+{
+  "$id": "Rule.json",
+  "title": "Rule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "filter", "key", "name", "ownerId", "priority", "result", "type"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "filter": {
+      "type": "string"
+    },
+    "filterView": {
+      "type": "object"
+    },
+    "key": {
+      "type": ["null", "string"]
+    },
+    "ownerId": {
+      "type": "integer"
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "result": {
+      "$ref": "UnifiedItemData.json"
+    },
+    "resultView": {
+      "type": "object"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "INPUT_SOURCE",
+        "FLOW"
+      ]
+    },
+    "created": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    }
+  }
+}

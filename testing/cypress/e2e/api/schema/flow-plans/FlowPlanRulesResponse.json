@@ -1,0 +1,9 @@
+{
+  "title": "FlowPlanRulesResponse",
+  "type": "array",
+  "items": {
+    "allOf": [
+      { "$ref": "Rule.json" }
+    ]
+  }
+}

@@ -13,6 +13,7 @@ import { AlertException } from '../exceptions/AlertException'
 import { error, log } from '@tasenor/common'
 import { AlertModel } from '../models/AlertModel'
 import { validate } from '../lib/validate'
+import { RuleModel } from '../models/RuleModel'
 
 const router = express.Router()
 
@@ -211,8 +212,9 @@ router.get('/:id/rules',
   param('flowPlanId'),
   async (req, res) => {
     const source = await res.locals.flowPlan.getSource()
-    console.log(await res.locals.flowPlan.getInputDriverName())
-    res.send([])
+    const name = await res.locals.flowPlan.getInputDriverName()
+    const rules = await RuleModel.findForFlow(res.locals.id, `${name}.json`)
+    res.send(rules.map(rule => rule.data))
   }
 )
 
