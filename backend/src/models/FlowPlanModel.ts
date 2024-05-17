@@ -31,6 +31,8 @@ import { BalanceData } from '../types/API/BalanceData'
 import { Setup } from '../types/API/Setup'
 import { Account } from '../types/API/Account'
 import { AccountException } from '../exceptions/AccountException'
+import { getDriver } from '../driver'
+import { ProjectSettings } from '../types/API/Project'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -201,6 +203,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Get the name of the class of input driver.
+   */
+  async getInputDriverName(): Promise<string> {
+    const driver = await this.getSource()
+    return getDriver(driver.type, {}, {} as ProjectSettings).constructor.name
+  }
+
+  /**
    * Create and initialize driver for delivering data.
    */
   private async getOutputDriver(options: RuntimeOptions): Promise<Driver> {
@@ -322,7 +332,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const partial: Record<string, UnifiedItem[]> = {}
       const partialID: Record<string, number> = {}
 
-      const rules = await RuleModel.findForFlowByKey(this.id, driver)
+      const rules = await RuleModel.findForFlowByKey(this.id, `${driver.constructor.name}.json`)
       let total = inputs.length
       let done = 0
       let skipped = 0

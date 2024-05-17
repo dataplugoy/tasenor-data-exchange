@@ -44,6 +44,9 @@ importers:
       i18next:
         specifier: ^23.10.1
         version: 23.10.1
+      json-edit-react:
+        specifier: ^1.9.3
+        version: 1.9.3(react@18.2.0)
       luxon:
         specifier: ^3.4.4
         version: 3.4.4
@@ -1499,6 +1502,11 @@ packages:
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
 
+  json-edit-react@1.9.3:
+    resolution: {integrity: sha512-ddJ2FqPoEZCyNWmS5+i3Trae8bU74+9nbFH4aFOqixTEEK9cFenPdKYATk3g7xiYT9DZlVDyoNimexi5hpjekQ==}
+    peerDependencies:
+      react: '>=16.0.0'
+
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
@@ -1516,6 +1524,9 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+
+  just-clone@6.2.0:
+    resolution: {integrity: sha512-1IynUYEc/HAwxhi3WDpIpxJbZpMCvvrrmZVqvj9EhpvbH8lls7HhdhiByjL7DkAaWlLIzpC0Xc/VPvy/UxLNjA==}
 
   jwt-decode@3.1.2:
     resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
@@ -1610,6 +1621,12 @@ packages:
   object-keys@1.1.1:
     resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
     engines: {node: '>= 0.4'}
+
+  object-property-assigner@1.2.3:
+    resolution: {integrity: sha512-+9sLdS0jr2kjl5HskuX6/Fxvlyt9mfex3TbbjLPRdEXd+zAtAxrzv7fJz/2Q3mag9dclDrgjgwD+uEO1bHNEpA==}
+
+  object-property-extractor@1.0.11:
+    resolution: {integrity: sha512-VnDQcyN0FTXZ0hMZS/CTb2QkIssZ9XKB8zlf5rnFh1HjFQX1P73EHawavSztBOiPDGqAPNXebv4agjhF9eACAw==}
 
   object.assign@4.1.5:
     resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
@@ -3563,6 +3580,14 @@ snapshots:
 
   json-buffer@3.0.1: {}
 
+  json-edit-react@1.9.3(react@18.2.0):
+    dependencies:
+      json5: 2.2.3
+      just-clone: 6.2.0
+      object-property-assigner: 1.2.3
+      object-property-extractor: 1.0.11
+      react: 18.2.0
+
   json-parse-even-better-errors@2.3.1: {}
 
   json-schema-traverse@0.4.1: {}
@@ -3574,6 +3599,8 @@ snapshots:
       minimist: 1.2.8
 
   json5@2.2.3: {}
+
+  just-clone@6.2.0: {}
 
   jwt-decode@3.1.2: {}
 
@@ -3658,6 +3685,10 @@ snapshots:
   object-inspect@1.13.1: {}
 
   object-keys@1.1.1: {}
+
+  object-property-assigner@1.2.3: {}
+
+  object-property-extractor@1.0.11: {}
 
   object.assign@4.1.5:
     dependencies:

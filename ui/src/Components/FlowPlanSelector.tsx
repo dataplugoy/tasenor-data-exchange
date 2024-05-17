@@ -5,7 +5,7 @@ import { Air } from '@mui/icons-material'
 import { useGET } from '../Hooks/useNet'
 import { FlowPlansResponse } from '../Types/API/flow-plans/FlowPlansResponse'
 import { FlowPlan } from '../Types/API/FlowPlan'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export const FlowPlanSelector = (): React.JSX.Element => {
 
@@ -35,7 +35,7 @@ export const FlowPlanSelector = (): React.JSX.Element => {
                 color: 'secondary.contrastText',
                 textTransform: 'none'
               }}
-              onClick={() => navigate(`/settings/${plan.id}`)}
+              onClick={() => navigate(`/${location.pathname.split('/').slice(-1)[0]}/${plan.id}`)}
               variant="outlined"
             >
               {plan.title}

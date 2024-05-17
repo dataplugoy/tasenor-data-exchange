@@ -41,7 +41,7 @@ export const Menu = (): React.JSX.Element => {
       <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 2fr auto' }}>
         <Button data-cy="Menu-Dashboard" startIcon={<Home />} onClick={() => navigate(`/home${add}`)}><Trans>Dashboard</Trans></Button>
         <Button data-cy="Menu-Results" startIcon={<Rule />} onClick={() => navigate(`/results${add}`)}><Trans>Results</Trans></Button>
-        <Button data-cy="Menu-Rules" startIcon={<AccountTree />}><Trans>Rules</Trans></Button>
+        <Button data-cy="Menu-Rules" startIcon={<AccountTree />} onClick={() => navigate(`/rules${add}`)}><Trans>Rules</Trans></Button>
         <Button data-cy="Menu-Services" startIcon={<MiscellaneousServices />}><Trans>Services</Trans></Button>
         <Button data-cy="Menu-Settings" startIcon={<Settings />} onClick={() => navigate(`/settings${add}`)}><Trans>Settings</Trans></Button>
         <Box sx={{ textAlign: 'right' }}>

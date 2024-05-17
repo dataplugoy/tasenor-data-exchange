@@ -206,4 +206,14 @@ router.delete('/:id',
   }
 )
 
+router.get('/:id/rules',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    const source = await res.locals.flowPlan.getSource()
+    console.log(await res.locals.flowPlan.getInputDriverName())
+    res.send([])
+  }
+)
+
 export default router

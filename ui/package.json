@@ -23,6 +23,7 @@
     "change-case": "^5.4.4",
     "clone": "^2.1.2",
     "i18next": "^23.10.1",
+    "json-edit-react": "^1.9.3",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

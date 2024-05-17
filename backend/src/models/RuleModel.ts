@@ -5,6 +5,7 @@ import prisma from '@prisma/client'
 import { InputSourceModel } from './InputSourceModel'
 import { log } from '@tasenor/common'
 import { Driver } from '../driver/Driver'
+import { FlowPlanModel } from './FlowPlanModel'
 
 export class RuleModel extends BaseModel<prisma.Rule> {
 
@@ -41,12 +42,12 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlow(flowPlanId: number, driver: Driver): Promise<RuleModel[]> {
+  static async findForFlow(flowPlanId: number, ruleFile: string): Promise<RuleModel[]> {
     const source = await InputSourceModel.findForFlow(flowPlanId)
     if (!source) {
       throw new Error(`Cannot find input source for flow ${flowPlanId}.`)
     }
-    const sourceRules = await this.refreshRules(flowPlanId, source, driver)
+    const sourceRules = await this.refreshRules(flowPlanId, source, ruleFile)
     const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flowPlanId, type: 'FLOW' }, [{ priority: 'desc' }])
 
     return sourceRules.concat(flowRules)
@@ -55,11 +56,11 @@ export class RuleModel extends BaseModel<prisma.Rule> {
   /**
    * Load rules to the database.
    */
-  private static async refreshRules(flowPlanId: number, source: InputSourceModel, driver: Driver): Promise<RuleModel[]> {
+  private static async refreshRules(flowPlanId: number, source: InputSourceModel, ruleFile: string): Promise<RuleModel[]> {
 
     const sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
 
-    const rulePath = path.join(__dirname, '..', 'driver', 'rules', `${driver.constructor.name}.json`)
+    const rulePath = path.join(__dirname, '..', 'driver', 'rules', ruleFile)
 
     // Delete old if file changed.
     if (sourceRules.length) {
@@ -104,9 +105,9 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlowByKey(flowId: number, driver: Driver): Promise<Record<string, RuleModel[]>> {
+  static async findForFlowByKey(flowId: number, ruleFile: string): Promise<Record<string, RuleModel[]>> {
     const byKey: Record<string, RuleModel[]> = {}
-    const rules = await this.findForFlow(flowId, driver)
+    const rules = await this.findForFlow(flowId, ruleFile)
 
     for (const rule of rules) {
       const key = rule.data.key || ''
