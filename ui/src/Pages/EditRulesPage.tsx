@@ -18,8 +18,8 @@ export const EditRulesPage = (): React.JSX.Element => {
     GET(`/flow-plans/${params.id}/rules`).then(res => {
       if (res) {
         setRules(res.map(rule => {
-          const {filter, name, key, result} = rule
-          return {filter, name, key, result}
+          const { filter, name, key, result } = rule
+          return { filter, name, key, result }
         }))
       }
     })
@@ -31,7 +31,7 @@ export const EditRulesPage = (): React.JSX.Element => {
 
   const onDownload = () => {
     const blob = new Blob([JSON.stringify(rules, null, 2)], { type: 'application/json;charset=utf-8;' })
-    const link = document.createElement('a');
+    const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
     link.setAttribute('href', url)
     link.setAttribute('download', 'rules.json')

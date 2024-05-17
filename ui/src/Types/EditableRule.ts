@@ -1,4 +1,4 @@
-import { UnifiedItemData } from "./API/UnifiedItem"
+import { UnifiedItemData } from './API/UnifiedItem'
 
 export interface EditableRule {
   filter: string
