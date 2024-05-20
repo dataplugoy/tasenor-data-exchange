@@ -8,6 +8,8 @@ import { useGET, usePATCH } from '../Hooks/useNet'
 import { FlowPlanRulesResponse } from '../Types/API/flow-plans/FlowPlanRulesResponse'
 import { EditableRule } from '../Types/EditableRule'
 import { useApp } from '../Hooks/useApp'
+import { FileUploadData, FileUploader } from '../Components/FileUploader'
+import { error } from '@tasenor/common'
 
 export const EditRulesPage = (): React.JSX.Element => {
   const params = useParams()
@@ -16,6 +18,7 @@ export const EditRulesPage = (): React.JSX.Element => {
   const PATCH = usePATCH()
   const [rules, setRules] = useState<EditableRule[]>([])
   const [changed, setChanged] = useState(false)
+  const [upload, setUpload] = useState(false)
   const app = useApp()
   const { t } = useTranslation()
 
@@ -56,6 +59,19 @@ export const EditRulesPage = (): React.JSX.Element => {
     document.body.removeChild(link)
   }
 
+  const onUpload = async (file: FileUploadData) => {
+    setUpload(false)
+    let json
+    try {
+      json = JSON.parse(Buffer.from(file.data, 'hex').toString('utf-8'))
+      setRules(json)
+      setChanged(true)
+    } catch (err) {
+      error(err)
+      app.addError(t('Failed to parse JSON-file.'))
+    }
+  }
+
   return <Box sx={{ pb: 8 }}>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
       <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/rules')}><Clear/></IconButton> <Trans>Edit Rules</Trans>
@@ -67,6 +83,16 @@ export const EditRulesPage = (): React.JSX.Element => {
     </Box>
 
     <Button variant="outlined" onClick={onDownload}><Trans>Download</Trans></Button>
-    <Button sx={{ ml: 2 }} variant="outlined" onClick={onSave}><Trans>Save</Trans></Button>
+    <Button sx={{ ml: 2 }} variant="outlined" onClick={() => setUpload(true)}><Trans>Upload</Trans></Button>
+    <Button sx={{ ml: 4 }} variant="contained" onClick={onSave}><Trans>Save</Trans></Button>
+
+    <FileUploader
+      visible={upload}
+      title={t('Rules Upload')}
+      text={t('Select a JSON-file to upload')}
+      onUpload={onUpload}
+      onCancel={() => setUpload(false)}
+      onSuccess={() => null}
+    />
   </Box>
 }

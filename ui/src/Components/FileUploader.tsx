@@ -19,7 +19,8 @@ export type FileUploaderProps = {
   visible: boolean
   title: string
   text: string
-  url: string
+  url?: string
+  onUpload?: (data: FileUploadData) => Promise<void>
   onCancel: () => void
   onSuccess: () => void
 }
@@ -92,6 +93,12 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
    * Upload handler.
    */
   const onUpload = async () => {
+    if (props.onUpload) {
+      setUploading(true)
+      upload && await props.onUpload(upload)
+      setUploading(false)
+      return
+    }
     setUploading(true)
     const interval = setInterval(signalUploadUpdate, 1000)
     await axios.post(`${url}?token=${app.auth.token}`, upload).then(resp => {
