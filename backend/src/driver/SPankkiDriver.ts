@@ -11,6 +11,7 @@ import { RuleModel } from '../models/RuleModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
+import { dateFI } from '../lib/datetime'
 
 /**
  * A driver to upload Nordnet data.
@@ -53,14 +54,16 @@ export class SPankkiDriver extends ManualUploadDriver {
       requiredFields: ['Maksupäivä', 'Saajan nimi', 'Viitenumero', 'Viesti', 'Tapahtumalaji'],
     })
 
-    return csv.map((line, index) => ({
-      line: index + 2,
-      original: line.raw,
-      time: DateTime.fromISO(`${line.record['Maksupäivä']}T12:00:00Z`).toUTC().toISO() as string,
-      text: line.record['Saajan nimi'],
-      total: line.record.Summa,
-      fields: line.record
-    }))
+    return csv.map((line, index) => {
+      return {
+        line: index + 2,
+        original: line.raw,
+        time: dateFI(line.record['Maksupäivä']),
+        text: line.record['Saajan nimi'],
+        total: line.record.Summa,
+        fields: line.record
+      }
+    })
   }
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {
