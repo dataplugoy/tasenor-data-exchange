@@ -75,7 +75,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
     }
 
     const res = await POST('/flow-plans', data)
-    res && navigate(`/flow-plan/${res.id}`)
+    res && navigate(`/flow-plans/${res.id}`)
   }
 
   return (
