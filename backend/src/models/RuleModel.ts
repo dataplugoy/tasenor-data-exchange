@@ -2,9 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
-import { InputSourceModel } from './InputSourceModel'
 import { log } from '@tasenor/common'
-import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
 
 export class RuleModel extends BaseModel<prisma.Rule> {
 
@@ -57,56 +55,50 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @returns
    */
   static async findForFlow(flowPlanId: number, ruleFile: string): Promise<RuleModel[]> {
-    const source = await InputSourceModel.findForFlow(flowPlanId)
-    if (!source) {
-      throw new Error(`Cannot find input source for flow ${flowPlanId}.`)
-    }
-    const sourceRules = await this.refreshRules(flowPlanId, source, ruleFile)
-    const flowRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: flowPlanId, type: 'FLOW' }, [{ priority: 'desc' }])
+    const flowRules = await this.refreshRules(flowPlanId, ruleFile)
 
-    return sourceRules.concat(flowRules)
+    return flowRules
   }
 
   /**
    * Load rules to the database.
    */
-  private static async refreshRules(flowPlanId: number, source: InputSourceModel, ruleFile: string): Promise<RuleModel[]> {
+  private static async refreshRules(flowPlanId: number, ruleFile: string): Promise<RuleModel[]> {
 
-    const sourceRules = await this.findMany<prisma.Rule, RuleModel>({ ownerId: source.id, type: 'INPUT_SOURCE' }, [{ priority: 'desc' }])
+    const flowRules = await this.findMany<prisma.Rule, RuleModel>({ flowPlanId }, [{ priority: 'desc' }])
 
     const rulePath = path.join(__dirname, '..', 'driver', 'rules', ruleFile)
 
     // Delete old if file changed.
-    if (sourceRules.length) {
+    if (flowRules.length) {
 
       const fd = fs.openSync(rulePath, 'r')
       const lastModified = fs.fstatSync(fd).mtime
       fs.closeSync(fd)
 
-      if (lastModified > sourceRules[0].data.created) {
-        for (const rule of sourceRules) {
+      if (lastModified > flowRules[0].data.created) {
+        for (const rule of flowRules) {
           log(`Time stamp changed. Removing old rule ${rule}.`)
           await RuleModel.delete(rule.id)
         }
       } else {
-        return sourceRules
+        return flowRules
       }
     }
 
     const rulesData = JSON.parse(fs.readFileSync(rulePath, 'utf-8'))
     const rules: RuleModel[] = []
 
-    log(`Initializing rules for ${source}.`)
+    log(`Initializing rules for flow plan #${flowPlanId}.`)
 
     for (const ruleItem of rulesData) {
       const rule = await RuleModel.save({
         filterView: {},
         resultView: {},
         ...ruleItem,
-        type: 'INPUT_SOURCE',
-        ownerId: source?.id
+        flowPlanId,
       })
-      log(`Created ${rule} called '${ruleItem.name}' for flow plan #${flowPlanId}.`)
+      log(`  Created ${rule} called '${ruleItem.name}' for flow plan #${flowPlanId}.`)
 
       rules.push(rule)
     }

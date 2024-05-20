@@ -108,6 +108,7 @@ model FlowPlan {
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
   outputItems OutputItem[]
+  rules       Rule[]
 
   @@map(name: "flow_plans")
 }
@@ -312,18 +313,13 @@ model ItemError{
   @@index([runId, itemId])
 }
 
-enum RuleType {
-  INPUT_SOURCE
-  FLOW
-}
-
 model Rule{
   id          Int             @id @default(autoincrement())
   created     DateTime        @default(now())
   updated     DateTime        @updatedAt
 
-  type        RuleType
-  ownerId     Int
+  flowPlanId  Int
+  flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
 
   name        String
   key         String          @default("")
@@ -334,7 +330,7 @@ model Rule{
   resultView  Json
 
 
-  @@unique([type, ownerId, name])
+  @@unique([flowPlanId, name])
 
   @@map(name: "rules")
 }

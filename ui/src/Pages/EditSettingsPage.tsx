@@ -7,7 +7,7 @@ import { useDELETE, useGET, usePATCH } from '../Hooks/useNet'
 import { Setup } from '../Types/API/Setup'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import { InputSource } from '../Types/API/InputSource'
-import { Clear } from '@mui/icons-material'
+import { Clear, Delete } from '@mui/icons-material'
 import { AccountEditorCard } from '../Components/AccountEditorCard'
 import { AccountGroupingCard } from '../Components/AccountGroupingCard'
 import { useApp } from '../Hooks/useApp'
@@ -68,7 +68,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
     </Box>
 
     <Box sx={{ mt: 3 }}>
-      <Button color="error" variant="text" onClick={() => setDeleting(true)}>Delete This Flow Plan</Button>
+      <Button color="error" variant="text" onClick={() => setDeleting(true)} startIcon={<Delete/>}>Delete This Flow Plan</Button>
     </Box>
 
     <Dialog open={deleting} fullWidth>
