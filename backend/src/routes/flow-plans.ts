@@ -223,13 +223,13 @@ router.patch('/:id/rules',
   // TODO: Validate.
   async (req, res) => {
     const name = await res.locals.flowPlan.getInputDriverName()
-    const rules = await (await RuleModel.findForFlow(res.locals.id, `${name}.json`)).reduce((prev, cur) => ({...prev, [cur.name]: cur}), {})
+    const rules = await (await RuleModel.findForFlow(res.locals.id, `${name}.json`)).reduce((prev, cur) => ({ ...prev, [cur.name]: cur }), {})
     const oldRules = new Set(Object.keys(rules))
 
     for (const rule of req.body) {
       if (oldRules.has(rule.name)) {
         log(`Updating old rule ${rules[rule.name]}`)
-        const {filter, key, result} = rule
+        const { filter, key, result } = rule
         rules[rule.name].data.filter = filter
         rules[rule.name].data.key = key || null
         rules[rule.name].data.result = result
