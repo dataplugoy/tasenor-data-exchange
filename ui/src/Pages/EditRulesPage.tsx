@@ -15,6 +15,7 @@ export const EditRulesPage = (): React.JSX.Element => {
   const GET = useGET<FlowPlanRulesResponse>()
   const PATCH = usePATCH()
   const [rules, setRules] = useState<EditableRule[]>([])
+  const [changed, setChanged] = useState(false)
   const app = useApp()
   const { t } = useTranslation()
 
@@ -31,8 +32,16 @@ export const EditRulesPage = (): React.JSX.Element => {
 
   const onSave = () => {
     PATCH(`/flow-plans/${params.id}/rules`, rules).then(res => {
-      if (res) app.addInfo(t('Rules saved succssfully.'))
+      if (res) {
+        app.addInfo(t('Rules saved succssfully.'))
+        setChanged(false)
+      }
     })
+  }
+
+  const onUpdate = (data) => {
+    setChanged(true)
+    setRules(data)
   }
 
   const onDownload = () => {
@@ -50,10 +59,11 @@ export const EditRulesPage = (): React.JSX.Element => {
   return <Box sx={{ pb: 8 }}>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
       <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/rules')}><Clear/></IconButton> <Trans>Edit Rules</Trans>
+      {changed && <Box sx={{ display: 'inline-block', color: 'error.light' }}> *</Box>}
     </Typography>
 
     <Box sx={{ my: 2, p: 1, border: '1px solid rgba(255,255,255,0.5)' }}>
-      <RulesEditor rules={rules} onUpdate={(data) => setRules(data)}/>
+      <RulesEditor rules={rules} onUpdate={onUpdate}/>
     </Box>
 
     <Button variant="outlined" onClick={onDownload}><Trans>Download</Trans></Button>
