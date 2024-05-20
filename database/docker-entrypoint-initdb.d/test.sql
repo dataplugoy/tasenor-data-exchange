@@ -22,6 +22,7 @@ ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unifi
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.services DROP CONSTRAINT IF EXISTS "services_userId_fkey";
 ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS "runs_batchId_fkey";
+ALTER TABLE IF EXISTS ONLY public.rules DROP CONSTRAINT IF EXISTS "rules_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS "projects_userId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_unifiedId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_runId_fkey";
@@ -39,7 +40,7 @@ ALTER TABLE IF EXISTS ONLY public.alerts DROP CONSTRAINT IF EXISTS "alerts_userI
 DROP INDEX IF EXISTS public.users_email_key;
 DROP INDEX IF EXISTS public."unified_items_inputId_key";
 DROP INDEX IF EXISTS public.settings_type_key;
-DROP INDEX IF EXISTS public."rules_type_ownerId_name_key";
+DROP INDEX IF EXISTS public."rules_flowPlanId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_hash_idx";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_delivered_created_idx";
@@ -111,7 +112,6 @@ DROP TYPE IF EXISTS public."SkipReason";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
 DROP TYPE IF EXISTS public."RunResult";
-DROP TYPE IF EXISTS public."RuleType";
 DROP TYPE IF EXISTS public."DriverType";
 DROP TYPE IF EXISTS public."BatchState";
 DROP TYPE IF EXISTS public."AlertType";
@@ -171,18 +171,6 @@ CREATE TYPE public."DriverType" AS ENUM (
 
 
 ALTER TYPE public."DriverType" OWNER TO dev;
-
---
--- Name: RuleType; Type: TYPE; Schema: public; Owner: dev
---
-
-CREATE TYPE public."RuleType" AS ENUM (
-    'INPUT_SOURCE',
-    'FLOW'
-);
-
-
-ALTER TYPE public."RuleType" OWNER TO dev;
 
 --
 -- Name: RunResult; Type: TYPE; Schema: public; Owner: dev
@@ -617,15 +605,14 @@ CREATE TABLE public.rules (
     id integer NOT NULL,
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
-    type public."RuleType" NOT NULL,
-    "ownerId" integer NOT NULL,
     name text NOT NULL,
     key text DEFAULT ''::text NOT NULL,
     priority integer DEFAULT 50 NOT NULL,
     filter jsonb NOT NULL,
     result jsonb NOT NULL,
     "filterView" jsonb NOT NULL,
-    "resultView" jsonb NOT NULL
+    "resultView" jsonb NOT NULL,
+    "flowPlanId" integer NOT NULL
 );
 
 
@@ -1060,7 +1047,7 @@ COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin
 -- Data for Name: rules; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.rules (id, created, updated, type, "ownerId", name, key, priority, filter, result, "filterView", "resultView") FROM stdin;
+COPY public.rules (id, created, updated, name, key, priority, filter, result, "filterView", "resultView", "flowPlanId") FROM stdin;
 \.
 
 
@@ -1387,10 +1374,10 @@ CREATE UNIQUE INDEX "output_items_unifiedId_key" ON public.output_items USING bt
 
 
 --
--- Name: rules_type_ownerId_name_key; Type: INDEX; Schema: public; Owner: dev
+-- Name: rules_flowPlanId_name_key; Type: INDEX; Schema: public; Owner: dev
 --
 
-CREATE UNIQUE INDEX "rules_type_ownerId_name_key" ON public.rules USING btree (type, "ownerId", name);
+CREATE UNIQUE INDEX "rules_flowPlanId_name_key" ON public.rules USING btree ("flowPlanId", name);
 
 
 --
@@ -1524,6 +1511,14 @@ ALTER TABLE ONLY public.output_items
 
 ALTER TABLE ONLY public.projects
     ADD CONSTRAINT "projects_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: rules rules_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.rules
+    ADD CONSTRAINT "rules_flowPlanId_fkey" FOREIGN KEY ("flowPlanId") REFERENCES public.flow_plans(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

@@ -5,6 +5,7 @@ import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
 import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
 import { ViewError } from './ViewError'
+import { DisplayBlock } from './DisplayBlock'
 
 // TODO: All JSON-presentations should be converted to nice item specific viewers.
 
@@ -48,13 +49,10 @@ const RunStateIcon = (props: RunStateIconProps): React.JSX.Element => {
 const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
   const { batch } = props
 
-  // TODO: Copy this display block to general component.
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', my: 2 }}>
-      <Box sx={{ border: '1px solid rgba(0,0,0,0.5)', flex: '0 0 auto', backgroundColor: 'rgb(255,255,255,0.05)', p: 2 }}>
+    <DisplayBlock>
         {batch.data.split('\n').map((line, idx) => <Typography key={idx} variant="body2">{line}</Typography>)}
-      </Box>
-    </Box>
+    </DisplayBlock>
   )
 }
 
@@ -62,7 +60,7 @@ const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
   const items: ResultInputItem[] = result.items as ResultInputItem[]
   return (
-    <Box>
+    <DisplayBlock>
       {
         items.map((item, idx) => <Box key={idx}>
           <Box>
@@ -74,7 +72,7 @@ const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
           </Box>
         </Box>)
       }
-    </Box>
+    </DisplayBlock>
   )
 }
 
@@ -83,14 +81,14 @@ const SuccessfulItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
   const items: ResultUnifiedItem[] = result.items as ResultUnifiedItem[]
 
   return (
-    <Box>
+    <DisplayBlock>
       {
         items.map((item, idx) => <Box key={idx}>
           <Box>{JSON.stringify(item.data)}<RunStateIcon result={result} item={item}/></Box>
           {item.stockChange && JSON.stringify(item.stockChange)}
         </Box>)
       }
-    </Box>
+    </DisplayBlock>
   )
 }
 
@@ -114,10 +112,10 @@ const FailedAfterBatchCreated = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
   const runResult = result.run.result as string
   return (
-    <Box>
+    <DisplayBlock>
         {result.run.error && <ViewError error={result.run.error}/>}
         {runResult === 'WAITING' && <Trans>Waiting for file upload.</Trans>}
-    </Box>
+    </DisplayBlock>
   )
 
 }
@@ -131,7 +129,7 @@ function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): 
   const items: T[] = result.items as T[]
   const noItemErrors = items.filter(i => !!i.error).length === 0
 
-  return <Box>
+  return <DisplayBlock>
       {
         noItemErrors && result.run.error && <ViewError error={result.run.error}/>
       }
@@ -143,7 +141,7 @@ function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): 
           </Box>
         })
       }
-  </Box>
+  </DisplayBlock>
 }
 
 const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {
