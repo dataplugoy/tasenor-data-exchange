@@ -47,6 +47,9 @@ before we start our own processing, everything is converted to the JSON-format p
 the original data. In a simple case, it could be just CSV file converted to the key-value
 pairs according to the known column names.
 
+Data is splitted to items presenting either one full transaction or part of the transaction.
+More about partial items later.
+
 <figure>
 ```json
 {

@@ -1,6 +1,8 @@
 ---
 sidebar_position: 200
 ---
+import TxTypes from '@site/src/components/TxTypes';
+
 
 # Unified Format
 
@@ -14,37 +16,36 @@ TODO: Go through fields and add proper descriptions.
 
 ## Common Fields
 
-```
-    "type": {
-      "buy", "sell", "trade", "income", "expense", "withdraw", "deposit", "dividend"
-    }
-    "text": {
-      "description": "Text of the original item if known.",
-      "type": "string"
-    },
-    "value": {
-      "description": "Total value of the transaction, if known.",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-```
+### `type`
+
+This defines the idea of the transaction. Each *type* of transaction has different
+fields it requires by default and some of the fields it can determine according to the type.
+Supported types are <TxTypes/>.
+
+### `value`
+
+The is positive or zero value determining *total value* of the transaction. That must
+include additional fees for example. Value can be given either as number or as
+high precision string. Value is measured in *default currency* of the flow plan.
+
+### `text`
+
+Meny transaction types can determine description on its own in the default language
+of the flow plan. If text field is given, it overrides the generated default text.
+
 
 ## Some Optional Fields
 
-```
-    "account": {
-      "description": "Account involved, if already known.",
-      "$ref": "Account.json"
-    },
-    "rates": {
-      "description": "Conversion rates for assets involved, if known.",
-      "$ref": "Rates.json"
-    },
-    "valueAsset": {
-      "description": "Asset used to determine the total value of the transaction.",
-      "$ref": "Asset.json"
-    }
-```
+### `valueAsset`
+
+It is not necessary to define total value in default currency. If some other currency
+or crupto currency is used instead, this field can name it.
+
+### `rates`
+
+If conversion rates from other currencies to the default currency is known, it can
+be given here. Otherwise it is resolved using other services. The format of this field
+is a map from the currency name(s) to the conversion rate(s) in the default currency.
 
 ## Assets
 

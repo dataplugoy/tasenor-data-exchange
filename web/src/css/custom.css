@@ -70,3 +70,8 @@ a.demo-button {
   font-weight: 500;
   font-style: normal;
 }
+
+.tx-type {
+  color: #004AAD;
+  font-family: 'Courier New', Courier, monospace;
+}
