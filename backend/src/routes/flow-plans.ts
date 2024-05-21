@@ -230,15 +230,16 @@ router.patch('/:id/rules',
       if (oldRules.has(rule.name)) {
         log(`Updating old rule ${rules[rule.name]}`)
         const { filter, key, result } = rule
+        rules[rule.name].data.flowPlanId = res.locals.id
         rules[rule.name].data.filter = filter
         rules[rule.name].data.key = key || null
         rules[rule.name].data.result = result
-        RuleModel.save(rules[rule.name])
+        await RuleModel.save(rules[rule.name])
         oldRules.delete(rule.name)
       } else {
-        RuleModel.save({
-          type: 'INPUT_SOURCE',
-          ownerId: res.locals.id,
+        log(`Creating new rule ${JSON.stringify(rule)}.`)
+        await RuleModel.save({
+          flowPlanId: res.locals.id,
           name: rule.name,
           key: rule.key || null,
           priority: 50,
@@ -247,7 +248,6 @@ router.patch('/:id/rules',
           filterView: {},
           resultView: {},
         })
-        log(`Creating new rule ${JSON.stringify(rule)}.`)
       }
     }
 

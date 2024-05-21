@@ -33,7 +33,7 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param rules
    */
   static count(rules: Record<string, RuleModel[]>): number {
-    return Object.keys(rules).reduce((prev, cur) => prev + Object.keys(cur).length, 0)
+    return Object.keys(rules).reduce((prev, cur) => prev + Object.keys(rules[cur]).length, 0)
   }
 
   /**
@@ -54,18 +54,21 @@ export class RuleModel extends BaseModel<prisma.Rule> {
    * @param flow
    * @returns
    */
-  static async findForFlow(flowPlanId: number, ruleFile: string): Promise<RuleModel[]> {
+  static async findForFlow(flowPlanId: number, ruleFile: string | null = null): Promise<RuleModel[]> {
     const flowRules = await this.refreshRules(flowPlanId, ruleFile)
 
     return flowRules
   }
 
   /**
-   * Load rules to the database.
+   * Load rules to the database if they don't exist and file given.
    */
-  private static async refreshRules(flowPlanId: number, ruleFile: string): Promise<RuleModel[]> {
+  private static async refreshRules(flowPlanId: number, ruleFile: string | null): Promise<RuleModel[]> {
 
     const flowRules = await this.findMany<prisma.Rule, RuleModel>({ flowPlanId }, [{ priority: 'desc' }])
+    if (!ruleFile) {
+      return flowRules
+    }
 
     const rulePath = path.join(__dirname, '..', 'driver', 'rules', ruleFile)
 

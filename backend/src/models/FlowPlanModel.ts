@@ -101,6 +101,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     for (const batch of batches) {
       await batch.destroy()
     }
+    for (const rule of await RuleModel.findForFlow(this.id)) {
+      await rule.destroy()
+    }
     FlowPlanModel.delete(this.id)
   }
 
@@ -333,6 +336,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const partialID: Record<string, number> = {}
 
       const rules = await RuleModel.findForFlowByKey(this.id, `${driver.constructor.name}.json`)
+
       let total = inputs.length
       let done = 0
       let skipped = 0

@@ -322,7 +322,7 @@ model Rule{
   flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
 
   name        String
-  key         String          @default("")
+  key         String?         @default("")
   priority    Int             @default(50)
   filter      Json
   result      Json

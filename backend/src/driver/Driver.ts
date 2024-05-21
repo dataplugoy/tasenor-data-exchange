@@ -122,6 +122,7 @@ export class Driver {
    * @param rules
    */
   protected async applyUnifyRules(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>, ruleKey: string | null = null): Promise<UnifiedItem> {
+
     if (RuleModel.count(rules) === 0) {
       throw new Error(`There are no rules available in ${flow} for unifying input.`)
     }

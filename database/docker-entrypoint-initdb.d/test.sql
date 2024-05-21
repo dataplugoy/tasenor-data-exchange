@@ -606,7 +606,7 @@ CREATE TABLE public.rules (
     created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated timestamp(3) without time zone NOT NULL,
     name text NOT NULL,
-    key text DEFAULT ''::text NOT NULL,
+    key text DEFAULT ''::text,
     priority integer DEFAULT 50 NOT NULL,
     filter jsonb NOT NULL,
     result jsonb NOT NULL,
@@ -983,6 +983,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 3	2024-05-02 08:46:22.081	2024-05-09 07:50:14.182	Nordnet	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}
 5	2024-05-09 08:52:41.007	2024-05-09 08:53:41.792	Nightly Testing	{}	1	\N	{}	{}	{}
 4	2024-05-08 11:08:59.91	2024-05-13 13:35:02.12	Tasenor	{}	1	\N	{}	{}	{"accounts": {"FEE": "5325", "LOSS": "5335", "STOCK": "1100", "INCOME": "9290", "PROFIT": "5050", "EXPENSE": "9690", "CURRENCY_EUR": "3050", "CURRENCY_USD": "30505", "EXTERNAL_NORDNET_EUR": "3010"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}
+6	2024-05-21 16:10:11.082	2024-05-21 16:10:11.082	S-Pankki Demo	{}	1	\N	{}	{}	{}
 \.
 
 
@@ -1003,6 +1004,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 3	2024-05-02 08:46:22.094	2024-05-02 08:46:22.094	NORDNET	{}	3
 4	2024-05-08 11:08:59.924	2024-05-08 11:08:59.924	NORDNET	{}	4
 5	2024-05-09 08:54:24.336	2024-05-09 08:54:04.898	NORDNET	{}	5
+6	2024-05-21 16:10:11.096	2024-05-21 16:10:11.096	S_PANKKI	{}	6
 \.
 
 
@@ -1023,6 +1025,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 3	2024-05-02 08:46:22.097	2024-05-02 08:46:22.097	NO_ACTION	{}	3
 4	2024-05-08 11:08:59.929	2024-05-08 11:17:59.283	TASENOR	{"host": "http://localhost:7205", "user": "user@localhost", "database": "tadex", "password": "Ayfiewchg872rt5sq2e4"}	4
 5	2024-05-09 08:54:45.438	2024-05-09 08:54:26.574	NO_ACTION	{}	5
+6	2024-05-21 16:10:11.1	2024-05-21 16:10:11.1	NO_ACTION	{}	6
 \.
 
 
@@ -1117,7 +1120,7 @@ SELECT pg_catalog.setval('public.batches_id_seq', 6, true);
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 5, true);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 6, true);
 
 
 --
@@ -1131,7 +1134,7 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 5, true);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 6, true);
 
 
 --
@@ -1145,7 +1148,7 @@ SELECT pg_catalog.setval('public.item_errors_id_seq', 1, false);
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 5, true);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 6, true);
 
 
 --

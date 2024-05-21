@@ -1,7 +1,5 @@
 import React, { } from 'react'
-import { Box, useTheme } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { RunStepResult } from '../Helpers/sorter'
+import { Box } from '@mui/material'
 
 interface DisplayBlockProps {
   children: React.ReactNode
