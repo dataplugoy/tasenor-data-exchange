@@ -1,0 +1,115 @@
+{
+  "$id": "UnifiedItemData.json",
+  "title": "UnifiedItemData",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type"],
+  "properties": {
+    "type": {
+      "$ref": "UnifiedItemType.json"
+    },
+    "account": {
+      "description": "Account involved, if already known.",
+      "$ref": "Account.json"
+    },
+    "assetIn": {
+      "description": "In case of buying some asset, this is the asset received.",
+      "$ref": "Asset.json"
+    },
+    "assetAmountIn": {
+      "description": "In case of buying some asset, this is the number of assets received.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetValueIn": {
+      "description": "In case of buying some asset, this is the value of assets in the default currency.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetTypeIn": {
+      "description": "Type of the asset received.",
+      "type": "string",
+      "pattern": "^(STOCK|CRYPTO)$"
+    },
+    "assetOut": {
+      "description": "In case of selling some asset, this is the asset traded out.",
+      "$ref": "Asset.json"
+    },
+    "assetAmountOut": {
+      "description": "In case of selling some asset, this is the number of assets given (as positive number).",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetValueOut": {
+      "description": "In case of selling some asset, this is the value of assets in the default currency (as positive number).",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "assetTypeOut": {
+      "description": "Type of the asset given.",
+      "type": "string",
+      "pattern": "^(STOCK|CRYPTO)$"
+    },
+    "fee": {
+      "description": "Amount of fee charged as a part of the transaction.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "feeAsset": {
+      "description": "Ticker of the fee charged as a currency or other asset ticker.",
+      "$ref": "Asset.json"
+    },
+    "multipart": {
+      "description": "If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.",
+      "type": "string"
+    },
+    "rates": {
+      "description": "Conversion rates for assets involved, if known.",
+      "$ref": "Rates.json"
+    },
+    "reason": {
+      "description": "If income or expense have some specific reason, it can be determined here.",
+      "type": "string",
+      "pattern": "^(DIVIDEND)$"
+    },
+    "reasonAsset": {
+      "description": "An asset triggering the income or expense.",
+      "$ref": "Asset.json"
+    },
+    "service": {
+      "description": "Name of the service providing the data.",
+      "type": "string"
+    },
+    "taxType": {
+      "description": "If tax must be calculated, this is the type of the tax.",
+      "type": "string",
+      "enum": ["vat", "withholding"]
+    },
+    "taxAmount": {
+      "description": "If tax must be calculated, this is the amount of tax in tax assets.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "taxAsset": {
+      "description": "If tax must be calculated, this is the asset used (defaults to `valueAsset`)",
+      "$ref": "Asset.json"
+    },
+    "taxPercentage": {
+      "description": "If tax must be calculated, alternatively it can be percentage of the total of the transaction.",
+      "type": "number"
+    },
+    "text": {
+      "description": "Text of the original item if known.",
+      "type": "string"
+    },
+    "value": {
+      "description": "Total value of the transaction, if known.",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "valueAsset": {
+      "description": "Asset used to determine the total value of the transaction.",
+      "$ref": "Asset.json"
+    }
+  }
+}

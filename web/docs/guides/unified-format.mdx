@@ -2,6 +2,7 @@
 sidebar_position: 200
 ---
 import TxTypes from '@site/src/components/TxTypes';
+import Type from '@site/src/components/Type';
 
 
 # Unified Format
@@ -16,13 +17,13 @@ TODO: Go through fields and add proper descriptions.
 
 ## Common Fields
 
-### `type`
+### `type` (<Type file="UnifiedItemData.json" field="type"/>)
 
 This defines the idea of the transaction. Each *type* of transaction has different
 fields it requires by default and some of the fields it can determine according to the type.
 Supported types are <TxTypes/>.
 
-### `value`
+### `value` (<Type file="UnifiedItemData.json" field="value"/>)
 
 The is positive or zero value determining *total value* of the transaction. That must
 include additional fees for example. Value can be given either as number or as

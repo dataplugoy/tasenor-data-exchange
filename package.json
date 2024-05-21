@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm build-schema && pnpm build-i18n && && pnpm build-web",
-    "build-web": "cp schema/UnifiedItemType.json web/src/schema",
+    "build-web": "cp schema/UnifiedItemType.json schema/UnifiedItemData.json web/src/schema",
     "build-schema": "pnpm build-testing-schema && pnpm build-ui-schema && pnpm build-backend-schema",
     "build-ui-schema": "rm -rf ui/src/Types/API/ && json2ts --cwd schema/ -i schema/ -o ui/src/Types/API/",
     "build-backend-schema": "rm -rf backend/src/types/API/ && json2ts --cwd schema/ -i schema/ -o backend/src/types/API/ && tar cf - `find ./schema -name '*.json'` | tar -C ./backend/src/types/API --strip-components 2 -xv",
