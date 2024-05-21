@@ -129,7 +129,8 @@ function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): 
   const items: T[] = result.items as T[]
   const noItemErrors = items.filter(i => !!i.error).length === 0
 
-  return <DisplayBlock>
+  return (
+    <DisplayBlock>
       {
         noItemErrors && result.run.error && <ViewError error={result.run.error}/>
       }
@@ -141,7 +142,8 @@ function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): 
           </Box>
         })
       }
-  </DisplayBlock>
+    </DisplayBlock>
+  )
 }
 
 const FailedAfterDataParsed = (props: RunDetailsProps): React.JSX.Element => {

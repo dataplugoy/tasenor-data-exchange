@@ -47,9 +47,7 @@ export const ViewError = (props: ViewErrorProps): React.JSX.Element => {
   const lines = error.split('\n').map((line, idx) => trim(idx, line))
   return (
     <Box sx={{ color: 'error.main' }}>
-      <pre>
-        {lines.join('\n')}
-      </pre>
+      {lines.map((line, idx) => <Box key={idx}>{line}</Box>)}
     </Box>
   )
 }
