@@ -9,4 +9,5 @@ export interface Question {
   type: "BOOLEAN";
   help: string;
   label: string;
+  variable?: string;
 }

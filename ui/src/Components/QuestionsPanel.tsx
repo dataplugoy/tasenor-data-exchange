@@ -1,6 +1,8 @@
 import React, { } from 'react'
-import { Box } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { Question } from '../Types/API/Question'
+import { Trans } from 'react-i18next'
+import { QuestionPanel } from './QuestionPanel'
 
 interface QuestionsPanelProps {
   questions: Question[]
@@ -14,9 +16,24 @@ interface QuestionsPanelProps {
 export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element => {
   const { questions } = props
 
+  const onCancel = () => {
+  }
+
+  const onContinue = () => {
+  }
+
   return (
-    <Box sx={{ color: 'error.main' }}>
-      {JSON.stringify(questions)}
-    </Box>
+    <Dialog open={questions.length > 0} fullWidth>
+      <DialogTitle>We Need More Information</DialogTitle>
+
+      <DialogContent>
+        {questions.map((question, idx) => <QuestionPanel key={idx} question={question}/>)}
+      </DialogContent>
+
+      <DialogActions>
+        <Button data-cy="DialogButton-Cancel" variant="outlined" onClick={onCancel}><Trans>Cancel</Trans></Button>
+        <Button data-cy="DialogButton-Delete" onClick={onContinue}><Trans>Continue</Trans></Button>
+      </DialogActions>
+    </Dialog>
   )
 }

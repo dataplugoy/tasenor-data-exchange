@@ -16,6 +16,10 @@
     },
     "label": {
       "type": "string"
+    },
+    "variable": {
+      "type": "string",
+      "pattern": "[A-Za-z][A-Za-z0-9.]*"
     }
   }
 }
