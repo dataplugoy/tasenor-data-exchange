@@ -68,7 +68,9 @@ const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
             <RunStateSuccessIcon/>
           </Box>
           <Box>
-            {JSON.stringify(item.data.fields)}
+            <pre>
+            {JSON.stringify(item.data.fields, null, 2)}
+            </pre>
           </Box>
         </Box>)
       }
