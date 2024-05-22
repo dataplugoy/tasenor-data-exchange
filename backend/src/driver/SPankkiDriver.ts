@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { BatchModel } from '../models/BatchModel'
 import { InputItemData } from '../types/API/InputItem'
 import { SPankkiDriverSettings } from '../types/DriverSettings'

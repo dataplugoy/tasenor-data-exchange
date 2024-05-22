@@ -24,6 +24,19 @@ Enumerated type is a fixed list of accepted string values.
 
 Number type is either an actual number or a string that can have arbitrary precisision.
 
+### String
+
+A string is UTF-8 encoded string possibly limited by some regular expression pattern.
+
+### Asset
+
+An asset is special string type that refers to the ISO-4217 currency codes, stock ticker
+or crypto currency.
+
+### Map
+
+A key value mapping that has string keys that maps to the arbitrary values.
+
 
 ## Common Fields
 
@@ -56,7 +69,9 @@ or crupto currency is used instead, this field can name it.
 
 If conversion rates from other currencies to the default currency is known, it can
 be given here. Otherwise it is resolved using other services. The format of this field
-is a map from the currency name(s) to the conversion rate(s) in the default currency.
+is a map from the currency (or any other asset) name(s) to the conversion rate(s) in
+the default currency. That is the value of the single (1.0) unit of the target asset expressed
+in the default currency.
 
 ## Assets
 

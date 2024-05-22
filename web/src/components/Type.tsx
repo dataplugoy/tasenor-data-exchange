@@ -16,19 +16,54 @@ interface TypeProps {
   field: string
 }
 
+let referencesResolved = false
+
 export default function Type(props: TypeProps) {
   const { file, field } = props
 
   /**
+   * Assign $ref fields.
+   */
+  function resolveReferences() {
+    for (const json of Object.keys(schema)) {
+      if (schema[json].type === 'object') {
+        if (schema[json].properties) {
+          for (const field of Object.keys(schema[json].properties)) {
+            const ref = schema[json].properties[field].$ref
+            if (ref) {
+              Object.assign(schema[json].properties[field], schema[ref])
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (!referencesResolved) {
+    resolveReferences()
+    referencesResolved = true
+    // console.log(schema['UnifiedItemData.json']);
+  }
+
+  /**
    * Analyze string pattern.
    * @param type
-   * @param pattern
    */
-  function string(type, pattern) {
-    if (type instanceof Array && type.length === 2 && type.includes('string') && type.includes('number')) {
-      if (pattern === '^[0-9]+(\\.[0-9]+)?$') {
-        return 'non-negative number'
-      }
+  function resolveString(spec) {
+    if (spec.enum) {
+      return 'enum'
+    }
+    if (spec.pattern === undefined) {
+      return 'string'
+    }
+    if (spec.title === 'Asset') {
+      return 'asset'
+    }
+  }
+
+  function resolveNumeric(spec) {
+    if (spec.pattern === '^[0-9]+(\\.[0-9]+)?$') {
+      return 'non-negative number'
     }
   }
 
@@ -38,32 +73,33 @@ export default function Type(props: TypeProps) {
    * @param field
    * @returns
    */
-  function resolve(file, field) {
+  function resolve(spec, field) {
 
-    if (!schema[file]) return `FILE ${file} NOT FOUND`
-
-    switch (schema[file].type) {
+    switch (spec.type) {
 
       case 'object':
-        if (!schema[file].properties[field]) return `FIELD ${field} NOT FOUND`
-
-        if (schema[file].properties[field].$ref) {
-          if (schema[file].properties[field].$ref) {
-            return resolve(schema[file].properties[field].$ref, '')
-          }
+        if (!spec.properties[field]) return `FIELD ${field} NOT FOUND`
+        if (spec.properties[field].properties && Object.keys(spec.properties[field].properties).length === 0) {
+          return 'map'
         }
-        const { type, pattern } = schema[file].properties[field]
-        const text = string(type, pattern)
-        if (text) return text
-        if (pattern === undefined) return 'string'
-        break
+        return resolve(spec.properties[field], '')
 
       case 'string':
-        return schema[file].enum ? 'enum' : 'string'
+        return resolveString(spec)
+
+      default:
+        if (spec.type instanceof Array
+          && spec.type.length === 2
+          && spec.type.includes('string')
+          && spec.type.includes('number')) {
+            return resolveNumeric(spec)
+          }
     }
   }
 
-  const text = resolve(file, field)
+  if (!schema[file]) return `FILE ${file} NOT FOUND`
+
+  const text = resolve(schema[file], field)
   if (text) return <span className="tx-type">({text})</span>
 
   return <>TODO: {file} '{field}' {schema[file].type}</>
