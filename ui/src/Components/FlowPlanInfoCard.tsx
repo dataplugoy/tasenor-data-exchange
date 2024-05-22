@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useGET } from '../Hooks/useNet'
 import { signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
 import { getAlert, isAlert } from '../Types/alerts'
-import { FileUploader } from './FileUploader'
+import { UIAlert } from '../Types/Classes/UIAlert'
+import { AlertHandler } from './AlertHandler'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -19,9 +20,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const { plan, project, button } = props
   const [running, setRunning] = useState(false)
   const GET = useGET()
-  const [text, setText] = useState('')
-  const [uploadUrl, setUploadUrl] = useState('')
-  const { t } = useTranslation()
+  const [alert, setAlert] = useState<UIAlert|null>(null)
 
   const onRun = async () => {
 
@@ -32,34 +31,14 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     setRunning(false)
 
     if (isAlert(res)) {
-      // Perhaps make alert handler doing the most. Pass onUploadCancel and onUploadSuccess among other things.
-      // Implement toggle query first.
-      if (res.type === 'UPLOAD_REQUIRED') {
-        setText(res.payload)
-        setUploadUrl(res.url)
-      } else {
-        // TODO: Handle.
-        console.log(getAlert(res));
-      }
+      setAlert(getAlert(res))
     } else {
       signalBatchUpdate()
     }
   }
 
-  const onUploadCancel = async () => {
-    setText('')
-    signalBatchUpdate()
-  }
-
-  const onUploadSuccess = async () => {
-    setText('')
-    signalBatchUpdate()
-  }
-
   return (
     <>
-      <FileUploader onCancel={onUploadCancel} onSuccess={onUploadSuccess} visible={!!text} text={text} url={uploadUrl} title={t('Upload a File')}/>
-
       <Card>
         <CardHeader
           avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
@@ -88,6 +67,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
           </Box>
         </CardContent>
       </Card>
+
+      {alert && <AlertHandler alert={alert}/>}
     </>
   )
 }

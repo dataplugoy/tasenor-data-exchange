@@ -1,20 +1,14 @@
 import { Alert } from '../API/Alert'
 import { AlertMethod } from '../API/AlertMethod'
 import { AlertType } from '../API/AlertType'
+import { UIAlert } from './UIAlert'
 
-export class UploadAlert implements Alert {
+/**
+ * Select a file for uploading or cancel the dialog.
+ */
+export class UploadAlert extends UIAlert {
 
-  id: number
-  userId: number
-  type: AlertType
-  method: AlertMethod
-  url: string
-  payload: string
-  delivered: null | string
-  created?: string
-  updated?: string
+  run() {
 
-  constructor(alert: Alert) {
-    Object.assign(this, alert)
   }
 }
