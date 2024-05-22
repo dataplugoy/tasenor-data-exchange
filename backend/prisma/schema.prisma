@@ -337,6 +337,7 @@ model Rule{
 
 enum AlertType {
   UPLOAD_REQUIRED
+  ANSWERS_REQUIRED
 }
 
 enum AlertMethod {

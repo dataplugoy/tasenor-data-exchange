@@ -1,0 +1,21 @@
+{
+  "$id": "Question.json",
+  "title": "Question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "help", "label"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "BOOLEAN"
+      ]
+    },
+    "help": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    }
+  }
+}

@@ -43,8 +43,8 @@ export class ManualUploadDriver extends Driver {
     }
     throw new UploadRequired(
       `/api/v1/flow-plans/${flowPlan.id}/continue`,
+      this.options.userId,
       _('Please select a statement to upload.'),
-      this.options.userId
     )
   }
 

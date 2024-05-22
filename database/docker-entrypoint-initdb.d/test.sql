@@ -133,7 +133,8 @@ ALTER TYPE public."AlertMethod" OWNER TO dev;
 --
 
 CREATE TYPE public."AlertType" AS ENUM (
-    'UPLOAD_REQUIRED'
+    'UPLOAD_REQUIRED',
+    'ANSWERS_REQUIRED'
 );
 
 
