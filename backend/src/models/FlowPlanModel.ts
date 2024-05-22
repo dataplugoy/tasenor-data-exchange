@@ -24,7 +24,7 @@ import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
-import { AlertException, AnswersRequired } from '../exceptions/AlertException'
+import { AlertException } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { BalanceData } from '../types/API/BalanceData'
@@ -329,7 +329,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   private async unifyItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     let result: 'OK' | 'FAIL' = 'OK'
 
-    throw new AnswersRequired('/none-url-yet/just-testing', options.userId, { type: 'BOOLEAN', help: 'If this is checked, then all goes okay.', label: 'Correctiveness toggle', variable: 'correctiveness' })
+    // TODO: Drop test code.
+    // throw new AnswersRequired('/none-url-yet/just-testing', options.userId, { type: 'BOOLEAN', help: 'If this is checked, then all goes okay.', label: 'Correctiveness toggle', variable: 'correctiveness' })
 
     try {
       const driver = await this.getInputDriver(options)

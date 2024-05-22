@@ -1,5 +1,3 @@
-import { Alert } from '../API/Alert'
-import { Question } from '../API/Question'
 import { UIAlert } from './UIAlert'
 
 /**

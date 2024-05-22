@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, FormGroup, FormHelperText, Switch } from '@mui/material'
+import { FormControlLabel, FormGroup, FormHelperText, Switch } from '@mui/material'
 import { Question } from '../Types/API/Question'
-import { Trans } from 'react-i18next'
 
 interface QuestionBooleanPanelProps {
   question: Question

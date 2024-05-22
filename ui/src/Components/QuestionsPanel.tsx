@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { Trans } from 'react-i18next'
 import { QuestionPanel } from './QuestionPanel'

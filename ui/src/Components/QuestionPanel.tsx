@@ -1,7 +1,6 @@
 import React, { } from 'react'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { Box } from '@mui/material'
 import { Question } from '../Types/API/Question'
-import { Trans } from 'react-i18next'
 import { QuestionBooleanPanel } from './QuestionBooleanPanel'
 
 interface QuestionPanelProps {
