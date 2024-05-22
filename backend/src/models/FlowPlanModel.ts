@@ -24,7 +24,7 @@ import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
-import { AlertException } from '../exceptions/AlertException'
+import { AlertException, AnswersRequired } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { BalanceData } from '../types/API/BalanceData'
@@ -328,6 +328,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async unifyItems(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     let result: 'OK' | 'FAIL' = 'OK'
+
+    throw new AnswersRequired('/none', options.userId, { type: 'BOOLEAN', help: 'Kysynpähän vaan, että miten localisaatio? Oisko runtime option? Varmaan userilta kieli asetuksista jotenkin.', label: 'Ohtikko'})
 
     try {
       const driver = await this.getInputDriver(options)

@@ -17,6 +17,10 @@ export class AlertException<T = string> extends Error {
     this.payload = payload
     this.userId = userId
   }
+
+  toString() {
+    return `${this.constructor.name}(${JSON.stringify(this.payload)})`
+  }
 }
 
 /**

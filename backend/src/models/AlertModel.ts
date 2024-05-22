@@ -8,24 +8,26 @@ export class AlertModel extends BaseModel<prisma.Alert> {
   static construct = AlertModel
 
   static async interactive(err: AlertException): Promise<AlertModel> {
+    const payload = typeof err.payload === 'string' ? err.payload : JSON.stringify(err.payload)
     const data = {
       userId: err.userId,
       type: err.type,
       method: 'INTERACTIVE' as AlertMethod,
       url: err.url,
-      payload: err.payload,
+      payload,
       delivered: new Date()
     }
     return AlertModel.create<prisma.Alert, AlertModel>(data)
   }
 
   static async nonInteractive(err: AlertException): Promise<AlertModel> {
+    const payload = typeof err.payload === 'string' ? err.payload : JSON.stringify(err.payload)
     const data = {
       userId: err.userId,
       type: err.type,
       method: 'EMAIL' as AlertMethod,
       url: err.url,
-      payload: err.payload,
+      payload,
       delivered: null
     }
     return AlertModel.create<prisma.Alert, AlertModel>(data)

@@ -1,4 +1,5 @@
 import { Alert } from './API/Alert'
+import { QuestionsAlert } from './Classes/QuestionsAlert'
 import { UploadAlert } from './Classes/UploadAlert'
 
 /**
@@ -30,4 +31,8 @@ export function getAlert(alert: Alert) {
   if (alert.type === 'UPLOAD_REQUIRED') {
     return new UploadAlert(alert)
   }
+  if (alert.type === 'ANSWERS_REQUIRED') {
+    return new QuestionsAlert(alert)
+  }
+  throw new Error(`Alert type ${alert.type} not yet implemented.`)
 }

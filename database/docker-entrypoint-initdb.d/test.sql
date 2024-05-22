@@ -242,8 +242,8 @@ CREATE TABLE public.alerts (
     type public."AlertType" NOT NULL,
     method public."AlertMethod" NOT NULL,
     url text NOT NULL,
-    payload text NOT NULL,
-    delivered timestamp(3) without time zone
+    delivered timestamp(3) without time zone,
+    payload text NOT NULL
 );
 
 
@@ -962,8 +962,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: alerts; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.alerts (id, created, updated, "userId", type, method, url, payload, delivered) FROM stdin;
-1	2024-05-08 11:18:34.677	2024-05-08 11:18:34.677	1	UPLOAD_REQUIRED	INTERACTIVE	/api/v1/flow-plans/4/continue	Please select a statement to upload.	2024-05-08 11:18:34.676
+COPY public.alerts (id, created, updated, "userId", type, method, url, delivered, payload) FROM stdin;
 \.
 
 

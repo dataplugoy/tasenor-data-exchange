@@ -6,7 +6,7 @@ import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useGET } from '../Hooks/useNet'
 import { signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
-import { isAlert } from '../Types/alerts'
+import { getAlert, isAlert } from '../Types/alerts'
 import { FileUploader } from './FileUploader'
 
 interface FlowPlanInfoProps {
@@ -37,6 +37,9 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
       if (res.type === 'UPLOAD_REQUIRED') {
         setText(res.payload)
         setUploadUrl(res.url)
+      } else {
+        // TODO: Handle.
+        console.log(getAlert(res));
       }
     } else {
       signalBatchUpdate()
