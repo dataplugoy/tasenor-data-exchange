@@ -3,7 +3,7 @@
   "title": "Question",
   "type": "object",
   "additionalProperties": false,
-  "required": ["type", "help", "label"],
+  "required": ["type", "help", "label", "variable"],
   "properties": {
     "type": {
       "type": "string",

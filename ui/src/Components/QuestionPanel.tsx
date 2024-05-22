@@ -6,6 +6,7 @@ import { QuestionBooleanPanel } from './QuestionBooleanPanel'
 
 interface QuestionPanelProps {
   question: Question
+  onChange: (variable: string, value: unknown) => void
 }
 
 /**
@@ -14,9 +15,9 @@ interface QuestionPanelProps {
  * @returns
  */
 export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
-  const { question } = props
+  const { question, onChange } = props
   if (question.type === 'BOOLEAN') {
-    return <QuestionBooleanPanel question={question}/>
+    return <QuestionBooleanPanel question={question} onChange={onChange}/>
   }
   return (
     <Box sx={{ border: '1px solid red', p: 2 }}>
