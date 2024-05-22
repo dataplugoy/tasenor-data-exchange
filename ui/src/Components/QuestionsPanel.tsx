@@ -7,6 +7,7 @@ import { QuestionPanel } from './QuestionPanel'
 interface QuestionsPanelProps {
   questions: Question[]
   onCancel: () => void
+  onSave: (answers: Record<string, unknown>) => void
 }
 
 /**
@@ -23,6 +24,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   }
 
   const onContinue = () => {
+    props.onSave(answers)
   }
 
   const onChange = (variable: string, value: unknown) => {

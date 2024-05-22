@@ -4,6 +4,7 @@ import { FileUploader } from './FileUploader'
 import { useTranslation } from 'react-i18next'
 import { Question } from '../Types/API/Question'
 import { QuestionsPanel } from './QuestionsPanel'
+import { usePATCH } from '../Hooks/useNet'
 
 interface AlertHandlerProps {
   alert: UIAlert
@@ -18,6 +19,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   const [uploadUrl, setUploadUrl] = useState('')
   const [questions, setQuestions] = useState<Question[]>([])
   const { t } = useTranslation()
+  const PATCH = usePATCH()
 
   useEffect(() => {
     switch (alert.type) {
@@ -50,13 +52,20 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
     onCancel()
   }
 
+  const onEditSave = (answers: Record<string, unknown>) => {
+    PATCH(alert.url, answers).then(() => {
+      setQuestions([])
+      props.onSuccess()
+    })
+  }
+
   return (
     <>
       {type === 'UPLOAD_REQUIRED' &&
         <FileUploader onCancel={onUploadCancel} onSuccess={onUploadSuccess} visible={!!text} text={text} url={uploadUrl} title={t('Upload a File')}/>
       }
       {type === 'ANSWERS_REQUIRED' &&
-        <QuestionsPanel questions={questions} onCancel={onEditCancel}/>
+        <QuestionsPanel questions={questions} onCancel={onEditCancel} onSave={onEditSave}/>
       }
     </>
   )
