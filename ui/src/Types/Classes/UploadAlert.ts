@@ -1,6 +1,3 @@
-import { Alert } from '../API/Alert'
-import { AlertMethod } from '../API/AlertMethod'
-import { AlertType } from '../API/AlertType'
 import { UIAlert } from './UIAlert'
 
 /**
@@ -8,7 +5,4 @@ import { UIAlert } from './UIAlert'
  */
 export class UploadAlert extends UIAlert {
 
-  run() {
-
-  }
 }

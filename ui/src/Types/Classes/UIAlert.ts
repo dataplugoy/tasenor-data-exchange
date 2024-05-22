@@ -20,8 +20,4 @@ export class UIAlert implements Alert {
   constructor(alert: Alert) {
     Object.assign(this, alert)
   }
-
-  run() {
-    throw new Error(`An alert handler ${this.constructor.name} does not implement run().`)
-  }
 }

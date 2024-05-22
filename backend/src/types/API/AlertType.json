@@ -3,6 +3,7 @@
   "title": "AlertType",
   "type": "string",
   "enum": [
-    "UPLOAD_REQUIRED"
+    "UPLOAD_REQUIRED",
+    "ANSWERS_REQUIRED"
   ]
 }
