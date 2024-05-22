@@ -71,7 +71,14 @@ a.demo-button {
   font-style: normal;
 }
 
-.tx-type {
+/* TxTypes */
+.tx-types {
   color: #004AAD;
   font-family: 'Courier New', Courier, monospace;
+}
+
+/* Type */
+.tx-type {
+  color: rgba(0,0,0,0.5);
+  font-size: 80%;
 }

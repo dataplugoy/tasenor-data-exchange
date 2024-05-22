@@ -13,23 +13,33 @@ can be resolved in analysis step, can be left out. For example, if the actual cu
 exchange rate is not given, it is fetched from the third party as long as the date
 of the transaction is known.
 
-TODO: Go through fields and add proper descriptions.
+
+## Types
+
+### Enum
+
+Enumerated type is a fixed list of accepted string values.
+
+### Number
+
+Number type is either an actual number or a string that can have arbitrary precisision.
+
 
 ## Common Fields
 
-### `type` (<Type file="UnifiedItemData.json" field="type"/>)
+### `type` <Type file="UnifiedItemData.json" field="type"/>
 
 This defines the idea of the transaction. Each *type* of transaction has different
 fields it requires by default and some of the fields it can determine according to the type.
 Supported types are <TxTypes/>.
 
-### `value` (<Type file="UnifiedItemData.json" field="value"/>)
+### `value` <Type file="UnifiedItemData.json" field="value"/>
 
-The is positive or zero value determining *total value* of the transaction. That must
+This field is determining *total value* of the transaction. That must
 include additional fees for example. Value can be given either as number or as
 high precision string. Value is measured in *default currency* of the flow plan.
 
-### `text`
+### `text` <Type file="UnifiedItemData.json" field="text"/>
 
 Meny transaction types can determine description on its own in the default language
 of the flow plan. If text field is given, it overrides the generated default text.
@@ -37,18 +47,20 @@ of the flow plan. If text field is given, it overrides the generated default tex
 
 ## Some Optional Fields
 
-### `valueAsset`
+### `valueAsset` <Type file="UnifiedItemData.json" field="valueAsset"/>
 
 It is not necessary to define total value in default currency. If some other currency
 or crupto currency is used instead, this field can name it.
 
-### `rates`
+### `rates` <Type file="UnifiedItemData.json" field="rates"/>
 
 If conversion rates from other currencies to the default currency is known, it can
 be given here. Otherwise it is resolved using other services. The format of this field
 is a map from the currency name(s) to the conversion rate(s) in the default currency.
 
 ## Assets
+
+TODO: Go through fields and add proper descriptions.
 
 ```
     "assetIn": {
