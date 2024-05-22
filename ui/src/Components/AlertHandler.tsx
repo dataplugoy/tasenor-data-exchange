@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { FileUploader } from './FileUploader'
 import { useTranslation } from 'react-i18next'
-import { signalBatchUpdate } from '../Signals/updates'
 import { Question } from '../Types/API/Question'
 import { QuestionsPanel } from './QuestionsPanel'
 
 interface AlertHandlerProps {
   alert: UIAlert
+  onCancel: () => void
+  onSuccess: () => void
 }
 
 export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
-  const { alert } = props
+  const { alert, onCancel, onSuccess } = props
   const { type } = alert
   const [text, setText] = useState('')
   const [uploadUrl, setUploadUrl] = useState('')
@@ -36,12 +37,17 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
 
   const onUploadCancel = async () => {
     setText('')
-    signalBatchUpdate()
+    onCancel()
   }
 
   const onUploadSuccess = async () => {
     setText('')
-    signalBatchUpdate()
+    onSuccess()
+  }
+
+  const onEditCancel = () => {
+    setQuestions([])
+    onCancel()
   }
 
   return (
@@ -50,7 +56,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
         <FileUploader onCancel={onUploadCancel} onSuccess={onUploadSuccess} visible={!!text} text={text} url={uploadUrl} title={t('Upload a File')}/>
       }
       {type === 'ANSWERS_REQUIRED' &&
-        <QuestionsPanel questions={questions}/>
+        <QuestionsPanel questions={questions} onCancel={onEditCancel}/>
       }
     </>
   )

@@ -6,6 +6,7 @@ import { QuestionPanel } from './QuestionPanel'
 
 interface QuestionsPanelProps {
   questions: Question[]
+  onCancel: () => void
 }
 
 /**
@@ -18,6 +19,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
 
   const onCancel = () => {
+    props.onCancel()
   }
 
   const onContinue = () => {

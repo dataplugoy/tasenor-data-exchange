@@ -22,8 +22,16 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const GET = useGET()
   const [alert, setAlert] = useState<UIAlert|null>(null)
 
-  const onRun = async () => {
+  const onCancel = () => {
+    signalBatchUpdate()
+  }
 
+  const onSuccess = () => {
+    signalBatchUpdate()
+  }
+
+  const onRun = async () => {
+    setAlert(null)
     setRunning(true)
     const interval = setInterval(signalRunUpdate, 1000)
     const res = await GET(`/flow-plans/${plan.id}/run`)
@@ -68,7 +76,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
         </CardContent>
       </Card>
 
-      {alert && <AlertHandler alert={alert}/>}
+      {alert && <AlertHandler alert={alert} onCancel={onCancel} onSuccess={onSuccess}/>}
     </>
   )
 }
