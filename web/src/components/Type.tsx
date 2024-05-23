@@ -74,6 +74,10 @@ export default function Type(props: TypeProps) {
     }
   }
 
+  function resolveNumber(spec) {
+    return 'number'
+  }
+
   /**
    * Resolve textual description.
    * @param file
@@ -93,6 +97,9 @@ export default function Type(props: TypeProps) {
 
       case 'string':
         return resolveString(spec)
+
+      case 'number':
+        return resolveNumber(spec)
 
       default:
         if (spec.type instanceof Array

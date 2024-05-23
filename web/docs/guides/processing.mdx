@@ -13,14 +13,17 @@ How the processing works? This chapter explains it in detail.
   bookkeeping, where the information needs to be stored.
 * **Batch** Each completed cycle of fetching information from the source and then
   successfully processing it and delivering the result, is called a *batch*.
-* **Run** Once a flow plan is configured, one can go to the *Executions* and
-  press a run button. New batch is created and as many steps as possible are
+* **Run** Once a flow plan is configured, one can *execute* it using
+  a run button in the app. New batch is created and as many steps as possible are
   executed. That is a single *run*. The run can result either *completion*,
   *waiting* or *failure*. Failures can be possibly fixed by chaging settings for
-  the flow plan. Waiting means that the batch needs some additional information before
-  it can continue.
+  the flow plan and *retrying* by executing another run. Waiting means that the batch
+  needs some additional information before it can continue. Once provided, another
+  run can be executed.
 
 ## Steps of a Batch
+
+A single run executes as many steps as possible.
 
 ### 1. Data Fetching
 
@@ -28,16 +31,17 @@ As a first thing that happens, the original data is fetched. Typically it is dow
 from some specific URL but also can be uploaded manually as a statement file or similar.
 
 Fetching step also knows the latest timestamp, when the fetch has been done before. It
-tries to skip older data than the latest timestmap. It depends on the data source how
+tries to skip older data than the latest known timestamp. It depends on the data source how
 accurate this is. However, every data source rather re-retrieves the same entries than
-risks the loss of data around the latest timestamp.
+risks the loss of data around the latest timestamp and rather takes care of duplicates
+at the later stage.
 
 <figure>
+<figcaption>**Example**: *A piece of a statement from Nordnet*</figcaption>
 ```
 Id	        Kirjauspäivä	Kauppapäivä	Maksupäivä	Salkku	Tapahtumatyyppi	Arvopaperi	Instrumenttityyppi	ISIN	Määrä	Kurssi	Korko	Kokonaiskulut	Valuutta	Summa	Valuutta	Hankinta-arvo	Valuutta	Tulos	Valuutta	Kokonaismäärä	Saldo	Vaihtokurssi	Tapahtumateksti	Mitätöintipäivä	Laskelma	Vahvistusnumero	Välityspalkkio	Valuutta
 123456789	2000-05-09	2000-05-09	2000-05-09	12345678 NOSTO				0	0	0	0	EUR	-1 930	EUR	0		0		0	-1 902,68	1	NOSTO			9876543210
 ```
-<figcaption>**Example**: *A piece of a statement from Nordnet*</figcaption>
 </figure>
 
 ### 2. Data Parsing
@@ -47,10 +51,11 @@ before we start our own processing, everything is converted to the JSON-format p
 the original data. In a simple case, it could be just CSV file converted to the key-value
 pairs according to the known column names.
 
-Data is splitted to items presenting either one full transaction or part of the transaction.
-More about partial items later.
+Data is splitted to items presenting either one full transaction or a part of the transaction.
+More about partial items [here](/docs/guides/unified-format#multipart-).
 
 <figure>
+<figcaption>**Example**: *A single item in parsed version of the Nordnet statement*</figcaption>
 ```json
 {
   "Id":"123456789",
@@ -84,21 +89,22 @@ More about partial items later.
   "Välityspalkkio Valuutta":""
 }
 ```
-<figcaption>**Example**: *Parsed Version of the Nordnet Statement*</figcaption>
 </figure>
 
 ### 3. Unifying Items
 
 The trickiest part comes next. We need to understand the original data and convert it
 to the intermediate format, that can express everything we are interested in from the
-bookkeeping point of view. For that purpose we have developed *unified format* to describe
+bookkeeping point of view. For that purpose we have developed *[unified format](/docs/guides/unified-format)* to describe
 transactions.
 
-Transformation happens using custom *rules*. Well known data source like a stock broker
-can have complete rule set to handle entire statement. However, in general purpose bank
-statement you need to cook your own recipies to convert the data to the unified format.
+Transformation happens using custom *[rules](/docs/guides/rules)*. Well known data source
+like a stock broker can have complete rule set to handle entire statement. However,
+in general purpose bank statement you need to cook your own recipies to convert the data
+to the unified format.
 
 <figure>
+<figcaption>**Example**: *Nordnet withdrawal in unified format*</figcaption>
 ```json
 {
   "type":"withdrawal",
@@ -107,24 +113,26 @@ statement you need to cook your own recipies to convert the data to the unified 
   "valueAsset":"EUR"
 }
 ```
-<figcaption>**Example**: *Nordnet Withdrawal in Unified Format*</figcaption>
 </figure>
 
 ### 4. Analysis
 
 Analysis is a step where all unified items are processed once in their chronological
-order. Any change in a balance of any account are tracked. Also the buying prices of
-various assets are kept alongside of their respective accouts. Fees are separated from
+order. Any change in a balance of any account is tracked. Also the buying prices of
+various assets are kept alongside of their respective accounts. Fees are separated from
 transactions and recorded to their own accounts. When selling something the difference
-between buying and selling price is recorded as a profit or a loss. Some accounts can
-be configured to allow going negative and using different debt account to denote
-borrowed money. Typically this is used when stock broker let you use margin, i.e.
+between buying and selling price is recorded either as a profit or a loss. Some accounts can
+be configured to allow going to negative balance and using different debt account to denote
+borrowed money instead. Typically this is used when stock broker let you use margin, i.e.
 loan money to you.
 
-This step produces *generic transactions* that resembles normal bookkeeping transactions,
-but actual information of accounts are still missing. Text symbols are used instead.
+This step produces *[generic transactions](/docs/guides/generic-transactions)* that
+resembles normal bookkeeping transactions,
+but actual information of accounts is still missing. Text symbols are used instead
+to represent destination accounts.
 
 <figure>
+<figcaption>**Example**: *Withdrawal as a generic transaction*</figcaption>
 ```json
 {
   "time": "2000-05-09T12:00:00.000Z",
@@ -144,12 +152,11 @@ but actual information of accounts are still missing. Text symbols are used inst
   ]
 }
 ```
-<figcaption>**Example**: *Withdrawal as a Generic Transaction*</figcaption>
 </figure>
 
 ### 5. Output
 
-Final step is to map the transactions to the actual bookkeeping system. This is mostly
-matter of configuring actual accounts to match the generic account symbols produced by
-the analysis. Most bookkeeping systems are updated using API to push changes through
+Final step is to copy the transactions across to the actual bookkeeping system. This is mostly
+a matter of configuring actual accounts to match the generic account symbols produced by
+the analysis. Most bookkeeping systems are updated using their API to push changes through
 automatically.
