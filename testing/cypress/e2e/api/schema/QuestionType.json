@@ -3,6 +3,7 @@
   "title": "QuestionType",
   "type": "string",
   "enum": [
-    "BOOLEAN"
+    "BOOLEAN",
+    "ENUM"
   ]
 }

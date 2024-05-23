@@ -8,6 +8,14 @@
     "type": {
       "$ref": "QuestionType.json"
     },
+    "args": {
+      "options": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
     "help": {
       "type": "string"
     },
