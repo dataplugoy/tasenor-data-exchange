@@ -6,6 +6,7 @@ import { Trans } from 'react-i18next'
 import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
 import { ViewError } from './ViewError'
 import { DisplayBlock } from './DisplayBlock'
+import { Notes } from './Notes'
 
 // TODO: All JSON-presentations should be converted to nice item specific viewers.
 
@@ -47,10 +48,11 @@ const RunStateIcon = (props: RunStateIconProps): React.JSX.Element => {
 }
 
 const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
-  const { batch } = props
+  const { batch, result } = props
 
   return (
     <DisplayBlock>
+        <Notes notes={result.run.notes}/>
         {batch.data.split('\n').map((line, idx) => <Typography key={idx} variant="body2">{line}</Typography>)}
     </DisplayBlock>
   )
@@ -61,6 +63,7 @@ const SuccessfulDataParsed = (props: RunDetailsProps): React.JSX.Element => {
   const items: ResultInputItem[] = result.items as ResultInputItem[]
   return (
     <DisplayBlock>
+      <Notes notes={result.run.notes}/>
       {
         items.map((item, idx) => <Box key={idx}>
           <Box>
@@ -84,6 +87,7 @@ const SuccessfulItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
 
   return (
     <DisplayBlock>
+      <Notes notes={result.run.notes}/>
       {
         items.map((item, idx) => <Box key={idx}>
           <Box>{JSON.stringify(item.data)}<RunStateIcon result={result} item={item}/></Box>
@@ -100,6 +104,7 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
 
   return (
     <Box>
+      <Notes notes={result.run.notes}/>
       {
         items.map((item, idx) => <Box key={idx}>
           <Box>{item.data.time}<RunStateIcon result={result} item={item}/></Box>
@@ -112,14 +117,12 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
 
 const FailedAfterBatchCreated = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-  const runResult = result.run.result as string
   return (
     <DisplayBlock>
         {result.run.error && <ViewError error={result.run.error}/>}
-        {runResult === 'WAITING' && <Trans>Waiting for file upload.</Trans>}
+        <Notes notes={result.run.notes}/>
     </DisplayBlock>
   )
-
 }
 
 const FailedAfterDataFetched = (props: RunDetailsProps): React.JSX.Element => {
@@ -144,6 +147,7 @@ function RenderErrorOrItemErrors<T extends ResultItem>(props: RunDetailsProps): 
           </Box>
         })
       }
+      <Notes notes={result.run.notes}/>
     </DisplayBlock>
   )
 }

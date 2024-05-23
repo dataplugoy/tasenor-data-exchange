@@ -102,8 +102,18 @@ export interface Run {
   done?: number | null;
   total?: number | null;
   result?: RunResult;
+  notes?: Notes;
   created?: string;
   updated?: string;
+}
+export interface Notes {
+  uploaded?: string;
+  configured?: Settings;
+  needUpload?: boolean;
+  needSettings?: string[];
+}
+export interface Settings {
+  allowShortSelling?: boolean;
 }
 export interface InputItem {
   id: number;

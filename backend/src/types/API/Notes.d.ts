@@ -7,7 +7,9 @@
 
 export interface Notes {
   uploaded?: string;
-  cofigured?: Settings;
+  configured?: Settings;
+  needUpload?: boolean;
+  needSettings?: string[];
 }
 export interface Settings {
   allowShortSelling?: boolean;

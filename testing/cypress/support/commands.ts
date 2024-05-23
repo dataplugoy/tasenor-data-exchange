@@ -13,6 +13,7 @@ import FlowPlan from '../e2e/api/schema/FlowPlan.json'
 import InputItemData from '../e2e/api/schema/InputItemData.json'
 import InputItem from '../e2e/api/schema/InputItem.json'
 import ItemError from '../e2e/api/schema/ItemError.json'
+import Notes from '../e2e/api/schema/Notes.json'
 import OutputItem from '../e2e/api/schema/OutputItem.json'
 import Project from '../e2e/api/schema/Project.json'
 import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
@@ -96,6 +97,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(InputItemData)
   ajv.addSchema(InputItem)
   ajv.addSchema(ItemError)
+  ajv.addSchema(Notes)
   ajv.addSchema(OutputItem)
   ajv.addSchema(Project)
   ajv.addSchema(ProjectSettings)
