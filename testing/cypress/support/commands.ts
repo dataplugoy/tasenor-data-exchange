@@ -16,10 +16,13 @@ import ItemError from '../e2e/api/schema/ItemError.json'
 import OutputItem from '../e2e/api/schema/OutputItem.json'
 import Project from '../e2e/api/schema/Project.json'
 import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
+import Question from '../e2e/api/schema/Question.json'
+import QuestionType from '../e2e/api/schema/QuestionType.json'
 import Rates from '../e2e/api/schema/Rates.json'
 import RemoteAccount from '../e2e/api/schema/RemoteAccount.json'
 import Run from '../e2e/api/schema/Run.json'
 import RunResult from '../e2e/api/schema/RunResult.json'
+import Settings from '../e2e/api/schema/Settings.json'
 import Setup from '../e2e/api/schema/Setup.json'
 import SkipReason from '../e2e/api/schema/SkipReason.json'
 import StockData from '../e2e/api/schema/StockData.json'
@@ -96,10 +99,13 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(OutputItem)
   ajv.addSchema(Project)
   ajv.addSchema(ProjectSettings)
+  ajv.addSchema(Question)
+  ajv.addSchema(QuestionType)
   ajv.addSchema(Rates)
   ajv.addSchema(RemoteAccount)
   ajv.addSchema(Run)
   ajv.addSchema(RunResult)
+  ajv.addSchema(Settings)
   ajv.addSchema(Setup)
   ajv.addSchema(SkipReason)
   ajv.addSchema(StockData)

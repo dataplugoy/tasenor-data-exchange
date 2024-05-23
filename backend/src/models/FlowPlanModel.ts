@@ -24,7 +24,7 @@ import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
-import { AlertException } from '../exceptions/AlertException'
+import { AlertException, AnswersRequired } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { BalanceData } from '../types/API/BalanceData'
@@ -33,6 +33,8 @@ import { Account } from '../types/API/Account'
 import { AccountException } from '../exceptions/AccountException'
 import { getDriver } from '../driver'
 import { ProjectSettings } from '../types/API/Project'
+import { Settings } from '../types/API/Settings'
+import { Notes } from '../types/API/Notes'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -117,11 +119,22 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Update the settings fields.
+   * @param state
+   */
+  async updateSettings(patch: Partial<Settings>): Promise<void> {
+    const settings = (this.data?.setup as Setup).settings || {}
+    Object.assign(settings, patch)
+    Object.assign(this.data.setup as object, { settings })
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
+  }
+
+  /**
    * Run steps until batch finished or error encountered. Create new batch if the latest done.
    * @param options
    */
-  async run(options: RuntimeOptions, counter = 0): Promise<FlowPlanRunResponse> {
-    const [batch,, result] = await this.runStep(options)
+  async run(options: RuntimeOptions, notes: Notes = {}, counter = 0): Promise<FlowPlanRunResponse> {
+    const [batch,, result] = await this.runStep(options, notes)
     if (batch.data.completed || result === 'FAIL' || result === 'WAIT' || options.repeat === 1) {
       return {
         success: result === 'OK',
@@ -129,18 +142,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       }
     }
     if (options.repeat === 'MAX') {
-      return await this.run(options, counter + 1)
+      return await this.run(options, {}, counter + 1)
     } else {
-      return await this.run({ ...options, repeat: (options.repeat || 0) - 1 }, counter + 1)
+      return await this.run({ ...options, repeat: (options.repeat || 0) - 1 }, {}, counter + 1)
     }
   }
 
   /**
    * Execute the next step of running the current or new batch.
    */
-  private async runStep(options: RuntimeOptions): Promise<[BatchModel, RunModel, 'OK' | 'WAIT' | 'FAIL']> {
+  private async runStep(options: RuntimeOptions, notes: Notes): Promise<[BatchModel, RunModel, 'OK' | 'WAIT' | 'FAIL']> {
     const batch = await this.getNextBatch()
     const run = await batch.startRun()
+    await run.setNotes(notes)
 
     log(`${run} for ${batch} starting from state ${batch.state}.`)
 
@@ -330,7 +344,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     let result: 'OK' | 'FAIL' = 'OK'
 
     // TODO: Drop test code.
-    // throw new AnswersRequired('/none-url-yet/just-testing', options.userId, { type: 'BOOLEAN', help: 'If this is checked, then all goes okay.', label: 'Correctiveness toggle', variable: 'correctiveness' })
+    throw new AnswersRequired(`/flow-plans/${this.id}/configure`, options.userId, { type: 'BOOLEAN', help: 'If this is checked, then all goes okay.', label: 'Correctiveness toggle', variable: 'allowShortSelling' })
 
     try {
       const driver = await this.getInputDriver(options)

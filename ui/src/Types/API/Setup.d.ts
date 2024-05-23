@@ -23,4 +23,8 @@ export interface Setup {
     singleDividendAccount?: boolean;
     singleTaxAccount?: boolean;
   };
+  settings?: Settings;
+}
+export interface Settings {
+  allowShortSelling?: boolean;
 }

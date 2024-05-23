@@ -1,0 +1,11 @@
+{
+  "$id": "Settings.json",
+  "title": "Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "allowShortSelling": {
+      "type": "boolean"
+    }
+  }
+}

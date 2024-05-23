@@ -1,0 +1,8 @@
+{
+  "$id": "QuestionType.json",
+  "title": "QuestionType",
+  "type": "string",
+  "enum": [
+    "BOOLEAN"
+  ]
+}

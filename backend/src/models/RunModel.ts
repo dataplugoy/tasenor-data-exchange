@@ -7,6 +7,8 @@ import { InputItemModel } from './InputItemModel'
 import { UnifiedItemModel } from './UnifiedItemModel'
 import { ItemErrorModel } from './ItemErrorModel'
 import { OutputItemModel } from './OutputItemModel'
+import { Notes } from '../types/API/Notes'
+import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
 
 export class RunModel extends BaseModel<prisma.Run> {
 
@@ -69,6 +71,18 @@ export class RunModel extends BaseModel<prisma.Run> {
   async alert(err: AlertException): Promise<void> {
     this.data.result = 'WAITING'
     await RunModel.update<prisma.Run, RunModel>(this, { result: 'WAITING' })
+  }
+
+  /**
+   * Update notes field.
+   * @param notes
+   */
+  async setNotes(notes: Notes): Promise<void> {
+    if (Object.keys(notes).length === 0 && Object.keys(this.data.notes as JsonObject).length === 0) {
+      return
+    }
+    this.data.notes = notes as JsonObject
+    await RunModel.update<prisma.Run, RunModel>(this, { notes: this.data.notes })
   }
 
   /**

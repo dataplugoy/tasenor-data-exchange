@@ -34,6 +34,7 @@ export class UploadRequired extends AlertException {
 
 export class AnswersRequired extends AlertException<Question[]> {
   constructor(url: string, userId: number, question: Question | Question[]) {
+    // TODO: Consider some sort of database that you can just give variable name here and fill in types and details.
     super('ANSWERS_REQUIRED', url, userId, question instanceof Array ? question : [question])
   }
 }

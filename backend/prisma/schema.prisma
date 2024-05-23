@@ -212,6 +212,8 @@ model Run{
   batchId     Int
   batch       Batch?          @relation(fields: [batchId], references: [id])
 
+  notes       Json?           @default("{}")
+
   inputItems  InputItem[]
   unifiedItems UnifiedItem[]
   outputItems OutputItem[]

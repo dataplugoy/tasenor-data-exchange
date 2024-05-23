@@ -1,0 +1,14 @@
+{
+  "$id": "Notes.json",
+  "title": "Notes",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "uploaded": {
+      "type": "string"
+    },
+    "cofigured": {
+      "$ref": "Settings.json"
+    }
+  }
+}

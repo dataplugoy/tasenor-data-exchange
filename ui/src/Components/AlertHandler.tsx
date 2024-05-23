@@ -53,9 +53,11 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   }
 
   const onEditSave = (answers: Record<string, unknown>) => {
-    PATCH(alert.url, answers).then(() => {
-      setQuestions([])
-      props.onSuccess()
+    PATCH(alert.url, answers).then((res) => {
+      if (res) {
+        setQuestions([])
+        props.onSuccess()
+      }
     })
   }
 

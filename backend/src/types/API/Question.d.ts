@@ -5,8 +5,10 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type QuestionType = "BOOLEAN";
+
 export interface Question {
-  type: "BOOLEAN";
+  type: QuestionType;
   help: string;
   label: string;
   variable: string;

@@ -6,6 +6,7 @@ import { BatchModel } from '../models/BatchModel'
 import { param } from '../lib/param'
 import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlanRequest.json'
 import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
+import ConfigureFlowPlanRequest from '../../src/types/API/flow-plans/ConfigureFlowPlanRequest.json'
 import UpdateSetupRequest from '../../src/types/API/flow-plans/UpdateSetupRequest.json'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
@@ -176,7 +177,42 @@ router.post('/:id/continue',
 
     // TODO: DRY. Same as in the `run`-url.
     try {
-      const result = await res.locals.flowPlan.run({ userId: res.locals.userId, interactive: true, repeat: 'MAX' })
+      const result = await res.locals.flowPlan.run(
+        { userId: res.locals.userId, interactive: true, repeat: 'MAX' },
+        // TODO: Localize.
+        { uploaded: `Uploaded a file ${name} of type ${type} (size ${data.length / 2} bytes)` }
+      )
+      res.send(result)
+    } catch (err) {
+      if (err instanceof AlertException) {
+        log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
+        const alert = await AlertModel.interactive(err)
+        res.status(202).send(alert.data)
+      }
+    }
+  }
+)
+
+router.patch('/:id/configure',
+  authorize(),
+  param('flowPlanId'),
+  validate(ConfigureFlowPlanRequest),
+  async (req, res) => {
+    // Find the latest batch.
+    const batch = await BatchModel.getLatest(res.locals.flowPlan)
+    if (!batch) {
+      error(`Cannot find any batches for ${res.locals.flowPlan}.`)
+      return res.sendStatus(400)
+    }
+
+    await res.locals.flowPlan.updateSettings(req.body)
+
+    // TODO: DRY. Same as in the `run`-url.
+    try {
+      const result = await res.locals.flowPlan.run(
+        { userId: res.locals.userId, interactive: true, repeat: 'MAX' },
+        { configured: req.body }
+      )
       res.send(result)
     } catch (err) {
       if (err instanceof AlertException) {

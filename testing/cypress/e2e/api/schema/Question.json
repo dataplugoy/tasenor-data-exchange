@@ -6,10 +6,7 @@
   "required": ["type", "help", "label", "variable"],
   "properties": {
     "type": {
-      "type": "string",
-      "enum": [
-        "BOOLEAN"
-      ]
+      "$ref": "QuestionType.json"
     },
     "help": {
       "type": "string"

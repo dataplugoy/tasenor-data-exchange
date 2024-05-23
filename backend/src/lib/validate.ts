@@ -15,10 +15,13 @@ import ItemError from '../../src/types/API/ItemError.json'
 import OutputItem from '../../src/types/API/OutputItem.json'
 import Project from '../../src/types/API/Project.json'
 import ProjectSettings from '../../src/types/API/ProjectSettings.json'
+import Question from '../../src/types/API/Question.json'
+import QuestionType from '../../src/types/API/QuestionType.json'
 import Rates from '../../src/types/API/Rates.json'
 import RemoteAccount from '../../src/types/API/RemoteAccount.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
+import Settings from '../../src/types/API/Settings.json'
 import Setup from '../../src/types/API/Setup.json'
 import SkipReason from '../../src/types/API/SkipReason.json'
 import StockData from '../../src/types/API/StockData.json'
@@ -48,9 +51,12 @@ ajv.addSchema(OutputItem)
 ajv.addSchema(Project)
 ajv.addSchema(ProjectSettings)
 ajv.addSchema(Rates)
+ajv.addSchema(Question)
+ajv.addSchema(QuestionType)
 ajv.addSchema(RemoteAccount)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
+ajv.addSchema(Settings)
 ajv.addSchema(Setup)
 ajv.addSchema(SkipReason)
 ajv.addSchema(StockData)

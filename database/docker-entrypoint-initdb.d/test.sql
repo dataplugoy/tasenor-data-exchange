@@ -655,7 +655,8 @@ CREATE TABLE public.runs (
     "batchId" integer NOT NULL,
     done integer,
     result public."RunResult" DEFAULT 'NO_PROGRESS'::public."RunResult" NOT NULL,
-    total integer
+    total integer,
+    notes jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -1058,7 +1059,7 @@ COPY public.rules (id, created, updated, name, key, priority, filter, result, "f
 -- Data for Name: runs; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.runs (id, created, updated, "initialState", "finalState", error, "batchId", done, result, total) FROM stdin;
+COPY public.runs (id, created, updated, "initialState", "finalState", error, "batchId", done, result, total, notes) FROM stdin;
 \.
 
 
