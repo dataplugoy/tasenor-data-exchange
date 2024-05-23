@@ -316,6 +316,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       log(`${this} created ${items.length} input items for ${batch}.`)
       await run.result(items.length, items.length, 0, items.length > 0 ? 'ALL_SUCCESS' : 'NO_PROGRESS')
     } catch (err) {
+      if (err instanceof AlertException) {
+        throw err
+      }
       result = 'FAIL'
       error(`Input parsing failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
@@ -422,6 +425,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           }
           await input.success()
         } catch (err) {
+          if (err instanceof AlertException) {
+            throw err
+          }
           result = 'FAIL'
           error(`Handling of ${input} failed: ${err.stack}`)
           await input.fail(run, err)
@@ -464,6 +470,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await this.saveState({})
 
     } catch (err) {
+      if (err instanceof AlertException) {
+        throw err
+      }
       result = 'FAIL'
       error(`Unifying input failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
@@ -535,6 +544,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           await unified.success()
           done++
         } catch (err) {
+          if (err instanceof AlertException) {
+            throw err
+          }
           result = 'FAIL'
           error(`Unifying input failed: ${err.stack}`)
           await unified.fail(run, err)
@@ -549,6 +561,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await batch.setEndState(json.stock, json.balances)
 
     } catch (err) {
+      if (err instanceof AlertException) {
+        throw err
+      }
       result = 'FAIL'
       error(`Analyzing item failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')
@@ -583,6 +598,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           await item.success(remoteId)
           done++
         } catch (err) {
+          if (err instanceof AlertException) {
+            throw err
+          }
           result = 'FAIL'
           await item.fail(run, err)
           if (err instanceof AccountException) {
@@ -595,6 +613,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       await run.result(done, total, 0)
 
     } catch (err) {
+      if (err instanceof AlertException) {
+        throw err
+      }
       result = 'FAIL'
       error(`Delivering output failed: ${err.stack}`)
       await run.fail(err, null, null, 'ALL_FAILED')

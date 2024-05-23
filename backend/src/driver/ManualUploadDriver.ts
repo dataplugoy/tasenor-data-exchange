@@ -9,6 +9,7 @@ import { Driver } from './Driver'
 import { num } from '@tasenor/common'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
+import { AnswersRequired } from '../exceptions/AnswersRequired'
 
 export type PreProcessOptions = {
   numericFields?: string[]
