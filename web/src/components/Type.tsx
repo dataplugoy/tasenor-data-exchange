@@ -59,8 +59,13 @@ export default function Type(props: TypeProps) {
     if (spec.title === 'Asset') {
       return 'asset'
     }
-    if (spec.pattern === '^(STOCK|CRYPTO)$')
-    return 'asset type'
+    if (spec.pattern === '^(STOCK|CRYPTO)$') {
+      return 'asset type'
+    }
+    // TODO: Make this more flexible and dig explicit list to the docs.
+    if (spec.pattern === '^(DIVIDEND)$') {
+      return 'enum'
+    }
   }
 
   function resolveNumeric(spec) {

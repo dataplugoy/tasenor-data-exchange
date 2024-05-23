@@ -133,46 +133,46 @@ Ticker of the fee charged as a currency or other asset ticker.
 
 A *tax* is similar to fee, but instead of the service provider it goes to the tax collector.
 
-TODO: Go through fields and add proper descriptions.
-```
-    "taxType": {
-      "description": "If tax must be calculated, this is the type of the tax.",
-      "type": "string",
-      "enum": ["vat", "withholding"]
-    },
-    "taxAmount": {
-      "description": "If tax must be calculated, this is the amount of tax in tax assets.",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-    "taxAsset": {
-      "description": "If tax must be calculated, this is the asset used (defaults to `valueAsset`)",
-      "$ref": "Asset.json"
-    },
-    "taxPercentage": {
-      "description": "If tax must be calculated, alternatively it can be percentage of the total of the transaction.",
-      "type": "number"
-    },
-```
+### `taxType` <Type file="UnifiedItemData.json" field="taxType"/>
+
+A type of the tax charged. Currently either `vat` or `withholding`.
+
+### `taxAmount` <Type file="UnifiedItemData.json" field="taxAmount"/>
+
+If exact amount of tax is known already, it is given here.
+
+### `taxAsset` <Type file="UnifiedItemData.json" field="taxAsset"/>
+
+In case that the tax amount is given in other currency (or even in other asset), it can
+be defined in this field.
+
+### `taxPercentage` <Type file="UnifiedItemData.json" field="taxPercentage"/>
+
+Instead of exact amount, the tax amount can be given also as an percentage of actual
+income or expense.
+
 
 ## Miscellaneous
 
-```
-    "multipart": {
-      "description": "If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.",
-      "type": "string"
-    },
-    "reason": {
-      "description": "If income or expense have some specific reason, it can be determined here.",
-      "type": "string",
-      "pattern": "^(DIVIDEND)$"
-    },
-    "reasonAsset": {
-      "description": "An asset triggering the income or expense.",
-      "$ref": "Asset.json"
-    },
-    "service": {
-      "description": "Name of the service providing the data.",
-      "type": "string"
-    },
-```
+### `multipart` <Type file="UnifiedItemData.json" field="multipart"/>
+
+In a case that driver is not able to combine input items together to form information for complete
+transaction, it can be provided in pieces. In that case, every piece must have some unique
+identifier given in this field. When processing, all parts provided having the same `multipart`
+filed are combined together. If fields are overrlapping with different values, the combined result
+is not guaranteed.
+
+### `reason` <Type file="UnifiedItemData.json" field="reason"/>
+
+For automatic text construction for income and expense, there are some pre-defined *reason* symbols
+that are automatically used when translating text to the transaction.
+
+### `reasonAsset` <Type file="UnifiedItemData.json" field="reasonAsset"/>
+
+Sometimes the asset needs to be referenced in the automatic text generation. For example when paying
+dividends, it is preferred to have information about the stock ticker paying dividends.
+
+### `service` <Type file="UnifiedItemData.json" field="service"/>
+
+Name of the service providing the data. Used in the automatic text generation for example when
+refering to withdrawing or depositing from/to service.
