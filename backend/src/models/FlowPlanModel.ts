@@ -35,6 +35,7 @@ import { getDriver } from '../driver'
 import { ProjectSettings } from '../types/API/Project'
 import { Settings } from '../types/API/Settings'
 import { Notes } from '../types/API/Notes'
+import { AnswersRequired } from '../exceptions/AnswersRequired'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -127,6 +128,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     Object.assign(settings, patch)
     Object.assign(this.data.setup as object, { settings })
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
+  }
+
+  /**
+   * Check if the variable is found from the flow plan setup. If not, throw an alert.
+   * @param variable
+   * @returns
+   */
+  async getSetting(options: RuntimeOptions, variable: string): Promise<unknown> {
+    const settings = (this.data?.setup as Setup).settings || {}
+    if (variable in settings && settings[variable] !== undefined) {
+      return settings[variable]
+    }
+    AnswersRequired.throw(`/flow-plans/${this.id}/continue`, options.userId, variable)
   }
 
   /**
@@ -362,6 +376,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           // Verify duplicates first.
           if (await InputItemModel.isDuplicate(input)) {
+            // TODO: What about duplicates coming from the input batch? This checks only existing.
+            const inputDuplicates = await this.getSetting(options, 'inputDuplicates')
+            console.log(inputDuplicates)
             // TODO: Here we possibly throw a question wether duplicates are okay.
             //       Need three configuration options: 'never', 'always', 'ask'.
             // await input.skip('DUPLICATE')

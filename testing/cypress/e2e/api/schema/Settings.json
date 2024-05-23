@@ -6,6 +6,10 @@
   "properties": {
     "allowShortSelling": {
       "type": "boolean"
+    },
+    "inputDuplicates": {
+      "type": "string",
+      "enum": ["Alway", "Never", "Ask"]
     }
   }
 }

@@ -1,5 +1,5 @@
 import prisma from '@prisma/client'
-import { UploadRequired } from '../exceptions/AlertException'
+import { UploadRequired } from '../exceptions/UploadRequired'
 import { _ } from '../lib/i18n/t'
 import { BatchModel } from '../models/BatchModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
