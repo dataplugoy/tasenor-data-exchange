@@ -31,7 +31,11 @@ A string is UTF-8 encoded string possibly limited by some regular expression pat
 ### Asset
 
 An asset is special string type that refers to the ISO-4217 currency codes, stock ticker
-or crypto currency.
+or crypto currency symbol.
+
+### Asset Type
+
+Either `STOCK` or `CRYPTO`.
 
 ### Map
 
@@ -75,70 +79,61 @@ in the default currency.
 
 ## Assets
 
-TODO: Go through fields and add proper descriptions.
+### `assetIn` <Type file="UnifiedItemData.json" field="assetIn"/>
 
-```
-    "assetIn": {
-      "description": "In case of buying some asset, this is the asset received.",
-      "$ref": "Asset.json"
-    },
-    "assetAmountIn": {
-      "description": "In case of buying some asset, this is the number of assets received.",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-    "assetValueIn": {
-      "description": "In case of buying some asset, this is the value of assets in the default currency.",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-    "assetTypeIn": {
-      "description": "Type of the asset received.",
-      "type": "string",
-      "pattern": "^(STOCK|CRYPTO)$"
-    },
+In a `buy` transaction and simimlar we are receiving some assset. This field is a crypto currency
+symbol, stock ticker or similar to be used as an identifier for that kind of asset.
 
-    "assetOut": {
-      "description": "In case of selling some asset, this is the asset traded out.",
-      "$ref": "Asset.json"
-    },
-    "assetAmountOut": {
-      "description": "In case of selling some asset, this is the number of assets given (as positive number).",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-    "assetValueOut": {
-      "description": "In case of selling some asset, this is the value of assets in the default currency (as positive number).",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-    "assetTypeOut": {
-      "description": "Type of the asset given.",
-      "type": "string",
-      "pattern": "^(STOCK|CRYPTO)$"
-    },
-```
+### `assetAmountIn` <Type file="UnifiedItemData.json" field="assetAmountIn"/>
+
+How many units of the asset we have received in this transaction.
+
+### `assetValueIn` <Type file="UnifiedItemData.json" field="assetValueIn"/>
+
+If value in the default currency is already known, it can be defined here. Otherwise an attempt
+is made to figure out the value from other sources.
+
+### `assetTypeIn` <Type file="UnifiedItemData.json" field="assetTypeIn"/>
+
+Defines the type of the asset received.
+
+### `assetOut` <Type file="UnifiedItemData.json" field="assetOut"/>
+
+Similar to `assetIn` but when giving away an asset.
+
+### `assetAmountOut` <Type file="UnifiedItemData.json" field="assetAmountOut"/>
+
+Similar to `assetAmounIn` but when giving away an asset.
+
+### `assetValueOut` <Type file="UnifiedItemData.json" field="assetValueOut"/>
+
+Similar to `assetValueIn` but when giving away an asset.
+
+### `assetTypeOut` <Type file="UnifiedItemData.json" field="assetTypeOut"/>
+
+Similar to `assetTypeIn` but when giving away an asset.
+
 
 ## Fees
 
-```
-    "fee": {
-      "description": "Amount of fee charged as a part of the transaction.",
-      "type": ["number", "string"],
-      "pattern": "^[0-9]+(\\.[0-9]+)?$"
-    },
-    "feeAsset": {
-      "description": "Ticker of the fee charged as a currency or other asset ticker.",
-      "$ref": "Asset.json"
-    },
-```
+The difference between types *fee* and *expense* is that the fee is added as an additional line to other transaction
+like selling or buying stocks. An expense contributes completely separate independent transaction
+on its own.
 
-  The difference between types *fee* and *expense* is that the fee is added as an additional line to other transaction
-  like selling or buying stocks. An expense contributes completely separate independent transaction
-  on its own.
+### `fee` <Type file="UnifiedItemData.json" field="fee"/>
+
+Amount of fee charged as a part of the transaction.
+
+### `feeAsset` <Type file="UnifiedItemData.json" field="feeAsset"/>
+
+Ticker of the fee charged as a currency or other asset ticker.
+
 
 ## Taxes
 
+A *tax* is similar to fee, but instead of the service provider it goes to the tax collector.
+
+TODO: Go through fields and add proper descriptions.
 ```
     "taxType": {
       "description": "If tax must be calculated, this is the type of the tax.",

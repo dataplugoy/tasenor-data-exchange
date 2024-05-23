@@ -59,6 +59,8 @@ export default function Type(props: TypeProps) {
     if (spec.title === 'Asset') {
       return 'asset'
     }
+    if (spec.pattern === '^(STOCK|CRYPTO)$')
+    return 'asset type'
   }
 
   function resolveNumeric(spec) {
