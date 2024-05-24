@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FormControlLabel, FormGroup, FormHelperText, Switch } from '@mui/material'
+import { FormControl, FormControlLabel, FormGroup, FormHelperText, Switch } from '@mui/material'
 import { Question } from '../Types/API/Question'
 
 interface QuestionBooleanPanelProps {
@@ -23,12 +23,15 @@ export const QuestionBooleanPanel = (props: QuestionBooleanPanelProps): React.JS
     onChange(variable, value)
   }
 
+  // TODO: Formgroup belongs higher level?
   return (
     <FormGroup>
-      <FormHelperText>{help}</FormHelperText>
-      <FormControlLabel control={
-        <Switch checked={checked} onChange={onToggle} />
-      } label={label} />
+      <FormControl>
+        <FormHelperText>{help}</FormHelperText>
+        <FormControlLabel control={
+          <Switch checked={checked} onChange={onToggle} />
+        } label={label} />
+      </FormControl>
     </FormGroup>
   )
 }

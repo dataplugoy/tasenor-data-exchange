@@ -1,3 +1,4 @@
+import hash from 'object-hash'
 import path from 'path'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../models/SettingsModel'
@@ -20,6 +21,7 @@ import { ProjectSettings } from '../types/API/Project'
 import { RemoteId } from '../types/RemoteId'
 import { Setup } from '../types/API/Setup'
 import { RemoteAccount } from '../types/API/RemoteAccount'
+import { Transaction } from '../types/API/Transaction'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -167,5 +169,23 @@ export class Driver {
    */
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     throw new Error(`Input source ${this.type} does not implement deliverOutput().`)
+  }
+
+  /**
+   * Calculate hash for input item.
+   * @param input
+   * @returns
+   */
+  inputHash(input: InputItemData): string {
+    return hash(input, { algorithm: 'sha1' })
+  }
+
+  /**
+   * Calculate hash for output item.
+   * @param output
+   * @returns
+   */
+  outputHash(tx: Transaction): string {
+    return hash(tx, { algorithm: 'sha1' })
   }
 }

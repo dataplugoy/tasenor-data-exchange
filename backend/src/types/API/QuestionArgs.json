@@ -1,0 +1,14 @@
+{
+  "$id": "QuestionArgs.json",
+  "title": "QuestionArgs",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

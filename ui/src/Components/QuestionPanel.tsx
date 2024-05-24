@@ -2,6 +2,7 @@ import React, { } from 'react'
 import { Box } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { QuestionBooleanPanel } from './QuestionBooleanPanel'
+import { QuestionEnumPanel } from './QuestionEnumPanel'
 
 interface QuestionPanelProps {
   question: Question
@@ -15,9 +16,13 @@ interface QuestionPanelProps {
  */
 export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
   const { question, onChange } = props
-  if (question.type === 'BOOLEAN') {
-    return <QuestionBooleanPanel question={question} onChange={onChange}/>
+  switch (question.type) {
+    case 'BOOLEAN':
+      return <QuestionBooleanPanel question={question} onChange={onChange}/>
+    case 'ENUM':
+      return <QuestionEnumPanel question={question} onChange={onChange}/>
   }
+
   return (
     <Box sx={{ border: '1px solid red', p: 2 }}>
       NOT IMPLEMENTED: {question.type} QUESTION

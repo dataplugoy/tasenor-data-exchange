@@ -9,12 +9,7 @@
       "$ref": "QuestionType.json"
     },
     "args": {
-      "options": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      }
+      "$ret": "QuestionArgs.json"
     },
     "help": {
       "type": "string"

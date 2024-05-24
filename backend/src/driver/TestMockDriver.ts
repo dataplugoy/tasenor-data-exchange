@@ -125,4 +125,13 @@ export class TestMockDriver extends Driver {
 
     return filePath as RemoteId
   }
+
+  /**
+   * An example to ignore line number from the hash.
+   * @param input
+   * @returns
+   */
+  inputHash(input: InputItemData): string {
+    return super.inputHash({ ...input, line: 0 })
+  }
 }

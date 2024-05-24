@@ -13,10 +13,10 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
   },
   inputDuplicates: {
     type: 'ENUM',
-    help: 'There has been more than one copy of the identical items received. How do we handle them when encountered?',
-    label: 'Input duplicates',
+    help: 'There has been more than one copy of the identical items received. Do we want to include them nevertheless?',
+    label: 'What to do with input duplicates?',
     args: {
-      options: ['Alway', 'Never', 'Ask']
+      options: ['Always', 'Never', 'Ask']
     }
   }
 }

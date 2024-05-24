@@ -35,5 +35,8 @@
   "TOGGLE_SINGLE_LOSS_ACCOUNT": "Use the same account for all losses",
   "TOGGLE_SINGLE_PROFIT_ACCOUNT": "Use the same account for all profits",
   "TOGGLE_SINGLE_STOCK_ACCOUNT": "Use the same account for all stocks",
-  "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes"
+  "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes",
+  "Option-Always": "Allow all of them",
+  "Option-Never": "Ignore all of them",
+  "Option-Ask": "Ask separately every time"
 }

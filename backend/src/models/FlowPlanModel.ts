@@ -22,7 +22,6 @@ import { AccountCode } from '../types/AccountCode'
 import { Transaction } from '../types/API/Transaction'
 import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
-import hash from 'object-hash'
 import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
 import { AlertModel } from './AlertModel'
@@ -140,7 +139,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     if (variable in settings && settings[variable] !== undefined) {
       return settings[variable]
     }
-    AnswersRequired.throw(`/flow-plans/${this.id}/continue`, options.userId, variable)
+    AnswersRequired.throw(`/flow-plans/${this.id}/configure`, options.userId, variable)
   }
 
   /**
@@ -305,7 +304,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       for (const data of items) {
         await InputItemModel.save({
           data: data as unknown as JsonValue,
-          hash: hash(data, { algorithm: 'sha1' }),
+          hash: driver.inputHash(data),
           flowPlanId: this.id,
           batchId: batch.id,
           runId: run.id,
@@ -379,14 +378,17 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           // Verify duplicates first.
           if (await InputItemModel.isDuplicate(input)) {
-            // TODO: What about duplicates coming from the input batch? This checks only existing.
             const inputDuplicates = await this.getSetting(options, 'inputDuplicates')
-            console.log(inputDuplicates)
-            // TODO: Here we possibly throw a question wether duplicates are okay.
-            //       Need three configuration options: 'never', 'always', 'ask'.
-            // await input.skip('DUPLICATE')
-            // skipped++
-            // continue
+            if (inputDuplicates === 'Never') {
+              await input.skip('DUPLICATE')
+              skipped++
+              continue
+            }
+            // TODO: Implement asking and storing of the individual answers per item.
+            if (inputDuplicates === 'Ask') {
+              throw new Error('Asking about individual input item duplicate is not yet implemented.')
+            }
+            // Pass through since value is 'Always'.
           }
 
           // Verify time stamps not being in the past.
@@ -492,6 +494,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     try {
       const unifieds = await UnifiedItemModel.findForBatch(batch.id)
+      const driver = await this.getInputDriver(options)
       const total = unifieds.length
       let done = 0
 
@@ -522,7 +525,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           // Save success.
           const output = await OutputItemModel.save({
             data: toJSON(tx),
-            hash: hash(tx, { algorithm: 'sha1' }),
+            hash: driver.outputHash(tx),
             skipped: false,
             delivered: false,
             unifiedId: unified.id,
