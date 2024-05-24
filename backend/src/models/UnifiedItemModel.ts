@@ -1,5 +1,5 @@
 import { BaseModel } from './BaseModel'
-import prisma from '@prisma/client'
+import prisma, { SkipReason } from '@prisma/client'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { RunModel } from './RunModel'
@@ -32,6 +32,16 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
   async success(): Promise<void> {
     this.data.processed = true
     await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { processed: true })
+  }
+
+  /**
+   * Mark this unified item as skipped.
+   * @param state
+   */
+  async skip(skipReason: SkipReason): Promise<void> {
+    this.data.skipped = true
+    this.data.skipReason = skipReason
+    await UnifiedItemModel.update<prisma.UnifiedItem, UnifiedItemModel>(this, { skipped: true, skipReason })
   }
 
   /**

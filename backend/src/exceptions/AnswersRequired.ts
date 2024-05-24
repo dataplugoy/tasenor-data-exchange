@@ -14,11 +14,19 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
   inputDuplicates: {
     type: 'ENUM',
     help: 'There has been more than one copy of the identical items received. Do we want to include them nevertheless?',
-    label: 'What to do with input duplicates?',
+    label: 'Include input duplicates',
     args: {
       options: ['Always', 'Never', 'Ask']
     }
-  }
+  },
+  outputDuplicates: {
+    type: 'ENUM',
+    help: 'There has been more than one copy of the identical resulting transaction created. It is probably normal, but just in case you want it otherwise',
+    label: 'Create transaction duplicates',
+    args: {
+      options: ['Always', 'Never', 'Ask']
+    }
+  },
 }
 
 export class AnswersRequired extends AlertException<Question[]> {

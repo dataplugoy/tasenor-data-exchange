@@ -30,4 +30,5 @@ export interface Setup {
 export interface Settings {
   allowShortSelling?: boolean;
   inputDuplicates?: "Always" | "Never" | "Ask";
+  outputDuplicates?: "Always" | "Never" | "Ask";
 }

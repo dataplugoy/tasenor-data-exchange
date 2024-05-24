@@ -42,6 +42,7 @@ export interface Setup {
 export interface Settings {
   allowShortSelling?: boolean;
   inputDuplicates?: "Always" | "Never" | "Ask";
+  outputDuplicates?: "Always" | "Never" | "Ask";
 }
 export interface StockData {
   [k: string]: unknown;

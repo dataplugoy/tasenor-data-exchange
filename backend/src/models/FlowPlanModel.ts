@@ -497,6 +497,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const driver = await this.getInputDriver(options)
       const total = unifieds.length
       let done = 0
+      let skipped = 0
 
       const project = await this.getProject()
 
@@ -536,13 +537,24 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           // Verify duplicates first.
           if (await OutputItemModel.isDuplicate(output)) {
-            console.log(output)
-            // TODO: Here we possibly throw a question wether duplicates are okay.
-            //       Need three configuration options: 'never', 'always', 'ask'.
-            //       Also delete duplicate immediately if not allowed or query returns "no duplicate".
-            // await unified.skip('DUPLICATE')
-            // skipped++
-            // continue
+            let outputDuplicates
+            try {
+              outputDuplicates = await this.getSetting(options, 'outputDuplicates')
+            } catch (err) {
+              await output.destroy()
+              throw err
+            }
+            if (outputDuplicates === 'Never') {
+              await output.destroy()
+              await unified.skip('DUPLICATE')
+              skipped++
+              continue
+            }
+            // TODO: Implement asking and storing of the individual answers per item.
+            if (outputDuplicates === 'Ask') {
+              throw new Error('Asking about individual output item duplicate is not yet implemented.')
+            }
+            // Pass through since value is 'Always'.
           }
 
           await unified.success()
@@ -560,7 +572,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       }
 
       log(`${this} analyzed and created ${done}/${total} output items for ${batch}.`)
-      await run.result(done, total, 0)
+      await run.result(done, total, skipped)
       const json = analyzer.toJSON(true)
       await batch.setEndState(json.stock, json.balances)
 

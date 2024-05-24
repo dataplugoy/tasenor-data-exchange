@@ -781,7 +781,8 @@ CREATE TABLE public.unified_items (
     "flowPlanId" integer NOT NULL,
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
-    "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL
+    "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "skipReason" public."SkipReason"
 );
 
 
@@ -1090,7 +1091,7 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, "time", data, processed, skipped, "inputId", "flowPlanId", "batchId", "runId", "stockChange") FROM stdin;
+COPY public.unified_items (id, created, updated, "time", data, processed, skipped, "inputId", "flowPlanId", "batchId", "runId", "stockChange", "skipReason") FROM stdin;
 \.
 
 

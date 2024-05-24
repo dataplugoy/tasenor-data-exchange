@@ -261,6 +261,7 @@ model UnifiedItem{
   stockChange Json            @default("{}")
   processed   Boolean
   skipped     Boolean
+  skipReason  SkipReason?
 
   outputItem  OutputItem?
 
