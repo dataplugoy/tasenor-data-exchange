@@ -13,5 +13,5 @@ export interface Notes {
 }
 export interface Settings {
   allowShortSelling?: boolean;
-  inputDuplicates?: "Alway" | "Never" | "Ask";
+  inputDuplicates?: "Always" | "Never" | "Ask";
 }

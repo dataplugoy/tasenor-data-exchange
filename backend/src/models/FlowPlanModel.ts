@@ -536,6 +536,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           // Verify duplicates first.
           if (await OutputItemModel.isDuplicate(output)) {
+            console.log(output)
             // TODO: Here we possibly throw a question wether duplicates are okay.
             //       Need three configuration options: 'never', 'always', 'ask'.
             //       Also delete duplicate immediately if not allowed or query returns "no duplicate".

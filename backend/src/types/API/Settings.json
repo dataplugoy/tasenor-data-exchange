@@ -9,7 +9,7 @@
     },
     "inputDuplicates": {
       "type": "string",
-      "enum": ["Alway", "Never", "Ask"]
+      "enum": ["Always", "Never", "Ask"]
     }
   }
 }
