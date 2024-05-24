@@ -15,6 +15,10 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
     return this.data.data as Record<string, unknown>
   }
 
+  get transaction(): Transaction {
+    return this.data.data as unknown as Transaction
+  }
+
   /**
    * Mark this run as a failure.
    */

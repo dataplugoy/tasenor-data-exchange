@@ -67,6 +67,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     return this.data.state as FlowState
   }
 
+  get setup(): Setup {
+    return this.data.setup as Setup
+  }
+
   async setEndState(stock: JsonValue, balance: JsonValue): Promise<void> {
     this.data.stock = stock
     this.data.balance = balance
@@ -600,8 +604,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const unknownRemoteAccounts: Set<Account> = new Set()
 
     try {
+      // Preliminary check for accounts.
       const output = await OutputItemModel.findForBatch(batch.id, false)
       const driver = await this.getOutputDriver(options)
+      this.checkAccounts(driver, output)
+
+      // Start actual work.
       const state = await driver.autheticate()
       await this.saveState(state)
       const total = output.length
@@ -650,6 +658,33 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
 
     return result
+  }
+
+  /**
+   * Check that the setup covers the accounts needed. If not, throw alert.
+   * @param driver
+   * @param output
+   */
+  private checkAccounts(driver: Driver, output: OutputItemModel[]): void {
+
+    if (!driver.needConfiguredAccounts()) {
+      return
+    }
+
+    const accounts = new Set<AccountCode>()
+    for (const item of output) {
+      const lines = item.transaction.lines
+      lines.map(line => line.account).forEach(acc => accounts.add(acc as AccountCode))
+    }
+
+    const existing = this.setup.accounts || {}
+    for (const account of accounts) {
+      if (account in existing) {
+        accounts.delete(account)
+      }
+    }
+
+    console.log('TODO: confgure', accounts)
   }
 
   /**

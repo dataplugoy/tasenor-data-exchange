@@ -188,4 +188,12 @@ export class Driver {
   outputHash(tx: Transaction): string {
     return hash(tx, { algorithm: 'sha1' })
   }
+
+  /**
+   * Check if account configuration should be checked before output.
+   * @returns
+   */
+  needConfiguredAccounts(): boolean {
+    return true
+  }
 }
