@@ -8,6 +8,7 @@ import { BaseModel } from './models/BaseModel'
 import { log } from '@tasenor/common'
 import routes from './routes'
 import Decimal from 'decimal.js'
+import { initI18N } from './lib/i18n/t'
 
 Decimal.set({ precision: 50 })
 
@@ -25,6 +26,8 @@ class TasenorDataExchangeServer {
     if (!process.env.SECRET && process.env.NODE_ENV !== 'dev') {
       throw new Error('Cannot run server without SECRET environment variable unless in dev-mode.')
     }
+
+    await initI18N()
 
     BaseModel.setDb(await connect())
 

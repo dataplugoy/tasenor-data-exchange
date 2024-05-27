@@ -2,6 +2,8 @@ import { AlertException } from './AlertException'
 import { Question } from '../types/API/Question'
 import { Notes } from '../types/API/Notes'
 import { AccountCode } from '../types/AccountCode'
+import { Language } from '@tasenor/common'
+import { t } from '../lib/i18n/t'
 
 /**
  * Collection of variables.
@@ -45,16 +47,15 @@ export class AnswersRequired extends AlertException<Question[]> {
    * Instantiate and throw.
    * @param variable
    */
-  static throw(url: string, userId: number, variable: string): never {
+  static throw(url: string, language: Language, userId: number, variable: string): never {
     if (!VARIABLES[variable]) {
       throw new Error(`Bad variable name '${variable}'.`)
     }
-    // TODO: Localize here.
-    // TODO: Scan texts above in i18n tool.
+    // TODO: Scan translated texts above in i18n tool.
     const question: Question = {
       type: VARIABLES[variable].type,
-      help: VARIABLES[variable].help,
-      label: VARIABLES[variable].label,
+      help: t(language, VARIABLES[variable].help),
+      label: t(language, VARIABLES[variable].label),
       args: VARIABLES[variable].args,
       variable
     }
@@ -68,13 +69,14 @@ export class AnswersRequired extends AlertException<Question[]> {
    * @param userId
    * @param accounts
    */
-  static forAccounts(url: string, userId: number, destinationId: number, accounts: Set<AccountCode>): never {
+  static forAccounts(url: string, language: Language, userId: number, destinationId: number, accounts: Set<AccountCode>): never {
     const questions: Question[] = []
     for (const account of accounts) {
+      // TODO: Special handling for tickers, currencies and crypto symbols.
       questions.push({
         type: 'ACCOUNT',
-        help: `TODO: Help for account ${account}`,
-        label: `TODO: Label for account ${account}`,
+        help: t(language, `Help-${account}`),
+        label: t(language, `Label-${account}`),
         args: {
           destinationId
         },

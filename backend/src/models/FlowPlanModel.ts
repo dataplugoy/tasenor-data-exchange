@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
-import { error, log } from '@tasenor/common'
+import { Language, error, log } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'
@@ -143,7 +143,11 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     if (variable in settings && settings[variable] !== undefined) {
       return settings[variable]
     }
-    AnswersRequired.throw(`/flow-plans/${this.id}/configure`, options.userId, variable)
+    const project = await ProjectModel.get(this.data.projectId)
+    if (!project) {
+      throw new Error('Cannot find the project.')
+    }
+    AnswersRequired.throw(`/flow-plans/${this.id}/configure`, project.settings.language as Language, options.userId, variable)
   }
 
   /**
@@ -686,8 +690,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
 
     if (accounts.size > 0) {
-      // TODO: Pass driver.projectSettings.language too.
-      AnswersRequired.forAccounts(`/flow-plans/${this.id}/configure`, driver.options.userId, destination.id, accounts)
+      AnswersRequired.forAccounts(`/flow-plans/${this.id}/configure`, driver.projectSettings.language as Language, driver.options.userId, destination.id, accounts)
     }
   }
 
