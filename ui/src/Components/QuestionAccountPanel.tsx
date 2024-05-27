@@ -24,7 +24,7 @@ export const QuestionAccountPanel = (props: QuestionAccountPanelProps): React.JS
     <FormGroup>
       <FormControl>
         <FormHelperText>{help}</FormHelperText>
-        {label} XX
+        {label}
       </FormControl>
     </FormGroup>
   )

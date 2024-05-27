@@ -4,6 +4,7 @@ import { Notes } from '../types/API/Notes'
 import { AccountCode } from '../types/AccountCode'
 import { Language } from '@tasenor/common'
 import { t } from '../lib/i18n/t'
+import { splitAccount } from '../lib/analyzer/resolver'
 
 /**
  * Collection of variables.
@@ -71,12 +72,21 @@ export class AnswersRequired extends AlertException<Question[]> {
    */
   static forAccounts(url: string, language: Language, userId: number, destinationId: number, accounts: Set<AccountCode>): never {
     const questions: Question[] = []
+
     for (const account of accounts) {
-      // TODO: Special handling for tickers, currencies and crypto symbols.
+
+      const [baseName, specifier] = splitAccount(account)
+      const help = specifier === null
+        ? t(language, `Help-${baseName}`)
+        : t(language, `Help-Specific-${baseName}`, { code: specifier })
+      const label = specifier === null
+        ? t(language, `Label-${baseName}`)
+        : t(language, `Label-Specific-${baseName}`, { code: specifier })
+
       questions.push({
         type: 'ACCOUNT',
-        help: t(language, `Help-${account}`),
-        label: t(language, `Label-${account}`),
+        help,
+        label,
         args: {
           destinationId
         },

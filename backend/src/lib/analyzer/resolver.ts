@@ -28,3 +28,14 @@ export function resolveAccount(setup: Setup, code: AccountCode): AccountCode {
 
   return code
 }
+
+/**
+ * Based on the setup, decide the final account code and possible additional specifier for a one account.
+ * @param setup
+ * @param code
+ */
+export function splitAccount(code: AccountCode): [AccountCode, string | null] {
+
+  const match = /^([A-Z]+)_(.*)/.exec(code)
+  return match === null  ? [code, null] : [match[1] as AccountCode, match[2]]
+}

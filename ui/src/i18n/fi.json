@@ -114,5 +114,7 @@
   "All Skipped": "Käikki jätetty väliin",
   "Partly Fail": "Osa epäonnistui",
   "All Failed": "Kaikki epäonnistui",
-  "No Progress": "Ei edistystä"
+  "No Progress": "Ei edistystä",
+  "Label-Specific-CURRENCY": "Valuuttatili {{code}}",
+  "Label-Specific-CRYPTO": "Kryptovaluttatili {{code}}"
 }

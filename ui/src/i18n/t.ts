@@ -1,7 +1,7 @@
 import i18next from 'i18next'
 import en from './en.json'
 import fi from './fi.json'
-import { Language } from '@tasenor/common'
+import { Language, log } from '@tasenor/common'
 
 let initialized = false
 
@@ -36,6 +36,8 @@ export async function initI18N(): Promise<void> {
   })
 
   initialized = true
+
+  log('I18N initialized.')
 }
 
 /**
