@@ -194,6 +194,6 @@ export class Driver {
    * @returns
    */
   needConfiguredAccounts(): boolean {
-    return true
+    return false
   }
 }

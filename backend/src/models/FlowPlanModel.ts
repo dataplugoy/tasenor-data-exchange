@@ -684,7 +684,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       }
     }
 
-    console.log('TODO: confgure', accounts)
+    console.log('TODO: configure', accounts)
   }
 
   /**
@@ -773,6 +773,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     if (data.id) {
       throw new Error('A function save() cannot be used to existing object.')
     }
-    return FlowPlanModel.create<prisma.FlowPlan, FlowPlanModel>(data)
+    return FlowPlanModel.create<prisma.FlowPlan, FlowPlanModel>(data as JsonObject)
   }
 }

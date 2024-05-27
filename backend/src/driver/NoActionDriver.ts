@@ -35,4 +35,9 @@ export class NoActionDriver extends Driver {
 
     return 0 as RemoteId
   }
+
+  needConfiguredAccounts(): boolean {
+    // TODO: Just test.
+    return true
+  }
 }

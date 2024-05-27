@@ -257,4 +257,8 @@ export class TasenorDriver extends InternetDriver {
 
     return ret as unknown as RemoteId
   }
+
+  needConfiguredAccounts(): boolean {
+    return true
+  }
 }
