@@ -1,6 +1,7 @@
 import { AlertException } from './AlertException'
 import { Question } from '../types/API/Question'
 import { Notes } from '../types/API/Notes'
+import { AccountCode } from '../types/AccountCode'
 
 /**
  * Collection of variables.
@@ -41,7 +42,7 @@ export class AnswersRequired extends AlertException<Question[]> {
   }
 
   /**
-   * Instantiate
+   * Instantiate and throw.
    * @param variable
    */
   static throw(url: string, userId: number, variable: string): never {
@@ -50,7 +51,7 @@ export class AnswersRequired extends AlertException<Question[]> {
     }
     // TODO: Localize here.
     // TODO: Scan texts above in i18n tool.
-    const question = {
+    const question: Question = {
       type: VARIABLES[variable].type,
       help: VARIABLES[variable].help,
       label: VARIABLES[variable].label,
@@ -58,6 +59,29 @@ export class AnswersRequired extends AlertException<Question[]> {
       variable
     }
     const alert = new AnswersRequired(url, userId, question)
+    throw alert
+  }
+
+  /**
+   * Throw for a set of accounts.
+   * @param url
+   * @param userId
+   * @param accounts
+   */
+  static forAccounts(url: string, userId: number, destinationId: number, accounts: Set<AccountCode>): never {
+    const questions: Question[] = []
+    for (const account of accounts) {
+      questions.push({
+        type: 'ACCOUNT',
+        help: `TODO: Help for account ${account}`,
+        label: `TODO: Label for account ${account}`,
+        args: {
+          destinationId
+        },
+        variable: `accounts.${account}`
+      })
+    }
+    const alert = new AnswersRequired(url, userId, questions)
     throw alert
   }
 }

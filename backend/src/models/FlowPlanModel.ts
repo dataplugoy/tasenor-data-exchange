@@ -607,7 +607,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Preliminary check for accounts.
       const output = await OutputItemModel.findForBatch(batch.id, false)
       const driver = await this.getOutputDriver(options)
-      this.checkAccounts(driver, output)
+      const destination = await this.getDestination()
+      this.checkAccounts(driver, destination, output)
 
       // Start actual work.
       const state = await driver.autheticate()
@@ -665,7 +666,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param driver
    * @param output
    */
-  private checkAccounts(driver: Driver, output: OutputItemModel[]): void {
+  private checkAccounts(driver: Driver, destination: OutputDestinationModel, output: OutputItemModel[]): void {
 
     if (!driver.needConfiguredAccounts()) {
       return
@@ -684,7 +685,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       }
     }
 
-    console.log('TODO: configure', accounts)
+    if (accounts.size > 0) {
+      // TODO: Pass driver.projectSettings.language too.
+      AnswersRequired.forAccounts(`/flow-plans/${this.id}/configure`, driver.options.userId, destination.id, accounts)
+    }
   }
 
   /**

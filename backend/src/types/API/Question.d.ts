@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type QuestionType = "BOOLEAN" | "ENUM";
+export type QuestionType = "BOOLEAN" | "ENUM" | "ACCOUNT";
 
 export interface Question {
   type: QuestionType;
