@@ -75,8 +75,6 @@ export class AnswersRequired extends AlertException<Question[]> {
 
     for (const account of accounts) {
 
-      const [baseName, specifier] = splitAccount(account)
-
       questions.push({
         type: 'ACCOUNT',
         help: '',
