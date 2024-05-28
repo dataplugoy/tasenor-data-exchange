@@ -4,7 +4,6 @@ import { Notes } from '../types/API/Notes'
 import { AccountCode } from '../types/AccountCode'
 import { Language } from '@tasenor/common'
 import { t } from '../lib/i18n/t'
-import { splitAccount } from '../lib/analyzer/resolver'
 
 /**
  * Collection of variables.
