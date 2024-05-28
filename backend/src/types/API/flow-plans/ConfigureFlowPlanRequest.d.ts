@@ -5,8 +5,28 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type ConfigureFlowPlanRequest = Settings;
+export type ConfigureFlowPlanRequest = Setup;
 
+/**
+ * Flow plan configuration.
+ */
+export interface Setup {
+  accounts?: {
+    [k: string]: unknown;
+  };
+  accountGrouping?: {
+    singleStockAccount?: boolean;
+    singleCryptoAccount?: boolean;
+    singleFeeAccount?: boolean;
+    singleProfitAccount?: boolean;
+    singleLossAccount?: boolean;
+    singleIncomeAccount?: boolean;
+    singleExpenseAccount?: boolean;
+    singleDividendAccount?: boolean;
+    singleTaxAccount?: boolean;
+  };
+  settings?: Settings;
+}
 export interface Settings {
   allowShortSelling?: boolean;
   inputDuplicates?: "Always" | "Never" | "Ask";

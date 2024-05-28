@@ -37,7 +37,6 @@ export class NoActionDriver extends Driver {
   }
 
   needConfiguredAccounts(): boolean {
-    // TODO: Just test.
-    return true
+    return false
   }
 }

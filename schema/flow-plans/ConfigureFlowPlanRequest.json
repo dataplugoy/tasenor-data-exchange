@@ -1,6 +1,6 @@
 {
   "title": "ConfigureFlowPlanRequest",
-  "allOf": [
-    { "$ref": "Settings.json" }
+  "anyOf": [
+    { "$ref": "Setup.json" }
   ]
 }

@@ -57,7 +57,7 @@ export class AnswersRequired extends AlertException<Question[]> {
       help: t(language, VARIABLES[variable].help),
       label: t(language, VARIABLES[variable].label),
       args: VARIABLES[variable].args,
-      variable
+      variable: `settings.${variable}`
     }
     const alert = new AnswersRequired(url, userId, question)
     throw alert

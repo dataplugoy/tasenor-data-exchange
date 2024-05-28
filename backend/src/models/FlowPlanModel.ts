@@ -1,3 +1,4 @@
+import dot from 'dot-object'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
@@ -32,7 +33,6 @@ import { Account } from '../types/API/Account'
 import { AccountException } from '../exceptions/AccountException'
 import { getDriver } from '../driver'
 import { ProjectSettings } from '../types/API/Project'
-import { Settings } from '../types/API/Settings'
 import { Notes } from '../types/API/Notes'
 import { AnswersRequired } from '../exceptions/AnswersRequired'
 
@@ -118,18 +118,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param state
    */
   async updateSetup(patch: Partial<Setup>): Promise<void> {
-    Object.assign(this.data.setup as object, patch)
-    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
-  }
-
-  /**
-   * Update the settings fields.
-   * @param state
-   */
-  async updateSettings(patch: Partial<Settings>): Promise<void> {
-    const settings = (this.data?.setup as Setup).settings || {}
-    Object.assign(settings, patch)
-    Object.assign(this.data.setup as object, { settings })
+    const setup = (this.data?.setup as Setup) || {}
+    const fullSetup = dot.dot(setup)
+    Object.assign(fullSetup, dot.dot(patch))
+    this.data.setup = dot.object(fullSetup)
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
   }
 
@@ -684,7 +676,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
     const existing = this.setup.accounts || {}
     for (const account of accounts) {
-      if (account in existing) {
+      if (account in existing && existing[account] !== null && existing[account] !== undefined) {
         accounts.delete(account)
       }
     }

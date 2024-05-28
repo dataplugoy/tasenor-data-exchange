@@ -1,3 +1,4 @@
+import dot from 'dot-object'
 import React, { useEffect, useState } from 'react'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { FileUploader } from './FileUploader'
@@ -53,7 +54,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   }
 
   const onEditSave = (answers: Record<string, unknown>) => {
-    PATCH(alert.url, answers).then((res) => {
+    PATCH(alert.url, dot.object(answers) as Record<string, unknown>).then((res) => {
       if (res) {
         setQuestions([])
         props.onSuccess()

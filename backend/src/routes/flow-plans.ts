@@ -205,7 +205,7 @@ router.patch('/:id/configure',
       return res.sendStatus(400)
     }
 
-    await res.locals.flowPlan.updateSettings(req.body)
+    await res.locals.flowPlan.updateSetup(req.body)
 
     // TODO: DRY. Same as in the `run`-url.
     try {
