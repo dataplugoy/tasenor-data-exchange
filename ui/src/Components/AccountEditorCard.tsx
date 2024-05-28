@@ -36,7 +36,7 @@ interface AccountEditProps {
   onChange: (acc: AccountNumber | null) => void
 }
 
-const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
+export const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
   const { code, remote, options, onChange } = props
   const none = { number: '', name: '' }
   // TODO: Sort out remotes according to hints.
@@ -46,6 +46,7 @@ const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
     getOptionLabel={(option) => option.number === '' && option.name === '' ? '' : `${option.number} ${option.name}`}
     value={remote || none}
     onChange={(_, value) => onChange(value && value.number !== '' ? value.number as AccountNumber : null)}
+    isOptionEqualToValue={(a, b) => a.number === b.number}
     renderInput={(params) => (
       <TextField
         {...params}

@@ -76,23 +76,18 @@ export class AnswersRequired extends AlertException<Question[]> {
     for (const account of accounts) {
 
       const [baseName, specifier] = splitAccount(account)
-      const help = specifier === null
-        ? t(language, `Help-${baseName}`)
-        : t(language, `Help-Specific-${baseName}`, { code: specifier })
-      const label = specifier === null
-        ? t(language, `Label-${baseName}`)
-        : t(language, `Label-Specific-${baseName}`, { code: specifier })
 
       questions.push({
         type: 'ACCOUNT',
-        help,
-        label,
+        help: '',
+        label: '',
         args: {
           destinationId
         },
         variable: `accounts.${account}`
       })
     }
+
     const alert = new AnswersRequired(url, userId, questions)
     throw alert
   }

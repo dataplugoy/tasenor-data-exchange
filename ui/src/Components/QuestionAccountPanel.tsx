@@ -3,9 +3,11 @@ import { FormControl, FormGroup, FormHelperText } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { AccountNumber } from '@tasenor/common'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
+import { AccountEdit } from './AccountEditorCard'
 
 interface QuestionAccountPanelProps {
   question: Question
+  variable: string
   onChange: (variable: string, value: boolean) => void
   remotes: Record<AccountNumber, RemoteAccount>
 }
@@ -16,15 +18,22 @@ interface QuestionAccountPanelProps {
  * @returns
  */
 export const QuestionAccountPanel = (props: QuestionAccountPanelProps): React.JSX.Element => {
-  const { question } = props
-  const { help, label } = question
+  const { remotes, question } = props
+  const { variable } = question
+  const [remote, setRemote] = useState<RemoteAccount | undefined>(undefined)
+
+  const onChange = (code) => {
+    setRemote(remotes[code])
+    props.onChange(variable, code)
+  }
+
+  const [, code] = variable.split('.')
 
   // TODO: Formgroup belongs higher level?
   return (
     <FormGroup>
-      <FormControl>
-        <FormHelperText>{help}</FormHelperText>
-        {label}
+      <FormControl sx={{ mt: 1 }}>
+        <AccountEdit code={code} remote={remote} options={Object.values(remotes)} onChange={onChange}/>
       </FormControl>
     </FormGroup>
   )

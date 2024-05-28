@@ -36,7 +36,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
     } else {
       setLoading(false)
     }
-  }, [])
+  }, [questions])
 
   const onCancel = () => {
     props.onCancel()

@@ -38,7 +38,5 @@
   "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes",
   "Option-Always": "Allow all of them",
   "Option-Never": "Ignore all of them",
-  "Option-Ask": "Ask separately every time",
-  "Label-Specific-CURRENCY": "Currency {{code}} account",
-  "Label-Specific-CRYPTO": "Crypto currency {{code}} account"
+  "Option-Ask": "Ask separately every time"
 }
