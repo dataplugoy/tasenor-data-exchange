@@ -24,7 +24,7 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
   },
   outputDuplicates: {
     type: 'ENUM',
-    help: 'There has been more than one copy of the identical resulting transaction created. It is probably normal, but just in case you want it otherwise',
+    help: 'There has been more than one copy of the identical resulting transaction created. It is probably normal, but just in case you want it to behave otherwise...',
     label: 'Create transaction duplicates',
     args: {
       options: ['Always', 'Never', 'Ask']
