@@ -22,7 +22,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   const { questions } = props
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   const GET = useGET<RemoteAccount[]>()
 
   useEffect(() => {
