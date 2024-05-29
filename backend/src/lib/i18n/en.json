@@ -18,6 +18,9 @@
   "NORDNET_ACCOUNT": "Bank account used to transfer {{currency}} currency to/from Nordnet",
   "OUTPUT_CREATED - OUTPUT_CREATED": "Cannot deliver the results",
   "OUTPUT_CREATED - OUTPUT_DELIVERED": "Results successfully delivered",
+  "Option-Always": "Allow all of them",
+  "Option-Ask": "Ask separately every time",
+  "Option-Never": "Ignore all of them",
   "PROFIT_ACCOUNT": "An account recording profits from trades",
   "RESULT_ALL_FAILED": "All Failed",
   "RESULT_ALL_SKIPPED": "All Skipped",
@@ -35,8 +38,5 @@
   "TOGGLE_SINGLE_LOSS_ACCOUNT": "Use the same account for all losses",
   "TOGGLE_SINGLE_PROFIT_ACCOUNT": "Use the same account for all profits",
   "TOGGLE_SINGLE_STOCK_ACCOUNT": "Use the same account for all stocks",
-  "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes",
-  "Option-Always": "Allow all of them",
-  "Option-Never": "Ignore all of them",
-  "Option-Ask": "Ask separately every time"
+  "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes"
 }
