@@ -6,11 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { Question } from '../Types/API/Question'
 import { QuestionsPanel } from './QuestionsPanel'
 import { usePATCH } from '../Hooks/useNet'
+import { FlowPlanRunResponse } from '../Types/API/flow-plans/FlowPlanRunResponse'
 
 interface AlertHandlerProps {
   alert: UIAlert
   onCancel: () => void
-  onSuccess: () => void
+  onSuccess: (resp: FlowPlanRunResponse) => void
 }
 
 export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
@@ -20,7 +21,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   const [uploadUrl, setUploadUrl] = useState('')
   const [questions, setQuestions] = useState<Question[]>([])
   const { t } = useTranslation()
-  const PATCH = usePATCH()
+  const PATCH = usePATCH<FlowPlanRunResponse>()
 
   useEffect(() => {
     switch (alert.type) {
@@ -36,16 +37,16 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
       default:
         throw new Error(`Alert ${alert.type} is not yet handled.`)
     }
-  }, [])
+  }, [alert])
 
   const onUploadCancel = async () => {
     setText('')
     onCancel()
   }
 
-  const onUploadSuccess = async () => {
+  const onUploadSuccess = async (resp) => {
     setText('')
-    onSuccess()
+    onSuccess(resp)
   }
 
   const onEditCancel = () => {
@@ -57,7 +58,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
     PATCH(alert.url, dot.object(answers) as Record<string, unknown>).then((res) => {
       if (res) {
         setQuestions([])
-        props.onSuccess()
+        props.onSuccess(res)
       }
     })
   }

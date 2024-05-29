@@ -26,8 +26,13 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     signalBatchUpdate()
   }
 
-  const onSuccess = () => {
-    signalBatchUpdate()
+  const onSuccess = (res) => {
+    if (isAlert(res)) {
+      setAlert(getAlert(res))
+      signalBatchUpdate()
+    } else {
+      signalBatchUpdate()
+    }
   }
 
   const onRun = async () => {

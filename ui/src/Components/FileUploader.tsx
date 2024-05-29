@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { UploadFile } from '@mui/icons-material'
 import { useApp } from '../Hooks/useApp'
 import { signalUploadUpdate } from '../Signals/updates'
+import { FlowPlanRunResponse } from '../Types/API/flow-plans/FlowPlanRunResponse'
 
 /**
  * Format of the returned file data from the file uploader component.
@@ -22,7 +23,7 @@ export type FileUploaderProps = {
   url?: string
   onUpload?: (data: FileUploadData) => Promise<void>
   onCancel: () => void
-  onSuccess: () => void
+  onSuccess: (resp: FlowPlanRunResponse) => void
 }
 
 /**
@@ -101,10 +102,10 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
     }
     setUploading(true)
     const interval = setInterval(signalUploadUpdate, 1000)
-    await axios.post(`${url}?token=${app.auth.token}`, upload).then(resp => {
+    await axios.post<FlowPlanRunResponse>(`${url}?token=${app.auth.token}`, upload).then(resp => {
       setUploading(false)
       setUpload(null)
-      props.onSuccess()
+      props.onSuccess(resp.data)
     }).catch(err => {
       setUploading(false)
       console.error(err)
