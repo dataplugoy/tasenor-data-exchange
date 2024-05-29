@@ -15,4 +15,5 @@ export interface Settings {
   allowShortSelling?: boolean;
   inputDuplicates?: "Always" | "Never" | "Ask";
   outputDuplicates?: "Always" | "Never" | "Ask";
+  allowInputFromPast?: "Always" | "Never" | "Ask";
 }

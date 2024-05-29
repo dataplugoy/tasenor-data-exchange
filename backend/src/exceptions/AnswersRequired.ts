@@ -30,6 +30,14 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
       options: ['Always', 'Never', 'Ask']
     }
   },
+  allowInputFromPast: {
+    type: 'ENUM',
+    help: 'We encountered an item that has older time stamp than what we have processed earlier. Do we include them?',
+    label: 'Include entries from past',
+    args: {
+      options: ['Always', 'Never', 'Ask']
+    }
+  }
 }
 
 export class AnswersRequired extends AlertException<Question[]> {
@@ -51,7 +59,6 @@ export class AnswersRequired extends AlertException<Question[]> {
     if (!VARIABLES[variable]) {
       throw new Error(`Bad variable name '${variable}'.`)
     }
-    // TODO: Scan translated texts above in i18n tool.
     const question: Question = {
       type: VARIABLES[variable].type,
       help: t(language, VARIABLES[variable].help),

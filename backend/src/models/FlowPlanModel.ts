@@ -266,7 +266,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const driver = await this.getInputDriver(options)
       const state = await driver.autheticate()
       await this.saveState(state)
-      // TODO: This last stamp used in driver is not necessarily true if we allow old data to appear (like Lynx tax fixes).
       const data = await driver.fetchData(this)
 
       if (typeof data !== 'string' && !(data instanceof Buffer)) {
@@ -392,13 +391,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           }
 
           // Verify time stamps not being in the past.
-          // TODO: Here we possibly throw a question wether items can appear before the last time stamp.
-          //       Need three configuration options: 'never', 'always', 'ask'.
           const time = new Date(data.time)
           if (this.data.lastStamp && this.data.lastStamp >= time) {
-            await input.skip('IN_THE_PAST')
-            skipped++
-            continue
+            const allowInputFromPast = await this.getSetting(options, 'allowInputFromPast')
+            if (allowInputFromPast === 'Never') {
+              await input.skip('IN_THE_PAST')
+              skipped++
+              continue
+            }
+            // TODO: Implement asking and storing of the individual answers per item.
+            if (allowInputFromPast === 'Ask') {
+              throw new Error('Asking about individual input item duplicate is not yet implemented.')
+            }
+            // Pass through since value is 'Always'.
           }
 
           const unified = await driver.unifyItem(this, run, input, rules)

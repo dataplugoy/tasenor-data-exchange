@@ -14,6 +14,10 @@
     "outputDuplicates": {
       "type": "string",
       "enum": ["Always", "Never", "Ask"]
+    },
+    "allowInputFromPast": {
+      "type": "string",
+      "enum": ["Always", "Never", "Ask"]
     }
   }
 }

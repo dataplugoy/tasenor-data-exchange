@@ -43,6 +43,7 @@ export interface Settings {
   allowShortSelling?: boolean;
   inputDuplicates?: "Always" | "Never" | "Ask";
   outputDuplicates?: "Always" | "Never" | "Ask";
+  allowInputFromPast?: "Always" | "Never" | "Ask";
 }
 export interface StockData {
   [k: string]: unknown;
