@@ -15,6 +15,7 @@ import { error, log } from '@tasenor/common'
 import { AlertModel } from '../models/AlertModel'
 import { validate } from '../lib/validate'
 import { RuleModel } from '../models/RuleModel'
+import { Notes } from '../types/API/Notes'
 
 const router = express.Router()
 
@@ -138,21 +139,33 @@ router.get('/:id/output',
   }
 )
 
+/**
+ * Helper to continue execution of the batch.
+ */
+async function executeBatch(req, res, notes: Notes = {}) {
+  try {
+    const result = await res.locals.flowPlan.run(
+      {
+          userId: res.locals.userId,
+          interactive: true,
+          repeat: 'MAX'
+      },
+      notes
+    )
+    res.send(result)
+  } catch (err) {
+    if (err instanceof AlertException) {
+      log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
+      const alert = await AlertModel.interactive(err)
+      res.status(202).send(alert.data)
+    }
+  }
+}
+
 router.get('/:id/run',
   authorize(),
   param('flowPlanId'),
-  async (req, res) => {
-    try {
-      const result = await res.locals.flowPlan.run({ userId: res.locals.userId, interactive: true, repeat: 'MAX' })
-      res.send(result)
-    } catch (err) {
-      if (err instanceof AlertException) {
-        log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
-        const alert = await AlertModel.interactive(err)
-        res.status(202).send(alert.data)
-      }
-    }
-  }
+  async (req, res) => await executeBatch(req, res)
 )
 
 router.post('/:id/upload',
@@ -182,21 +195,8 @@ router.post('/:id/upload',
     await batch.setData(content)
     await batch.detectEncoding()
 
-    // TODO: DRY. Same as in the `run`-url.
-    try {
-      const result = await res.locals.flowPlan.run(
-        { userId: res.locals.userId, interactive: true, repeat: 'MAX' },
-        // TODO: Localize.
-        { uploaded: `Uploaded a file ${name} of type ${type} (size ${data.length / 2} bytes)` }
-      )
-      res.send(result)
-    } catch (err) {
-      if (err instanceof AlertException) {
-        log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
-        const alert = await AlertModel.interactive(err)
-        res.status(202).send(alert.data)
-      }
-    }
+    // TODO: Localize.
+    await executeBatch(req, res, { uploaded: `Uploaded a file ${name} of type ${type} (size ${data.length / 2} bytes)` })
   }
 )
 
@@ -214,20 +214,7 @@ router.patch('/:id/configure',
 
     await res.locals.flowPlan.updateSetup(req.body)
 
-    // TODO: DRY. Same as in the `run`-url.
-    try {
-      const result = await res.locals.flowPlan.run(
-        { userId: res.locals.userId, interactive: true, repeat: 'MAX' },
-        { configured: req.body }
-      )
-      res.send(result)
-    } catch (err) {
-      if (err instanceof AlertException) {
-        log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
-        const alert = await AlertModel.interactive(err)
-        res.status(202).send(alert.data)
-      }
-    }
+    await executeBatch(req, res, { configured: req.body })
   }
 )
 
