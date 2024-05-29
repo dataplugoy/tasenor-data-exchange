@@ -16,6 +16,7 @@ import { AlertModel } from '../models/AlertModel'
 import { validate } from '../lib/validate'
 import { RuleModel } from '../models/RuleModel'
 import { Notes } from '../types/API/Notes'
+import { t } from '../lib/i18n/t'
 
 const router = express.Router()
 
@@ -146,9 +147,9 @@ async function executeBatch(req, res, notes: Notes = {}) {
   try {
     const result = await res.locals.flowPlan.run(
       {
-          userId: res.locals.userId,
-          interactive: true,
-          repeat: 'MAX'
+        userId: res.locals.userId,
+        interactive: true,
+        repeat: 'MAX'
       },
       notes
     )
@@ -195,8 +196,9 @@ router.post('/:id/upload',
     await batch.setData(content)
     await batch.detectEncoding()
 
-    // TODO: Localize.
-    await executeBatch(req, res, { uploaded: `Uploaded a file ${name} of type ${type} (size ${data.length / 2} bytes)` })
+    const lang = res.locals.project.settings.language
+    const uploaded = t(lang, 'Uploaded a file {{name}} of type {{type}} ({{size}} bytes)', { name, type, size: data.length / 2 })
+    await executeBatch(req, res, { uploaded })
   }
 )
 

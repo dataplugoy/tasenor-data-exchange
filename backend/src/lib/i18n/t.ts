@@ -25,6 +25,9 @@ export async function initI18N(): Promise<void> {
     ns: ['translations'],
     defaultNS: 'translations',
     keySeparator: false,
+    interpolation: {
+      escapeValue: false
+    },
     resources: {
       en: {
         translations: en
