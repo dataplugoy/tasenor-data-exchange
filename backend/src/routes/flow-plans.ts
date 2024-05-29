@@ -155,7 +155,7 @@ router.get('/:id/run',
   }
 )
 
-router.post('/:id/continue',
+router.post('/:id/upload',
   authorize(),
   param('flowPlanId'),
   validate(ContinueFlowPlanRequest),
@@ -166,7 +166,14 @@ router.post('/:id/continue',
       error(`Cannot find any batches for ${res.locals.flowPlan}.`)
       return res.sendStatus(400)
     }
-    // TODO: We could verify that the state is waiting and data is not yet set for the batch.
+    if (batch.state !== 'BATCH_CREATED') {
+      error(`The ${batch} is in wrong state to upload data.`)
+      return res.sendStatus(400)
+    }
+    if (batch.data.data) {
+      error(`The ${batch} has already data.`)
+      return res.sendStatus(400)
+    }
 
     // Set the uploaded data.
     const { name, type, data } = req.body
