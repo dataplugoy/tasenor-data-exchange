@@ -1,0 +1,81 @@
+{
+  "$id": "UnifiedItemRule.json",
+  "title": "UnifiedItemRule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "type": {
+      "type": "string"
+    },
+    "account": {
+      "type": "string"
+    },
+    "assetIn": {
+      "type": "string"
+    },
+    "assetAmountIn": {
+      "type": "string"
+    },
+    "assetValueIn": {
+      "type": "string"
+    },
+    "assetTypeIn": {
+      "type": "string"
+    },
+    "assetOut": {
+      "type": "string"
+    },
+    "assetAmountOut": {
+      "type": "string"
+    },
+    "assetValueOut": {
+      "type": "string"
+    },
+    "assetTypeOut": {
+      "type": "string"
+    },
+    "fee": {
+      "type": "string"
+    },
+    "feeAsset": {
+      "type": "string"
+    },
+    "multipart": {
+      "type": "string"
+    },
+    "rates": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "reasonAsset": {
+      "type": "string"
+    },
+    "service": {
+      "type": "string"
+    },
+    "taxType": {
+      "type": "string"
+    },
+    "taxAmount": {
+      "type": "string"
+    },
+    "taxAsset": {
+      "type": "string"
+    },
+    "taxPercentage": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    },
+    "valueAsset": {
+      "type": "string"
+    }
+  }
+}

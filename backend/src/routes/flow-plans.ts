@@ -8,6 +8,7 @@ import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlan
 import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
 import ConfigureFlowPlanRequest from '../../src/types/API/flow-plans/ConfigureFlowPlanRequest.json'
 import UpdateSetupRequest from '../../src/types/API/flow-plans/UpdateSetupRequest.json'
+import UpdateRulesRequest from '../../src/types/API/flow-plans/UpdateRulesRequest.json'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { AlertException } from '../exceptions/AlertException'
@@ -252,7 +253,7 @@ router.get('/:id/rules',
 router.patch('/:id/rules',
   authorize(),
   param('flowPlanId'),
-  // TODO: Validate.
+  validate(UpdateRulesRequest),
   async (req, res) => {
     const name = await res.locals.flowPlan.getInputDriverName()
     const rules = await (await RuleModel.findForFlow(res.locals.id, `${name}.json`)).reduce((prev, cur) => ({ ...prev, [cur.name]: cur }), {})

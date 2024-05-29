@@ -3,7 +3,7 @@
   "title": "Rule",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "filter", "key", "name", "ownerId", "priority", "result", "type"],
+  "required": ["filter", "key", "name", "result"],
   "properties": {
     "id": {
       "type": "integer"
@@ -20,24 +20,17 @@
     "key": {
       "type": ["null", "string"]
     },
-    "ownerId": {
+    "flowPlanId": {
       "type": "integer"
     },
     "priority": {
       "type": "integer"
     },
     "result": {
-      "$ref": "UnifiedItemData.json"
+      "$ref": "UnifiedItemRule.json"
     },
     "resultView": {
       "type": "object"
-    },
-    "type": {
-      "type": "string",
-      "enum": [
-        "INPUT_SOURCE",
-        "FLOW"
-      ]
     },
     "created": {
       "type": "string",

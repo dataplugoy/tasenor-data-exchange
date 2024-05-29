@@ -20,6 +20,7 @@ import Question from '../../src/types/API/Question.json'
 import QuestionType from '../../src/types/API/QuestionType.json'
 import Rates from '../../src/types/API/Rates.json'
 import RemoteAccount from '../../src/types/API/RemoteAccount.json'
+import Rule from '../../src/types/API/Rule.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
 import Settings from '../../src/types/API/Settings.json'
@@ -29,12 +30,13 @@ import StockData from '../../src/types/API/StockData.json'
 import TransactionExtras from '../../src/types/API/TransactionExtras.json'
 import Transaction from '../../src/types/API/Transaction.json'
 import TransactionLine from '../../src/types/API/TransactionLine.json'
-import UnifiedItemData from '../../src/types/API/UnifiedItemData.json'
 import UnifiedItem from '../../src/types/API/UnifiedItem.json'
+import UnifiedItemData from '../../src/types/API/UnifiedItemData.json'
+import UnifiedItemRule from '../../src/types/API/UnifiedItemRule.json'
 import UnifiedItemType from '../../src/types/API/UnifiedItemType.json'
 import { error } from '@tasenor/common'
 
-export const ajv = new Ajv()
+export const ajv = new Ajv({ allowUnionTypes: true })
 ajv.addSchema(Account)
 ajv.addSchema(Alert)
 ajv.addSchema(AlertMethod)
@@ -56,6 +58,7 @@ ajv.addSchema(Rates)
 ajv.addSchema(Question)
 ajv.addSchema(QuestionType)
 ajv.addSchema(RemoteAccount)
+ajv.addSchema(Rule)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
 ajv.addSchema(Settings)
@@ -65,8 +68,9 @@ ajv.addSchema(StockData)
 ajv.addSchema(TransactionExtras)
 ajv.addSchema(Transaction)
 ajv.addSchema(TransactionLine)
-ajv.addSchema(UnifiedItemData)
 ajv.addSchema(UnifiedItem)
+ajv.addSchema(UnifiedItemData)
+ajv.addSchema(UnifiedItemRule)
 ajv.addSchema(UnifiedItemType)
 
 export const validate = (schema) => {

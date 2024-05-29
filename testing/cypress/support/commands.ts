@@ -21,6 +21,7 @@ import Question from '../e2e/api/schema/Question.json'
 import QuestionType from '../e2e/api/schema/QuestionType.json'
 import Rates from '../e2e/api/schema/Rates.json'
 import RemoteAccount from '../e2e/api/schema/RemoteAccount.json'
+import Rule from '../e2e/api/schema/Rule.json'
 import Run from '../e2e/api/schema/Run.json'
 import RunResult from '../e2e/api/schema/RunResult.json'
 import Settings from '../e2e/api/schema/Settings.json'
@@ -30,8 +31,9 @@ import StockData from '../e2e/api/schema/StockData.json'
 import TransactionExtras from '../e2e/api/schema/TransactionExtras.json'
 import Transaction from '../e2e/api/schema/Transaction.json'
 import TransactionLine from '../e2e/api/schema/TransactionLine.json'
-import UnifiedItemData from '../e2e/api/schema/UnifiedItemData.json'
 import UnifiedItem from '../e2e/api/schema/UnifiedItem.json'
+import UnifiedItemData from '../e2e/api/schema/UnifiedItemData.json'
+import UnifiedItemRule from '../e2e/api/schema/UnifiedItemRule.json'
 import UnifiedItemType from '../e2e/api/schema/UnifiedItemType.json'
 
 
@@ -82,7 +84,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   const res = this._obj
   expect(res.status).to.eq(status)
 
-  const ajv = new Ajv()
+  const ajv = new Ajv({ allowUnionTypes: true })
 
   ajv.addSchema(Account)
   ajv.addSchema(Alert)
@@ -105,6 +107,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(QuestionType)
   ajv.addSchema(Rates)
   ajv.addSchema(RemoteAccount)
+  ajv.addSchema(Rule)
   ajv.addSchema(Run)
   ajv.addSchema(RunResult)
   ajv.addSchema(Settings)
@@ -114,8 +117,9 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(TransactionExtras)
   ajv.addSchema(Transaction)
   ajv.addSchema(TransactionLine)
-  ajv.addSchema(UnifiedItemData)
   ajv.addSchema(UnifiedItem)
+  ajv.addSchema(UnifiedItemData)
+  ajv.addSchema(UnifiedItemRule)
   ajv.addSchema(UnifiedItemType)
 
   if (!ajv.validate(json, res.body)) {
