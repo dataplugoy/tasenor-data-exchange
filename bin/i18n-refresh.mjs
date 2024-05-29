@@ -3,6 +3,7 @@ import fs from 'fs'
 import glob from 'fast-glob'
 import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
+import AnswersRequired from '../backend/src/exceptions/AnswersRequired'
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const I18N_DIR = path.join(ROOT, 'backend', 'src', 'lib', 'i18n')
@@ -25,6 +26,7 @@ const PATTERNS = {
   ]
 }
 const CODE_PATTERN = /^[A-Z_]+( - [A-Z_]+)?$/
+const PREFIXED_PATTERN = /^(Option|Label-Specific)-/
 const IGNORE_SENTENCES = new Set([])
 const FIXED_ENTRIES = new Set([
   'Bought {{amount}} {{asset}}',
@@ -57,7 +59,7 @@ function scanFile(file, regexes) {
         const sentence = match[1]
         line = line.replace(match[0], '')
         if (!IGNORE_SENTENCES.has(sentence)) {
-          if (CODE_PATTERN.test(sentence)) {
+          if (CODE_PATTERN.test(sentence) || PREFIXED_PATTERN.test(sentence)) {
             codes.add(sentence)
           } else {
             sentences.add(sentence)
@@ -99,7 +101,7 @@ function updateTranslation(file, lang) {
   }
 
   for (const existing of old) {
-    if (!(existing in updated) && !CODE_PATTERN.test(existing) && !FIXED_ENTRIES.has(existing)) {
+    if (!(existing in updated) && !CODE_PATTERN.test(existing) && !PREFIXED_PATTERN.test(existing) && !FIXED_ENTRIES.has(existing)) {
       unused.add(existing)
       updated[`UNUSED - ${existing}`] = current[existing]
     } else {
@@ -123,6 +125,10 @@ async function main() {
       scanFile(file, regexes)
     }
   }
+
+  Object.values(AnswersRequired.VARIABLES).forEach(varSpec => {
+    sentences.add(varSpec.help)
+  })
 
   for (const file of await glob(path.join(I18N_DIR, '[a-z][a-z].json'))) {
     updateTranslation(file, path.basename(file, '.json'))
