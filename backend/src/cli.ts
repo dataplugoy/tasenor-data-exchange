@@ -37,7 +37,7 @@ async function flowPlan(args, options: RuntimeOptions): Promise<FlowPlanModel> {
 
   options.userId = user.id
 
-  return plan
+  return plan as FlowPlanModel
 }
 
 /**
@@ -151,6 +151,9 @@ async function executeLedger(args) {
     out(colors.blue(sprintf('%.2f', balance[account].mul(100).round().div(100)).padStart(88)))
     accounts[account].forEach(([time, line]) => {
       const { text, amount, extras } = line
+      if (text === null) {
+        throw new Error(`A transaction line ${JSON.stringify(line)} at ${time} has text as null (missing translations?).`)
+      }
       const value = new Decimal(amount)
       balance[account] = balance[account].plus(value)
       const debit = value.gte(0) ? sprintf('%.2f', value.mul(100).round().div(100)) : ''
