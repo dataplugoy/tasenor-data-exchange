@@ -44,6 +44,7 @@ export type Message = {
 export interface AppContextProps {
   // Data
   messages: Message[]
+  dimming: boolean
   project: ProjectResponse
   auth: AuthResponse
 
@@ -51,6 +52,7 @@ export interface AppContextProps {
   addInfo: (text: string) => void
   addWarning: (text: string) => void
   addError: (text: string) => void
+  setDimming: (dimming: boolean) => void
   setProject: (project: ProjectResponse) => void
   setAuth: (user: AuthResponse) => void
 }
@@ -60,11 +62,13 @@ export interface AppContextProps {
  */
 export const AppContext = React.createContext<AppContextProps>({
   messages: [],
+  dimming: false,
   project: DEFAULT_PROJECT,
   auth: DEFAULT_AUTH,
   addInfo: () => {},
   addWarning: () => {},
   addError: () => {},
+  setDimming: () => {},
   setProject: () => {},
   setAuth: () => {},
 })
@@ -80,6 +84,7 @@ export const useApp = () => useContext(AppContext)
 export const AppProvider = (props: { children: ReactNode }): React.JSX.Element => {
   const [messages, setMessages] = useState<Message[]>([])
   const [timer, setTimer] = useState<null|NodeJS.Timeout>(null)
+  const [dimming, setDimming] = useState(false)
   const [project, setProject] = useLocalStorage<ProjectResponse>('project', DEFAULT_PROJECT)
   const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', DEFAULT_AUTH)
 
@@ -108,11 +113,13 @@ export const AppProvider = (props: { children: ReactNode }): React.JSX.Element =
   return (
     <AppContext.Provider value={{
       messages,
+      dimming,
       project,
       auth,
       addInfo,
       addWarning,
       addError,
+      setDimming,
       setProject,
       setAuth,
     }}>

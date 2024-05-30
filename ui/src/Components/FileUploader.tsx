@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Backdrop, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { UploadFile } from '@mui/icons-material'
 import { useApp } from '../Hooks/useApp'
@@ -96,18 +96,23 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
   const onUpload = async () => {
     if (props.onUpload) {
       setUploading(true)
+      app.setDimming(true)
       upload && await props.onUpload(upload)
       setUploading(false)
+      app.setDimming(false)
       return
     }
     setUploading(true)
+    app.setDimming(true)
     const interval = setInterval(signalUploadUpdate, 1000)
     await axios.post<FlowPlanRunResponse>(`${url}?token=${app.auth.token}`, upload).then(resp => {
       setUploading(false)
+      app.setDimming(false)
       setUpload(null)
       props.onSuccess(resp.data)
     }).catch(err => {
       setUploading(false)
+      app.setDimming(false)
       console.error(err)
       app.addError(t('File uploading failed.'))
     })
@@ -147,13 +152,6 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
           <Button variant="outlined" disabled={!upload || uploading} onClick={onUpload}><Trans>Upload</Trans></Button>
         </DialogActions>
       </Dialog>
-
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1 }}
-        open={uploading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </Box>
   )
 }

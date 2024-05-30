@@ -6,6 +6,7 @@ import { QuestionPanel } from './QuestionPanel'
 import { AccountNumber } from '@tasenor/common'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
 import { useGET } from '../Hooks/useNet'
+import { useApp } from '../Hooks/useApp'
 
 interface QuestionsPanelProps {
   questions: Question[]
@@ -22,19 +23,18 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   const { questions } = props
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
-  const [, setLoading] = useState(true)
   const GET = useGET<RemoteAccount[]>()
+  const app = useApp()
 
   useEffect(() => {
-    // TODO: Loading shade should be app feature or something.
     const accountQuestion = questions.find(question => question.type === 'ACCOUNT')
     if (accountQuestion) {
       GET(`/output-destinations/${accountQuestion.args?.destinationId}/accounts`).then(res => {
         res && setRemotes(res.reduce((prev, cur) => ({ ...prev, [cur.number]: cur }), {}))
-        setLoading(false)
+        app.setDimming(false)
       })
     } else {
-      setLoading(false)
+      app.setDimming(false)
     }
   }, [questions])
 

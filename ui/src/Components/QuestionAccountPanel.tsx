@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, FormControl, FormGroup } from '@mui/material'
+import { FormControl, FormGroup } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { AccountNumber } from '@tasenor/common'
 import { RemoteAccount } from '../Types/API/RemoteAccount'

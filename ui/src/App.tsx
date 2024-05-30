@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material'
+import { Backdrop, Box, CircularProgress, Container } from '@mui/material'
 import React, { useEffect } from 'react'
 import { IndexPage } from './Pages/IndexPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -15,8 +15,11 @@ import { EditSettingsPage } from './Pages/EditSettingsPage'
 import { RulesPage } from './Pages/RulesPage'
 import { EditRulesPage } from './Pages/EditRulesPage'
 import { FlowPlansPage } from './Pages/FlowPlansPage'
+import { useApp } from './Hooks/useApp'
 
 export const App = (): React.JSX.Element => {
+
+  const app = useApp()
 
   useEffect(() => {
     if (window.location.pathname === '/') {
@@ -49,6 +52,13 @@ export const App = (): React.JSX.Element => {
             </Routes>
           </Box>
         </Box>
+
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1 }}
+          open={app.dimming}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </Container>
     </BrowserRouter>
   </>

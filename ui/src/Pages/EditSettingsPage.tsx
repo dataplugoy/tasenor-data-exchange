@@ -49,9 +49,10 @@ export const EditSettingsPage = (): React.JSX.Element => {
   }
 
   const onDelete = async () => {
-    // TODO: Move backdrop from FileUploader.tsx to useApp and use here.
     setDeleting(false)
+    app.setDimming(true)
     await DELETE(`/flow-plans/${params.id}`)
+    app.setDimming(false)
     navigate('/')
   }
 
