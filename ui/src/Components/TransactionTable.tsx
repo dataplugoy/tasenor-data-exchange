@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, useTheme } from '@mui/material'
 import { Transaction as APITransaction, TransactionLine as APITransactionLine, TransactionExtras } from '../Types/API/Transaction'
 import { Trans } from 'react-i18next'
 import { DateTime } from 'luxon'
@@ -16,6 +16,8 @@ interface TransactionExtrasLineProps {
 export const TransactionExtrasLine = (props: TransactionExtrasLineProps): React.JSX.Element => {
   const extras = clone(props.extras)
   const { account } = props
+  const theme = useTheme()
+
   let text = ''
 
   if ('asset' in extras && 'assetChange' in extras) {
@@ -34,7 +36,7 @@ export const TransactionExtrasLine = (props: TransactionExtrasLineProps): React.
     <TableRow>
       <TableCell></TableCell>
       <TableCell></TableCell>
-      <TableCell>{text}</TableCell>
+      <TableCell><Box sx={{ color: 'txExtras.main' }}>{text}</Box></TableCell>
       <TableCell></TableCell>
       <TableCell></TableCell>
     </TableRow>

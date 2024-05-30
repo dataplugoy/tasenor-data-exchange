@@ -1,5 +1,15 @@
 import { createTheme } from '@mui/material'
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    txExtras: Palette['primary']
+  }
+
+  interface PaletteOptions {
+    txExtras?: PaletteOptions['primary'];
+  }
+}
+
 export const theme = createTheme({
   palette: {
     mode: 'dark',
@@ -23,6 +33,10 @@ export const theme = createTheme({
       default: '#111',
       paper: '#222',
     },
+
+    txExtras: {
+      main: '#0ff'
+    }
   },
 
   typography: {
