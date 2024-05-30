@@ -31,6 +31,11 @@ export const Note = (props: NoteProps): React.JSX.Element => {
         <Trans>Need to select a file and upload</Trans>
       </>
 
+    case 'uploaded':
+      return <Box sx={{ mb: 2 }}>
+        {notes as string}
+      </Box>
+
     default:
       return <>{JSON.stringify({ [name]: notes })}</>
   }

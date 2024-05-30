@@ -33,7 +33,7 @@ export const App = (): React.JSX.Element => {
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Menu/>
           <Messages/>
-          <Box sx={{ pt: 2 }}>
+          <Box sx={{ pt: 2, pb: 5 }}>
             <Routes>
               <Route path="/" element={<IndexPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
