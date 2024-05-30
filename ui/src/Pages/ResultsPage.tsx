@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useApp } from '../Hooks/useApp'
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { useGET } from '../Hooks/useNet'
 import { ProjectOutputResponse } from '../Types/API/projects/ProjectOutputResponse'

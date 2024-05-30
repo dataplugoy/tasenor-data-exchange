@@ -1,15 +1,5 @@
 import { createTheme } from '@mui/material'
 
-declare module "@mui/material/styles" {
-  interface Palette {
-    txExtras: Palette['primary']
-  }
-
-  interface PaletteOptions {
-    txExtras?: PaletteOptions['primary'];
-  }
-}
-
 export const theme = createTheme({
   palette: {
     mode: 'dark',
@@ -33,10 +23,6 @@ export const theme = createTheme({
       default: '#111',
       paper: '#222',
     },
-
-    txExtras: {
-      main: '#0ff'
-    }
   },
 
   typography: {
@@ -94,5 +80,56 @@ export const theme = createTheme({
         }
       }
     },
+
+    // Transactin table.
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#333',
+        }
+      }
+    },
+
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          '&.tx': {
+            border: 'none',
+            fontFamily: '"PT Serif", serif',
+            fontSize: '1rem',
+            padding: '0.09rem',
+          },
+          ':first-of-type': {
+            paddingLeft: '1rem'
+          },
+          ':last-child': {
+            paddingRight: '1rem'
+          },
+
+          '&.tx.heading': {
+            fontWeight: 'bold',
+          },
+          '&.tx.first': {
+            borderTop: '1px solid rgba(255, 255, 255, 0.3)',
+          },
+          '&.tx.extras': {
+            fontSize: '0.8rem',
+            color: '#9fa8da'
+          },
+          '&.tx.debit': {
+            color: '#4caf50'
+          },
+          '&.tx.debit.heading': {
+            color: 'inherit'
+          },
+          '&.tx.credit': {
+            color: '#ff8a80'
+          },
+          '&.tx.credit.heading': {
+            color: 'inherit'
+          },
+        }
+      }
+    }
   }
 })
