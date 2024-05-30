@@ -8,8 +8,6 @@ import { ViewError } from './ViewError'
 import { DisplayBlock } from './DisplayBlock'
 import { Notes } from './Notes'
 
-// TODO: All JSON-presentations should be converted to nice item specific viewers.
-
 interface RunDetailsProps {
   batch: Batch
   result: RunStepResult
