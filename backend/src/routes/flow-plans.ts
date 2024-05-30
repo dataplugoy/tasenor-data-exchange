@@ -1,4 +1,5 @@
 import express from 'express'
+import dot from 'dot-object'
 import { authorize } from '../lib/authorize'
 import { ProjectModel } from '../models/ProjectModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
@@ -217,7 +218,7 @@ router.patch('/:id/configure',
 
     await res.locals.flowPlan.updateSetup(req.body)
 
-    await executeBatch(req, res, { configured: req.body })
+    await executeBatch(req, res, { configured: dot.dot(req.body) })
   }
 )
 
