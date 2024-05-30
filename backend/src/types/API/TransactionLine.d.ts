@@ -5,10 +5,11 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type Account = string;
 export type Asset = string;
 
 export interface TransactionLine {
-  account: string;
+  account: Account;
   amount: number | string;
   text: string;
   extras: TransactionExtras;

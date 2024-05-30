@@ -57,6 +57,7 @@ export type Asset4 = string;
  * Asset used to determine the total value of the transaction.
  */
 export type Asset5 = string;
+export type Account1 = string;
 export type Asset6 = string;
 
 export interface Batch {
@@ -253,7 +254,7 @@ export interface Transaction {
   lines: TransactionLine[];
 }
 export interface TransactionLine {
-  account: string;
+  account: Account1;
   amount: number | string;
   text: string;
   extras: TransactionExtras;

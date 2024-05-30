@@ -6,8 +6,7 @@
   "required": ["account", "amount", "text", "extras"],
   "properties": {
     "account": {
-      "type": "string",
-      "pattern": "^[A-Z_]+$"
+      "$ref": "Account.json"
     },
     "amount": {
       "type": ["number", "string"],
