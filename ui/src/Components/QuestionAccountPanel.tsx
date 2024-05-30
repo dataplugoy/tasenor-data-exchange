@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FormControl, FormGroup } from '@mui/material'
+import { Box, FormControl, FormGroup } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { AccountNumber } from '@tasenor/common'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
@@ -29,7 +29,6 @@ export const QuestionAccountPanel = (props: QuestionAccountPanelProps): React.JS
 
   const [, code] = variable.split('.')
 
-  // TODO: Formgroup belongs higher level?
   return (
     <FormGroup>
       <FormControl sx={{ mt: 1 }}>

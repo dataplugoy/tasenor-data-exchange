@@ -30,6 +30,7 @@
   "RESULT_PARTLY_SKIPPED_SUCCESS": "Skipped Some",
   "RESULT_WAITING": "Waiting",
   "STOCK_ACCOUNT": "An account to keep value of the stocks bought",
+  "TAX_ACCOUNT": "An account to record taxes",
   "TOGGLE_SINGLE_CRYPTO_ACCOUNT": "Use the same account for all crypto currencies",
   "TOGGLE_SINGLE_DIVIDEND_ACCOUNT": "Use the same account for all dividends",
   "TOGGLE_SINGLE_EXPENSE_ACCOUNT": "Use the same account for any expense",

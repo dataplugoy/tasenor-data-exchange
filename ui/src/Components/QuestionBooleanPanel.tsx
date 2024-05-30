@@ -23,7 +23,6 @@ export const QuestionBooleanPanel = (props: QuestionBooleanPanelProps): React.JS
     onChange(variable, value)
   }
 
-  // TODO: Formgroup belongs higher level?
   return (
     <FormGroup>
       <FormControl>

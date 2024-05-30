@@ -21,9 +21,6 @@ export const QuestionEnumPanel = (props: QuestionEnumPanelProps): React.JSX.Elem
   const options = args.options || []
   const { t } = useTranslation()
 
-  // TODO: Handle options in translation collector.
-  // TODO: Help text looks miserable.
-
   const onChange = (e) => {
     props.onChange(variable, e.target.value)
   }
