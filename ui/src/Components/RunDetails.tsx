@@ -7,6 +7,7 @@ import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
 import { ViewError } from './ViewError'
 import { DisplayBlock } from './DisplayBlock'
 import { Notes } from './Notes'
+import { TransactionTable } from './TransactionTable'
 
 interface RunDetailsProps {
   batch: Batch
@@ -103,12 +104,19 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
   return (
     <Box>
       <Notes notes={result.run.notes}/>
-      {
-        items.map((item, idx) => <Box key={idx}>
-          <Box>{item.data.time}<RunStateIcon result={result} item={item}/></Box>
-          {item.data.lines.map((line, idx) => <Box key={idx}>{JSON.stringify(line)}</Box>)}
-        </Box>)
-      }
+      <TransactionTable txs={items.map(item => item.data)}/>
+    </Box>
+  )
+}
+
+const SuccessOutputDelivered = (props: RunDetailsProps): React.JSX.Element => {
+  const { result } = props
+  // const items: ResultOutputItem[] = result.items as ResultOutputItem[]
+
+  return (
+    <Box>
+      <Notes notes={result.run.notes}/>
+      TODO: Implement
     </Box>
   )
 }
@@ -180,7 +188,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
     case 'SUCCESSFUL_OUTPUT_CREATED':
       return <SuccessOutputCreated batch={batch} result={result}/>
     case 'SUCCESSFUL_OUTPUT_DELIVERED':
-      return <SuccessOutputCreated batch={batch} result={result}/>
+      return <SuccessOutputDelivered batch={batch} result={result}/>
     case 'FAILED_AFTER_BATCH_CREATED':
       return <FailedAfterBatchCreated batch={batch} result={result}/>
     case 'FAILED_AFTER_DATA_FETCHED':

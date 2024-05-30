@@ -98,6 +98,7 @@ export const theme = createTheme({
             fontFamily: '"PT Serif", serif',
             fontSize: '1rem',
             padding: '0.09rem',
+            color: '#eee'
           },
           ':first-of-type': {
             paddingLeft: '1rem'
