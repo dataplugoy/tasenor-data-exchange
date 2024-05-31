@@ -38,7 +38,7 @@ ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS "flow_pla
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.alerts DROP CONSTRAINT IF EXISTS "alerts_userId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
-DROP INDEX IF EXISTS public."unified_items_inputId_key";
+DROP INDEX IF EXISTS public."unified_items_inputId_idx";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."rules_flowPlanId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
@@ -1393,10 +1393,10 @@ CREATE UNIQUE INDEX settings_type_key ON public.settings USING btree (type);
 
 
 --
--- Name: unified_items_inputId_key; Type: INDEX; Schema: public; Owner: dev
+-- Name: unified_items_inputId_idx; Type: INDEX; Schema: public; Owner: dev
 --
 
-CREATE UNIQUE INDEX "unified_items_inputId_key" ON public.unified_items USING btree ("inputId");
+CREATE INDEX "unified_items_inputId_idx" ON public.unified_items USING btree ("inputId");
 
 
 --

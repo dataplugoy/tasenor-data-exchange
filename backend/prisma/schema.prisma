@@ -238,7 +238,7 @@ model InputItem{
   skipped     Boolean
   skipReason  SkipReason?
 
-  unifiedItem UnifiedItem?
+  unifiedItems UnifiedItem[]
 
   flowPlanId  Int
   flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
@@ -265,7 +265,7 @@ model UnifiedItem{
 
   outputItem  OutputItem?
 
-  inputId     Int             @unique
+  inputId     Int
   input       InputItem       @relation(fields: [inputId], references: [id])
   flowPlanId  Int
   flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
@@ -275,6 +275,7 @@ model UnifiedItem{
   run         Run             @relation(fields: [runId], references: [id])
 
   @@map(name: "unified_items")
+  @@index([inputId])
 }
 
 model OutputItem{
