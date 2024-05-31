@@ -1,14 +1,24 @@
 import React from 'react'
 import { Transaction as APITransaction, TransactionLine as APITransactionLine } from '../Types/API/Transaction'
 import { DateTime } from 'luxon'
-import { TransactionLine } from './TransactionLine'
+import { TransactionDeliveryLine, TransactionLine } from './TransactionLine'
+import { OutputItem } from '../Types/API/OutputItem'
+import { isOutputItem } from '../Types/predicates'
 
 interface TransactionProps {
-  tx: APITransaction
+  tx: APITransaction | OutputItem
 }
 
 export const Transaction = (props: TransactionProps): React.JSX.Element => {
-  const { tx } = props
+  let tx: APITransaction
+  let out: OutputItem | null = null
+
+  if (isOutputItem(props.tx)) {
+    tx = props.tx.data
+    out = props.tx
+  } else {
+    tx = props.tx
+  }
 
   const firstLine: APITransactionLine = tx.lines.length
     ? tx.lines[0]
@@ -41,6 +51,9 @@ export const Transaction = (props: TransactionProps): React.JSX.Element => {
             extras={line.extras}
           />
         )
+      }
+      {
+        out && <TransactionDeliveryLine tx={out}/>
       }
     </>
   )

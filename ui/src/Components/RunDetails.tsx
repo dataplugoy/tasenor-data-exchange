@@ -111,12 +111,12 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
 
 const SuccessOutputDelivered = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
-  // const items: ResultOutputItem[] = result.items as ResultOutputItem[]
+  const items: ResultOutputItem[] = result.items as ResultOutputItem[]
 
   return (
     <Box>
       <Notes notes={result.run.notes}/>
-      TODO: Implement
+      <TransactionTable txs={items}/>
     </Box>
   )
 }

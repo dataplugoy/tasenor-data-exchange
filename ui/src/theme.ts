@@ -100,6 +100,15 @@ export const theme = createTheme({
             padding: '0.09rem',
             color: '#eee'
           },
+          '&.tx.delivered': {
+            color: '#4caf50'
+          },
+          '&.tx.skipped': {
+            color: '#fff59d'
+          },
+          '&.tx.pending': {
+            color: '#ef9a9a'
+          },
           ':first-of-type': {
             paddingLeft: '1rem'
           },

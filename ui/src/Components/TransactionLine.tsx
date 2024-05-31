@@ -6,6 +6,10 @@ import { DateTime } from 'luxon'
 import { Account } from '../Types/API/Account'
 import clone from 'clone'
 import { sprintf } from 'sprintf-js'
+import { OutputItem } from '../Types/API/OutputItem'
+import { Trans } from 'react-i18next'
+
+// TODO: Split to files.
 
 interface TransactionExtrasLineProps {
   extras: TransactionExtras
@@ -79,5 +83,25 @@ export const TransactionLine = (props: TransactionLineProps): React.JSX.Element 
       </TableRow>
       {Object.keys(extras).length > 0 && <TransactionExtrasLine account={account} extras={extras}/>}
     </>
+  )
+}
+
+interface TransactionDeliveryLinePops {
+  tx: OutputItem
+}
+
+export const TransactionDeliveryLine = (props: TransactionDeliveryLinePops): React.JSX.Element => {
+  const { tx } = props
+  const { delivered, skipped } = tx
+  return (
+    <TableRow>
+      <TableCell className="tx"></TableCell>
+      <TableCell className="tx"></TableCell>
+      {delivered && <TableCell className="tx delivered"><Trans>Delivered successfully</Trans></TableCell>}
+      {skipped && <TableCell className="tx skipped"><Trans>Delivery has been skipped</Trans></TableCell>}
+      {!delivered && !skipped && <TableCell className="tx pending"><Trans>Delivery is pending</Trans></TableCell>}
+      <TableCell className="tx" align="right"></TableCell>
+      <TableCell className="tx" align="right"></TableCell>
+    </TableRow>
   )
 }

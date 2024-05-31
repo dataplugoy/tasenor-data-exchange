@@ -3,7 +3,7 @@
   "title": "OutputItem",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "data", "skipped", "delivered", "error", "unifiedId", "flowPlanId", "batchId", "runId"],
+  "required": ["id", "data", "skipped", "delivered", "error", "unifiedId", "flowPlanId", "batchId", "remoteId", "runId"],
   "properties": {
     "id": {
       "type": "integer"
