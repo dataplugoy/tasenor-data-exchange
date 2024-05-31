@@ -136,6 +136,12 @@ const config: Config = {
           label: 'Team',
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'docSidebarId',
+          position: 'right',
+          label: 'Documentation',
+        },
+        {
           to: 'https://tadex.stg.tasenor.com/app/register',
           class: 'demo-button',
           position: 'right',
