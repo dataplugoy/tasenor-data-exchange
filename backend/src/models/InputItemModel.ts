@@ -114,7 +114,16 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    * @returns
    */
   static async isDuplicate(input: InputItemModel): Promise<boolean> {
-    const items = await InputItemModel.findMany<prisma.InputItem, InputItemModel>({ flowPlanId: input.data.flowPlanId, hash: input.data.hash })
-    return items.length > 1
+    const items = await InputItemModel.findMany<prisma.InputItem, InputItemModel>({ flowPlanId: input.data.flowPlanId, hash: input.data.hash }, [{ id: 'asc' }])
+
+    if (items.length > 1) {
+      // Let us call the first one created a non-duplicate and the rest as a duplicate.
+      if (items[0].id === input.id) {
+        return false
+      }
+      return true
+    }
+
+    return false
   }
 }
