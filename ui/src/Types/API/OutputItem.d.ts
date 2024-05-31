@@ -7,14 +7,27 @@
 
 export type Account = string;
 export type Asset = string;
+export type RemoteId =
+  | {
+      type: "TRIVIAL";
+    }
+  | {
+      type: "FILE";
+      path?: string;
+    }
+  | {
+      type: "TASENOR";
+      db: string;
+      doc: number;
+      period: number;
+      entries: number[];
+    };
 
 export interface OutputItem {
   id: number;
   data: Transaction;
   delivered: boolean;
-  remoteId: {
-    [k: string]: unknown;
-  } | null;
+  remoteId: null | RemoteId;
   skipped: boolean;
   unifiedId: number;
   flowPlanId: number;

@@ -13,9 +13,9 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
-import { RemoteId } from '../types/RemoteId'
 import { DateTime } from 'luxon'
 import { Setup } from '../types/API/Setup'
+import { RemoteId } from '../types/API/RemoteId'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
@@ -123,7 +123,7 @@ export class TestMockDriver extends Driver {
 
     fs.writeFileSync(filePath, JSON.stringify(output.data.data, null, 2) + '\n')
 
-    return filePath as RemoteId
+    return { type: 'FILE', path: filePath }
   }
 
   /**

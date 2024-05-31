@@ -3,7 +3,6 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriverSettings } from '../types/DriverSettings'
 import { TasenorFlowState } from '../types/FlowState'
-import { RemoteId } from '../types/RemoteId'
 import { InternetDriver } from './InternetDriver'
 import { Transaction, TransactionLine } from '../types/API/Transaction'
 import { DateTime } from 'luxon'
@@ -14,6 +13,7 @@ import { jwtDecode } from 'jwt-decode'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { Account } from '../types/API/Account'
 import { AccountException } from '../exceptions/AccountException'
+import { RemoteId } from '../types/API/RemoteId'
 
 export class TasenorDriver extends InternetDriver {
 
@@ -232,6 +232,7 @@ export class TasenorDriver extends InternetDriver {
 
     // Remote ID.
     const ret = {
+      type: 'TASENOR',
       db: this.settings.database,
       period: period.id,
       doc: document.id,
@@ -255,7 +256,7 @@ export class TasenorDriver extends InternetDriver {
       throw err
     }
 
-    return ret as unknown as RemoteId
+    return ret as RemoteId
   }
 
   needConfiguredAccounts(): boolean {

@@ -5,8 +5,8 @@ import { NoActionFlowState } from '../types/FlowState'
 import { Driver } from './Driver'
 import { Transaction } from '../types/API/Transaction'
 import { ProjectSettings } from '../types/API/Project'
-import { RemoteId } from '../types/RemoteId'
 import { Setup } from '../types/API/Setup'
+import { RemoteId } from '../types/API/RemoteId'
 
 export class NoActionDriver extends Driver {
 
@@ -33,7 +33,7 @@ export class NoActionDriver extends Driver {
       log(`        Line[${idx}]: ${JSON.stringify(line)}`)
     })
 
-    return 0 as RemoteId
+    return { type: 'TRIVIAL' }
   }
 
   needConfiguredAccounts(): boolean {

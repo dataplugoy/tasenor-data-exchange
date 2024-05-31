@@ -1,0 +1,58 @@
+{
+  "$id": "RemoteId.json",
+  "title": "RemoteId",
+  "oneOf": [
+    {
+      "additionalProperties": false,
+      "required": ["type"],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "TRIVIAL"
+        }
+      }
+    },
+    {
+      "additionalProperties": false,
+      "required": ["type"],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "FILE"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "additionalProperties": false,
+      "required": ["type", "db", "doc", "period", "entries"],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "TASENOR"
+        },
+        "db": {
+          "type": "string",
+          "pattern": "^[0-9a-z-_]+$"
+        },
+        "doc": {
+          "type": "integer"
+        },
+        "period": {
+          "type": "integer"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  ]
+}

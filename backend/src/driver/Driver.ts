@@ -18,10 +18,10 @@ import { InputItemData } from '../types/API/InputItemData'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { ProjectSettings } from '../types/API/Project'
-import { RemoteId } from '../types/RemoteId'
 import { Setup } from '../types/API/Setup'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { Transaction } from '../types/API/Transaction'
+import { RemoteId } from '../types/API/RemoteId'
 
 /**
  * Base class for different input sources and output destinations supported.

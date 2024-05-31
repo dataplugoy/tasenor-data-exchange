@@ -15,7 +15,10 @@
       "type": "boolean"
     },
     "remoteId": {
-      "type": ["object", "null"]
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "RemoteId.json"}
+      ]
     },
     "skipped": {
       "type": "boolean"

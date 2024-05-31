@@ -8,6 +8,7 @@ import clone from 'clone'
 import { sprintf } from 'sprintf-js'
 import { OutputItem } from '../Types/API/OutputItem'
 import { Trans } from 'react-i18next'
+import { RemoteId } from '../Types/API/RemoteId'
 
 // TODO: Split to files.
 
@@ -86,6 +87,25 @@ export const TransactionLine = (props: TransactionLineProps): React.JSX.Element 
   )
 }
 
+interface TransactionRemoteIdProps {
+  id: RemoteId | null
+}
+
+export const TransactionRemoteId = (props: TransactionRemoteIdProps): React.JSX.Element => {
+  const { id } = props
+
+  if (id === null ) return <></>
+
+  switch (id.type) {
+    case 'TRIVIAL':
+      return <></>
+    case 'FILE':
+      return <><Trans>Saved to file:</Trans> {id.path}</>
+    case 'TASENOR':
+      return <>Tasenor ID: {JSON.stringify(id)}</>
+  }
+}
+
 interface TransactionDeliveryLinePops {
   tx: OutputItem
 }
@@ -97,9 +117,9 @@ export const TransactionDeliveryLine = (props: TransactionDeliveryLinePops): Rea
     <TableRow>
       <TableCell className="tx"></TableCell>
       <TableCell className="tx"></TableCell>
-      {delivered && <TableCell className="tx delivered"><Trans>Delivered successfully</Trans></TableCell>}
-      {skipped && <TableCell className="tx skipped"><Trans>Delivery has been skipped</Trans></TableCell>}
-      {!delivered && !skipped && <TableCell className="tx pending"><Trans>Delivery is pending</Trans></TableCell>}
+      {delivered && <TableCell className="tx delivered"><Trans>Delivered successfully.</Trans> <TransactionRemoteId id={tx.remoteId}/></TableCell>}
+      {skipped && <TableCell className="tx skipped"><Trans>Delivery has been skipped.</Trans></TableCell>}
+      {!delivered && !skipped && <TableCell className="tx pending"><Trans>Delivery is pending.</Trans></TableCell>}
       <TableCell className="tx" align="right"></TableCell>
       <TableCell className="tx" align="right"></TableCell>
     </TableRow>
