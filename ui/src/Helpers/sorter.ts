@@ -10,16 +10,6 @@ export type ResultOutputItem = { type: 'OutputItem', error: null | ItemError } &
 
 export type ResultItem = ResultInputItem | ResultUnifiedItem | ResultOutputItem
 
-export function isResultInputItem(obj: unknown): obj is ResultInputItem {
-  return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'InputItem'
-}
-export function isResultUnifiedItem(obj: unknown): obj is ResultUnifiedItem {
-  return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'UnifiedItem'
-}
-export function isResultOutputItem(obj: unknown): obj is ResultOutputItem {
-  return obj !== null && typeof obj === 'object' && 'type' in obj && obj.type === 'OutputItem'
-}
-
 export type RunStepType =
   | 'FAILED_AFTER_BATCH_CREATED'
   | 'FAILED_AFTER_DATA_FETCHED'

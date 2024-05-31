@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
-import { ResultItem, RunStepResult, isResultOutputItem, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
+import { ResultItem, RunStepResult, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { Trans } from 'react-i18next'
-import { Check, Error, HourglassEmpty, SkipNext } from '@mui/icons-material'
+import { Check } from '@mui/icons-material'
 import { ViewError } from './ViewError'
 import { DisplayBlock } from './DisplayBlock'
 import { Notes } from './Notes'
 import { TransactionTable } from './TransactionTable'
 import { useGET } from '../Hooks/useNet'
 import { OutputDestination } from '../Types/API/OutputDestination'
+import { ViewUnified } from './ViewUnified'
 
 interface RunDetailsProps {
   batch: Batch
@@ -18,34 +19,6 @@ interface RunDetailsProps {
 
 const RunStateSuccessIcon = (): React.JSX.Element => {
   return <Box sx={{ display: 'inline-block', ml: 1 }}><Check sx={{ color: 'success.main', mb: '-0.4rem' }}/></Box>
-}
-
-interface RunStateIconProps {
-  result: RunStepResult
-  item: ResultItem
-}
-
-const RunStateIcon = (props: RunStateIconProps): React.JSX.Element => {
-  const { item, result } = props
-  let success = isResultOutputItem(item) ? item.delivered : item.processed
-  const progress = result.run.initialState !== result.run.finalState
-  const step = result.step
-
-  if (!success && progress && ['SUCCESSFUL_DATA_PARSED', 'SUCCESSFUL_ITEMS_UNIFIED', 'SUCCESSFUL_OUTPUT_CREATED'].includes(step)) {
-    success = true
-  }
-
-  if (success) {
-    return <RunStateSuccessIcon/>
-  }
-  if (item.skipped) {
-    return <Box sx={{ display: 'inline-block', ml: 1 }}><SkipNext sx={{ color: 'primary.main', mb: '-0.4rem' }}/></Box>
-  }
-  if (item.error !== null) {
-    return <Box sx={{ display: 'inline-block', ml: 1 }}><Error sx={{ color: 'error.dark', mb: '-0.4rem' }}/></Box>
-  }
-
-  return <Box sx={{ display: 'inline-block', ml: 1 }}><HourglassEmpty sx={{ color: 'secondary.light', mb: '-0.4rem' }}/></Box>
 }
 
 const SuccessfulDataFetched = (props: RunDetailsProps): React.JSX.Element => {
@@ -89,12 +62,7 @@ const SuccessfulItemsUnified = (props: RunDetailsProps): React.JSX.Element => {
   return (
     <DisplayBlock>
       <Notes notes={result.run.notes}/>
-      {
-        items.map((item, idx) => <Box key={idx}>
-          <Box>{JSON.stringify(item.data)}<RunStateIcon result={result} item={item}/></Box>
-          {item.stockChange && JSON.stringify(item.stockChange)}
-        </Box>)
-      }
+      { items.map((item, idx) => <ViewUnified key={idx} item={item}/>) }
     </DisplayBlock>
   )
 }
@@ -193,6 +161,8 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
 
   // TODO: Check if there is any difference between failure and success (and waiting). Then combine
   //       under the same renderer. Note that half failed steps may have items too.
+  //       Or even better: use the same for everything? Display all that is there. Let the sorting
+  //       function determine what to show.
 
   switch (result.step) {
     case 'SUCCESSFUL_DATA_FETCHED':
