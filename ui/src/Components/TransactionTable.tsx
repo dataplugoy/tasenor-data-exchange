@@ -4,15 +4,17 @@ import { Transaction as APITransaction } from '../Types/API/Transaction'
 import { Trans } from 'react-i18next'
 import { Transaction } from './Transaction'
 import { OutputItem } from '../Types/API/OutputItem'
+import { OutputDestination } from '../Types/API/OutputDestination'
 
 export const TRANSACTION_COLUMNS = 5
 
 interface TransactionTableProps {
   txs: APITransaction[] | OutputItem[]
+  output?: OutputDestination
 }
 
 export const TransactionTable = (props: TransactionTableProps): React.JSX.Element => {
-  const { txs } = props
+  const { txs, output } = props
 
   return (
     <Table data-cy="TransactionTable" size="small" className="tx">
@@ -27,8 +29,16 @@ export const TransactionTable = (props: TransactionTableProps): React.JSX.Elemen
       </TableHead>
 
       <TableBody>
-        {txs.map((tx: APITransaction | OutputItem, idx: number) => <Transaction key={idx} tx={tx}/>)}
-        {txs.length === 0 && <TableRow><TableCell className="tx"/><TableCell className="tx" colSpan={TRANSACTION_COLUMNS - 2}><Trans>No transctions</Trans></TableCell></TableRow>}
+        {
+          txs.map((tx: APITransaction | OutputItem, idx: number) => <Transaction key={idx} tx={tx} output={output}/>)
+        }
+        {
+          txs.length === 0 &&
+            <TableRow>
+              <TableCell className="tx"/>
+              <TableCell className="tx" colSpan={TRANSACTION_COLUMNS - 2}><Trans>No transctions</Trans></TableCell>
+            </TableRow>
+        }
       </TableBody>
     </Table>
   )

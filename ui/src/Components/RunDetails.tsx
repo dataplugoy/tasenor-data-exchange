@@ -1,4 +1,4 @@
-import React, { } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import { ResultItem, RunStepResult, isResultOutputItem, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
@@ -8,6 +8,8 @@ import { ViewError } from './ViewError'
 import { DisplayBlock } from './DisplayBlock'
 import { Notes } from './Notes'
 import { TransactionTable } from './TransactionTable'
+import { useGET } from '../Hooks/useNet'
+import { OutputDestination } from '../Types/API/OutputDestination'
 
 interface RunDetailsProps {
   batch: Batch
@@ -109,14 +111,14 @@ const SuccessOutputCreated = (props: RunDetailsProps): React.JSX.Element => {
   )
 }
 
-const SuccessOutputDelivered = (props: RunDetailsProps): React.JSX.Element => {
-  const { result } = props
+const SuccessOutputDelivered = (props: RunDetailsProps & { output: OutputDestination }): React.JSX.Element => {
+  const { result, output } = props
   const items: ResultOutputItem[] = result.items as ResultOutputItem[]
 
   return (
     <Box>
       <Notes notes={result.run.notes}/>
-      <TransactionTable txs={items}/>
+      <TransactionTable txs={items} output={output}/>
     </Box>
   )
 }
@@ -177,6 +179,16 @@ const FailedAfterOutputCreated = (props: RunDetailsProps): React.JSX.Element => 
  */
 export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   const { batch, result } = props
+  const GET = useGET<OutputDestination>()
+  const [output, setOutput] = useState<OutputDestination|null>(null)
+
+  useEffect(() => {
+    if (result.step === 'SUCCESSFUL_OUTPUT_DELIVERED') {
+      GET(`/flow-plans/${batch.flowPlanId}/output`).then(res => {
+        res && setOutput(res)
+      })
+    }
+  }, [batch.id, result.step])
 
   switch (result.step) {
     case 'SUCCESSFUL_DATA_FETCHED':
@@ -188,7 +200,8 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
     case 'SUCCESSFUL_OUTPUT_CREATED':
       return <SuccessOutputCreated batch={batch} result={result}/>
     case 'SUCCESSFUL_OUTPUT_DELIVERED':
-      return <SuccessOutputDelivered batch={batch} result={result}/>
+      if (!output) return <></>
+      return <SuccessOutputDelivered batch={batch} result={result} output={output}/>
     case 'FAILED_AFTER_BATCH_CREATED':
       return <FailedAfterBatchCreated batch={batch} result={result}/>
     case 'FAILED_AFTER_DATA_FETCHED':

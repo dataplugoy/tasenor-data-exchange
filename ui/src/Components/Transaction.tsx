@@ -4,9 +4,11 @@ import { DateTime } from 'luxon'
 import { TransactionDeliveryLine, TransactionLine } from './TransactionLine'
 import { OutputItem } from '../Types/API/OutputItem'
 import { isOutputItem } from '../Types/predicates'
+import { OutputDestination } from '../Types/API/OutputDestination'
 
 interface TransactionProps {
   tx: APITransaction | OutputItem
+  output?: OutputDestination
 }
 
 export const Transaction = (props: TransactionProps): React.JSX.Element => {
@@ -53,7 +55,7 @@ export const Transaction = (props: TransactionProps): React.JSX.Element => {
         )
       }
       {
-        out && <TransactionDeliveryLine tx={out}/>
+        out && props.output && <TransactionDeliveryLine tx={out} output={props.output}/>
       }
     </>
   )
