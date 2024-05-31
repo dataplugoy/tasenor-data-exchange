@@ -77,7 +77,7 @@ export function sortRuns(
     let items: ResultItem[] = []
     const hasProgressed = (run.initialState !== run.finalState);
 
-    // Categorize items.
+    // Categorize items and put them together.
     (inputs[run.id] || []).forEach((item: InputItem) => {
       items.push({ type: 'InputItem', ...item, error: err(run, item) })
     });
@@ -93,6 +93,8 @@ export function sortRuns(
       if (run.finalState === 'OUTPUT_DELIVERED') {
         items = lastSuccess?.items || []
       }
+    } else if (run.result === 'WAITING') {
+      // Nothing to do, keep the items collected so far.
     } else {
       // Pass last known items for further investigation.
       step = `FAILED_AFTER_${run.finalState}`

@@ -96,7 +96,7 @@ interface TransactionRemoteIdProps {
 export const TransactionRemoteId = (props: TransactionRemoteIdProps): React.JSX.Element => {
   const { id, output } = props
 
-  if (id === null ) return <></>
+  if (id === null) return <></>
 
   switch (id.type) {
     case 'TRIVIAL':

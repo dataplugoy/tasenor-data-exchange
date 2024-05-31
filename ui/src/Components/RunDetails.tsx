@@ -125,6 +125,7 @@ const SuccessOutputDelivered = (props: RunDetailsProps & { output: OutputDestina
 
 const FailedAfterBatchCreated = (props: RunDetailsProps): React.JSX.Element => {
   const { result } = props
+  // TODO: Should still show items.
   return (
     <DisplayBlock>
         {result.run.error && <ViewError error={result.run.error}/>}
@@ -190,6 +191,9 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
     }
   }, [batch.id, result.step])
 
+  // TODO: Check if there is any difference between failure and success (and waiting). Then combine
+  //       under the same renderer. Note that half failed steps may have items too.
+
   switch (result.step) {
     case 'SUCCESSFUL_DATA_FETCHED':
       return <SuccessfulDataFetched batch={batch} result={result}/>
@@ -216,7 +220,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
 
   return (
     <Box sx={{ color: 'error.light' }}>
-      <Trans>Not implemented.</Trans>
+      <Trans>Not implemented.</Trans> {result.step}
     </Box>
   )
 }
