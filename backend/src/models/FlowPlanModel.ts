@@ -433,6 +433,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           await input.success()
         } catch (err) {
           if (err instanceof AlertException) {
+            await run.result(done, total, skipped)
             throw err
           }
           result = 'FAIL'
@@ -566,6 +567,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           done++
         } catch (err) {
           if (err instanceof AlertException) {
+            await run.result(done, total, skipped)
             throw err
           }
           result = 'FAIL'
@@ -625,6 +627,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           done++
         } catch (err) {
           if (err instanceof AlertException) {
+            await run.result(done, total, 0)
             throw err
           }
           result = 'FAIL'
