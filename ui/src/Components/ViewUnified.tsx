@@ -1,11 +1,72 @@
 import { sprintf } from 'sprintf-js'
 import { ucfirst, AssetTransfer, AssetTransferReason, AssetType, TransactionDescription, Currency, AdditionalTransferInfo, AssetRates, isStockChangeDelta, haveCatalog, haveStore, ProcessConfig } from '@tasenor/common'
-import { Trans } from 'react-i18next'
-import { AccountBalanceTwoTone, CurrencyExchangeTwoTone, HttpsTwoTone, ListAltTwoTone, MonetizationOnTwoTone, QuestionMarkTwoTone, RequestQuoteTwoTone, SavingsTwoTone } from '@mui/icons-material'
+import { Trans, useTranslation } from 'react-i18next'
+import { AccountBalanceTwoTone, CoffeeTwoTone, CurrencyExchangeTwoTone, HttpsTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, QuestionMarkTwoTone, RequestQuoteTwoTone, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Divider, Box } from '@mui/material'
 import React from 'react'
 import { green, pink, red, yellow, blue, grey, cyan, orange, teal, brown } from '@mui/material/colors'
 import { ResultUnifiedItem } from '../Helpers/sorter'
+import { UnifiedItemData } from '../Types/API/UnifiedItemData'
+import { UnifiedItemType } from '../Types/API/UnifiedItemType'
+import clone from 'clone'
+
+interface UnifiedTypeChipProps {
+  type: UnifiedItemType
+}
+
+export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element => {
+  const { type } = props
+  const { t } = useTranslation()
+
+  const colors = {
+    buy: brown[500],
+    deposit: green[800],
+    dividend: teal[500],
+    expense: red[500],
+    income: green[700],
+    trade: cyan[600],
+    sell: grey[200],
+    unknown: grey[900],
+    withdrawal: blue[600]
+  }
+
+  const textColors = {
+    buy: grey[50],
+    deposit: grey[50],
+    dividend: grey[50],
+    expense: grey[50],
+    income: grey[50],
+    trade: grey[900],
+    sell: grey[600],
+    unknown: grey[700],
+    withdrawal: red[50]
+  }
+
+  const Icons = {
+    buy: ShoppingCartTwoTone,
+    deposit: SavingsTwoTone,
+    expense: CoffeeTwoTone,
+    income: MonetizationOnTwoTone,
+    trade: CurrencyExchangeTwoTone,
+    sell: SellTwoTone,
+    unknown: QuestionMark,
+    withdrawal: PaymentTwoTone,
+  }
+
+  const title = t(`UnifiedItemType-${type}`)
+  const Icon = Icons[type] || Icons.unknown
+
+  return <Chip
+    title={title}
+    icon={<Icon style={{ color: textColors[type] || textColors.unknown }}/>}
+    label={title}
+    size="medium"
+    style={{
+      color: textColors[type] || textColors.unknown,
+      backgroundColor: colors[type] || colors.unknown
+    }}
+  />
+}
 
 interface ViewUnifiedProps {
   item: ResultUnifiedItem
@@ -13,8 +74,17 @@ interface ViewUnifiedProps {
 
 // TODO: Pick the ideas below.
 export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
-  const { item } = props
-  return <pre>{JSON.stringify(item.data, null, 2)}</pre>
+  const data: UnifiedItemData = clone(props.item.data)
+  const notRendered = new Set(Object.keys(data))
+
+  const rendered = [<UnifiedTypeChip key="type" type={data.type}/>]
+  notRendered.delete('type')
+
+
+  return <Box sx={{ py: 1 }}>
+    {rendered}
+    TODO: {JSON.stringify([...notRendered])}
+  </Box>
 }
 
 /** *********************** OLD SHIT BELOW ********************************************************/
@@ -30,60 +100,13 @@ export type ReasonChipProps = {
 }
 export const ReasonChip = (props: ReasonChipProps): React.JSX.Element => {
   const { reason, type } = props
-  const colors = {
-    correction: brown[500],
-    deposit: green[800],
-    dividend: teal[500],
-    expense: red[500],
-    fee: pink[500],
-    forex: orange[800],
-    income: green[700],
-    investment: green[600],
-    tax: orange[900],
-    trade: cyan[600],
-    transfer: grey[200],
-    unknown: grey[900],
-    withdrawal: blue[600]
-  }
-
-  const text = {
-    correction: grey[50],
-    deposit: grey[50],
-    dividend: grey[50],
-    expense: grey[50],
-    fee: yellow[400],
-    forex: grey[300],
-    income: grey[50],
-    investment: grey[50],
-    tax: yellow[300],
-    trade: grey[900],
-    transfer: grey[600],
-    unknown: grey[700],
-    withdrawal: red[50]
-  }
 
   const Icon = {
-    account: AccountBalanceTwoTone,
-    crypto: HttpsTwoTone,
-    currency: MonetizationOnTwoTone,
-    external: SavingsTwoTone,
-    forex: CurrencyExchangeTwoTone,
     statement: ListAltTwoTone,
     stock: RequestQuoteTwoTone
   }[type] || QuestionMarkTwoTone
 
-  const title = `${ucfirst(type)} ${ucfirst(reason)}`
-
-  return <Chip
-    title={title}
-    icon={<Icon style={{ color: text[reason] || text.unknown }}/>}
-    label={<strong>{ucfirst(reason)}</strong>}
-    size="medium"
-    style={{
-      color: text[reason] || text.unknown,
-      backgroundColor: colors[reason] || colors.unknown
-    }}
-  />
+  return <></>
 }
 
 /**
