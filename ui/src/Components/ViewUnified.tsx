@@ -9,6 +9,7 @@ import { ResultUnifiedItem } from '../Helpers/sorter'
 import { UnifiedItemData } from '../Types/API/UnifiedItemData'
 import { UnifiedItemType } from '../Types/API/UnifiedItemType'
 import clone from 'clone'
+import { useApp } from '../Hooks/useApp'
 
 interface UnifiedTypeChipProps {
   type: UnifiedItemType
@@ -76,14 +77,36 @@ interface ViewUnifiedProps {
 export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   const data: UnifiedItemData = clone(props.item.data)
   const notRendered = new Set(Object.keys(data))
+  const app = useApp()
+  const { currency } = app.project.settings
 
-  const rendered = [<UnifiedTypeChip key="type" type={data.type}/>]
-  notRendered.delete('type')
+  /**
+   * Helper to get and remove values from item data.
+   */
+  const pick = (name, def: any = undefined) => {
+    if (!(name in data)) {
+      return def
+    }
+    notRendered.delete(name)
+    return data[name]
+  }
 
+  // Render type. TODO: Add reason here.
+  const rendered = [<UnifiedTypeChip key="type" type={pick('type')}/>]
 
+  // Render value.
+  const value = pick('value')
+  const valueAsset = pick('valueAsset', currency)
+  rendered.push(<Box component="span" key="asset" sx={{ color: 'primary.main' }}> {value} {valueAsset}</Box>)
+
+  // Render account.
+  const account = pick('account')
+  if (account) {
+    rendered.push(<Box component="span" key="account"> {account}</Box>)
+  }
   return <Box sx={{ py: 1 }}>
     {rendered}
-    TODO: {JSON.stringify([...notRendered])}
+    <> </>TODO: {JSON.stringify([...notRendered])}
   </Box>
 }
 
