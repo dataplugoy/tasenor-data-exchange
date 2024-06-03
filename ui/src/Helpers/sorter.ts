@@ -11,6 +11,7 @@ export type ResultOutputItem = { type: 'OutputItem', error: null | ItemError } &
 export type ResultItem = ResultInputItem | ResultUnifiedItem | ResultOutputItem
 
 export type RunStepType =
+  | 'UNKNOWN'
   | 'FAILED_AFTER_BATCH_CREATED'
   | 'FAILED_AFTER_DATA_FETCHED'
   | 'FAILED_AFTER_DATA_PARSED'
@@ -23,6 +24,7 @@ export type RunStepType =
   | 'SUCCESSFUL_ITEMS_UNIFIED'
   | 'SUCCESSFUL_OUTPUT_CREATED'
   | 'SUCCESSFUL_OUTPUT_DELIVERED'
+  | 'WAITING'
 
 export type RunStepResult = {
   run: Run
@@ -63,7 +65,7 @@ export function sortRuns(
   // Handle in chronological order.
   for (let i = runs.length - 1; i >= 0; i--) {
     const run = runs[i]
-    let step: RunStepType = 'FAILED_AFTER_BATCH_CREATED'
+    let step: RunStepType = 'UNKNOWN'
     let items: ResultItem[] = []
     const hasProgressed = (run.initialState !== run.finalState);
 
@@ -85,6 +87,7 @@ export function sortRuns(
       }
     } else if (run.result === 'WAITING') {
       // Nothing to do, keep the items collected so far.
+      step = 'WAITING'
     } else {
       // Pass last known items for further investigation.
       step = `FAILED_AFTER_${run.finalState}`

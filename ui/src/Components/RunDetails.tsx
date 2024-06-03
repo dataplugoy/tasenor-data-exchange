@@ -151,6 +151,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   const GET = useGET<OutputDestination>()
   const [output, setOutput] = useState<OutputDestination|null>(null)
 
+  // Gather output data for the last step.
   useEffect(() => {
     if (result.step === 'SUCCESSFUL_OUTPUT_DELIVERED') {
       GET(`/flow-plans/${batch.flowPlanId}/output`).then(res => {
