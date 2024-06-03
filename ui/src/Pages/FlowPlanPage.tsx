@@ -10,9 +10,11 @@ import { Batch } from '../Types/API/Batch'
 import { FlowPlanInfo } from '../Components/FlowPlanInfoCard'
 import { Clear, ExpandMore } from '@mui/icons-material'
 import { BatchBrogressBar } from '../Components/BatchProgressBar'
-import { DateTime } from 'luxon'
 import { RunList } from '../Components/RunList'
 import { whenBatchUpdates } from '../Signals/updates'
+import { useApp } from '../Hooks/useApp'
+import { datetime2str } from '../Helpers/stringify'
+import { Language, Timestring } from '@tasenor/common'
 
 type BatchWithOutput = Batch & {
   outputDeliveredCount: number
@@ -26,6 +28,8 @@ export const FlowPlanPage = (): React.JSX.Element => {
   const [batches, setBatches] = useState<BatchWithOutput[]>([])
   const isCompleted = !batches.length || !!batches[0].completed
   const navigate = useNavigate()
+  const app = useApp()
+  const { language } = app.project.settings
 
   const updateFlowPlan = async () => {
     await GET(`/flow-plans/${id}`).then(res => {
@@ -59,7 +63,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
               <Box sx={{ width: '100%', display: 'grid', gridTemplateColumns: '5% 30% 60% 5%' }}>
                 <Box sx={{ display: 'inline-block', fontWeight: 'bold' }}>#{batch.number}</Box>
                 <Box sx={{ display: 'inline-block' }}>
-                  {DateTime.fromISO(batch.updated as string).toLocaleString(DateTime.DATETIME_FULL)}
+                  {datetime2str(batch.updated as Timestring, language as Language)}
                 </Box>
                 <Box sx={{ display: 'inline-block' }}>
                   <BatchBrogressBar state={batch.state}/>

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { CoffeeTwoTone, CurrencyExchangeTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
-import { Chip, Box, Typography } from '@mui/material'
+import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown } from '@mui/material/colors'
 import { ResultUnifiedItem } from '../Helpers/sorter'
@@ -8,14 +8,17 @@ import { UnifiedItemData } from '../Types/API/UnifiedItemData'
 import { UnifiedItemType } from '../Types/API/UnifiedItemType'
 import clone from 'clone'
 import { useApp } from '../Hooks/useApp'
+import { added2str, date2str } from '../Helpers/stringify'
+import { Language, Timestring, isCurrency } from '@tasenor/common'
 
 interface UnifiedTypeChipProps {
   type: UnifiedItemType
   reason?: string
+  service?: string
 }
 
 export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element => {
-  const { type, reason } = props
+  const { type, reason, service } = props
   const { t } = useTranslation()
 
   const colors = {
@@ -53,10 +56,24 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     withdrawal: PaymentTwoTone,
   }
 
-  const title = reason ? (t(`${type.toUpperCase()}_${reason}`)) : t(`${type.toUpperCase()}`)
+  let title = reason ? (t(`${type.toUpperCase()}_${reason}`)) : t(`${type.toUpperCase()}`)
   const Icon = Icons[type] || Icons.unknown
 
+  if (service) {
+    switch (type) {
+      case 'deposit':
+        title = t('Deposit to {{service}}', { service })
+        break
+      case 'withdraw':
+        title = t('Withdrawal from {{service}}', { service })
+        break
+      default:
+        throw new Error(`No handler for service related title of type '${type}'.`)
+    }
+  }
+
   return <Chip
+    sx={{ ml: 1 }}
     title={title}
     icon={<Icon style={{ color: textColors[type] || textColors.unknown }}/>}
     label={title}
@@ -68,16 +85,34 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
   />
 }
 
+interface AssetTypeIconProps {
+  type: 'STOCK' | 'CURRENCY' | 'CRYPTO' | 'UNKNOWN'
+  sx?: SxProps<Theme>
+}
+
+export const AssetTypeIcon = (props: AssetTypeIconProps): React.JSX.Element => {
+  const { type, sx } = props
+  switch (type) {
+    case 'STOCK':
+      return <ArticleTwoTone sx={sx}/>
+    case 'CRYPTO':
+      return <CurrencyBitcoin sx={sx}/>
+    case 'CURRENCY':
+      return <AttachMoneyTwoTone sx={sx}/>
+    default:
+      return <QuestionMark sx={sx}/>
+  }
+}
+
 interface ViewUnifiedProps {
   item: ResultUnifiedItem
 }
 
-// TODO: Pick the ideas below.
 export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   const data: UnifiedItemData = clone(props.item.data)
   const notRendered = new Set(Object.keys(data))
   const app = useApp()
-  const { currency } = app.project.settings
+  const { currency, language } = app.project.settings
   const { t } = useTranslation()
 
   /**
@@ -92,12 +127,33 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   }
 
   // Render type.
-  const rendered = [<UnifiedTypeChip key="type" type={pick('type')} reason={pick('reason')}/>]
+  const rendered = [
+    <Typography key="time" className="unified time" title={props.item.time}>{date2str(props.item.time as Timestring, language as Language)}</Typography>,
+    <UnifiedTypeChip key="type" type={pick('type')} reason={pick('reason')} service={pick('service')}/>
+  ]
 
   // Render value.
   const value = pick('value')
   const valueAsset = pick('valueAsset', currency)
   rendered.push(<Typography sx={{ ml: 1 }} key="asset" component="span" className="unified value" title={t('Total value of the transaction')}> {value} {valueAsset}</Typography>)
+
+  // Render fee.
+  const fee = pick('fee')
+  const feeAsset = pick('feeAsset', currency)
+  if (fee !== undefined) {
+    if (parseFloat(`${fee}`) !== 0) {
+      rendered.push(<Typography sx={{ ml: 1 }} key="vee" component="span" className="unified fee" title={t('Fee charged for the transaction')}> {fee} {feeAsset}</Typography>)
+    }
+  }
+
+  // Render assets.
+  const assetIn = pick('assetIn')
+  if (assetIn) {
+    const assetTypeIn = pick('assetTypeIn', isCurrency(assetIn) ? 'CURRENCY' : 'UNKNOWN')
+    const assetAmountIn = pick('assetAmountIn')
+    // TODO: Asset type symbol.
+    rendered.push(<Typography sx={{ ml: 1 }} key="assetIn" component="span" className="unified asset-in" title={t('Amount of an asset added to the stock')}><AssetTypeIcon type={assetTypeIn} sx={{ mb: -0.7 }}/>{added2str(assetAmountIn, assetIn, language as Language)}</Typography>)
+  }
 
   // Render account.
   const account = pick('account')
@@ -115,6 +171,12 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
       const strings = Object.keys(rates).map(c => `1 ${currency} = ${rates[c]} ${c}`)
       rendered.push(<Typography sx={{ ml: 1 }} key="rates" component="span" className="unified rates" title={t('Conversion rates to the default currency')}><CurrencyExchangeTwoTone sx={{ mb: -0.7 }}/> {strings.join(', ')}</Typography>)
     }
+  }
+
+  // Append text if given.
+  const text = pick('text')
+  if (text) {
+    rendered.push(<Typography key="text" sx={{ ml: 1, mt: 0.6 }} className="unified text" title={t('Explicit explanation provided for the transaction')}>{text}</Typography>)
   }
 
   return <Box sx={{ py: 1 }}>

@@ -41,14 +41,6 @@
   "TOGGLE_SINGLE_PROFIT_ACCOUNT": "Use the same account for all profits",
   "TOGGLE_SINGLE_STOCK_ACCOUNT": "Use the same account for all stocks",
   "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes",
-
-  "UnifiedItemType-buy": "Buying",
-  "UnifiedItemType-deposit": "Deposit",
-  "UnifiedItemType-dividend": "Dividend",
-  "UnifiedItemType-expense": "Expense",
-  "UnifiedItemType-income": "Income",
-  "UnifiedItemType-trade": "Trading",
-  "UnifiedItemType-sell": "Selling",
-  "UnifiedItemType-withdrawal": "Withdrawal"
-
+  "BUY": "Buy",
+  "SELL": "Sell"
 }

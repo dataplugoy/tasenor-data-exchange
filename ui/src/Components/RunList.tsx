@@ -8,7 +8,6 @@ import { InputItem } from '../Types/API/InputItem'
 import { UnifiedItem } from '../Types/API/UnifiedItem'
 import { OutputItem } from '../Types/API/OutputItem'
 import { Trans } from 'react-i18next'
-import { DateTime } from 'luxon'
 import { DescribeStateChange } from './DescribeStateChange'
 import { OutputSummary } from './OutputSummary'
 import { sortRuns } from '../Helpers/sorter'
@@ -17,6 +16,9 @@ import clone from 'clone'
 import { RunDetails } from './RunDetails'
 import { whenBatchUpdates, whenRunUpdates, whenUploadUpdates } from '../Signals/updates'
 import { ItemError } from '../Types/API/ItemError'
+import { useApp } from '../Hooks/useApp'
+import { time2str } from '../Helpers/stringify'
+import { Language, Timestring } from '@tasenor/common'
 
 interface RunListProps {
   batch: Batch
@@ -33,6 +35,8 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   const [outputs, setOutputs] = useState<Record<number, OutputItem[]>>({})
   const [errors, setErrors] = useState<ItemError[]>([])
   const [opened, setOpened] = useState<Set<number>>(new Set())
+  const app = useApp()
+  const { language } = app.project.settings
 
   const updateRunList = async () => {
     GET(`/batches/${batch.id}`).then(res => {
@@ -80,7 +84,7 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
             <React.Fragment key={result.run.id}>
               <TableRow hover onClick={() => onToggle(result.run.id)}>
                 <TableCell>{result.run.id}</TableCell>
-                <TableCell>{DateTime.fromISO(result.run.updated as string).toLocaleString(DateTime.TIME_WITH_SECONDS)}</TableCell>
+                <TableCell>{time2str(result.run.updated as Timestring, language as Language)}</TableCell>
                 <TableCell><DescribeStateChange result={result}/></TableCell>
                 <TableCell><OutputSummary result={result}/></TableCell>
                 <TableCell><ResultIndicator result={result}/></TableCell>

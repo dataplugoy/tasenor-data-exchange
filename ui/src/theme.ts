@@ -85,11 +85,30 @@ export const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
+          '&.unified.time': {
+            fontSize: '1.1rem',
+            color: 'white'
+          },
           '&.unified.value': {
+            fontWeight: 'bold',
             color: '#c6ff00'
+          },
+          '&.unified.fee': {
+            fontWeight: 'bold',
+            color: '#c62828'
           },
           '&.unified.account': {
             color: '#ffc107'
+          },
+          '&.unified.asset-in': {
+            color: '#90caf9'
+          },
+          '&.unified.rates': {
+            color: '#ffc107'
+          },
+          '&.unified.text': {
+            fontSize: '0.8rem',
+            color: 'white'
           },
         }
       }

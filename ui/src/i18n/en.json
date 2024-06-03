@@ -6,6 +6,7 @@
   "DATA_FETCHED - DATA_PARSED": "Data successfully parsed",
   "DATA_PARSED - DATA_PARSED": "Unable to convert to standard format",
   "DATA_PARSED - ITEMS_UNIFIED": "Converted to standard format",
+  "EXPENSE": "Expense",
   "EXPENSE_ACCOUNT": "General purpose account for other expenses",
   "EXPENSE_INTEREST": "Interest expense",
   "FEE_ACCOUNT": "General purpose account for fees charged",
@@ -40,14 +41,6 @@
   "TOGGLE_SINGLE_PROFIT_ACCOUNT": "Use the same account for all profits",
   "TOGGLE_SINGLE_STOCK_ACCOUNT": "Use the same account for all stocks",
   "TOGGLE_SINGLE_TAX_ACCOUNT": "Use the same account for all taxes",
-
-  "UnifiedItemType-buy": "Buy",
-  "UnifiedItemType-deposit": "Deposit",
-  "UnifiedItemType-dividend": "Dividend",
-  "UnifiedItemType-expense": "Expense",
-  "UnifiedItemType-income": "Income",
-  "UnifiedItemType-trade": "Trade",
-  "UnifiedItemType-sell": "Sell",
-  "UnifiedItemType-withdrawal": "Withdrawal"
-
+  "BUY": "Buy",
+  "SELL": "Sell"
 }
