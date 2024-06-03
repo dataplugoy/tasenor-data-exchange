@@ -81,6 +81,20 @@ export const theme = createTheme({
       }
     },
 
+    // Unified items
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          '&.unified.value': {
+            color: '#c6ff00'
+          },
+          '&.unified.account': {
+            color: '#ffc107'
+          },
+        }
+      }
+    },
+
     // Transactin table.
     MuiTable: {
       styleOverrides: {

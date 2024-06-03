@@ -1,8 +1,6 @@
-import { sprintf } from 'sprintf-js'
-import { AssetTransfer, AssetTransferReason, AssetType, TransactionDescription, Currency, AdditionalTransferInfo, AssetRates, isStockChangeDelta, haveCatalog, haveStore, ProcessConfig } from '@tasenor/common'
-import { Trans, useTranslation } from 'react-i18next'
-import { CoffeeTwoTone, CurrencyExchangeTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, QuestionMarkTwoTone, RequestQuoteTwoTone, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
-import { Chip, Divider, Box } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { CoffeeTwoTone, CurrencyExchangeTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { Chip, Box, Typography } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown } from '@mui/material/colors'
 import { ResultUnifiedItem } from '../Helpers/sorter'
@@ -13,10 +11,11 @@ import { useApp } from '../Hooks/useApp'
 
 interface UnifiedTypeChipProps {
   type: UnifiedItemType
+  reason?: string
 }
 
 export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element => {
-  const { type } = props
+  const { type, reason } = props
   const { t } = useTranslation()
 
   const colors = {
@@ -54,7 +53,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     withdrawal: PaymentTwoTone,
   }
 
-  const title = t(`UnifiedItemType-${type}`)
+  const title = reason ? (t(`${type.toUpperCase()}_${reason}`)) : t(`${type.toUpperCase()}`)
   const Icon = Icons[type] || Icons.unknown
 
   return <Chip
@@ -79,6 +78,7 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   const notRendered = new Set(Object.keys(data))
   const app = useApp()
   const { currency } = app.project.settings
+  const { t } = useTranslation()
 
   /**
    * Helper to get and remove values from item data.
@@ -91,198 +91,34 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
     return data[name]
   }
 
-  // Render type. TODO: Add reason here.
-  const rendered = [<UnifiedTypeChip key="type" type={pick('type')}/>]
+  // Render type.
+  const rendered = [<UnifiedTypeChip key="type" type={pick('type')} reason={pick('reason')}/>]
 
   // Render value.
   const value = pick('value')
   const valueAsset = pick('valueAsset', currency)
-  rendered.push(<Box component="span" key="asset" sx={{ color: 'primary.main' }}> {value} {valueAsset}</Box>)
+  rendered.push(<Typography sx={{ ml: 1 }} key="asset" component="span" className="unified value" title={t('Total value of the transaction')}> {value} {valueAsset}</Typography>)
 
   // Render account.
   const account = pick('account')
   if (account) {
-    rendered.push(<Box component="span" key="account"> {account}</Box>)
+    rendered.push(<Typography sx={{ ml: 1 }} key="account" component="span" className="unified account" title={t('Symbolic name of the account associated with the transaction')}><ListAltTwoTone sx={{ mb: -0.7 }}/> {account}</Typography>)
   }
+
+  // Render rates.
+  const rates = pick('rates')
+  if (rates) {
+    if (parseFloat(`${rates[currency]}`) === 1) {
+      delete rates[currency]
+    }
+    if (Object.keys(rates).length) {
+      const strings = Object.keys(rates).map(c => `1 ${currency} = ${rates[c]} ${c}`)
+      rendered.push(<Typography sx={{ ml: 1 }} key="rates" component="span" className="unified rates" title={t('Conversion rates to the default currency')}><CurrencyExchangeTwoTone sx={{ mb: -0.7 }}/> {strings.join(', ')}</Typography>)
+    }
+  }
+
   return <Box sx={{ py: 1 }}>
     {rendered}
-    <> </>TODO: {JSON.stringify([...notRendered])}
+    {notRendered.size > 0 && <Box>TODO: {JSON.stringify([...notRendered])}</Box>}
   </Box>
-}
-
-/** *********************** OLD SHIT BELOW ********************************************************/
-
-/**
- * Display a chip describing the type and reason of the transfer.
- * @param props
- * @returns
- */
-export type ReasonChipProps = {
-  reason: AssetTransferReason
-  type: AssetType
-}
-export const ReasonChip = (props: ReasonChipProps): React.JSX.Element => {
-  const { reason, type } = props
-
-  const Icon = {
-    statement: ListAltTwoTone,
-    stock: RequestQuoteTwoTone
-  }[type] || QuestionMarkTwoTone
-
-  return <></>
-}
-
-/**
- * Display a text showing the value of the asset in the configured currency.
- */
-export type AssetValueProps = {
-  value: number
-  currency: Currency
-}
-export const AssetValue = (props: AssetValueProps): React.JSX.Element => {
-  const catalog = haveCatalog()
-  return <span><Trans>Asset value</Trans> {catalog.money2str(props.value, props.currency)}</span>
-}
-
-/**
- * Display delta of stock changes in values and amounts.
- */
-export type StockChangesProps = {
-  data: AdditionalTransferInfo
-  currency: Currency
-}
-export const StockChanges = (props: StockChangesProps): React.JSX.Element => {
-  const catalog = haveCatalog()
-  const { data, currency } = props
-  if (isStockChangeDelta(data)) {
-    return <span>
-      <Trans>Stock Δ</Trans>
-      {
-        Object.keys(data.stock.change).map(asset => {
-          const { value, amount } = data.stock.change[asset]
-          return ` ${amount < 0 ? '' : '+'}${amount} ${asset} (${catalog.money2str(value, currency, true)})`
-        }).join('')
-      }
-    </span>
-  }
-  return <></>
-}
-
-/**
- * Display rates used in calculations.
- */
-export type RatesListProps = {
-  rates: AssetRates
-  currency: Currency
-}
-export const RatesList = (props: RatesListProps): React.JSX.Element => {
-  const catalog = haveCatalog()
-  const { rates, currency } = props
-  const assets = Object.keys(rates)
-  if (assets.length) {
-    return <span>
-      <Trans>Rates</Trans>
-      {
-        assets.map(asset => {
-          return ` ${catalog.money2str(100 * rates[asset], currency)}/${asset}`
-        }).join('')
-      }
-    </span>
-  }
-  return <></>
-}
-
-/**
- * Display per asset counter.
- */
-export type PerAssetProps = {
-  count: number
-  value: number
-  currency: Currency
-}
-export const PerAsset = (props: PerAssetProps): React.JSX.Element => {
-  return <>{props.count} ⨉ {sprintf('%f', props.value)} {props.currency}</>
-}
-
-/**
- * Render a full explanation of one single transfer.
- */
-export type TransferLineProps = {
-  config: ProcessConfig,
-  transfer: AssetTransfer
-}
-export const TransferLine = (props: TransferLineProps): React.JSX.Element => {
-  const config = props.config
-  const { reason, amount, type, value, data, asset } = props.transfer
-  return <>
-    <Box sx={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      width: 'fit-content',
-      mb: 1
-    }}>
-      <ReasonChip reason={reason} type={type}/>
-      <span>{amount !== undefined && amount < 0 ? '' : '+'}{amount}<strong> {asset}</strong></span>
-      {value !== undefined && <>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <AssetValue value={value} currency={config.currency as Currency} />
-      </>}
-      {data && data.stock && <>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <StockChanges data={data} currency={config.currency as Currency} />
-      </>}
-      {data && data.count && data.perAsset !== undefined && <>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <PerAsset count={data.count} value={data.perAsset} currency={data.currency || config.currency as Currency} />
-      </>}
-      {data && data.rates && <>
-        <Divider orientation="vertical" variant="middle" flexItem />
-        <RatesList rates={data.rates} currency={config.currency as Currency} />
-      </>}
-    </Box>
-  </>
-}
-
-/**
- * Display a set of transfers.
- */
-export type TransferViewProps = {
-  config: ProcessConfig,
-  result: TransactionDescription
-}
-export const TransferView = (props: TransferViewProps): React.JSX.Element => {
-  const store = haveStore()
-  if (!store.database) {
-    return <></>
-  }
-  const { transfers, transactions } = props.result
-  return <>
-    { transfers && transfers.map((transfer, idx) => <TransferLine key={idx} config={props.config} transfer={transfer} />)}
-    { transactions && <Box sx={{ mt: 1 }}>
-      </Box>
-    }
-  </>
-}
-
-/**
- * Display result from classification and analysis.
- * @param props
- * @returns
- */
-export type ImportResultViewProps = {
-  config: ProcessConfig,
-  result: TransactionDescription[]
-}
-export const ImportResultView = (props: ImportResultViewProps): React.JSX.Element => {
-
-  if (props.result === null) {
-    return <></>
-  }
-
-  return (
-    <Box>
-    { props.result.map((transfer, idx) => <TransferView key={idx} config={props.config} result={transfer} />) }
-    </Box>
-  )
 }
