@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
-import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
-import { green, red, blue, grey, cyan, teal, brown } from '@mui/material/colors'
+import { green, red, blue, grey, cyan, teal, brown, blueGrey } from '@mui/material/colors'
 import { ResultUnifiedItem } from '../Helpers/sorter'
 import { UnifiedItemData } from '../Types/API/UnifiedItemData'
 import { UnifiedItemType } from '../Types/API/UnifiedItemType'
 import clone from 'clone'
 import { useApp } from '../Hooks/useApp'
-import { added2str, date2str } from '../Helpers/stringify'
+import { added2str, date2str, subtracted2str } from '../Helpers/stringify'
 import { Language, Timestring, isCurrency } from '@tasenor/common'
 
 interface UnifiedTypeChipProps {
@@ -27,6 +27,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     deposit: green[800],
     dividend: teal[500],
     expense: red[500],
+    forex: blueGrey[500],
     income: green[700],
     trade: cyan[600],
     sell: grey[200],
@@ -39,6 +40,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     deposit: grey[50],
     dividend: grey[50],
     expense: grey[50],
+    forex: grey[50],
     income: grey[50],
     trade: grey[900],
     sell: grey[600],
@@ -50,8 +52,9 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     buy: ShoppingCartTwoTone,
     deposit: SavingsTwoTone,
     expense: CoffeeTwoTone,
+    forex: CurrencyExchangeTwoTone,
     income: MonetizationOnTwoTone,
-    trade: CurrencyExchangeTwoTone,
+    trade: DisplaySettings,
     sell: SellTwoTone,
     unknown: QuestionMark,
     withdrawal: PaymentTwoTone,
@@ -155,8 +158,14 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   if (assetIn) {
     const assetTypeIn = pick('assetTypeIn', isCurrency(assetIn) ? 'CURRENCY' : 'UNKNOWN')
     const assetAmountIn = pick('assetAmountIn')
-    // TODO: Asset type symbol.
     rendered.push(<Typography sx={{ ml: 1 }} key="assetIn" component="span" className="unified asset-in" title={t('Amount of an asset added to the stock')}><AssetTypeIcon type={assetTypeIn} sx={{ mb: -0.7 }}/>{added2str(assetAmountIn, assetIn, language as Language)}</Typography>)
+  }
+
+  const assetOut = pick('assetOut')
+  if (assetOut) {
+    const assetTypeOut = pick('assetTypeOut', isCurrency(assetOut) ? 'CURRENCY' : 'UNKNOWN')
+    const assetAmountOut = pick('assetAmountOut')
+    rendered.push(<Typography sx={{ ml: 1 }} key="assetOut" component="span" className="unified asset-out" title={t('Amount of an asset added to the stock')}><AssetTypeIcon type={assetTypeOut} sx={{ mb: -0.7 }}/>{subtracted2str(assetAmountOut, assetOut, language as Language)}</Typography>)
   }
 
   // Render account.

@@ -103,6 +103,9 @@ export const theme = createTheme({
           '&.unified.asset-in': {
             color: '#90caf9'
           },
+          '&.unified.asset-out': {
+            color: '#f06292'
+          },
           '&.unified.rates': {
             color: '#ffc107'
           },

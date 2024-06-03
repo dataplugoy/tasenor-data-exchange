@@ -16,3 +16,8 @@ export function datetime2str(date: Timestring, language: Language): string {
 export function added2str(num: number | string, asset: string, _language: Language): string {
   return `+${num} ${asset}`
 }
+
+export function subtracted2str(num: number | string, asset: string, _language: Language): string {
+  const neg = typeof num === 'number' ? (num < 0) : num.startsWith('-')
+  return `${neg ? '' : '−'}${num} ${asset}`
+}
