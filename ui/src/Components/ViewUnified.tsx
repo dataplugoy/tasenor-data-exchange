@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorResetTwoTone, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown, blueGrey } from '@mui/material/colors'
@@ -29,6 +29,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     expense: red[500],
     forex: blueGrey[500],
     income: green[700],
+    rename: cyan[600],
     trade: cyan[600],
     sell: grey[200],
     unknown: grey[900],
@@ -42,6 +43,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     expense: grey[50],
     forex: grey[50],
     income: grey[50],
+    rename: grey[900],
     trade: grey[900],
     sell: grey[600],
     unknown: grey[700],
@@ -54,6 +56,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     expense: CoffeeTwoTone,
     forex: CurrencyExchangeTwoTone,
     income: MonetizationOnTwoTone,
+    rename: FormatColorTextTwoTone,
     trade: DisplaySettings,
     sell: SellTwoTone,
     unknown: QuestionMark,
@@ -158,6 +161,7 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   if (assetIn) {
     const assetTypeIn = pick('assetTypeIn', isCurrency(assetIn) ? 'CURRENCY' : 'UNKNOWN')
     const assetAmountIn = pick('assetAmountIn')
+
     rendered.push(<Typography sx={{ ml: 1 }} key="assetIn" component="span" className="unified asset-in" title={t('Amount of an asset added to the stock')}><AssetTypeIcon type={assetTypeIn} sx={{ mb: -0.7 }}/>{added2str(assetAmountIn, assetIn, language as Language)}</Typography>)
   }
 

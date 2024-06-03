@@ -8,7 +8,17 @@
 /**
  * Main category of the transaction.
  */
-export type UnifiedItemType = "buy" | "sell" | "trade" | "income" | "expense" | "withdraw" | "deposit" | "dividend";
+export type UnifiedItemType =
+  | "buy"
+  | "sell"
+  | "trade"
+  | "income"
+  | "expense"
+  | "withdraw"
+  | "deposit"
+  | "dividend"
+  | "forex"
+  | "rename";
 /**
  * Account involved, if already known.
  */
