@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorResetTwoTone, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorResetTwoTone, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown, blueGrey } from '@mui/material/colors'
@@ -32,6 +32,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     rename: cyan[600],
     trade: cyan[600],
     sell: grey[200],
+    split: brown[800],
     unknown: grey[900],
     withdrawal: blue[600]
   }
@@ -46,6 +47,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     rename: grey[900],
     trade: grey[900],
     sell: grey[600],
+    split: grey[50],
     unknown: grey[700],
     withdrawal: red[50]
   }
@@ -59,6 +61,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     rename: FormatColorTextTwoTone,
     trade: DisplaySettings,
     sell: SellTwoTone,
+    split: ContentCutTwoTone,
     unknown: QuestionMark,
     withdrawal: PaymentTwoTone,
   }
@@ -152,7 +155,7 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   const feeAsset = pick('feeAsset', currency)
   if (fee !== undefined) {
     if (parseFloat(`${fee}`) !== 0) {
-      rendered.push(<Typography sx={{ ml: 1 }} key="vee" component="span" className="unified fee" title={t('Fee charged for the transaction')}> {fee} {feeAsset}</Typography>)
+      rendered.push(<Typography sx={{ ml: 1 }} key="vee" component="span" className="unified fee" title={t('Fee charged for the transaction')}> -{fee} {feeAsset}</Typography>)
     }
   }
 

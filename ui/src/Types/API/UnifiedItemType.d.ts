@@ -18,4 +18,5 @@ export type UnifiedItemType =
   | "deposit"
   | "dividend"
   | "forex"
-  | "rename";
+  | "rename"
+  | "split";
