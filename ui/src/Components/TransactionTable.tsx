@@ -10,7 +10,7 @@ export const TRANSACTION_COLUMNS = 5
 
 interface TransactionTableProps {
   txs: APITransaction[] | OutputItem[]
-  output?: OutputDestination
+  output?: OutputDestination | null
 }
 
 export const TransactionTable = (props: TransactionTableProps): React.JSX.Element => {

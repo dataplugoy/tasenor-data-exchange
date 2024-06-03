@@ -8,7 +8,7 @@ import { OutputDestination } from '../Types/API/OutputDestination'
 
 interface TransactionProps {
   tx: APITransaction | OutputItem
-  output?: OutputDestination
+  output?: OutputDestination | null
 }
 
 export const Transaction = (props: TransactionProps): React.JSX.Element => {
