@@ -14,7 +14,7 @@ export type UnifiedItemType =
   | "trade"
   | "income"
   | "expense"
-  | "withdraw"
+  | "withdrawal"
   | "deposit"
   | "dividend"
   | "forex"

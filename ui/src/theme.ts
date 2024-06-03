@@ -97,6 +97,10 @@ export const theme = createTheme({
             fontWeight: 'bold',
             color: '#c62828'
           },
+          '&.unified.tax': {
+            fontWeight: 'bold',
+            color: '#c62828'
+          },
           '&.unified.account': {
             color: '#ffc107'
           },
