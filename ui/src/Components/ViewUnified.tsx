@@ -13,12 +13,13 @@ import { Language, Timestring, isCurrency } from '@tasenor/common'
 
 interface UnifiedTypeChipProps {
   type: UnifiedItemType
+  asset?: string
   reason?: string
   service?: string
 }
 
 export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element => {
-  const { type, reason, service } = props
+  const { type, reason, asset, service } = props
   const { t } = useTranslation()
 
   const colors = {
@@ -56,7 +57,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     withdrawal: PaymentTwoTone,
   }
 
-  let title = reason ? (t(`${type.toUpperCase()}_${reason}`)) : t(`${type.toUpperCase()}`)
+  let title = reason ? (t(`${type.toUpperCase()}_${reason}`, { reason, asset })) : t(`${type.toUpperCase()}`)
   const Icon = Icons[type] || Icons.unknown
 
   if (service) {
@@ -126,10 +127,13 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
     return data[name]
   }
 
+  // Ignore few.
+  pick('multipart')
+
   // Render type.
   const rendered = [
     <Typography key="time" className="unified time" title={props.item.time}>{date2str(props.item.time as Timestring, language as Language)}</Typography>,
-    <UnifiedTypeChip key="type" type={pick('type')} reason={pick('reason')} service={pick('service')}/>
+    <UnifiedTypeChip key="type" type={pick('type')} reason={pick('reason')} asset={pick('reasonAsset')} service={pick('service')}/>
   ]
 
   // Render value.
