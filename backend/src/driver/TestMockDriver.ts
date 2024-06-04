@@ -90,6 +90,7 @@ export class TestMockDriver extends Driver {
       const item: InputItemData = {
         original: line.join(','),
         line: lineNumber++,
+        version: this.version,
         time: line[0],
         text: line[1],
         total: line[2] === '' ? null : num(line[2]),

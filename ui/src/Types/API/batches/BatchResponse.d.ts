@@ -159,6 +159,7 @@ export interface InputItem {
 }
 export interface InputItemData {
   line: null | number;
+  version?: number;
   original: string;
   time: string;
   text: string;

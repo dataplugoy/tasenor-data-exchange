@@ -35,12 +35,15 @@ export class Driver {
   options: RuntimeOptions
   setup: Setup
   state: FlowState
+  // This is detected version of the data. By default it is always 1.
+  version: number
 
   constructor(settings: DriverSettings, projectSettings: ProjectSettings, setup: Setup, type: prisma.DriverType) {
     this.type = type
     this.setup = setup
     this.settings = settings
     this.projectSettings = projectSettings
+    this.version = 1
   }
 
   /**

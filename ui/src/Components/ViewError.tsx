@@ -46,7 +46,7 @@ export const ViewError = (props: ViewErrorProps): React.JSX.Element => {
 
   const lines = error.split('\n').map((line, idx) => trim(idx, line))
   return (
-    <Box sx={{ color: 'error.main' }}>
+    <Box sx={{ color: 'error.main', overflowWrap: 'anywhere' }}>
       {lines.map((line, idx) => <Box key={idx}>{line}</Box>)}
     </Box>
   )

@@ -26,10 +26,31 @@ export class NordnetDriver extends ManualUploadDriver {
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
 
+    const version = await batch.detectVersion([
+      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s+Viitevaluuttakurssi/,
+      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+Instrumenttityyppi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta/,
+    ])
+
+    if (version === null) {
+      throw new Error('Unable to determine file format version. Maybe this is not a Nordnet statement?')
+    }
+
+    this.version = version
+
+    return version === 2 ? await this.itemizeInputVersion2(batch) : await this.itemizeInputVersion1(batch)
+  }
+
+  async itemizeInputVersion1(batch: BatchModel): Promise<InputItemData[]> {
+    return [
+      // TODO: Implement.
+    ]
+  }
+
+  async itemizeInputVersion2(batch: BatchModel): Promise<InputItemData[]> {
+
     const csv = await batch.parseCsvColumns({
       delimiter: '\t',
       raw: true,
-      regexMatch: /^\s*Id\tKirjausp.iv.\sKauppap.iv.\sMaksup.iv./,
       from: 2,
       columns: [
         'Id',
@@ -73,6 +94,7 @@ export class NordnetDriver extends ManualUploadDriver {
     return csv.map((line, index) => ({
       line: index + 2,
       original: line.raw,
+      version: this.version,
       time: DateTime.fromISO(`${line.record['Kirjauspäivä']}T12:00:00Z`).toUTC().toISO() as string,
       text: line.record.Tapahtumateksti || line.record.Tapahtumatyyppi,
       total: line.record.Summa,

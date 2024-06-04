@@ -58,6 +58,28 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   /**
+   * Check if any regexp matches the data and return index numbered from 1. Null if no match.
+   */
+  async detectVersion(regexes: RegExp[]): Promise<number | null> {
+    if (this.data.data === null) {
+      throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
+    }
+    if (!this.data.encoding) {
+      throw new Error(`Cannot parse CSV, since there is no encoding detected in ${this}.`)
+    }
+
+    const data = this.data.data.toString(this.data.encoding as BufferEncoding)
+
+    for (let n = 0; n < regexes.length; n++) {
+      if (regexes[n].test(data)) {
+        return n + 1
+      }
+    }
+
+    return null
+  }
+
+  /**
    * Detect and save encoding for data.
    */
   async detectEncoding(): Promise<void> {
@@ -92,6 +114,8 @@ export class BatchModel extends BaseModel<prisma.Batch> {
         // TODO: It might be good idea to transfer this error in visible manner to UI.
         //       Perhaps detect somehow automatically from batch failure?
         //       An optional extra human readable error to display on the top of batch?
+        //       Actually when we have information fields for questions, maybe we send it
+        //       as an alert without any further options (except re-upload).
         throw new Error(`Imported data in ${this} does not match regex ${options.regexMatch}.`)
       }
     }

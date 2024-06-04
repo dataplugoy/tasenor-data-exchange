@@ -8,6 +8,10 @@
     "line": {
       "type": ["null", "integer"]
     },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "original": {
       "type": "string"
     },

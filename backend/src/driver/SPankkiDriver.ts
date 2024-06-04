@@ -57,6 +57,7 @@ export class SPankkiDriver extends ManualUploadDriver {
       return {
         line: index + 2,
         original: line.raw,
+        version: this.version,
         time: dateFI(line.record['Maksupäivä']),
         text: line.record['Saajan nimi'],
         total: line.record.Summa,
