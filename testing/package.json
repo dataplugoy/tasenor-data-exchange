@@ -9,7 +9,7 @@
     "test-unit": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex vitest --run",
     "test-ui": "CYPRESS_URL=http://localhost:7301 cypress run --browser chrome --e2e",
     "test-nightly": "nightly/bin/test-all",
-    "prepare": "npx cypress install"
+    "prepare": "npx cypress install && cd .. && pnpm load"
   },
   "keywords": [],
   "devDependencies": {
