@@ -54,6 +54,15 @@ export class ManualUploadDriver extends Driver {
    * @param options
    */
   preProcess(csv: { raw: string, record: Record<string, string | number | null>}[], options: PreProcessOptions): void {
+    // Check for required fields.
+    options.requiredFields && options.requiredFields.forEach(field => {
+      csv.forEach(line => {
+        if (!(field in line.record) || line.record[field] === '') {
+          throw new Error(`The required field '${field}' is missing on line ${JSON.stringify(line.record)}.`)
+        }
+      })
+    })
+
     // Convert to numeric fields. Value required.
     options.numericFields && options.numericFields.forEach(field => {
       csv.forEach(line => {
@@ -61,9 +70,10 @@ export class ManualUploadDriver extends Driver {
           throw new Error(`There is no field '${field}' on line ${JSON.stringify(line.record)}.`)
         }
         if (line.record[field] === '') {
-          throw new Error(`A field '${field}' is empty in line ${JSON.stringify(line.record)} (maybe you want to use 'numericOrNullFields' instead).`)
+          line.record[field] = null
+        } else {
+          line.record[field] = num(`${line.record[field]}`)
         }
-        line.record[field] = num(`${line.record[field]}`)
       })
     })
 
@@ -74,15 +84,6 @@ export class ManualUploadDriver extends Driver {
           throw new Error(`There is no field '${field}' on line ${JSON.stringify(line.record)}.`)
         }
         line.record[field] = line.record[field] === '' ? null : num(`${line.record[field]}`)
-      })
-    })
-
-    // Check for required fields.
-    options.requiredFields && options.requiredFields.forEach(field => {
-      csv.forEach(line => {
-        if (!(field in line.record) || line.record[field] === '') {
-          throw new Error(`The required field '${field}' is missing on line ${JSON.stringify(line.record)}.`)
-        }
       })
     })
   }
