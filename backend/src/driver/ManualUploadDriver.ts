@@ -70,7 +70,7 @@ export class ManualUploadDriver extends Driver {
           throw new Error(`There is no field '${field}' on line ${JSON.stringify(line.record)}.`)
         }
         if (line.record[field] === '') {
-          line.record[field] = null
+          throw new Error(`The numeric field '${field}' is empty on line ${JSON.stringify(line.record)}.`)
         } else {
           line.record[field] = num(`${line.record[field]}`)
         }

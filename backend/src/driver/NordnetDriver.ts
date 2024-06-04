@@ -41,9 +41,59 @@ export class NordnetDriver extends ManualUploadDriver {
   }
 
   async itemizeInputVersion1(batch: BatchModel): Promise<InputItemData[]> {
-    return [
-      // TODO: Implement.
-    ]
+
+    const csv = await batch.parseCsvColumns({
+      delimiter: '\t',
+      raw: true,
+      from: 2,
+      columns: [
+        'Id',
+        'Kirjauspäivä',
+        'Kauppapäivä',
+        'Maksupäivä',
+        'Salkku',
+        'Tapahtumatyyppi',
+        'Arvopaperi',
+        'ISIN',
+        'Määrä',
+        'Kurssi',
+        'Korko',
+        'Kokonaiskulut',
+        'Valuutta',
+        'Summa',
+        'Valuutta',
+        'Hankinta-arvo',
+        'Valuutta',
+        'Tulos',
+        'Valuutta',
+        'Kokonaismäärä',
+        'Saldo',
+        'Vaihtokurssi',
+        'Tapahtumateksti',
+        'Mitätöintipäivä',
+        'Laskelma',
+        'Vahvistusnumero',
+        'Välityspalkkio',
+        'Valuutta',
+        'Viitevaluuttakurssi',
+      ]
+    })
+
+    this.preProcess(csv, {
+      numericFields: ['Summa', 'Saldo'],
+      numericOrNullFields: ['Välityspalkkio', 'Määrä', 'Kurssi', 'Kokonaiskulut', 'Kokonaismäärä', 'Hankinta-arvo', 'Vaihtokurssi'],
+      requiredFields: ['Tapahtumatyyppi', 'Summa', 'Kirjauspäivä'],
+    })
+
+    return csv.map((line, index) => ({
+      line: index + 2,
+      original: line.raw,
+      version: this.version,
+      time: DateTime.fromISO(`${line.record['Kirjauspäivä']}T12:00:00Z`).toUTC().toISO() as string,
+      text: line.record.Tapahtumateksti || line.record.Tapahtumatyyppi,
+      total: line.record.Summa,
+      fields: line.record
+    }))
   }
 
   async itemizeInputVersion2(batch: BatchModel): Promise<InputItemData[]> {
@@ -88,7 +138,7 @@ export class NordnetDriver extends ManualUploadDriver {
     this.preProcess(csv, {
       numericFields: ['Summa', 'Kurssi', 'Määrä', 'Kokonaiskulut', 'Kokonaismäärä', 'Hankinta-arvo', 'Saldo', 'Vaihtokurssi'],
       numericOrNullFields: ['Välityspalkkio'],
-      requiredFields: ['Tapahtumatyyppi', 'Summa'],
+      requiredFields: ['Tapahtumatyyppi', 'Summa', 'Kirjauspäivä'],
     })
 
     return csv.map((line, index) => ({
