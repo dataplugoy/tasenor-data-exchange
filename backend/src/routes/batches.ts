@@ -12,7 +12,7 @@ const router = express.Router()
 router.get('/:id',
   authorize(),
   param('batchId'),
-  async (req, res) => {
+  async (_req, res) => {
     const runModels = await RunModel.findForBatch(res.locals.id)
     const runs = runModels.map(run => run.data)
 
@@ -23,6 +23,15 @@ router.get('/:id',
     const outputs = (await OutputItemModel.findForBatch(res.locals.id)).map(output => output.data)
 
     res.send({ ...res.locals.batch.data, runs, inputs, unifieds, outputs, errors })
+  }
+)
+
+router.delete('/:id',
+  authorize(),
+  param('batchId'),
+  async (_req, res) => {
+    await res.locals.batch.destroy()
+    res.sendStatus(204)
   }
 )
 

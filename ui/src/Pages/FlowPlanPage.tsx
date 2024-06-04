@@ -52,7 +52,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
 
       {
         flowPlan && project && <Box sx={{ mt: 2 }}>
-          <FlowPlanInfo plan={flowPlan} project={project} button={isCompleted ? 'run' : 'retry' }/>
+          <FlowPlanInfo plan={flowPlan} project={project} batchId={batches.length ? batches[0].id : null} isCompleted={isCompleted}/>
         </Box>
       }
 
