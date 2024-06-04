@@ -11,7 +11,7 @@ describe('Flow Plans', () => {
 
     cy.get('body').should('contain', 'Project: Testing')
     cy.get('body').should('contain', 'Currency: EUR')
-    cy.get('body').should('contain', 'Language: fi')
+    cy.get('body').should('contain', 'Language: en')
 
     cy.get('button').contains('Run').click()
 
