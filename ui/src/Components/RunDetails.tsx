@@ -56,6 +56,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       <Notes notes={result.run.notes}/>
 
       {
+        // TODO: Just filter per type?
         // Display input items.
         result.items.length > 0 && result.items[0].type === 'InputItem' &&
           result.items.map((item, idx) => <ViewInput key={idx} item={item as ResultInputItem}/>)
