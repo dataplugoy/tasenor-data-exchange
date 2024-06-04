@@ -11,7 +11,7 @@ import { FlowPlanInfo } from '../Components/FlowPlanInfoCard'
 import { Clear, ExpandMore } from '@mui/icons-material'
 import { BatchBrogressBar } from '../Components/BatchProgressBar'
 import { RunList } from '../Components/RunList'
-import { whenBatchUpdates } from '../Signals/updates'
+import { whenBatchDeleted, whenBatchUpdates } from '../Signals/updates'
 import { useApp } from '../Hooks/useApp'
 import { datetime2str } from '../Helpers/stringify'
 import { Language, Timestring } from '@tasenor/common'
@@ -42,6 +42,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
   useEffect(() => {
     updateFlowPlan()
     whenBatchUpdates(updateFlowPlan)
+    whenBatchDeleted(updateFlowPlan)
   }, [])
 
   return (

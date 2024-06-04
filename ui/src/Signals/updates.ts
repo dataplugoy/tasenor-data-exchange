@@ -1,6 +1,7 @@
 import { Signal, effect, signal } from '@preact/signals'
 
 const batchUpdates: Signal<number> = signal<number>(0)
+const batchDeleted: Signal<number> = signal<number>(0)
 const uploadUpdates: Signal<number> = signal<number>(0)
 const runUpdates: Signal<number> = signal<number>(0)
 
@@ -9,6 +10,13 @@ const runUpdates: Signal<number> = signal<number>(0)
  */
 export function signalBatchUpdate() {
   batchUpdates.value++
+}
+
+/**
+ * Signal triggered when the latest batch has been deleted.
+ */
+export function signalBatchDeleted() {
+  batchDeleted.value++
 }
 
 /**
@@ -33,6 +41,18 @@ export function whenBatchUpdates(fn: () => void) {
   effect(() => {
     // eslint-disable-next-line
     const dummy = batchUpdates.value
+    fn()
+  })
+}
+
+/**
+ * Run the function when the latest batch has been deleted.
+ * @param fn
+ */
+export function whenBatchDeleted(fn: () => void) {
+  effect(() => {
+    // eslint-disable-next-line
+    const dummy = batchDeleted.value
     fn()
   })
 }

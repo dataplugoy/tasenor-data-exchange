@@ -5,7 +5,7 @@ import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
 import { useDELETE, useGET } from '../Hooks/useNet'
-import { signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
+import { signalBatchDeleted, signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
 import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { AlertHandler } from './AlertHandler'
@@ -59,8 +59,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
   const onDelete = async () => {
     setAbandoning(false)
-    const res = await DELETE(`/batches/${batchId}`)
-    signalBatchUpdate()
+    await DELETE(`/batches/${batchId}`)
+    signalBatchDeleted()
   }
 
   return (
