@@ -1047,7 +1047,7 @@ COPY public.output_items (id, created, updated, data, skipped, delivered, "unifi
 --
 
 COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin;
-1	2024-03-30 14:39:17.243	2024-04-09 17:51:20.083	Testing	{"currency": "EUR", "language": "fi"}	1
+1	2024-03-30 14:39:17.243	2024-04-09 17:51:20.083	Testing	{"currency": "EUR", "language": "en"}	1
 \.
 
 

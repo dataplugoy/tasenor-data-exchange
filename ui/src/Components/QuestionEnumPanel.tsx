@@ -36,6 +36,7 @@ export const QuestionEnumPanel = (props: QuestionEnumPanelProps): React.JSX.Elem
             <FormControlLabel
               key={option}
               value={option}
+              data-cy={`Option-${variable}-${option}`}
               control={<Radio />}
               label={t(`Option-${variable}-${option}`) === `Option-${variable}-${option}` ? t(`Option-${option}`) : t(`Option-${variable}-${option}`)}
               onChange={onChange}

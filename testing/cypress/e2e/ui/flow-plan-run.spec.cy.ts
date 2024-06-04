@@ -12,6 +12,7 @@ describe('Flow Plans', () => {
     cy.get('body').should('contain', 'Project: Testing')
     cy.get('body').should('contain', 'Currency: EUR')
     cy.get('body').should('contain', 'Language: fi')
+
     cy.get('button').contains('Run').click()
 
     cy.get('[data-cy="Batch-#1"]').click()
