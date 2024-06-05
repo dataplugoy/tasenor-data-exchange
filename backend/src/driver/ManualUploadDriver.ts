@@ -1,3 +1,4 @@
+import clone from 'clone'
 import prisma from '@prisma/client'
 import { UploadRequired } from '../exceptions/UploadRequired'
 import { _ } from '../lib/i18n/t'
@@ -14,6 +15,7 @@ export type PreProcessOptions = {
   numericFields?: string[]
   numericOrNullFields?: string[]
   requiredFields?: string[]
+  defaults?: Record<string, unknown>
 }
 
 /**
@@ -54,6 +56,15 @@ export class ManualUploadDriver extends Driver {
    * @param options
    */
   preProcess(csv: { raw: string, record: Record<string, string | number | null>}[], options: PreProcessOptions): void {
+    // Fill in defaults.
+    options.defaults && Object.keys(options.defaults).forEach(field => {
+      csv.forEach(line => {
+        if (!(field in line.record) || line.record[field] === '') {
+          line.record[field] = clone(options.defaults && options.defaults[field])
+        }
+      })
+    })
+
     // Check for required fields.
     options.requiredFields && options.requiredFields.forEach(field => {
       csv.forEach(line => {
