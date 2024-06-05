@@ -85,6 +85,7 @@ export class NordnetDriver extends ManualUploadDriver {
       requiredFields: ['Tapahtumatyyppi', 'Summa', 'Kirjauspäivä'],
       defaults: {
         Valuutta: this.projectSettings.currency,
+        Vaihtokurssi: 1
       }
     })
 
