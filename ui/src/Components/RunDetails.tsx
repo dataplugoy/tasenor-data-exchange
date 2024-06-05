@@ -38,18 +38,19 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   const inputResults = result.items.filter(item => item.type === 'InputItem') as ResultInputItem[]
   const unifiedResults = result.items.filter(item => item.type === 'UnifiedItem') as ResultUnifiedItem[]
   const outputResults = result.items.filter(item => item.type === 'OutputItem') as ResultOutputItem[]
+  const errors = result.items.filter(item => item.error !== null)
 
   return (
     <Box>
 
       {
         // Show general error.
-        result.run.error && <ViewError error={result.run.error}/>
+        result.run.error && <Box sx={{ mb: 4, p: 2, border: '1px solid rgba(255,255,255,0.2)' }}> <ViewError error={result.run.error}/></Box>
       }
 
       {
         // Show item errors.
-        result.items.filter(item => item.error !== null).map((item, idx) => {
+        errors.map((item, idx) => {
           return <Box key={idx}>
             {JSON.stringify(item.data, null, 2)}
             {item.error !== null && <ViewError error={item.error.error}/>}
