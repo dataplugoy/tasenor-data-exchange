@@ -94,7 +94,7 @@
   },
   {
     "name": "Forex Sell (Foreign to Local)",
-    "filter": "version == 2 and Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
@@ -106,7 +106,7 @@
   },
   {
     "name": "Forex Buy (Foreign to Local)",
-    "filter": "version == 2 and Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
@@ -117,7 +117,7 @@
   },
   {
     "name": "Forex Sell (Local to foreign)",
-    "filter": "version == 2 and Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency == Valuutta",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency == Valuutta",
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
@@ -128,7 +128,7 @@
   },
   {
     "name": "Forex Buy (Local to foreign)",
-    "filter": "version == 2 and Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency != Valuutta",
+    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency != Valuutta",
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
