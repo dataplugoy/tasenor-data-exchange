@@ -35,6 +35,10 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
     }
   }, [batch.id, result.step])
 
+  const inputResults = result.items.filter(item => item.type === 'InputItem') as ResultInputItem[]
+  const unifiedResults = result.items.filter(item => item.type === 'UnifiedItem') as ResultUnifiedItem[]
+  const outputResults = result.items.filter(item => item.type === 'OutputItem') as ResultOutputItem[]
+
   return (
     <Box>
 
@@ -56,20 +60,16 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       <Notes notes={result.run.notes}/>
 
       {
-        // TODO: Just filter per type?
         // Display input items.
-        result.items.length > 0 && result.items[0].type === 'InputItem' &&
-          result.items.map((item, idx) => <ViewInput key={idx} item={item as ResultInputItem}/>)
+        inputResults.length > 0 && inputResults.map((item, idx) => <ViewInput key={idx} item={item}/>)
       }
       {
         // Display unified items.
-        result.items.length > 0 && result.items[0].type === 'UnifiedItem' &&
-          result.items.map((item, idx) => <ViewUnified key={idx} item={item as ResultUnifiedItem}/>)
+        unifiedResults.length > 0 && unifiedResults.map((item, idx) => <ViewUnified key={idx} item={item}/>)
       }
       {
         // Display output items.
-        result.items.length > 0 && result.items[0].type === 'OutputItem' &&
-          <TransactionTable txs={result.items as ResultOutputItem[]} output={output}/>
+        outputResults.length > 0 && <TransactionTable txs={outputResults} output={output}/>
       }
 
       {
