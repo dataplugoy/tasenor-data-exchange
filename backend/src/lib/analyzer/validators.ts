@@ -192,6 +192,9 @@ export async function validateFee(this: Analyzer, canUseService: boolean): Promi
  */
 export function validateValueAccount(this: Analyzer, withService: boolean): AccountCode {
   const input = this.validateInput()
+  if (input.valueAsset === '') {
+    throw new Error(`Invalid empty valueAsset in ${JSON.stringify(input)}.`)
+  }
   if (input.valueAsset === undefined) {
     return `CURRENCY_${this.currency}` as AccountCode
   }
