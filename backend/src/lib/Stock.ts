@@ -1,4 +1,4 @@
-import { Asset } from '@tasenor/common'
+import { Asset, debug } from '@tasenor/common'
 import Decimal from 'decimal.js'
 import { toJSON } from './utils'
 import { JsonValue } from '@prisma/client/runtime/library'
@@ -22,6 +22,8 @@ export class Stock {
   private stock: Record<AccountCode, StockDataRecord>
 
   constructor(init: InitialStockData) {
+    debug('STOCK', `Initial stock`)
+    debug('STOCK', init)
     this.stock = {}
     Object.keys(init).forEach(account => {
       this.stock[account] = {}
@@ -70,6 +72,8 @@ export class Stock {
 
     record.amount = record.amount.plus(amount)
     record.value = record.value.plus(value)
+    debug('STOCK', `${asset}: Adding ${amount} of value ${value} to ${account}.`)
+    debug('STOCK', `${asset}: Now totalling ${record.amount} of value ${record.value}.`)
   }
 
   /**
