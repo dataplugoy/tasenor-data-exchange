@@ -138,6 +138,7 @@ export class Driver {
       time: input.time,
       total: input.total,
       original: input.original,
+      version: this.version,
       ...this.projectSettings,
       ...input.fields
     }
