@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
-import { Asset, Timestring, isCurrency } from '@tasenor/common'
+import { Asset, Timestring, isCurrency, warning } from '@tasenor/common'
 import { AccountCode } from '../../../types/AccountCode'
 import { TransactionLine } from '../../../types/API/TransactionLine'
 import { Transaction } from '../../../types/API/Transaction'
@@ -18,7 +18,6 @@ import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
  */
 export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
-  // TODO: Short selling (but only allowed if a setting in project is true).
   const { assetOut, assetAmountOut, assetTypeOut } = input
   const [fee, feeAsset, feeAssetChange] = await this.validateFee(true)
 
@@ -27,11 +26,14 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
   const value = await this.validateValueOrAsset(assetOut as Asset, dec(assetAmountOut), false)
   const account = this.resolveAccount(`${assetTypeOut}_${assetOut}`)
-  const oldStockValue = this.stock.getValue(account, assetOut as Asset)
-  if (oldStockValue === null) {
-    throw new Error(`Unable to find asset ${assetOut} from the stock when trying to sell ${assetAmountOut} of them.`)
-  }
+  const old = this.stock.getAsset(account, assetOut as Asset)
+  const oldStockValue = old.value
   const oldValue = oldStockValue.mul(assetAmountOut as number)
+
+  if (old.amount.lt(assetAmountOut as number)) {
+    // TODO: Short selling (but only allowed if a setting in project is true).
+    warning(`Selling ${assetAmountOut} of asset ${assetOut}, which is more than we have (${old.amount}).`)
+  }
 
   const lines: TransactionLine[] = [
     {
