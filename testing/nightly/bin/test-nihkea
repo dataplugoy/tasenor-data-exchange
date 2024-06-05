@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Run Hilunki scripts.
+#
+
+FILE=`dirname "${BASH_SOURCE[0]}"`/../../..
+ROOT=`readlink -f "$FILE"`
+
+set -e
+
+#
+# Hilunki
+#
+
+cd "$ROOT/database"
+pnpm load
+
+cd "$ROOT"
+bin/tadex.mjs run 'Nightly Testing'
+bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Nihkeä.csv
+bin/tadex.mjs run 'Nightly Testing' all
+bin/tadex.mjs ledger 'Nightly Testing' --stock --test testing/nightly/data/Nihkeä.json
+
+# To update answer file:
+#
+# bin/tadex.mjs ledger 'Nightly Testing' --stock --json > testing/nightly/data/Nihkeä.json

@@ -14,3 +14,4 @@ pnpm run prisma-client
 cd "$ROOT/testing/nightly/"
 bin/test-megalo
 bin/test-hilunki
+bin/test-nihkea
