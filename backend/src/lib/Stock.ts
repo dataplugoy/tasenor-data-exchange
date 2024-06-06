@@ -22,7 +22,7 @@ export class Stock {
   private stock: Record<AccountCode, StockDataRecord>
 
   constructor(init: InitialStockData) {
-    debug('STOCK', `Initial stock`)
+    debug('STOCK', 'Initial stock')
     debug('STOCK', init)
     this.stock = {}
     Object.keys(init).forEach(account => {
