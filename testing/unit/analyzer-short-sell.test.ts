@@ -100,6 +100,7 @@ describe('Analyzer', () => {
     })
   })
 
+
   it('short-selling and buying back for the same price', async () => {
 
     const stock = {
@@ -148,6 +149,7 @@ describe('Analyzer', () => {
       stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
     })
   })
+
 
   it('short-selling and buying back for profit', async () => {
 
@@ -232,5 +234,63 @@ describe('Analyzer', () => {
     analyzer.apply(tx)
 
     console.dir(analyzer.toJSON(), {depth: null})
+  })
+
+
+  it('short-selling and buying back for the same price with a little fee', async () => {
+
+    const stock = {
+      STOCK_GME: { GME: { value: 0, amount: 0 } }
+    }
+    const input = {
+      type: 'sell' as UnifiedItemType,
+      value: 100,
+      assetOut: 'GME' as Asset,
+      assetTypeOut: 'STOCK',
+      assetAmountOut: 20,
+      fee: 2.5,
+    }
+
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+
+    const input2 = {
+      type: 'buy' as UnifiedItemType,
+      value: 100,
+      assetIn: 'GME' as Asset,
+      assetTypeIn: 'STOCK',
+      assetAmountIn: 20,
+      fee: 2.5,
+    }
+
+    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    analyzer.apply(tx)
+
+    expect(analyzer.toJSON()).toStrictEqual({
+      tx: {
+        time: '2000-01-02T00:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-102.5',
+            text: 'Closing short position by buying +20 GME',
+            extras: {}
+          },
+          {
+            account: 'STOCK_GME',
+            amount: '100',
+            text: 'Closing short position by buying +20 GME',
+            extras: { asset: 'GME', assetChange: '20' }
+          },
+          {
+            account: 'FEE_EUR',
+            amount: '2.5',
+            text: 'Closing short position by buying +20 GME',
+            extras: {}
+          }
+        ]
+      },
+      balances: { CURRENCY_EUR: -5, STOCK_GME: 0, FEE_EUR: 5 },
+      stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
+    })
   })
 })

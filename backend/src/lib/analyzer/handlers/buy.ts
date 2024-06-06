@@ -40,7 +40,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     const lines: TransactionLine[] = [
       {
         account: this.validateValueAccount(false),
-        amount: dec(value).minus(fee).negated().toString(),
+        amount: dec(value).plus(fee).negated().toString(),
         text,
         extras: {},
       },
@@ -75,13 +75,24 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       })
     }
 
+    if (!fee.eq(0)) {
+      const useAsset = feeAsset !== null && !isCurrency(feeAsset)
+
+      lines.push({
+        account: (useAsset ? `CRYPTOFEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
+        amount: dec(fee).toString(),
+        text,
+        extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},
+      })
+    }
+
     return {
       time: time.toUTC().toISO() as Timestring,
       lines
     }
-
   }
 
+  // Normal buying.
   const text = this.validateText('Bought {{amount}} {{asset}}', { asset: assetIn, amount: chg(assetAmountIn) })
 
   const lines: TransactionLine[] = [
