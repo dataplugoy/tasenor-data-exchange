@@ -65,6 +65,16 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       })
     }
 
+    // Making losses.
+    if (oldValue?.lt(value)) {
+      lines.push({
+        account: `LOSS_${assetIn}` as AccountCode,
+        amount: value.minus(oldValue).toString(),
+        text,
+        extras: {},
+      })
+    }
+
     return {
       time: time.toUTC().toISO() as Timestring,
       lines
