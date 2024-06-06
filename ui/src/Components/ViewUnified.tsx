@@ -198,7 +198,7 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
       delete rates[currency]
     }
     if (Object.keys(rates).length) {
-      const strings = Object.keys(rates).map(c => `1 ${currency} = ${rates[c]} ${c}`)
+      const strings = Object.keys(rates).map(c => `1 ${c} = ${rates[c]} ${currency}`)
       rendered.push(<Typography sx={{ ml: 1 }} key="rates" component="span" className="unified rates" title={t('Conversion rates to the default currency')}><CurrencyExchangeTwoTone sx={{ mb: -0.7 }}/> {strings.join(', ')}</Typography>)
     }
   }
