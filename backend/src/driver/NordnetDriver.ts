@@ -81,7 +81,7 @@ export class NordnetDriver extends ManualUploadDriver {
 
     this.preProcess(csv, {
       numericFields: ['Summa', 'Saldo'],
-      numericOrNullFields: ['Välityspalkkio', 'Määrä', 'Kurssi', 'Kokonaiskulut', 'Kokonaismäärä', 'Hankinta-arvo', 'Vaihtokurssi'],
+      numericOrNullFields: ['Välityspalkkio', 'Määrä', 'Kurssi', 'Kokonaiskulut', 'Kokonaismäärä', 'Hankinta-arvo', 'Vaihtokurssi', 'Viitevaluuttakurssi'],
       requiredFields: ['Tapahtumatyyppi', 'Summa', 'Kirjauspäivä'],
       defaults: {
         Valuutta: this.projectSettings.currency,

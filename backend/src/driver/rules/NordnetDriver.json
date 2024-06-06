@@ -66,9 +66,24 @@
     }
   },
   {
-    "name": "Dividend",
+    "name": "Dividend v1",
     "key": "OSINKO",
-    "filter": "Tapahtumatyyppi == 'OSINKO'",
+    "filter": "version == 1 and Tapahtumatyyppi == 'OSINKO'",
+    "result": {
+      "type": "'income'",
+      "multipart": "Vahvistusnumero",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "reason": "'DIVIDEND'",
+      "reasonAsset": "Arvopaperi",
+      "text": "Tapahtumateksti",
+      "rates": "rates(Valuutta, Viitevaluuttakurssi)"
+    }
+  },
+  {
+    "name": "Dividend v2",
+    "key": "OSINKO",
+    "filter": "version == 2 and Tapahtumatyyppi == 'OSINKO'",
     "result": {
       "type": "'income'",
       "multipart": "Vahvistusnumero",
@@ -93,8 +108,31 @@
     }
   },
   {
-    "name": "Forex Sell (Foreign to Local)",
-    "filter": "Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
+    "name": "Forex Sell (Foreign to Local) v1",
+    "filter": "version == 1 and Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
+    "key": "VALUUTAN MYYNTI",
+    "result": {
+      "type": "'forex'",
+      "multipart": "Vahvistusnumero",
+      "assetOut": "Valuutta",
+      "assetAmountOut": "-Summa",
+      "rates": "rates(Valuutta, 1 / Vaihtokurssi)"
+    }
+  },
+  {
+    "name": "Forex Buy (Foreign to Local) v1",
+    "filter": "version == 1 and Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
+    "key": "VALUUTAN OSTO",
+    "result": {
+      "type": "'forex'",
+      "multipart": "Vahvistusnumero",
+      "value": "Summa",
+      "valueAsset": "Valuutta"
+    }
+  },
+  {
+    "name": "Forex Sell (Foreign to Local) v2",
+    "filter": "version == 2 and Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
@@ -105,8 +143,8 @@
     }
   },
   {
-    "name": "Forex Buy (Foreign to Local)",
-    "filter": "Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
+    "name": "Forex Buy (Foreign to Local) v2",
+    "filter": "version == 2 and Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
