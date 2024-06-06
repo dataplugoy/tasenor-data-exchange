@@ -523,7 +523,7 @@ describe('Nordnet', () => {
             extras: { asset: 'NDA1V', assetChange: '-549' }
           },
           {
-            account: 'STOCK_NDA FI',
+            account: 'STOCK_NDA_FI',
             amount: '5003.39',
             text: 'FUUSIO / MERGER NDA1V -> NDA FI',
             extras: { asset: 'NDA FI', assetChange: '549' }
