@@ -33,3 +33,9 @@ echo TYLSÄ
 echo =====
 bin/test-tylsa
 echo
+echo
+echo =======
+echo SPELÖGA
+echo =======
+bin/test-speloga
+echo
