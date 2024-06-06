@@ -26,7 +26,7 @@ export function resolveAccount(setup: Setup, code: AccountCode): AccountCode {
     return start as AccountCode
   }
 
-  return code
+  return code.replace(/ /g, '_').toUpperCase() as AccountCode
 }
 
 /**
