@@ -28,12 +28,13 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   const account = this.resolveAccount(`${assetTypeOut}_${assetOut}`)
   const old = this.stock.getAsset(account, assetOut as Asset)
   const oldStockValue = old.value
-  const oldValue = oldStockValue.mul(assetAmountOut as number)
 
   if (old.amount.lt(assetAmountOut as number)) {
     // TODO: Short selling (but only allowed if a setting in project is true).
     warning(`Selling ${assetAmountOut} of asset ${assetOut}, which is more than we have (${old.amount}).`)
   }
+
+  const oldValue = old.amount.eq(0) ? dec(0) : oldStockValue.div(old.amount).mul(assetAmountOut as number)
 
   const lines: TransactionLine[] = [
     {
