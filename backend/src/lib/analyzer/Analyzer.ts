@@ -39,6 +39,7 @@ export class Analyzer {
   protected lastInput: UnifiedItemData | null
   protected lastTime: Timestring
   protected lastResult: Transaction | null
+  // TODO: Rename to projectSettings
   protected config: ProjectSettings
   protected setup: Setup
 

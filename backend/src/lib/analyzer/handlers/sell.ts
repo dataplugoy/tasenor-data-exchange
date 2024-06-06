@@ -23,17 +23,57 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
 
   this.validateBasics()
   this.validateRequired('assetOut', 'assetAmountOut', 'assetTypeOut')
-  const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
   const value = await this.validateValueOrAsset(assetOut as Asset, dec(assetAmountOut), false)
   const account = this.resolveAccount(`${assetTypeOut}_${assetOut}`)
   const old = this.stock.getAsset(account, assetOut as Asset)
   const oldStockValue = old.value
 
   if (old.amount.lt(assetAmountOut as number)) {
-    // TODO: Short selling (but only allowed if a setting in project is true).
-    warning(`Selling ${assetAmountOut} of asset ${assetOut}, which is more than we have (${old.amount}).`)
+    if (old.amount.gt(0)) {
+      this.validateError('Short selling an instrument at the same time than we sell owned copies is not implemented.')
+    }
+    const text = this.validateText('Sold short {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
+    // TODO: Allow short selling only allowed if a setting allows: always, never, ask.
+    // TODO: Support for getSetting()
+
+    // Short-selling.
+    const lines: TransactionLine[] = [
+      {
+        account: this.validateValueAccount(false),
+        amount: dec(value).toString(),
+        text,
+        extras: {},
+      },
+      {
+        account: `${assetTypeOut}_${assetOut}` as AccountCode,
+        amount: dec(value).minus(fee).negated().toString(),
+        text,
+        extras: {
+          asset: assetOut,
+          assetChange: dec(assetAmountOut).negated().toString(),
+        },
+      },
+    ]
+
+    // Short-selling fee.
+    if (!fee.eq(0)) {
+      const useAsset = feeAsset !== null && !isCurrency(feeAsset)
+
+      lines.push({
+        account: (useAsset ? `CRYPTOFEE_${feeAsset}` : `FEE_${feeAsset || this.currency}`) as AccountCode,
+        amount: dec(fee).toString(),
+        text,
+        extras: useAsset ? { asset: feeAsset as Asset, assetChange: feeAssetChange?.negated().toString() } : {},
+      })
+    }
+
+    return {
+      time: time.toUTC().toISO() as Timestring,
+      lines
+    }
   }
 
+  const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
   const oldValue = old.amount.eq(0) ? dec(0) : oldStockValue.div(old.amount).mul(assetAmountOut as number)
 
   const lines: TransactionLine[] = [
