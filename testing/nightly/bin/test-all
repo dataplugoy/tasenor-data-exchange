@@ -12,7 +12,24 @@ cd "$ROOT/backend"
 pnpm run prisma-client
 
 cd "$ROOT/testing/nightly/"
+echo
+echo ======
+echo MEGALO
+echo ======
 bin/test-megalo
+echo
+echo =======
+echo HILUNKI
+echo =======
 bin/test-hilunki
+echo
+echo ======
+echo NIHKEÄ
+echo ======
 bin/test-nihkea
+echo
+echo =====
+echo TYLSÄ
+echo =====
 bin/test-tylsa
+echo
