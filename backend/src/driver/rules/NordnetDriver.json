@@ -252,5 +252,18 @@
       "account": "'EXPENSE_INTEREST'",
       "reason": "'INTEREST_REFUND'"
     }
+  },
+  {
+    "name": "Instrument Expired",
+    "filter": "Tapahtumatyyppi == 'LUNASTUS AP OTTO'",
+    "key": "LUNASTUS AP OTTO",
+    "result": {
+      "type": "'sell'",
+      "value": "0",
+      "valueAsset": "Valuutta",
+      "assetOut": "Arvopaperi",
+      "assetAmountOut": "Määrä",
+      "assetTypeOut": "'STOCK'"
+    }
   }
 ]
