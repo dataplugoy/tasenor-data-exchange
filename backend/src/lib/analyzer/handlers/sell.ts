@@ -40,13 +40,13 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
     const lines: TransactionLine[] = [
       {
         account: this.validateValueAccount(false),
-        amount: dec(value).toString(),
+        amount: dec(value).minus(fee).toString(),
         text,
         extras: {},
       },
       {
         account: `${assetTypeOut}_${assetOut}` as AccountCode,
-        amount: dec(value).minus(fee).negated().toString(),
+        amount: dec(value).negated().toString(),
         text,
         extras: {
           asset: assetOut,
