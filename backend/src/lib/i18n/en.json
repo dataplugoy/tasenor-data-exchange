@@ -10,6 +10,7 @@
   "EXPENSE_ACCOUNT": "General purpose account for other expenses",
   "EXPENSE_INTEREST": "Interest expense",
   "FEE_ACCOUNT": "General purpose account for fees charged",
+  "FOREX": "Forex",
   "INCOME_ACCOUNT": "General purpose account for any income",
   "INCOME_DIVIDEND": "Dividend for {{asset}}",
   "INCOME_INTEREST_REFUND": "Interest expense refund",
