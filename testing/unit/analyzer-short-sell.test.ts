@@ -25,7 +25,7 @@ describe('Analyzer', () => {
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
-        CURRENCY_EUR: 100, STOCK_GME: -100 ,
+        CURRENCY_EUR: 100, STOCK_GME: -100,
       },
       stock: {
         STOCK_GME: { GME: { amount: -20, value: -100 } }
@@ -49,7 +49,6 @@ describe('Analyzer', () => {
       }
     })
   })
-
 
   it('short-selling with a little fee', async () => {
 
@@ -100,7 +99,6 @@ describe('Analyzer', () => {
     })
   })
 
-
   it('short-selling and buying back for the same price', async () => {
 
     const stock = {
@@ -149,7 +147,6 @@ describe('Analyzer', () => {
       stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
     })
   })
-
 
   it('short-selling and buying back for profit', async () => {
 
@@ -206,7 +203,6 @@ describe('Analyzer', () => {
     })
   })
 
-
   it('short-selling and buying back with losses', async () => {
 
     const stock = {
@@ -261,7 +257,6 @@ describe('Analyzer', () => {
       stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
     })
   })
-
 
   it('short-selling and buying back for the same price with a little fee', async () => {
 
@@ -319,7 +314,6 @@ describe('Analyzer', () => {
       stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
     })
   })
-
 
   it('short-selling and buying back for profit but with a fee', async () => {
 
@@ -382,7 +376,6 @@ describe('Analyzer', () => {
       stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
     })
   })
-
 
   it('short-selling and buying back with losses and also paying fee', async () => {
 
