@@ -8,10 +8,8 @@ ROOT=`readlink -f "$FILE"`
 
 set -e
 
-cd "$ROOT/database"
-pnpm load
-
 cd "$ROOT"
+pnpm load
 bin/tadex.mjs run 'Nightly Testing'
 bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Megalo.csv
 bin/tadex.mjs run 'Nightly Testing' all

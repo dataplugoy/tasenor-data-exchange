@@ -12,10 +12,8 @@ set -e
 # Hilunki
 #
 
-cd "$ROOT/database"
-pnpm load
-
 cd "$ROOT"
+pnpm load
 bin/tadex.mjs run 'Nightly Testing'
 bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Nihkeä.csv
 bin/tadex.mjs run 'Nightly Testing' all
