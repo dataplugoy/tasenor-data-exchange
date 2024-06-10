@@ -18,6 +18,12 @@
     "allowInputFromPast": {
       "type": "string",
       "enum": ["Always", "Never", "Ask"]
+    },
+    "skipDeposits": {
+      "type": "boolean"
+    },
+    "skipWithdrawals": {
+      "type": "boolean"
     }
   }
 }

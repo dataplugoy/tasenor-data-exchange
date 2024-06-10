@@ -37,7 +37,17 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
     args: {
       options: ['Always', 'Never', 'Ask']
     }
-  }
+  },
+  skipDeposits: {
+    type: 'BOOLEAN',
+    help: 'If deposits to the accounts in this service are imported from some other source than this, they should be skipped when processing here.',
+    label: 'Skip deposits',
+  },
+  skipWithdrawals: {
+    type: 'BOOLEAN',
+    help: 'If withdrawals from the accounts in this service are imported from some other source than this, they should be skipped when processing here.',
+    label: 'Skip withdrawals',
+  },
 }
 
 export class AnswersRequired extends AlertException<Question[]> {

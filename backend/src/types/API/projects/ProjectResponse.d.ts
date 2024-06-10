@@ -60,6 +60,8 @@ export interface Settings {
   inputDuplicates?: "Always" | "Never" | "Ask";
   outputDuplicates?: "Always" | "Never" | "Ask";
   allowInputFromPast?: "Always" | "Never" | "Ask";
+  skipDeposits?: boolean;
+  skipWithdrawals?: boolean;
 }
 export interface StockData {
   [k: string]: unknown;
