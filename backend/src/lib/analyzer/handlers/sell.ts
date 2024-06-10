@@ -33,8 +33,12 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
       this.validateError('Short selling an instrument at the same time than we sell owned copies is not implemented.')
     }
     const text = this.validateText('Sold short {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
-    // TODO: Allow short selling only allowed if a setting allows: always, never, ask.
-    // TODO: Support for getSetting()
+
+    // Ensure that it is intentional.
+    const allowShortSelling = await this.getSetting('allowShortSelling')
+    if (!allowShortSelling) {
+      this.validateError('Short selling is not allowed in configuration.')
+    }
 
     // Short-selling.
     const lines: TransactionLine[] = [
