@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type SkipReason = null | ("DUPLICATE" | "IN_THE_PAST");
+export type SkipReason = null | ("DUPLICATE" | "IN_THE_PAST" | "CONFIGURED");
 
 export interface InputItem {
   id: number;

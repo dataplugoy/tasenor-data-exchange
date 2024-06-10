@@ -30,14 +30,15 @@ async function flowPlan(args, options: RuntimeOptions): Promise<FlowPlanModel> {
     throw new Error(`User '${args.user}' not found.`)
   }
 
-  const plan = await user.findFlowPlan(args.flow)
+  const plan = await user.findFlowPlan(args.flow) as FlowPlanModel
   if (!plan) {
     throw new Error(`Flow plan '${args.flow}' not found.`)
   }
 
   options.userId = user.id
+  options.flowPlanId = plan.id
 
-  return plan as FlowPlanModel
+  return plan
 }
 
 /**
@@ -102,7 +103,7 @@ async function getData(args): Promise<[Stock, Transaction[]]> {
   const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
   const setup = plan.data.setup as Setup
 
-  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {}, setup)
+  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {}, setup, options)
 
   // Sort the transactions by their accounts.
   const txs: Transaction[] = OutputItemModel.transactions(outputItems)

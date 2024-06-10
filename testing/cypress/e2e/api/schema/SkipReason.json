@@ -4,6 +4,7 @@
   "type": ["null", "string"],
   "enum": [
     "DUPLICATE",
-    "IN_THE_PAST"
+    "IN_THE_PAST",
+    "CONFIGURED"
   ]
 }

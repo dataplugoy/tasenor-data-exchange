@@ -220,7 +220,8 @@ ALTER TYPE public."ServiceType" OWNER TO dev;
 
 CREATE TYPE public."SkipReason" AS ENUM (
     'DUPLICATE',
-    'IN_THE_PAST'
+    'IN_THE_PAST',
+    'CONFIGURED'
 );
 
 

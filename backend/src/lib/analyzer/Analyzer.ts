@@ -25,6 +25,8 @@ import { withdrawal } from './handlers/withdrawal'
 import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validateBasics, validateError, validateFee, validateInput, validateNotEmpty, validateRate, validateRequired, validateRequiredField, validateText, validateValue, validateValueAccount, validateValueOrAsset } from './validators'
 import { Setup } from '../../types/API/Setup'
 import { resolveAccount } from './resolver'
+import { RuntimeOptions } from '../../types/RuntimeOptions'
+import { AnswersRequired } from '../../exceptions/AnswersRequired'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -40,8 +42,9 @@ export class Analyzer {
   protected lastTime: Timestring
   protected lastResult: Transaction | null
   // TODO: Rename to projectSettings
-  protected config: ProjectSettings
-  protected setup: Setup
+  protected readonly config: ProjectSettings
+  protected readonly setup: Setup
+  protected readonly runtimeOptions: RuntimeOptions
 
   // Bind handlers.
   public buyHandler = buy.bind(this)
@@ -75,7 +78,7 @@ export class Analyzer {
    * Initialize
    * @param stock
    */
-  constructor(config: ProjectSettings, stock: Stock, balances: Balance | {}, setup: Setup = {}) {
+  constructor(config: ProjectSettings, stock: Stock, balances: Balance | {}, setup: Setup = {}, runtimeOptions: RuntimeOptions = { userId: 0 }) {
     this.services = {
       CRYPTO_RATES: [],
       CURRENCY_RATES: []
@@ -87,13 +90,7 @@ export class Analyzer {
     this.lastTime = '0000-00-00T00:00:00Z' as Timestring
     this.lastResult = null
     this.setup = setup
-    this.configure(config)
-  }
-
-  /**
-   * Verify and set configuration.
-   */
-  private configure(config: ProjectSettings) {
+    this.runtimeOptions = runtimeOptions
     for (const c of ['language', 'currency']) {
       if (config[c] === undefined) {
         throw new Error(`A required configuration variable '${c}' is missing in ${JSON.stringify(config)}.`)
@@ -108,6 +105,20 @@ export class Analyzer {
 
   get language(): Language {
     return this.config.language as Language
+  }
+
+  /**
+   * Check if the variable is set and return it. If not, throw a answer request.
+   * @param variable
+   */
+  async getSetting(variable: string) {
+    const settings = this.setup.settings || {}
+
+    if (variable in settings && settings[variable] !== undefined) {
+      return settings[variable]
+    }
+
+    AnswersRequired.throw(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, variable)
   }
 
   /**
@@ -256,7 +267,7 @@ export class Analyzer {
    */
   static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, services: undefined | Service[] = undefined): Promise<Analyzer> {
     const stock = new Stock(stockData)
-    const analyzer = new Analyzer(settings, stock, {}, {})
+    const analyzer = new Analyzer(settings, stock, {}, {}, { userId: 0 })
 
     if (services !== undefined) {
       analyzer.setServices(services)

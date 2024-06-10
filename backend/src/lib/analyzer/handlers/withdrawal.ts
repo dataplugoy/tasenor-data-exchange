@@ -26,6 +26,15 @@ export async function withdrawal(this: Analyzer, time: DateTime, input: UnifiedI
 
   const externalAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
 
+  // Check if handled elsewhere.
+  const skipWithdrawals = await this.getSetting('skipWithdrawals')
+  if (skipWithdrawals) {
+    return {
+      time: time.toUTC().toISO() as Timestring,
+      lines: []
+    }
+  }
+
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [

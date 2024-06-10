@@ -225,6 +225,7 @@ model Run{
 enum SkipReason{
   DUPLICATE
   IN_THE_PAST
+  CONFIGURED
 }
 
 model InputItem{

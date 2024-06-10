@@ -5,5 +5,6 @@ export type RuntimeOptions = {
   auth?: string | null
   repeat?: 'MAX' | number
   userId: number
+  flowPlanId?: number
   interactive?: boolean
 }

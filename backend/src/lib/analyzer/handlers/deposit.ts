@@ -25,6 +25,15 @@ export async function deposit(this: Analyzer, time: DateTime, input: UnifiedItem
   const text = this.validateText('Deposit to {{service}}', { service })
   const externalAccount = (account || `EXTERNAL_${serviceName2Code(service as string)}_${valueAsset || this.currency}`) as AccountCode
 
+  // Check if handled elsewhere.
+  const skipDeposits = await this.getSetting('skipDeposits')
+  if (skipDeposits) {
+    return {
+      time: time.toUTC().toISO() as Timestring,
+      lines: []
+    }
+  }
+
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [

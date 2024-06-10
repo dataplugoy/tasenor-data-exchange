@@ -150,6 +150,7 @@ async function executeBatch(req, res, notes: Notes = {}) {
     const result = await res.locals.flowPlan.run(
       {
         userId: res.locals.userId,
+        flowPlanId: res.locals.flowPlan.id,
         interactive: true,
         repeat: 'MAX'
       },

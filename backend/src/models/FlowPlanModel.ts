@@ -509,7 +509,13 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       // Unified items must be processed in order and batch must stop if one fails.
       const stock = new Stock(batch.data.initialStock as StockDataRecord)
-      const analyzer = new Analyzer(project.settings, stock, batch.data.initialBalance as BalanceData, this.data.setup as Setup)
+      const analyzer = new Analyzer(
+        project.settings,
+        stock,
+        batch.data.initialBalance as BalanceData,
+        this.data.setup as Setup,
+        options
+      )
       analyzer.setServices(await batch.getServices())
 
       for (const unified of unifieds) {
@@ -528,6 +534,13 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           // Update stock change.
           await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
+
+          // Skip if nothing to output.
+          if (tx.lines.length === 0) {
+            await unified.skip('CONFIGURED')
+            skipped++
+            continue
+          }
 
           // Save success.
           const output = await OutputItemModel.save({

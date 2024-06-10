@@ -114,7 +114,6 @@ export function unifyArgsFrom(items: InputItemData[]): [FlowPlanModel, RunModel,
     runId: 0,
     flowPlanId: 0,
     batchId: 0,
-    error: null,
     processed: false,
     skipped: false,
     hash: '',
@@ -132,6 +131,7 @@ export function unifyArgsFrom(items: InputItemData[]): [FlowPlanModel, RunModel,
     error: null,
     result: 'ALL_SUCCESS',
     batchId: 0,
+    notes: {},
   })
 
   const rules = createRulesFrom('NordnetDriver.json')
@@ -165,7 +165,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
         stockChange: {},
         processed: false,
         skipped: false,
-        error: null,
+        skipReason: null,
         inputId: 0,
         flowPlanId: 0,
         batchId: 0,
@@ -184,7 +184,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
       stockChange: {},
       processed: false,
       skipped: false,
-      error: null,
+      skipReason: null,
       inputId: 0,
       flowPlanId: 0,
       batchId: 0,
@@ -199,7 +199,7 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
 
 export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings): Promise<Transaction[]> {
   const stock = new Stock({})
-  const analyzer = new Analyzer(config, stock, {}, {})
+  const analyzer = new Analyzer(config, stock, {}, {}, { userId: 0, flowPlanId: 0 })
 
   const txs: Transaction[] = []
 
