@@ -143,7 +143,7 @@ describe('Analyzer', () => {
       new JsonFileService({ url: 'file:///rates.json' })
     ]
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, {}, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
       tx: {
@@ -185,7 +185,7 @@ describe('Analyzer', () => {
     const services = [
     ]
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, {}, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
       tx: {
@@ -235,7 +235,7 @@ describe('Analyzer', () => {
       new JsonFileService({ url: 'file:///rates.json' })
     ]
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, {}, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
       tx: {
@@ -285,7 +285,7 @@ describe('Analyzer', () => {
       new JsonFileService({ url: 'file:///rates.json' })
     ]
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, services)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, {}, services)
 
     expect(analyzer.toJSON()).toStrictEqual({
       tx: {

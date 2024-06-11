@@ -11,7 +11,6 @@ import { RunModel } from '../../backend/src/models/RunModel'
 import { RuleModel } from '../../backend/src/models/RuleModel'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
 import { UnifiedItemModel } from '../../backend/src/models/UnifiedItemModel'
-import { Driver } from '../../backend/src/driver/Driver'
 import { Transaction } from '../../backend/src/types/API/Transaction'
 import { Stock } from '../../backend/src/lib/Stock'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
@@ -20,6 +19,7 @@ import chardet from 'chardet'
 import { parseEncoding } from '../../backend/src/lib/utils'
 import { UnifiedItem } from '../../backend/src/types/API/UnifiedItem'
 import { ProjectSettings } from '../../backend/src/types/API/Project'
+import { InputDriver } from '../../backend/src/driver/InputDriver'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -143,7 +143,7 @@ export function unifyArgsFrom(items: InputItemData[]): [FlowPlanModel, RunModel,
  * Run unifying test using the driver.
  * @param items
  */
-export async function unifyItems(driver: Driver, items: InputItemData[]): Promise<UnifiedItemModel[]> {
+export async function unifyItems(driver: InputDriver, items: InputItemData[]): Promise<UnifiedItemModel[]> {
   const unified: UnifiedItemModel[] = []
   const partial: Record<string, UnifiedItem[]> = {}
 
@@ -199,7 +199,19 @@ export async function unifyItems(driver: Driver, items: InputItemData[]): Promis
 
 export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings): Promise<Transaction[]> {
   const stock = new Stock({})
-  const analyzer = new Analyzer(config, stock, {}, {}, { userId: 0, flowPlanId: 0 })
+  const analyzer = new Analyzer(
+    config,
+    stock,
+    {},
+    {
+      settings: {
+        skipDeposits: false,
+        skipWithdrawals: false,
+        allowShortSelling: true,
+      }
+    },
+    { userId: 0, flowPlanId: 0 }
+  )
 
   const txs: Transaction[] = []
 

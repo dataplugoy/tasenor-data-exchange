@@ -265,9 +265,9 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, services: undefined | Service[] = undefined): Promise<Analyzer> {
+  static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, runtimeOptions: RuntimeOptions = { userId: 0 }, setup: Setup = {}, services: undefined | Service[] = undefined): Promise<Analyzer> {
     const stock = new Stock(stockData)
-    const analyzer = new Analyzer(settings, stock, {}, {}, { userId: 0 })
+    const analyzer = new Analyzer(settings, stock, {}, setup, runtimeOptions)
 
     if (services !== undefined) {
       analyzer.setServices(services)
