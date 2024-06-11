@@ -26,7 +26,7 @@ describe('Analyzer', () => {
       assetAmountOut: 20,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
@@ -69,7 +69,7 @@ describe('Analyzer', () => {
       fee: 5,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
@@ -117,7 +117,7 @@ describe('Analyzer', () => {
       assetAmountOut: 20,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
@@ -166,7 +166,7 @@ describe('Analyzer', () => {
       assetAmountOut: 20,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
@@ -221,7 +221,7 @@ describe('Analyzer', () => {
       assetAmountOut: 20,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
@@ -277,7 +277,7 @@ describe('Analyzer', () => {
       fee: 2.5,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
@@ -333,7 +333,7 @@ describe('Analyzer', () => {
       assetAmountOut: 20,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
@@ -395,7 +395,7 @@ describe('Analyzer', () => {
       assetAmountOut: 20,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0}, setup)
+    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
