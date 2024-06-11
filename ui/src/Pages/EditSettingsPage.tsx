@@ -13,6 +13,7 @@ import { AccountGroupingCard } from '../Components/AccountGroupingCard'
 import { useApp } from '../Hooks/useApp'
 import { InputSettingsCard } from '../Components/InputSettingsCard'
 import { OutputSettingsCard } from '../Components/OutputSettingsCard'
+import { SetupCard } from '../Components/SetupCard'
 
 export const EditSettingsPage = (): React.JSX.Element => {
   const params = useParams()
@@ -66,6 +67,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
       {setup && output && <AccountGroupingCard onSave={onSave} hasRemoteAccounts={hasRemoteAccounts} setup={setup} output={output}/>}
       {setup && input && <InputSettingsCard setup={setup} input={input}/>}
       {setup && output && <OutputSettingsCard setup={setup} output={output}/>}
+      {setup && output && <SetupCard setup={setup} output={output}/>}
     </Box>
 
     <Box sx={{ mt: 3 }}>
