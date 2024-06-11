@@ -7,7 +7,6 @@ import { AccountEdit } from './AccountEditorCard'
 
 interface QuestionAccountPanelProps {
   question: Question
-  variable: string
   onChange: (variable: string, value: boolean) => void
   remotes: Record<AccountNumber, RemoteAccount>
 }

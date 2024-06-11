@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormControl, FormControlLabel, FormGroup, FormHelperText, Switch } from '@mui/material'
 import { Question } from '../Types/API/Question'
 
@@ -16,6 +16,10 @@ export const QuestionBooleanPanel = (props: QuestionBooleanPanelProps): React.JS
   const { question, onChange } = props
   const { help, label, variable } = question
   const [checked, setChecked] = useState<boolean>(false)
+
+  useEffect(() => {
+    onChange(variable, false)
+  }, [])
 
   const onToggle = () => {
     const value = !checked

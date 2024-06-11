@@ -20,6 +20,7 @@ interface QuestionPanelProps {
  */
 export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
   const { question, onChange, remotes } = props
+
   switch (question.type) {
     case 'BOOLEAN':
       return <QuestionBooleanPanel question={question} onChange={onChange}/>
