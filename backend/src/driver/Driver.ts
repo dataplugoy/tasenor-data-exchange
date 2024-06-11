@@ -1,27 +1,15 @@
-import hash from 'object-hash'
+import fs from 'fs'
 import path from 'path'
 import prisma from '@prisma/client'
 import { SettingsModel } from '../models/SettingsModel'
-import { isShortDate } from '@tasenor/common'
 import { DriverSettings } from '../types/DriverSettings'
 import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'
-import { BatchModel } from '../models/BatchModel'
-import { InputItemModel } from '../models/InputItemModel'
-import { FlowPlanModel } from '../models/FlowPlanModel'
-import { RuleModel } from '../models/RuleModel'
-import { applyRules } from '../lib/rules'
-import { RunModel } from '../models/RunModel'
-import { DateTime } from 'luxon'
-import { OutputItemModel } from '../models/OutputItemModel'
-import { InputItemData } from '../types/API/InputItemData'
-import { UnifiedItem } from '../types/API/UnifiedItem'
-import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
-import { RemoteAccount } from '../types/API/RemoteAccount'
-import { Transaction } from '../types/API/Transaction'
-import { RemoteId } from '../types/API/RemoteId'
+import axios, { AxiosRequestConfig } from 'axios'
+import { HttpMethod, error, log } from '@tasenor/common'
+import { HTTPException } from '../exceptions/HTTPException'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -92,112 +80,115 @@ export class Driver {
   }
 
   /**
+   * Construct bearer token for HTTP requests, if used.
+   * @returns A token, if used.
+   */
+  protected bearerToken(): string | null {
+    return null
+  }
+
+  /**
+   * Construct standard default headers for requests.
+   */
+  protected headers(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+    const token = this.bearerToken()
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    return headers
+  }
+
+  /**
+   * Get the base URL. Defaults to the system settings.
+   */
+  protected get baseUrl(): string {
+    return this.systemSettings.url
+  }
+
+  /**
+   * Ensure that URL does not have double slash in the beginning.
+   * @param url Local part of the URL.
+   */
+  private makeUrl(url: string): string {
+    const baseUrl = this.baseUrl.replace(/\/$/, '')
+    url = url.replace(/^\//, '')
+    return `${baseUrl}/${url}`
+  }
+
+  /**
+   * Executor for HTTP requests.
+   * @param method
+   */
+  private async request<T>(method: HttpMethod, url: string, data: unknown = undefined): Promise<T> {
+    log(`Requesting '${method} ${url}'.`)
+
+    const storePath = this.options.tracking ? path.join(this.root, this.options.tracking, url.replace(this.systemSettings.url, '')) : null
+    const storeDir = storePath ? path.dirname(storePath) : null
+    const storeFile = storePath ? `${method}-${path.basename(storePath)}` : null
+    const savePath = storeDir && storeFile ? path.join(storeDir, storeFile) : null
+
+    const conf: AxiosRequestConfig = {
+      method,
+      url,
+      headers: this.headers(),
+      data,
+    }
+
+    if (savePath && fs.existsSync(savePath)) {
+      log(`Reading result from '${savePath}'.`)
+      // Supporting UTF-8 responeses for now.
+      const data = fs.readFileSync(savePath).toString('utf-8')
+      if (conf.headers && conf.headers['Content-Type'] === 'application/json') {
+        return JSON.parse(data)
+      }
+      return data as T
+    }
+
+    const result = await axios(conf).catch(err => {
+      error(`Request ${method} ${url} failed:`, err.toString())
+      throw new HTTPException(method, url, err.toString())
+    })
+
+    if (storeDir && savePath) {
+      log(`Saving result to '${savePath}'.`)
+      fs.mkdirSync(storeDir, { recursive: true })
+      fs.writeFileSync(savePath, typeof result.data === 'string' ? result.data : JSON.stringify(result.data))
+    }
+
+    return result.data
+  }
+
+  /**
+   * Execute GET request.
+   */
+  async GET<T>(url): Promise<T> {
+    const resp = await this.request<T>('GET', this.makeUrl(url))
+    return resp
+  }
+
+  /**
+   * Execute DELETE request.
+   */
+  async DELETE<T>(url): Promise<T> {
+    const resp = await this.request<T>('DELETE', this.makeUrl(url))
+    return resp
+  }
+
+  /**
+   * Execute POST request.
+   */
+  async POST<T>(url, data): Promise<T> {
+    const resp = await this.request<T>('POST', this.makeUrl(url), data)
+    return resp
+  }
+
+  /**
    * Handle authentication to the remote.
    */
   async autheticate(): Promise<FlowState> {
     throw new Error(`Input source ${this.type} does not implement autheticate().`)
-  }
-
-  /**
-   * Handler for actual data fetching.
-   * @returns New data found.
-   */
-  async fetchData(flowPlan: FlowPlanModel): Promise<string | Buffer> {
-    throw new Error(`Input source ${this.type} does not implement fetchData().`)
-  }
-
-  /**
-   * Fetch available accounts from the remote.
-   */
-  async fetchRemoteAccounts(): Promise<RemoteAccount[]> {
-    throw new Error(`Output destination ${this.type} does not implement fetchRemoteAccounts().`)
-  }
-
-  /**
-   * Take the input batch fetched and provide a list of processable input items.
-   */
-  async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
-    throw new Error(`Input source ${this.type} does not implement itemizeInput().`)
-  }
-
-  /**
-   * Helper to implement rule based handling for unifying input items.
-   * @param flow
-   * @param input
-   * @param rules
-   */
-  protected async applyUnifyRules(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>, ruleKey: string | null = null): Promise<UnifiedItem> {
-
-    if (RuleModel.count(rules) === 0) {
-      throw new Error(`There are no rules available in ${flow} for unifying input.`)
-    }
-
-    const variables = {
-      text: input.text,
-      line: input.line,
-      time: input.time,
-      total: input.total,
-      original: input.original,
-      version: (input.data.data as unknown as InputItemData).version,
-      ...this.projectSettings,
-      ...input.fields
-    }
-
-    const data: UnifiedItemData = applyRules(variables, rules, ruleKey)
-
-    const time = isShortDate(input.time)
-      ? DateTime.fromISO(`${input.time}T12:00:00Z`).toUTC().toISO()
-      : DateTime.fromISO(`${input.time}`).toUTC().toISO()
-
-    return {
-      data,
-      time: `${time}`,
-      processed: false,
-      skipped: false,
-      flowPlanId: input.data.flowPlanId,
-      batchId: input.data.batchId,
-      runId: run.id,
-      inputId: input.id,
-    }
-  }
-
-  /**
-   * Take an input item and convert it to the unified model.
-   */
-  async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {
-    throw new Error(`Input source ${this.type} does not implement unifyItem().`)
-  }
-
-  /**
-   * Handle transfer of the output item.
-   */
-  async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
-    throw new Error(`Input source ${this.type} does not implement deliverOutput().`)
-  }
-
-  /**
-   * Calculate hash for input item.
-   * @param input
-   * @returns
-   */
-  inputHash(input: InputItemData): string {
-    return hash(input, { algorithm: 'sha1' })
-  }
-
-  /**
-   * Calculate hash for output item.
-   * @param output
-   * @returns
-   */
-  outputHash(tx: Transaction): string {
-    return hash(tx, { algorithm: 'sha1' })
-  }
-
-  /**
-   * Check if account configuration should be checked before output.
-   * @returns
-   */
-  needConfiguredAccounts(): boolean {
-    return false
   }
 }

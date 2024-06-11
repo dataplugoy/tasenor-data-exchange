@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { Driver } from './Driver'
 import { TestMockDriverSettings } from '../types/DriverSettings'
 import { TestMockFlowState } from '../types/FlowState'
 import { BatchModel } from '../models/BatchModel'
@@ -16,11 +15,12 @@ import { ProjectSettings } from '../types/API/Project'
 import { DateTime } from 'luxon'
 import { Setup } from '../types/API/Setup'
 import { RemoteId } from '../types/API/RemoteId'
+import { InputDriver } from './InputDriver'
 
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
-export class TestMockDriver extends Driver {
+export class TestMockDriver extends InputDriver {
 
   declare settings: TestMockDriverSettings
   declare state: TestMockFlowState

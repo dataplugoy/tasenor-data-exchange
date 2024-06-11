@@ -6,10 +6,10 @@ import { BatchModel } from '../models/BatchModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ManualUploadDriverSettings } from '../types/DriverSettings'
 import { ManualUploadFlowState } from '../types/FlowState'
-import { Driver } from './Driver'
 import { num } from '@tasenor/common'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
+import { InputDriver } from './InputDriver'
 
 export type PreProcessOptions = {
   numericFields?: string[]
@@ -21,7 +21,7 @@ export type PreProcessOptions = {
 /**
  * A base class for drivers that use manual upload.
  */
-export class ManualUploadDriver extends Driver {
+export class ManualUploadDriver extends InputDriver {
 
   declare settings: ManualUploadDriverSettings
   declare state: ManualUploadFlowState

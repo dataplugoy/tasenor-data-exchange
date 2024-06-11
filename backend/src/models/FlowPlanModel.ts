@@ -35,6 +35,8 @@ import { getDriver } from '../driver'
 import { ProjectSettings } from '../types/API/Project'
 import { Notes } from '../types/API/Notes'
 import { AnswersRequired } from '../exceptions/AnswersRequired'
+import { InputDriver } from '../driver/InputDriver'
+import { OutputDriver } from '../driver/OutputDriver'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -222,14 +224,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver for receiving data.
    */
-  private async getInputDriver(options: RuntimeOptions): Promise<Driver> {
+  private async getInputDriver(options: RuntimeOptions): Promise<InputDriver> {
     const source = await this.getSource()
     const project = await this.getProject()
     const driver = source.getDriver(project.settings, this.data.setup as Setup)
 
     await driver.initialize(this.state, options)
 
-    return driver
+    return driver as InputDriver
   }
 
   /**
@@ -243,14 +245,14 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver for delivering data.
    */
-  private async getOutputDriver(options: RuntimeOptions): Promise<Driver> {
+  private async getOutputDriver(options: RuntimeOptions): Promise<OutputDriver> {
     const destination = await this.getDestination()
     const project = await this.getProject()
     const driver = destination.getDriver(project.settings, this.data.setup as Setup)
 
     await driver.initialize(this.state, options)
 
-    return driver
+    return driver as OutputDriver
   }
 
   /**
@@ -683,7 +685,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param driver
    * @param output
    */
-  private checkAccounts(driver: Driver, destination: OutputDestinationModel, output: OutputItemModel[]): void {
+  private checkAccounts(driver: OutputDriver, destination: OutputDestinationModel, output: OutputItemModel[]): void {
 
     if (!driver.needConfiguredAccounts()) {
       return

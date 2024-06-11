@@ -3,7 +3,6 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriverSettings } from '../types/DriverSettings'
 import { TasenorFlowState } from '../types/FlowState'
-import { InternetDriver } from './InternetDriver'
 import { Transaction, TransactionLine } from '../types/API/Transaction'
 import { DateTime } from 'luxon'
 import { dec } from '../lib/utils'
@@ -14,8 +13,9 @@ import { RemoteAccount } from '../types/API/RemoteAccount'
 import { Account } from '../types/API/Account'
 import { AccountException } from '../exceptions/AccountException'
 import { RemoteId } from '../types/API/RemoteId'
+import { OutputDriver } from './OutputDriver'
 
-export class TasenorDriver extends InternetDriver {
+export class TasenorDriver extends OutputDriver {
 
   declare settings: TasenorDriverSettings
   declare state: TasenorFlowState

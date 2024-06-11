@@ -6,8 +6,8 @@ import { EnableBankingFlowState } from '../types/FlowState'
 import { DateTime } from 'luxon'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ProjectSettings } from '../types/API/Project'
-import { InternetDriver } from './InternetDriver'
 import { Setup } from '../types/API/Setup'
+import { InputDriver } from './InputDriver'
 
 /**
  * Helper to encode JSON as base64.
@@ -19,7 +19,7 @@ const jsonBase64 = (data: Record<string, any>) => {
 /**
  * A simple file based driver for providing mock data from the development tree.
  */
-export class EnableBankingDriver extends InternetDriver {
+export class EnableBankingDriver extends InputDriver {
 
   declare settings: EnableBankingDriverSettings
   declare state: EnableBankingFlowState

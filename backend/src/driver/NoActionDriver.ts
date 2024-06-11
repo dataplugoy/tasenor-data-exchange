@@ -2,13 +2,13 @@ import { log } from '@tasenor/common'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { NoActionDriverSettings } from '../types/DriverSettings'
 import { NoActionFlowState } from '../types/FlowState'
-import { Driver } from './Driver'
 import { Transaction } from '../types/API/Transaction'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
 import { RemoteId } from '../types/API/RemoteId'
+import { OutputDriver } from './OutputDriver'
 
-export class NoActionDriver extends Driver {
+export class NoActionDriver extends OutputDriver {
 
   declare settings: NoActionDriverSettings
   declare state: NoActionFlowState
