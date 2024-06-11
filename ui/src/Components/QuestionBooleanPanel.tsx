@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { FormControl, FormControlLabel, FormGroup, FormHelperText, Switch } from '@mui/material'
+import { FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Switch } from '@mui/material'
 import { Question } from '../Types/API/Question'
 
 interface QuestionBooleanPanelProps {
   question: Question
+  value?: boolean
   onChange: (variable: string, value: boolean) => void
+  noHelp?: boolean
 }
 
 /**
@@ -13,9 +15,9 @@ interface QuestionBooleanPanelProps {
  * @returns
  */
 export const QuestionBooleanPanel = (props: QuestionBooleanPanelProps): React.JSX.Element => {
-  const { question, onChange } = props
+  const { question, onChange, noHelp, value } = props
   const { help, label, variable } = question
-  const [checked, setChecked] = useState<boolean>(false)
+  const [checked, setChecked] = useState<boolean>(value || false)
 
   useEffect(() => {
     onChange(variable, false)
@@ -30,10 +32,10 @@ export const QuestionBooleanPanel = (props: QuestionBooleanPanelProps): React.JS
   return (
     <FormGroup>
       <FormControl>
-        <FormHelperText>{help}</FormHelperText>
+        {!noHelp && <FormHelperText>{help}</FormHelperText>}
         <FormControlLabel control={
           <Switch checked={checked} onChange={onToggle} />
-        } label={label} />
+        } label={<FormLabel>{label}</FormLabel>} />
       </FormControl>
     </FormGroup>
   )

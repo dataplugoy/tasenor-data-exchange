@@ -1,5 +1,5 @@
 import React, { } from 'react'
-import { Box } from '@mui/material'
+import { Box, SxProps, Theme } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { QuestionBooleanPanel } from './QuestionBooleanPanel'
 import { QuestionEnumPanel } from './QuestionEnumPanel'
@@ -9,8 +9,11 @@ import { RemoteAccount } from '../Types/API/RemoteAccount'
 
 interface QuestionPanelProps {
   question: Question
+  value?: unknown
   remotes: Record<AccountNumber, RemoteAccount>
   onChange: (variable: string, value: unknown) => void
+  noHelp?: boolean
+  sx?: SxProps<Theme>
 }
 
 /**
@@ -19,15 +22,21 @@ interface QuestionPanelProps {
  * @returns
  */
 export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
-  const { question, onChange, remotes } = props
+  const { question, onChange, remotes, noHelp, value, sx } = props
 
   switch (question.type) {
     case 'BOOLEAN':
-      return <QuestionBooleanPanel question={question} onChange={onChange}/>
+      return <Box sx={sx}>
+        <QuestionBooleanPanel question={question} value={value as undefined | boolean} onChange={onChange} noHelp={noHelp}/>
+      </Box>
     case 'ENUM':
-      return <QuestionEnumPanel question={question} onChange={onChange}/>
+      return <Box sx={sx}>
+        <QuestionEnumPanel question={question} value={value as undefined | string} onChange={onChange} noHelp={noHelp}/>
+      </Box>
     case 'ACCOUNT':
-      return <QuestionAccountPanel question={question} onChange={onChange} remotes={remotes}/>
+      return <Box sx={sx}>
+        <QuestionAccountPanel question={question} value={value as undefined | AccountNumber} onChange={onChange} remotes={remotes}/>
+      </Box>
   }
 
   return (

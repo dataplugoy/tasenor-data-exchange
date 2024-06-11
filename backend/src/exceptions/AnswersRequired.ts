@@ -8,13 +8,15 @@ import { t } from '../lib/i18n/t'
 /**
  * Collection of variables.
  */
-export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
+export const VARIABLES: Record<string, Question> = {
   allowShortSelling: {
+    variable: 'allowShortSelling',
     type: 'BOOLEAN',
     help: 'We have found out that you are trying to sell something you don\'t own. It may be a mistake, but it can also be possible with some service providers to loan an instrument for selling.',
     label: 'Allow short selling'
   },
   inputDuplicates: {
+    variable: 'inputDuplicates',
     type: 'ENUM',
     help: 'There has been more than one copy of the identical items received. Do we want to include them nevertheless?',
     label: 'Include input duplicates',
@@ -23,6 +25,7 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
     }
   },
   outputDuplicates: {
+    variable: 'outputDuplicates',
     type: 'ENUM',
     help: 'There has been more than one copy of the identical resulting transaction created. It is probably normal, but just in case you want it to behave otherwise...',
     label: 'Create transaction duplicates',
@@ -31,6 +34,7 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
     }
   },
   allowInputFromPast: {
+    variable: 'allowInputFromPast',
     type: 'ENUM',
     help: 'We encountered an item that has older time stamp than what we have processed earlier. Do we include them?',
     label: 'Include entries from past',
@@ -39,11 +43,13 @@ export const VARIABLES: Record<string, Omit<Question, 'variable'>> = {
     }
   },
   skipDeposits: {
+    variable: 'skipDeposits',
     type: 'BOOLEAN',
     help: 'If deposits to the accounts in this service are imported from some other source than this, they should be skipped when processing here.',
     label: 'Skip deposits',
   },
   skipWithdrawals: {
+    variable: 'skipWithdrawals',
     type: 'BOOLEAN',
     help: 'If withdrawals from the accounts in this service are imported from some other source than this, they should be skipped when processing here.',
     label: 'Skip withdrawals',

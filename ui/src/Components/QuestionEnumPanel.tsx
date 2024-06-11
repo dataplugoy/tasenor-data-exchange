@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { QuestionArgs } from '../Types/API/QuestionArgs'
@@ -6,7 +6,9 @@ import { useTranslation } from 'react-i18next'
 
 interface QuestionEnumPanelProps {
   question: Question
+  value?: string
   onChange: (variable: string, value: string) => void
+  noHelp?: boolean
 }
 
 /**
@@ -15,20 +17,22 @@ interface QuestionEnumPanelProps {
  * @returns
  */
 export const QuestionEnumPanel = (props: QuestionEnumPanelProps): React.JSX.Element => {
-  const { question } = props
+  const { question, noHelp, value } = props
   const { help, label, variable } = question
   const args: QuestionArgs = question.args || {}
   const options = args.options || []
   const { t } = useTranslation()
+  const [selected, setSelected] = useState<string | undefined>(value)
 
   const onChange = (e) => {
+    setSelected(e.target.value)
     props.onChange(variable, e.target.value)
   }
 
   return (
     <FormGroup>
       <FormControl>
-        <FormHelperText>{help}</FormHelperText>
+        {!noHelp && <FormHelperText>{help}</FormHelperText>}
         <FormLabel id={`label-${variable}`}>{label}</FormLabel>
         <RadioGroup aria-labelledby={`label-${variable}`}>
         {
@@ -36,6 +40,7 @@ export const QuestionEnumPanel = (props: QuestionEnumPanelProps): React.JSX.Elem
             <FormControlLabel
               key={option}
               value={option}
+              checked={selected !== undefined && selected === option}
               data-cy={`Option-${variable}-${option}`}
               control={<Radio />}
               label={t(`Option-${variable}-${option}`) === `Option-${variable}-${option}` ? t(`Option-${option}`) : t(`Option-${variable}-${option}`)}
