@@ -2,7 +2,7 @@
   "title": "CreateFlowPlanRequest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["title", "projectId", "source", "destination"],
+  "required": ["title", "projectId", "source", "destination", "setup"],
   "properties": {
     "title": {
       "type": "string"
@@ -35,6 +35,9 @@
           "type": "object"
         }
       }
+    },
+    "setup": {
+      "$ref": "Setup.json"
     }
   }
 }

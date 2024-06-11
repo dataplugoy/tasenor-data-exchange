@@ -8,6 +8,22 @@ import { useNavigate } from 'react-router-dom'
 
 declare const NODE_ENV: string
 
+const DEFAULTS: Record<string, Record<string, unknown>> = {
+  TASENOR: {
+    accountGrouping: {
+      singleFeeAccount: false,
+      singleTaxAccount: true,
+      singleLossAccount: true,
+      singleStockAccount: true,
+      singleCryptoAccount: true,
+      singleIncomeAccount: false,
+      singleProfitAccount: true,
+      singleExpenseAccount: false,
+      singleDividendAccount: true,
+    }
+  }
+}
+
 export const CreateFlowPlanPage = (): React.JSX.Element => {
 
   const { t } = useTranslation()
@@ -72,6 +88,15 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
         type: output,
         settings: destinationSettings,
       },
+      setup: {
+      }
+    }
+
+    if (DEFAULTS[input]) {
+      Object.assign(data.setup, DEFAULTS[input])
+    }
+    if (DEFAULTS[output]) {
+      Object.assign(data.setup, DEFAULTS[output])
     }
 
     const res = await POST('/flow-plans', data)

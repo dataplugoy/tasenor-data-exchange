@@ -29,4 +29,33 @@ export interface CreateFlowPlanRequest {
       [k: string]: unknown;
     };
   };
+  setup: Setup;
+}
+/**
+ * Flow plan configuration.
+ */
+export interface Setup {
+  accounts?: {
+    [k: string]: unknown;
+  };
+  accountGrouping?: {
+    singleStockAccount?: boolean;
+    singleCryptoAccount?: boolean;
+    singleFeeAccount?: boolean;
+    singleProfitAccount?: boolean;
+    singleLossAccount?: boolean;
+    singleIncomeAccount?: boolean;
+    singleExpenseAccount?: boolean;
+    singleDividendAccount?: boolean;
+    singleTaxAccount?: boolean;
+  };
+  settings?: Settings;
+}
+export interface Settings {
+  allowShortSelling?: boolean;
+  inputDuplicates?: "Always" | "Never" | "Ask";
+  outputDuplicates?: "Always" | "Never" | "Ask";
+  allowInputFromPast?: "Always" | "Never" | "Ask";
+  skipDeposits?: boolean;
+  skipWithdrawals?: boolean;
 }

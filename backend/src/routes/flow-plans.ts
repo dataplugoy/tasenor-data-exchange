@@ -27,7 +27,7 @@ router.post('/',
   validate(CreateFlowPlanRequest),
   async (req, res) => {
     const userId = res.locals.userId
-    const { projectId, title, source, destination } = req.body
+    const { projectId, title, source, destination, setup } = req.body
     const project = await ProjectModel.get(projectId)
 
     if (!project) {
@@ -41,7 +41,8 @@ router.post('/',
 
     const plan = await FlowPlanModel.save({
       title,
-      projectId
+      projectId,
+      setup,
     })
     await InputSourceModel.save({
       type: source.type,
