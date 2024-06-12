@@ -28,10 +28,6 @@ export class EnableBankingDriver extends InputDriver {
     super(settings, projectSettings, setup, 'ENABLE_BANKING')
   }
 
-  canHandleInput(): boolean {
-    return true
-  }
-
   /**
    * Create a JWT token for this application.
    */

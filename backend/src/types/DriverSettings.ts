@@ -29,4 +29,16 @@ export type TasenorDriverSettings = {
   database: string
 }
 
-export type DriverSettings = TestMockDriverSettings | NoActionDriverSettings | EnableBankingDriverSettings | ManualUploadDriverSettings | NordnetDriverSettings | SPankkiDriverSettings | TasenorDriverSettings
+export type ProcountorDriverSettings = {
+  apiKey: string
+}
+
+export type DriverSettings =
+  | TestMockDriverSettings
+  | NoActionDriverSettings
+  | EnableBankingDriverSettings
+  | ManualUploadDriverSettings
+  | NordnetDriverSettings
+  | SPankkiDriverSettings
+  | TasenorDriverSettings
+  | ProcountorDriverSettings

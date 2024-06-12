@@ -30,10 +30,6 @@ export class ManualUploadDriver extends InputDriver {
     super(settings, projectSettings, setup, type)
   }
 
-  canHandleInput(): boolean {
-    return true
-  }
-
   async autheticate(): Promise<ManualUploadFlowState> {
     return {}
   }

@@ -121,6 +121,7 @@ enum DriverType {
   NORDNET
   TASENOR
   S_PANKKI
+  PROCOUNTOR
 }
 
 model InputSource {

@@ -21,10 +21,6 @@ export class NoActionDriver extends OutputDriver {
     return this.state
   }
 
-  canHandleOutput(): boolean {
-    return true
-  }
-
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
     const data = output.data.data as unknown as Transaction
     log('Output:')

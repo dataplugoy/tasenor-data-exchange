@@ -29,10 +29,6 @@ export class TasenorDriver extends OutputDriver {
     this.accounts = {}
   }
 
-  canHandleOutput(): boolean {
-    return true
-  }
-
   protected get baseUrl(): string {
     return this.settings.host
   }

@@ -22,4 +22,16 @@ export type TasenorFlowState = {
   token: Token
 }
 
-export type FlowState = TestMockFlowState | NoActionFlowState | EnableBankingFlowState | ManualUploadFlowState | NordnetFlowState | TasenorFlowState
+export type ProcountorFlowState = {
+  token: Token
+  expires: Timestring
+}
+
+export type FlowState =
+  | TestMockFlowState
+  | NoActionFlowState
+  | EnableBankingFlowState
+  | ManualUploadFlowState
+  | NordnetFlowState
+  | TasenorFlowState
+  | ProcountorFlowState

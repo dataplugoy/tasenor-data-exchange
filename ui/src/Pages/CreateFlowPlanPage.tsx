@@ -35,6 +35,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
   const [user, setUser] = useState('')
   const [password, setPassword] = useState('')
   const [database, setDatabase] = useState('')
+  const [apiKey, setApiKey] = useState('')
 
   const app = useApp()
   const POST = usePOST<CreateFlowPlanResponse>()
@@ -130,6 +131,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
             {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>}
             <MenuItem value="NO_ACTION"><Trans>Keep results in TaDeX</Trans></MenuItem>
             <MenuItem value="TASENOR"><Trans>Upload results to Tasenor</Trans></MenuItem>
+            <MenuItem value="PROCOUNTOR"><Trans>Upload results to Procountor</Trans></MenuItem>
           </TextField>
 
           {
@@ -138,6 +140,12 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
               <TextField autoComplete="off" required fullWidth onChange={e => setUser(e.target.value)} value={user} name="user" label={t('Login Email')}/>
               <TextField autoComplete="off" required fullWidth onChange={e => setPassword(e.target.value)} value={password} name="password" label={t('Password')} type="password"/>
               <TextField autoComplete="off" required fullWidth onChange={e => setDatabase(e.target.value)} value={database} name="database" label={t('Name of the Database')}/>
+            </>
+          }
+
+          {
+            output === 'PROCOUNTOR' && <>
+              <TextField autoComplete="off" required fullWidth onChange={e => setApiKey(e.target.value)} value={apiKey} name="apiKey" label={t('Procountor API Key')}/>
             </>
           }
 

@@ -7,6 +7,11 @@ import { Driver } from './Driver'
  * A base class for drivers delivering output.
  */
 export class OutputDriver extends Driver {
+
+  canHandleOutput(): boolean {
+    return true
+  }
+
   /**
    * Fetch available accounts from the remote.
    */

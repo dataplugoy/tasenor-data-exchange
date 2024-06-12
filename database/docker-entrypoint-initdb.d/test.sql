@@ -167,7 +167,8 @@ CREATE TYPE public."DriverType" AS ENUM (
     'MANUAL_UPLOAD',
     'NORDNET',
     'TASENOR',
-    'S_PANKKI'
+    'S_PANKKI',
+    'PROCOUNTOR'
 );
 
 

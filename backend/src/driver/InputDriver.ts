@@ -18,6 +18,10 @@ import { Transaction } from '../types/API/Transaction'
  */
 export class InputDriver extends Driver {
 
+  canHandleInput(): boolean {
+    return true
+  }
+
   /**
    * Handler for actual data fetching.
    * @returns New data found.
