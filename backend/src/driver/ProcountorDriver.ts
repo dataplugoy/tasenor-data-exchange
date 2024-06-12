@@ -1,5 +1,5 @@
 import qs from 'qs'
-import { AccountModelData, AccountNumber, PeriodModelData, Timestring } from '@tasenor/common'
+import { AccountNumber, Timestring } from '@tasenor/common'
 import { ProjectSettings } from '../types/API/Project'
 import { ProcountorDriverSettings } from '../types/DriverSettings'
 import { Setup } from '../types/API/Setup'
@@ -13,13 +13,8 @@ export class ProcountorDriver extends OutputDriver {
   declare settings: ProcountorDriverSettings
   declare state: ProcountorFlowState
 
-  private periods: PeriodModelData[]
-  private accounts: Record<AccountNumber, AccountModelData>
-
   constructor(settings: ProcountorDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
     super(settings, projectSettings, setup, 'PROCOUNTOR')
-    this.periods = []
-    this.accounts = {}
   }
 
   needConfiguredAccounts(): boolean {
@@ -30,8 +25,18 @@ export class ProcountorDriver extends OutputDriver {
     return this.systemSettings.url
   }
 
+  protected bearerToken(): string | null {
+    return this.state && this.state.token ? this.state.token : null
+  }
+
   async autheticate(): Promise<ProcountorFlowState> {
-    // TODO: Check old token and expiry.
+
+    // Check old and leave 5 second margin.
+    if (this.state.token) {
+      if (DateTime.now().minus({ seconds: 5 }) < DateTime.fromISO(this.state.expires)) {
+        return this.state
+      }
+    }
 
     const { clientId, clientSecret, redirectUrl } = this.systemSettings.data.options as { clientId: string, clientSecret: string, redirectUrl: string }
 
@@ -58,7 +63,20 @@ export class ProcountorDriver extends OutputDriver {
 
   async fetchRemoteAccounts(): Promise<RemoteAccount[]> {
     this.state = await this.autheticate()
-console.log(this.state)
-    return []
+
+    const res = await this.GET<{
+      ledgerAccounts: {
+        ledgerAccountCode: AccountNumber
+        name: string
+        active: boolean
+        translations: Record<string, string>
+      }[]
+    }>('/api/coa')
+
+    return res.ledgerAccounts.filter(acc => acc.active).map(acc => ({
+      name: acc.name,
+      number: acc.ledgerAccountCode,
+      hints: []
+    }))
   }
 }

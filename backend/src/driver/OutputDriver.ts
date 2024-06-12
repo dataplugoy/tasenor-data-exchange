@@ -31,6 +31,6 @@ export class OutputDriver extends Driver {
    * Handle transfer of the output item.
    */
   async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
-    throw new Error(`Input source ${this.type} does not implement deliverOutput().`)
+    throw new Error(`Output destination ${this.type} does not implement deliverOutput().`)
   }
 }
