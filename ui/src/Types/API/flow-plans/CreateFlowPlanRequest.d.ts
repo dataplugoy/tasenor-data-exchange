@@ -12,7 +12,8 @@ export type DriverType =
   | "NORDNET"
   | "TASENOR"
   | "TEST_MOCK"
-  | "S_PANKKI";
+  | "S_PANKKI"
+  | "PROCOUNTOR";
 
 export interface CreateFlowPlanRequest {
   title: string;

@@ -1089,6 +1089,7 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 4	NORDNET	\N	\N	\N	\N	\N	{}
 5	TASENOR	\N	\N	\N	\N	\N	{}
 6	S_PANKKI	\N	\N	\N	\N	\N	{}
+7	PROCOUNTOR	https://pts-procountor.pubdev.azure.procountor.com	\N	\N	\N	\N	{"clientId": "TasenorTestClient", "redirectUrl": "https://tadex.stg.tasenor.com/app/oauth", "clientSecret": "secret_fHgJ2JaXYeG5prZ9dgvYnNYfke7d3wTYu33h7Td3xnegwPQajg"}
 \.
 
 
@@ -1197,7 +1198,7 @@ SELECT pg_catalog.setval('public.services_id_seq', 1, false);
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 6, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 7, true);
 
 
 --

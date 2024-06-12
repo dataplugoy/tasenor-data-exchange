@@ -1,0 +1,27 @@
+{
+  "$id": "InputSourceSettings.json",
+  "title": "InputSourceSettings",
+  "oneOf": [
+    {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+      }
+    },
+    {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string"
+        },
+        "clientSecret": {
+          "type": "string"
+        },
+        "redirectUrl": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}
