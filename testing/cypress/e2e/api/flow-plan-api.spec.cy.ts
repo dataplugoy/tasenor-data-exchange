@@ -19,7 +19,8 @@ describe('Flow Plan API', () => {
         destination: {
           type: 'NO_ACTION',
           settings: {}
-        }
+        },
+        setup: {}
       }).should('validatesAs', CreateFlowPlanResponse, 201)
 
       cy.apiCall('GET', '/flow-plans').should('validatesAs', FlowPlansResponse)
