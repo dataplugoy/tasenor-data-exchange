@@ -112,7 +112,7 @@ export class Driver {
    * Ensure that URL does not have double slash in the beginning.
    * @param url Local part of the URL.
    */
-  private makeUrl(url: string): string {
+  protected makeUrl(url: string): string {
     const baseUrl = this.baseUrl.replace(/\/$/, '')
     url = url.replace(/^\//, '')
     return `${baseUrl}/${url}`
@@ -122,7 +122,7 @@ export class Driver {
    * Executor for HTTP requests.
    * @param method
    */
-  private async request<T>(method: HttpMethod, url: string, data: unknown = undefined): Promise<T> {
+  protected async request<T>(method: HttpMethod, url: string, data: unknown = undefined, headers: null | Record<string, string> = null): Promise<T> {
     log(`Requesting '${method} ${url}'.`)
 
     const storePath = this.options.tracking ? path.join(this.root, this.options.tracking, url.replace(this.systemSettings.url, '')) : null
@@ -133,7 +133,7 @@ export class Driver {
     const conf: AxiosRequestConfig = {
       method,
       url,
-      headers: this.headers(),
+      headers: headers || this.headers(),
       data,
     }
 
