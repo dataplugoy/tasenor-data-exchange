@@ -63,6 +63,12 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
         database
       }
     }
+    if (output === 'PROCOUNTOR') {
+      if (!apiKey) return app.addError('API Key is required.')
+      return {
+        apiKey
+      }
+    }
 
     return {}
   }

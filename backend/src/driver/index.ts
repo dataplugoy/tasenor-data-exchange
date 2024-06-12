@@ -11,6 +11,7 @@ import { ProjectSettings } from '../types/API/Project'
 import { TasenorDriver } from './TasenorDriver'
 import { Setup } from '../types/API/Setup'
 import { SPankkiDriver } from './SPankkiDriver'
+import { ProcountorDriver } from './ProcountorDriver'
 
 /**
  * Drivers implemented.
@@ -23,6 +24,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   NORDNET: NordnetDriver,
   TASENOR: TasenorDriver,
   S_PANKKI: SPankkiDriver,
+  PROCOUNTOR: ProcountorDriver
 }
 
 /**

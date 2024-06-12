@@ -5,7 +5,7 @@ import { Setup } from '../types/API/Setup'
 import { OutputDriver } from './OutputDriver'
 import { ProcountorFlowState } from '../types/FlowState'
 
-export class TasenorDriver extends OutputDriver {
+export class ProcountorDriver extends OutputDriver {
 
   declare settings: ProcountorDriverSettings
   declare state: ProcountorFlowState
