@@ -27,7 +27,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
   const [output, setOutput] = useState<OutputDestination|null>(null)
   const [input, setInput] = useState<InputSource|null>(null)
   const [deleting, setDeleting] = useState(false)
-  const hasRemoteAccounts = ['TASENOR'].includes(`${output?.type}`)
+  const hasRemoteAccounts = ['TASENOR', 'PROCOUNTOR'].includes(`${output?.type}`)
   const app = useApp()
   const { t } = useTranslation()
 

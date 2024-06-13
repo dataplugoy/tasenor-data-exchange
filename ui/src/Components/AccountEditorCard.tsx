@@ -18,13 +18,19 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
   const { code } = props
   let text = code
   if (/^CURRENCY_/.test(code)) {
-    text = t('CURRENCY_ACCOUNT', { currency: code.substring(9) })
+    text = t('ACCOUNT_CURRENCY', { currency: code.substring(9) })
   }
   if (/^EXTERNAL_NORDNET_/.test(code)) {
-    text = t('NORDNET_ACCOUNT', { currency: code.substring(17) })
+    text = t('ACCOUNT_NORDNET', { currency: code.substring(17) })
+  }
+  if (/^CRYPTO_/.test(code)) {
+    text = t('ACCOUNT_CRYPTO', { currency: code.substring(7) })
+  }
+  if (/^PROFIT_/.test(code)) {
+    text = t('ACCOUNT_PROFIT', { currency: code.substring(7) })
   }
   if (!/_/.test(code)) {
-    text = t(`${code}_ACCOUNT`)
+    text = t(`ACCOUNT_${code}`)
   }
   return <Box component="span">{text}</Box>
 }

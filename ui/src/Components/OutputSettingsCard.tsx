@@ -61,7 +61,7 @@ export const OutputSettingsCard = (props: OutputSettingsCardProps): React.JSX.El
       title={<Typography variant="subtitle1"><Trans>Bookkeeping Output Settings</Trans></Typography>}
     />
     <CardContent>
-      {output.type !== 'TASENOR' && <Trans>This source does not need any settings.</Trans>}
+      {output.type !== 'TASENOR' && <Trans>This destination does not need any settings.</Trans>}
       {output.type === 'TASENOR' && <TasenorOutputSettingsCard {...props} onSave={onSave}/>}
     </CardContent>
   </Card>
