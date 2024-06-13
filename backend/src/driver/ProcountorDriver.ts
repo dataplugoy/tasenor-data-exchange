@@ -7,7 +7,12 @@ import { OutputDriver } from './OutputDriver'
 import { ProcountorFlowState } from '../types/FlowState'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { DateTime } from 'luxon'
-import { Account } from '../types/API/Transaction'
+import { Account, Transaction } from '../types/API/Transaction'
+import { OutputItemModel } from '../models/OutputItemModel'
+import { RemoteId } from '../types/API/RemoteId'
+import { UnifiedItemModel } from '../models/UnifiedItemModel'
+import { TransactionLine } from '../types/API/TransactionLine'
+import { AccountException } from '../exceptions/AccountException'
 
 const HINTS = {
   'Muu vaihto-omaisuus': ['CRYPTO', 'STOCK'],
@@ -106,5 +111,41 @@ export class ProcountorDriver extends OutputDriver {
       number: acc.ledgerAccountCode,
       hints: hints(acc)
     }))
+  }
+
+  getAccount(line: TransactionLine): Account {
+    const accounts: Record<string, string> = this.setup.accounts as Record<string, string>|| {}
+    if (line.account in accounts) {
+      return accounts[line.account]
+    }
+    throw new AccountException(line.account)
+  }
+
+  async deliverOutput(output: OutputItemModel, unified: UnifiedItemModel): Promise<RemoteId> {
+    const tx = output.data.data as unknown as Transaction
+
+    // TODO: Handle dimensions.
+    const receipt = {
+      type: 'JOURNAL',
+      name: 'TODO: Name for a receipt',
+      receiptDate: tx.time.substring(0, 10),
+      vatType: unified.isSales() ? 'SALES' : 'PURCHASE',
+      vatStatus: 1,
+      transactions: tx.lines.map(line => ({
+        transactionType: 'ENTRY',
+        account: this.getAccount(line),
+        accountingValue: line.amount,
+        description: line.text,
+        vatPercent: 0,
+      }))
+    }
+    // TODO: Resolve VAT correctly.
+    // const vat = await this.GET('/api/vats/default')
+
+    this.state = await this.autheticate()
+    console.log(receipt)
+    const res = await this.POST('/api/ledgerreceipts', receipt)
+    console.log(res)
+    throw new Error(`WIP.`)
   }
 }

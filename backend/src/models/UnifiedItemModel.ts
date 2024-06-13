@@ -4,6 +4,8 @@ import { JsonValue } from '@prisma/client/runtime/library'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'
+import { OutputItemModel } from './OutputItemModel'
+import { UnifiedItemType } from '../types/API/UnifiedItemType'
 
 export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
 
@@ -16,6 +18,19 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
 
   get input(): UnifiedItemData {
     return this.json as unknown as UnifiedItemData
+  }
+
+  get type(): UnifiedItemType {
+    const data = this.data.data as unknown as UnifiedItemData
+    return data.type
+  }
+
+  /**
+   * Figure out if this item could be considered sales because kind of earning something.
+   */
+  isSales(): boolean {
+    console.log(this.type)
+    return ['sell', 'trade', 'income', 'deposit', 'dividend'].includes(this.type)
   }
 
   /**
@@ -77,6 +92,16 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
   static async findForRun(runId: number): Promise<UnifiedItemModel[]> {
     const items = await this.findMany<prisma.UnifiedItem, UnifiedItemModel>({ runId })
     return items
+  }
+
+  /**
+   * Get the unified items for the run.
+   * @param run
+   * @returns
+   */
+  static async findForOutput(item: OutputItemModel): Promise<UnifiedItemModel> {
+    const ret = await this.findById<prisma.UnifiedItem, UnifiedItemModel>(item.data.unifiedId)
+    return ret
   }
 
   /**

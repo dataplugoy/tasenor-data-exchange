@@ -1,4 +1,5 @@
 import { OutputItemModel } from '../models/OutputItemModel'
+import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { RemoteId } from '../types/API/RemoteId'
 import { Driver } from './Driver'
@@ -30,7 +31,7 @@ export class OutputDriver extends Driver {
   /**
    * Handle transfer of the output item.
    */
-  async deliverOutput(output: OutputItemModel): Promise<RemoteId> {
+  async deliverOutput(output: OutputItemModel, unified: UnifiedItemModel): Promise<RemoteId> {
     throw new Error(`Output destination ${this.type} does not implement deliverOutput().`)
   }
 }

@@ -148,7 +148,11 @@ export class Driver {
     }
 
     const result = await axios(conf).catch(err => {
-      error(`Request ${method} ${url} failed:`, err.toString())
+      let msg = err.toString()
+      if (err.response.data) {
+        msg = `HTTP ${err.response.status} ${JSON.stringify(err.response.data)}`
+      }
+      error(`Request ${method} ${url} failed:`, msg)
       throw new HTTPException(method, url, err.toString())
     })
 
