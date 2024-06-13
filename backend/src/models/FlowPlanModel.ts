@@ -645,6 +645,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             throw err
           }
           result = 'FAIL'
+          error(`Delivering iten ${item} failed: ${err.stack}`)
           await item.fail(run, err)
           if (err instanceof AccountException) {
             unknownRemoteAccounts.add(err.code)
