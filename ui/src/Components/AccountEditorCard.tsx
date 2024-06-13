@@ -45,10 +45,30 @@ interface AccountEditProps {
 export const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
   const { code, remote, options, onChange } = props
   const none = { number: '', name: '' }
-  // TODO: Sort out remotes according to hints.
+  const scores: Record<AccountNumber, number> = {}
+
+  // Calculate scores from hints.
+  options.forEach(option => {
+    scores[option.number] = 0
+    if (!option.hints || option.hints.length === 0) {
+      scores[option.number] = -1
+    } else if (option.hints.includes(code)) {
+      scores[option.number] += 2
+    } else {
+      const re = /^(.+?)_/.exec(code)
+      if (re && (option.hints || []).includes(re[1])) {
+        scores[option.number] += 1
+      } else {
+        scores[option.number] -= 2
+      }
+    }
+  })
+
+  // Sort by scores and then by number.
+  options.sort((a, b) => scores[a.number] !== scores[b.number] ? (scores[b.number] - scores[a.number]) : 0)
 
   return <Autocomplete
-    options={options.concat(none)}
+    options={[none].concat(options)}
     getOptionLabel={(option) => option.number === '' && option.name === '' ? '' : `${option.number} ${option.name}`}
     value={remote || none}
     onChange={(_, value) => onChange(value && value.number !== '' ? value.number as AccountNumber : null)}
