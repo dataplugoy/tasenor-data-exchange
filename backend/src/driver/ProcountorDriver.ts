@@ -114,7 +114,7 @@ export class ProcountorDriver extends OutputDriver {
   }
 
   getAccount(line: TransactionLine): Account {
-    const accounts: Record<string, string> = this.setup.accounts as Record<string, string>|| {}
+    const accounts: Record<string, string> = this.setup.accounts as Record<string, string> || {}
     if (line.account in accounts) {
       return accounts[line.account]
     }
@@ -146,6 +146,6 @@ export class ProcountorDriver extends OutputDriver {
     console.log(receipt)
     const res = await this.POST('/api/ledgerreceipts', receipt)
     console.log(res)
-    throw new Error(`WIP.`)
+    throw new Error('WIP.')
   }
 }
