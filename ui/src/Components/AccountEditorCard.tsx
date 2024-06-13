@@ -67,9 +67,13 @@ export const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
   // Sort by scores and then by number.
   options.sort((a, b) => scores[a.number] !== scores[b.number] ? (scores[b.number] - scores[a.number]) : 0)
 
+  const stars = (num: Account) => {
+    return scores[num] > 0 ? ' ⭐' : ''
+  }
+
   return <Autocomplete
     options={[none].concat(options)}
-    getOptionLabel={(option) => option.number === '' && option.name === '' ? '' : `${option.number} ${option.name}`}
+    getOptionLabel={(option) => option.number === '' && option.name === '' ? '' : `${option.number} ${option.name}${stars(option.number)}`}
     value={remote || none}
     onChange={(_, value) => onChange(value && value.number !== '' ? value.number as AccountNumber : null)}
     isOptionEqualToValue={(a, b) => a.number === b.number}

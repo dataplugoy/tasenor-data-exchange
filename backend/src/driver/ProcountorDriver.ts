@@ -7,6 +7,30 @@ import { OutputDriver } from './OutputDriver'
 import { ProcountorFlowState } from '../types/FlowState'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { DateTime } from 'luxon'
+import { Account } from '../types/API/Transaction'
+
+const HINTS = {
+  'Muu vaihto-omaisuus': ['CRYPTO', 'STOCK'],
+  'Myynti, arvopaperit ja kiinteistöt': ['PROFIT'],
+  'Rahoituskulut, muut': ['FEE'],
+  'Myynnin luottotappiot': ['LOSS'],
+  'Muut liikekulut': ['EXPENSE'],
+  'Muut tuotot': ['INCOME'],
+  'Pankkisaamiset, pankki2': ['CURRENCY'],
+  'Pankkisaamiset, pankki3': ['CURRENCY'],
+  'Pankkisaamiset, pankki4': ['CURRENCY'],
+  'Pankkisaamiset, pankki5': ['CURRENCY'],
+  'Pankkisaamiset, pankki6': ['CURRENCY'],
+  'Pankkisaamiset, pankki7': ['CURRENCY'],
+  'Pankkisaamiset, pankki8': ['CURRENCY'],
+}
+
+export type ProcountorAccount = {
+  ledgerAccountCode: AccountNumber
+  name: string
+  active: boolean
+  translations: Record<string, string>
+}
 
 export class ProcountorDriver extends OutputDriver {
 
@@ -73,10 +97,14 @@ export class ProcountorDriver extends OutputDriver {
       }[]
     }>('/api/coa')
 
+    const hints = (acc: ProcountorAccount): Account[] => {
+      return HINTS[acc.name] || []
+    }
+
     return res.ledgerAccounts.filter(acc => acc.active).map(acc => ({
       name: acc.name,
       number: acc.ledgerAccountCode,
-      hints: []
+      hints: hints(acc)
     }))
   }
 }
