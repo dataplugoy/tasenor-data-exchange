@@ -988,7 +988,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 4	2024-05-08 11:08:59.91	2024-05-13 13:35:02.12	Tasenor	{}	1	\N	{}	{}	{"accounts": {"FEE": "5325", "LOSS": "5335", "STOCK": "1100", "INCOME": "9290", "PROFIT": "5050", "EXPENSE": "9690", "CURRENCY_EUR": "3050", "CURRENCY_USD": "30505", "EXTERNAL_NORDNET_EUR": "3010"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}
 6	2024-05-21 16:10:11.082	2024-05-21 16:10:11.082	S-Pankki Demo	{}	1	\N	{}	{}	{}
 7	2024-05-31 10:39:01.974	2024-05-31 10:39:01.974	Unit Testing with Duplicates	{}	1	\N	{}	{}	{}
-5	2024-05-09 08:52:41.007	2024-06-14 14:22:35.268	Nightly Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Always", "skipWithdrawals": false, "outputDuplicates": "Always", "allowInputFromPast": "Always"}}
+5	2024-05-09 08:52:41.007	2024-06-14 14:25:19.836	Nightly Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Always", "skipWithdrawals": false, "outputDuplicates": "Always", "allowShortSelling": true, "allowInputFromPast": "Always"}}
 \.
 
 
