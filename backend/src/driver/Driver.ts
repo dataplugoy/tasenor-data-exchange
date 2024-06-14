@@ -190,6 +190,14 @@ export class Driver {
   }
 
   /**
+   * Execute PUT request.
+   */
+  async PUT<T>(url, data): Promise<T> {
+    const resp = await this.request<T>('PUT', this.makeUrl(url), data)
+    return resp
+  }
+
+  /**
    * Handle authentication to the remote.
    */
   async autheticate(): Promise<FlowState> {

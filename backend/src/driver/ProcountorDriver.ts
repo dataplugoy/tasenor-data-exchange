@@ -186,6 +186,11 @@ export class ProcountorDriver extends OutputDriver {
     }
 
     const res = await this.POST('/api/ledgerreceipts', receipt) as { id: number }
+
+    if (this.settings.autoApprove) {
+      await this.PUT(`/api/ledgerreceipts/${res.id}/approve`, undefined)
+    }
+
     return {
       type: 'ID',
       id: res.id
