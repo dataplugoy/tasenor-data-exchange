@@ -64,6 +64,7 @@ export class ProcountorDriver extends OutputDriver {
   constructor(settings: ProcountorDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
     super(settings, projectSettings, setup, 'PROCOUNTOR')
     this.vat = null
+    this.rateLimit = 60
   }
 
   needConfiguredAccounts(): boolean {

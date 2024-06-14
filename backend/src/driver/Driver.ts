@@ -8,8 +8,9 @@ import { FlowState } from '../types/FlowState'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
 import axios, { AxiosRequestConfig } from 'axios'
-import { HttpMethod, error, log } from '@tasenor/common'
+import { HttpMethod, delay, error, log } from '@tasenor/common'
 import { HTTPException } from '../exceptions/HTTPException'
+import { DateTime } from 'luxon'
 
 /**
  * Base class for different input sources and output destinations supported.
@@ -25,6 +26,10 @@ export class Driver {
   state: FlowState
   // This is detected version of the data. By default it is always 1.
   version: number
+  // If set, make sure there will be no more than this many HTTP requests per second.
+  rateLimit: number | null
+  // Time stamp in milliseconds of the latest request.
+  private lastRequest: number
 
   constructor(settings: DriverSettings, projectSettings: ProjectSettings, setup: Setup, type: prisma.DriverType) {
     this.type = type
@@ -32,6 +37,8 @@ export class Driver {
     this.settings = settings
     this.projectSettings = projectSettings
     this.version = 1
+    this.rateLimit = null
+    this.lastRequest = DateTime.now().toMillis()
   }
 
   /**
@@ -125,6 +132,15 @@ export class Driver {
   protected async request<T>(method: HttpMethod, url: string, data: unknown = undefined, headers: null | Record<string, string> = null): Promise<T> {
     log(`Requesting '${method} ${url}'.`)
 
+    const now = DateTime.now().toMillis()
+    if (this.rateLimit !== null) {
+      const minGap = 1000 / this.rateLimit
+      const need = Math.max(0, minGap - (now - this.lastRequest))
+      if (need > 0) {
+        await delay(need)
+      }
+    }
+
     const storePath = this.options.tracking ? path.join(this.root, this.options.tracking, url.replace(this.systemSettings.url, '')) : null
     const storeDir = storePath ? path.dirname(storePath) : null
     const storeFile = storePath ? `${method}-${path.basename(storePath)}` : null
@@ -147,6 +163,7 @@ export class Driver {
       return data as T
     }
 
+    this.lastRequest = now
     const result = await axios(conf).catch(err => {
       let msg = err.toString()
       if (err.response.data) {
