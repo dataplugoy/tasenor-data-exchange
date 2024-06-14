@@ -31,6 +31,7 @@ export type TasenorDriverSettings = {
 
 export type ProcountorDriverSettings = {
   apiKey: string
+  autoApprove: boolean
 }
 
 export type DriverSettings =

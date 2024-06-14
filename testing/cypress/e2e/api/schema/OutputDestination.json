@@ -16,7 +16,8 @@
       "enum": [
         "TEST_MOCK",
         "NO_ACTION",
-        "TASENOR"
+        "TASENOR",
+        "PROCOUNTOR"
       ]
     },
     "settings": {

@@ -8,7 +8,7 @@
 export interface OutputDestination {
   id?: number;
   flowPlanId: number;
-  type: "TEST_MOCK" | "NO_ACTION" | "TASENOR";
+  type: "TEST_MOCK" | "NO_ACTION" | "TASENOR" | "PROCOUNTOR";
   settings: {
     [k: string]: unknown;
   };
