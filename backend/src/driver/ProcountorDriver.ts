@@ -37,13 +37,33 @@ export type ProcountorAccount = {
   translations: Record<string, string>
 }
 
+export type ProcountorVATStatus = {
+  vatStatus: number
+  description: string
+  sales: boolean
+  purchase: boolean
+}
+
+export type ProcountorVATInformation = {
+  country: string
+  percentages: { vatPercent: number, sales: boolean, purchase: boolean }[]
+}
+
+export type ProcountorVAT = {
+  vatInformation: ProcountorVATInformation[]
+  vatStatuses: ProcountorVATStatus[]
+}
+
 export class ProcountorDriver extends OutputDriver {
 
   declare settings: ProcountorDriverSettings
   declare state: ProcountorFlowState
 
+  vat: ProcountorVAT | null
+
   constructor(settings: ProcountorDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
     super(settings, projectSettings, setup, 'PROCOUNTOR')
+    this.vat = null
   }
 
   needConfiguredAccounts(): boolean {
@@ -126,8 +146,28 @@ export class ProcountorDriver extends OutputDriver {
     return [...names].join(' ')
   }
 
+  /**
+   * Collect VAT items and find the id of the one with the mathching name.
+   */
+  async getVAT(description: string): Promise<ProcountorVATStatus> {
+    if (!this.vat) {
+      this.state = await this.autheticate()
+      this.vat = await this.GET<ProcountorVAT>('/api/vats/default')
+    }
+
+    const vat = this.vat.vatStatuses.find(vat => vat.description === description)
+    if (!vat) {
+      throw new Error(`Cannot find VAT entry named '${description}' for Procountor.`)
+    }
+    return vat
+  }
+
   async deliverOutput(output: OutputItemModel, unified: UnifiedItemModel): Promise<RemoteId> {
     const tx = output.data.data as unknown as Transaction
+    this.state = await this.autheticate()
+
+    // TODO: In future when we have VAT entries, need to reconstruct entries here accordingly.
+    const vat = await this.getVAT('No VAT reg.')
 
     // TODO: Handle dimensions.
     const receipt = {
@@ -135,7 +175,7 @@ export class ProcountorDriver extends OutputDriver {
       name: this.name(tx),
       receiptDate: tx.time.substring(0, 10),
       vatType: unified.isSales() ? 'SALES' : 'PURCHASE',
-      vatStatus: 1,
+      vatStatus: vat.vatStatus,
       transactions: tx.lines.map(line => ({
         transactionType: 'ENTRY',
         account: this.getAccount(line),
@@ -144,10 +184,6 @@ export class ProcountorDriver extends OutputDriver {
         vatPercent: 0,
       }))
     }
-    // TODO: Resolve VAT correctly.
-    // const vat = await this.GET('/api/vats/default')
-
-    this.state = await this.autheticate()
 
     const res = await this.POST('/api/ledgerreceipts', receipt) as { id: number }
     return {
