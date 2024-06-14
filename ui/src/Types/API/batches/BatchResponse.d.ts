@@ -76,7 +76,7 @@ export type RemoteId =
     }
   | {
       type: "FILE";
-      path?: string;
+      path: string;
     }
   | {
       type: "TASENOR";
@@ -84,6 +84,10 @@ export type RemoteId =
       doc: number;
       period: number;
       entries: number[];
+    }
+  | {
+      type: "ID";
+      id: number;
     };
 
 export interface Batch {

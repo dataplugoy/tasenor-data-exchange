@@ -121,13 +121,18 @@ export class ProcountorDriver extends OutputDriver {
     throw new AccountException(line.account)
   }
 
+  name(tx: Transaction) {
+    const names = new Set(tx.lines.filter(line => !!line.text).map(line => line.text))
+    return [...names].join(' ')
+  }
+
   async deliverOutput(output: OutputItemModel, unified: UnifiedItemModel): Promise<RemoteId> {
     const tx = output.data.data as unknown as Transaction
 
     // TODO: Handle dimensions.
     const receipt = {
       type: 'JOURNAL',
-      name: 'TODO: Name for a receipt',
+      name: this.name(tx),
       receiptDate: tx.time.substring(0, 10),
       vatType: unified.isSales() ? 'SALES' : 'PURCHASE',
       vatStatus: 1,
@@ -143,9 +148,11 @@ export class ProcountorDriver extends OutputDriver {
     // const vat = await this.GET('/api/vats/default')
 
     this.state = await this.autheticate()
-    console.log(receipt)
-    const res = await this.POST('/api/ledgerreceipts', receipt)
-    console.log(res)
-    throw new Error('WIP.')
+
+    const res = await this.POST('/api/ledgerreceipts', receipt) as { id: number }
+    return {
+      type: 'ID',
+      id: res.id
+    }
   }
 }

@@ -29,7 +29,6 @@ export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
    * Figure out if this item could be considered sales because kind of earning something.
    */
   isSales(): boolean {
-    console.log(this.type)
     return ['sell', 'trade', 'income', 'deposit', 'dividend'].includes(this.type)
   }
 
