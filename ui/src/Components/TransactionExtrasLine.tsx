@@ -15,7 +15,6 @@ export const TransactionExtrasLine = (props: TransactionExtrasLineProps): React.
   let text = ''
 
   if ('asset' in extras && 'assetChange' in extras) {
-    // TODO: Make num lib for displaying.
     const sign = parseFloat(`${extras.assetChange}`) < 0 ? '' : '+'
     text = `Δ ${sign}${extras.assetChange} ${extras.asset}`
     delete extras.assetChange
