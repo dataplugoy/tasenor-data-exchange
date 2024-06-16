@@ -168,7 +168,7 @@ export class ProcountorDriver extends OutputDriver {
     this.state = await this.autheticate()
 
     // TODO: In future when we have VAT entries, need to reconstruct entries here accordingly.
-    const vat = await this.getVAT('No VAT reg.')
+    const vat = unified.isSales() ? await this.getVAT('0% VAT turnover') : await this.getVAT('No VAT reg.')
 
     // TODO: Handle dimensions.
     const receipt = {
