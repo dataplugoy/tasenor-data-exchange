@@ -3,6 +3,7 @@ sidebar_position: 200
 ---
 import TxTypes from '@site/src/components/TxTypes';
 import Type from '@site/src/components/Type';
+import EnumValues from '@site/src/components/EnumValues';
 
 
 # Unified Format
@@ -165,7 +166,8 @@ is not guaranteed.
 ### `reason` <Type file="UnifiedItemData.json" field="reason"/>
 
 For automatic text construction for income and expense, there are some pre-defined *reason* symbols
-that are automatically used when translating text to the transaction.
+that are automatically used when translating text to the transaction. Currently reason can be one
+of the following: <EnumValues file="UnifiedItemData.json" field="reason"/>.
 
 ### `reasonAsset` <Type file="UnifiedItemData.json" field="reasonAsset"/>
 
