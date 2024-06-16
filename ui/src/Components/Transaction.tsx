@@ -1,10 +1,11 @@
 import React from 'react'
 import { Transaction as APITransaction, TransactionLine as APITransactionLine } from '../Types/API/Transaction'
 import { DateTime } from 'luxon'
-import { TransactionDeliveryLine, TransactionLine } from './TransactionLine'
+import { TransactionLine } from './TransactionLine'
 import { OutputItem } from '../Types/API/OutputItem'
 import { isOutputItem } from '../Types/predicates'
 import { OutputDestination } from '../Types/API/OutputDestination'
+import { TransactionDeliveryLine } from './TransactionDeliveryLine'
 
 interface TransactionProps {
   tx: APITransaction | OutputItem

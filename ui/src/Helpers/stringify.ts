@@ -1,5 +1,6 @@
 import { Language, Timestring } from '@tasenor/common'
 import { DateTime } from 'luxon'
+import { sprintf } from 'sprintf-js'
 
 export function time2str(date: Timestring, language: Language): string {
   return DateTime.fromISO(date).toLocaleString(DateTime.TIME_WITH_SECONDS, { locale: language })
@@ -26,4 +27,15 @@ export function subtracted2str(num: number | string | undefined, asset: string, 
   }
   const neg = typeof num === 'number' ? (num < 0) : num.startsWith('-')
   return `${neg ? '' : '−'}${num} ${asset}`
+}
+
+export function money(amount: number | string, type: 'debit' | 'credit'): string {
+  if (amount === '') {
+    return ''
+  }
+  const numeric = typeof amount === 'string' ? parseFloat(amount) : amount
+  if (type === 'debit') {
+    return numeric >= 0 ? `${sprintf('%.2f', numeric)}` : ''
+  }
+  return numeric < 0 ? `${sprintf('%.2f', Math.abs(numeric))}` : ''
 }
