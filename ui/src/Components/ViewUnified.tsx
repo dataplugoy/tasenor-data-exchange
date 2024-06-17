@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorTextTwoTone, LabelTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown, blueGrey } from '@mui/material/colors'
@@ -10,26 +10,7 @@ import clone from 'clone'
 import { useApp } from '../Hooks/useApp'
 import { added2str, date2str, subtracted2str } from '../Helpers/stringify'
 import { Language, Timestring, isCurrency } from '@tasenor/common'
-
-interface UnifiedTagChipProps {
-  tag: string
-  title?: string
-}
-
-export const UnifiedTagChip = (props: UnifiedTagChipProps): React.JSX.Element => {
-  const { tag, title } = props
-  return <Chip
-    sx={{ ml: 1 }}
-    title={title}
-    icon={<LabelTwoTone/>}
-    label={tag}
-    size="medium"
-    style={{
-      color: 'white',
-      backgroundColor: 'black'
-    }}
-  />
-}
+import { TagChip } from './TagChip'
 
 interface UnifiedTypeChipProps {
   type: UnifiedItemType
@@ -232,7 +213,7 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
   const tags = pick('tags')
   if (tags) {
     rendered.push(<Box key="tags" component="span" sx={{ ml: 2 }}>
-      {tags.map(tag => <UnifiedTagChip key={tag} tag={tag} title={t('A tag associated with the transaction.')}/>)}
+      {tags.map(tag => <TagChip key={tag} tag={tag} title={t('A tag associated with the transaction.')}/>)}
     </Box>)
   }
 

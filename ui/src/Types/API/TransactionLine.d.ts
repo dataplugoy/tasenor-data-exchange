@@ -17,4 +17,5 @@ export interface TransactionLine {
 export interface TransactionExtras {
   asset?: Asset;
   assetChange?: number | string;
+  tags?: string[];
 }

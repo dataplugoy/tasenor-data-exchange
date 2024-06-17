@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import prisma from '@prisma/client'
+import clone from 'clone'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import Decimal from 'decimal.js'
@@ -164,11 +165,23 @@ export class Analyzer {
     if (!this[`${input.type}Handler`]) {
       throw new Error(`Analyzer does not yet implement input type '${input.type}'.`)
     }
+
+    // Creat the result.
     this.lastResult = await this[`${input.type}Handler`](time, input)
     this.lastResult && this.resolveAccounts(this.lastResult)
+    if (input.tags) {
+      this.lastResult?.lines.forEach(line => {
+        if (!line.extras) {
+          line.extras = {}
+        }
+        line.extras.tags = clone(input.tags)
+      })
+    }
+
     if (!this.lastResult) {
       throw new Error(`A function ${input.type} failed to produce the result.`)
     }
+
     return this.lastResult
   }
 

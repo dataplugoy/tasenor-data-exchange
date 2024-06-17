@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Switch, TextField } from '@mui/material'
+import React, { useState } from 'react'
+import { FormControl, FormGroup, FormHelperText, TextField } from '@mui/material'
 import { Question } from '../Types/API/Question'
 
 interface QuestionStringsPanelProps {

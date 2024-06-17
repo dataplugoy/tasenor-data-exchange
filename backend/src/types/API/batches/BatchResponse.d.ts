@@ -298,6 +298,7 @@ export interface TransactionLine {
 export interface TransactionExtras {
   asset?: Asset6;
   assetChange?: number | string;
+  tags?: string[];
 }
 export interface ItemError {
   id?: number;
