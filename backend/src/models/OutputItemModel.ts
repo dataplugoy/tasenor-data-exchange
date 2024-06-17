@@ -1,10 +1,10 @@
 import { JsonValue } from '@prisma/client/runtime/library'
 import { Transaction } from '../types/API/Transaction'
-import { RemoteId } from '../types/RemoteId'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'
+import { RemoteId } from '../types/API/RemoteId'
 
 export class OutputItemModel extends BaseModel<prisma.OutputItem> {
 
