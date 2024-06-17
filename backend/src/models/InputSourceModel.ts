@@ -19,7 +19,7 @@ export class InputSourceModel extends BaseModel<prisma.InputSource> {
    * Get the driver for this input source.
    */
   getDriver(projectSettings: ProjectSettings, setup: Setup): Driver {
-    return getDriver(this.type, this.data.settings as DriverSettings, projectSettings)
+    return getDriver(this.type, this.data.settings as DriverSettings, projectSettings, setup)
   }
 
   /**

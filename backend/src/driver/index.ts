@@ -30,7 +30,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
 /**
  * Helper to instantiate a driver for a type.
  */
-export function getDriver(type: prisma.DriverType, settings: DriverSettings, projectSettings: ProjectSettings, setup: Setup = {}): Driver {
+export function getDriver(type: prisma.DriverType, settings: DriverSettings, projectSettings: ProjectSettings, setup: Setup): Driver {
   const DriverConstructor = drivers[type]
   if (!DriverConstructor) {
     throw new Error(`Cannot find driver for driver type '${type}'.`)

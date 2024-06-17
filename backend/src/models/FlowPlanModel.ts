@@ -238,7 +238,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   async getInputDriverName(): Promise<string> {
     const driver = await this.getSource()
-    return getDriver(driver.type, {}, {} as ProjectSettings).constructor.name
+    return getDriver(driver.type, {}, {} as ProjectSettings, {}).constructor.name
   }
 
   /**

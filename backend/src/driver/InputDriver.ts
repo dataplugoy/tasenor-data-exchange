@@ -49,6 +49,7 @@ export class InputDriver extends Driver {
       throw new Error(`There are no rules available in ${flow} for unifying input.`)
     }
 
+    // Execute rules.
     const variables = {
       text: input.text,
       line: input.line,
@@ -61,6 +62,18 @@ export class InputDriver extends Driver {
     }
 
     const data: UnifiedItemData = applyRules(variables, rules, ruleKey)
+
+    // Add common tags from setup.
+    if (this.setup.settings?.tags) {
+      this.setup.settings.tags.forEach(tag => {
+        if (!data.tags) {
+          data.tags = []
+        }
+        if (!data.tags.includes(tag)) {
+          data.tags.push(tag)
+        }
+      })
+    }
 
     const time = isShortDate(input.time)
       ? DateTime.fromISO(`${input.time}T12:00:00Z`).toUTC().toISO()
