@@ -3,8 +3,9 @@
   "title": "QuestionType",
   "type": "string",
   "enum": [
+    "ACCOUNT",
     "BOOLEAN",
     "ENUM",
-    "ACCOUNT"
+    "STRING"
   ]
 }

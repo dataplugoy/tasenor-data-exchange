@@ -23,6 +23,7 @@ export interface UnifiedItemRule {
   reason?: string;
   reasonAsset?: string;
   service?: string;
+  tags?: string;
   taxType?: string;
   taxAmount?: string;
   taxAsset?: string;

@@ -150,6 +150,7 @@ export interface Settings {
   allowInputFromPast?: "Always" | "Never" | "Ask";
   skipDeposits?: boolean;
   skipWithdrawals?: boolean;
+  tags?: string[];
 }
 export interface InputItem {
   id: number;

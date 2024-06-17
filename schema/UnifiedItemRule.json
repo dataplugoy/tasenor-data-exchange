@@ -56,6 +56,9 @@
     "service": {
       "type": "string"
     },
+    "tags": {
+      "type": "string"
+    },
     "taxType": {
       "type": "string"
     },

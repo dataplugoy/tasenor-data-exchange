@@ -54,6 +54,12 @@ export const VARIABLES: Record<string, Question> = {
     help: 'If withdrawals from the accounts in this service are imported from some other source than this, they should be skipped when processing here.',
     label: 'Skip withdrawals',
   },
+  tags: {
+    variable: 'tags',
+    type: 'STRING',
+    help: 'Optional comma- or semicolon separated list of tags to be added every transaction created by this flow plan.',
+    label: 'Additional tags'
+  }
 }
 
 export class AnswersRequired extends AlertException<Question[]> {

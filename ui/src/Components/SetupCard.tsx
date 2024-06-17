@@ -28,7 +28,7 @@ export const SetupCard = (props: SetupCardProps): React.JSX.Element => {
   useEffect(() => {
     GET('/questions').then(res => {
       if (res) {
-        res = res.sort((a, b) => (a.type < b.type ? 1 : a.type > b.type ? -1 : 0))
+        res = res.sort((a, b) => (a.type < b.type ? -1 : a.type > b.type ? 1 : 0))
         setQuestions(res)
       }
     })

@@ -32,4 +32,5 @@ export interface Settings {
   allowInputFromPast?: "Always" | "Never" | "Ask";
   skipDeposits?: boolean;
   skipWithdrawals?: boolean;
+  tags?: string[];
 }
