@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Trans } from 'react-i18next'
 import { DEFAULT_PROJECT, DEFAULT_USER, useApp } from '../Hooks/useApp'
 import { useLocation, useNavigate } from 'react-router-dom'
+import pck from '../../package.json'
 
 export const Menu = (): React.JSX.Element => {
   const app = useApp()
@@ -38,6 +39,7 @@ export const Menu = (): React.JSX.Element => {
 
   return (
     <AppBar position="static">
+      <Box sx={{ float: 'left', ml: 1, mt: 0.5, height: 0, color: 'rgba(255,255,255,0.2)' }}>v{pck.version}</Box>
       <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr auto' }}>
         <Button data-cy="Menu-Dashboard" startIcon={<Home />} onClick={() => navigate(`/home${add}`)}><Trans>Dashboard</Trans></Button>
         <Button data-cy="Menu-Executions" startIcon={<AccountTree />} onClick={() => navigate(`/flow-plans${add}`)}><Trans>Executions</Trans></Button>
