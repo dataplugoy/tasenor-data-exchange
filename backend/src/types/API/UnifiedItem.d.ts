@@ -114,6 +114,10 @@ export interface UnifiedItemData {
    */
   service?: string;
   /**
+   * A list of non-empty strings interpreted usually as dimensions in the bookkeeping.
+   */
+  tags?: string[];
+  /**
    * If tax must be calculated, this is the type of the tax.
    */
   taxType?: "vat" | "withholding";

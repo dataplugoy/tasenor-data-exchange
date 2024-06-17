@@ -62,6 +62,8 @@ function resolveString(spec) {
   if (re) {
     return 'enum'
   }
+
+  return 'string'
 }
 
 function resolveNumeric(spec) {
@@ -72,6 +74,10 @@ function resolveNumeric(spec) {
 
 function resolveNumber(spec) {
   return 'number'
+}
+
+function resolveArray(spec) {
+  return `array of ${_resolve(spec.items, '')}`
 }
 
 /**
@@ -96,6 +102,9 @@ function _resolve(spec, field) {
 
     case 'number':
       return resolveNumber(spec)
+
+    case 'array':
+      return resolveArray(spec)
 
     default:
       if (spec.type instanceof Array

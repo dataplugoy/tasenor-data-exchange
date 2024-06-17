@@ -85,6 +85,14 @@
       "description": "Name of the service providing the data.",
       "type": "string"
     },
+    "tags": {
+      "description": "A list of non-empty strings interpreted usually as dimensions in the bookkeeping.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^."
+      }
+    },
     "taxType": {
       "description": "If tax must be calculated, this is the type of the tax.",
       "type": "string",
