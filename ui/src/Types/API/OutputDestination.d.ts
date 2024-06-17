@@ -5,13 +5,23 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type OutputDestinationSettings =
+  | {}
+  | {
+      host: string;
+      user: string;
+      database: string;
+      password: string;
+    }
+  | {
+      apiKey: string;
+    };
+
 export interface OutputDestination {
   id?: number;
   flowPlanId: number;
   type: "TEST_MOCK" | "NO_ACTION" | "TASENOR" | "PROCOUNTOR";
-  settings: {
-    [k: string]: unknown;
-  };
+  settings: OutputDestinationSettings;
   created?: string;
   updated?: string;
 }

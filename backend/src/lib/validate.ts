@@ -11,15 +11,21 @@ import FileUpload from '../../src/types/API/FileUpload.json'
 import FlowPlan from '../../src/types/API/FlowPlan.json'
 import InputItemData from '../../src/types/API/InputItemData.json'
 import InputItem from '../../src/types/API/InputItem.json'
+import InputSource from '../../src/types/API/InputSource.json'
+import InputSourceSettings from '../../src/types/API/InputSourceSettings.json'
 import ItemError from '../../src/types/API/ItemError.json'
 import Notes from '../../src/types/API/Notes.json'
+import OutputDestination from '../../src/types/API/OutputDestination.json'
+import OutputDestinationSettings from '../../src/types/API/OutputDestinationSettings.json'
 import OutputItem from '../../src/types/API/OutputItem.json'
 import Project from '../../src/types/API/Project.json'
 import ProjectSettings from '../../src/types/API/ProjectSettings.json'
+import QuestionArgs from '../../src/types/API/QuestionArgs.json'
 import Question from '../../src/types/API/Question.json'
 import QuestionType from '../../src/types/API/QuestionType.json'
 import Rates from '../../src/types/API/Rates.json'
 import RemoteAccount from '../../src/types/API/RemoteAccount.json'
+import RemoteId from '../../src/types/API/RemoteId.json'
 import Rule from '../../src/types/API/Rule.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
@@ -37,6 +43,7 @@ import UnifiedItemType from '../../src/types/API/UnifiedItemType.json'
 import { error } from '@tasenor/common'
 
 export const ajv = new Ajv({ allowUnionTypes: true })
+
 ajv.addSchema(Account)
 ajv.addSchema(Alert)
 ajv.addSchema(AlertMethod)
@@ -49,15 +56,21 @@ ajv.addSchema(FileUpload)
 ajv.addSchema(FlowPlan)
 ajv.addSchema(InputItemData)
 ajv.addSchema(InputItem)
+ajv.addSchema(InputSource)
+ajv.addSchema(InputSourceSettings)
 ajv.addSchema(ItemError)
 ajv.addSchema(Notes)
+ajv.addSchema(OutputDestination)
+ajv.addSchema(OutputDestinationSettings)
 ajv.addSchema(OutputItem)
 ajv.addSchema(Project)
 ajv.addSchema(ProjectSettings)
-ajv.addSchema(Rates)
+ajv.addSchema(QuestionArgs)
 ajv.addSchema(Question)
 ajv.addSchema(QuestionType)
+ajv.addSchema(Rates)
 ajv.addSchema(RemoteAccount)
+ajv.addSchema(RemoteId)
 ajv.addSchema(Rule)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
@@ -68,8 +81,8 @@ ajv.addSchema(StockData)
 ajv.addSchema(TransactionExtras)
 ajv.addSchema(Transaction)
 ajv.addSchema(TransactionLine)
-ajv.addSchema(UnifiedItem)
 ajv.addSchema(UnifiedItemData)
+ajv.addSchema(UnifiedItem)
 ajv.addSchema(UnifiedItemRule)
 ajv.addSchema(UnifiedItemType)
 

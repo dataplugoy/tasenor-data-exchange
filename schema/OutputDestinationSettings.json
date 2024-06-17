@@ -1,0 +1,42 @@
+{
+  "$id": "OutputDestinationSettings.json",
+  "title": "OutputDestinationSettings",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "user", "database", "password"],
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "database": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apiKey"],
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

@@ -12,15 +12,21 @@ import FileUpload from '../e2e/api/schema/FileUpload.json'
 import FlowPlan from '../e2e/api/schema/FlowPlan.json'
 import InputItemData from '../e2e/api/schema/InputItemData.json'
 import InputItem from '../e2e/api/schema/InputItem.json'
+import InputSource from '../e2e/api/schema/InputSource.json'
+import InputSourceSettings from '../e2e/api/schema/InputSourceSettings.json'
 import ItemError from '../e2e/api/schema/ItemError.json'
 import Notes from '../e2e/api/schema/Notes.json'
+import OutputDestination from '../e2e/api/schema/OutputDestination.json'
+import OutputDestinationSettings from '../e2e/api/schema/OutputDestinationSettings.json'
 import OutputItem from '../e2e/api/schema/OutputItem.json'
 import Project from '../e2e/api/schema/Project.json'
 import ProjectSettings from '../e2e/api/schema/ProjectSettings.json'
+import QuestionArgs from '../e2e/api/schema/QuestionArgs.json'
 import Question from '../e2e/api/schema/Question.json'
 import QuestionType from '../e2e/api/schema/QuestionType.json'
 import Rates from '../e2e/api/schema/Rates.json'
 import RemoteAccount from '../e2e/api/schema/RemoteAccount.json'
+import RemoteId from '../e2e/api/schema/RemoteId.json'
 import Rule from '../e2e/api/schema/Rule.json'
 import Run from '../e2e/api/schema/Run.json'
 import RunResult from '../e2e/api/schema/RunResult.json'
@@ -98,15 +104,21 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(FlowPlan)
   ajv.addSchema(InputItemData)
   ajv.addSchema(InputItem)
+  ajv.addSchema(InputSource)
+  ajv.addSchema(InputSourceSettings)
   ajv.addSchema(ItemError)
   ajv.addSchema(Notes)
+  ajv.addSchema(OutputDestination)
+  ajv.addSchema(OutputDestinationSettings)
   ajv.addSchema(OutputItem)
   ajv.addSchema(Project)
   ajv.addSchema(ProjectSettings)
+  ajv.addSchema(QuestionArgs)
   ajv.addSchema(Question)
   ajv.addSchema(QuestionType)
   ajv.addSchema(Rates)
   ajv.addSchema(RemoteAccount)
+  ajv.addSchema(RemoteId)
   ajv.addSchema(Rule)
   ajv.addSchema(Run)
   ajv.addSchema(RunResult)
@@ -117,8 +129,8 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(TransactionExtras)
   ajv.addSchema(Transaction)
   ajv.addSchema(TransactionLine)
-  ajv.addSchema(UnifiedItem)
   ajv.addSchema(UnifiedItemData)
+  ajv.addSchema(UnifiedItem)
   ajv.addSchema(UnifiedItemRule)
   ajv.addSchema(UnifiedItemType)
 
