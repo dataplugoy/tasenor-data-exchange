@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Switch, TextField } from '@mui/material'
 import { Question } from '../Types/API/Question'
 
-interface QuestionStringPanelProps {
+interface QuestionStringsPanelProps {
   question: Question
   value?: string[]
   onChange: (variable: string, value: string[]) => void
@@ -13,7 +13,7 @@ interface QuestionStringPanelProps {
  * @param props
  * @returns
  */
-export const QuestionStringPanel = (props: QuestionStringPanelProps): React.JSX.Element => {
+export const QuestionStringsPanel = (props: QuestionStringsPanelProps): React.JSX.Element => {
   const { question, value } = props
   const { help, label, variable } = question
   const useComma = !value || value.find(tag => tag.indexOf(',') >= 0) === undefined
@@ -24,7 +24,6 @@ export const QuestionStringPanel = (props: QuestionStringPanelProps): React.JSX.
     const value = s.indexOf(',') >= 0 ? s.split(',') : s.split(';')
     const tags = value.map(v => v.trim()).filter(v => v !== '')
     props.onChange(variable, tags)
-    console.log(tags);
   }
 
   return (

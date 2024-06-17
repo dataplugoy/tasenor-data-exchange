@@ -56,7 +56,7 @@ export const VARIABLES: Record<string, Question> = {
   },
   tags: {
     variable: 'tags',
-    type: 'STRING',
+    type: 'STRINGS',
     help: 'Optional comma- or semicolon separated list of tags to be added every transaction created by this flow plan.',
     label: 'Additional tags'
   }

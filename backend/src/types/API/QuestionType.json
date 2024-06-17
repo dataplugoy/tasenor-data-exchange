@@ -6,6 +6,6 @@
     "ACCOUNT",
     "BOOLEAN",
     "ENUM",
-    "STRING"
+    "STRINGS"
   ]
 }
