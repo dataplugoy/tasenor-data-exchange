@@ -54,16 +54,44 @@ export type ProcountorVAT = {
   vatStatuses: ProcountorVATStatus[]
 }
 
+export type ProcountorDimensionItem = {
+  id: number
+  codeName: string
+}
+
+export type ProcountorDimension = {
+  id: number
+  name: string
+  items?: ProcountorDimensionItem[]
+}
+
+export type ProcountorDimensionValue = {
+  dimensionId: number
+  itemId: number
+  value: number
+}
+
+export type ProcountorTransaction = {
+  transactionType: string
+  account: string
+  accountingValue: number
+  description: string
+  vatPercent: number
+  dimensionItemValues: ProcountorDimensionValue[]
+}
+
 export class ProcountorDriver extends OutputDriver {
 
   declare settings: ProcountorDriverSettings
   declare state: ProcountorFlowState
 
   vat: ProcountorVAT | null
+  dimensions: ProcountorDimension[] | null
 
   constructor(settings: ProcountorDriverSettings, projectSettings: ProjectSettings, setup: Setup = {}) {
     super(settings, projectSettings, setup, 'PROCOUNTOR')
     this.vat = null
+    this.dimensions = null
     this.rateLimit = 60
   }
 
@@ -163,6 +191,65 @@ export class ProcountorDriver extends OutputDriver {
     return vat
   }
 
+  async getDimension(tag: string): Promise<[ProcountorDimension, ProcountorDimensionItem] | null> {
+    if (!this.dimensions) {
+      this.dimensions = await this.GET<ProcountorDimension[]>('/api/dimensions')
+    }
+
+    for (const dimension of this.dimensions) {
+      if (!dimension.items) {
+        continue
+      }
+      for (const item of dimension.items) {
+        if (item.codeName === tag) {
+          return [dimension, item]
+        }
+      }
+    }
+
+    return null
+  }
+
+  accountingValue(amount: string | number): number {
+    return Math.round(parseFloat(`${amount}`) * 100) / 100
+  }
+
+  async resolveDimensions(line: TransactionLine) {
+    if (!line.extras.tags) {
+      return []
+    }
+
+    // Collect and order them first.
+    const result: Record<number, number[]> = {}
+    for (const tag of line.extras.tags) {
+      const res = await this.getDimension(tag)
+      if (!res) {
+        throw new Error(`Unable to find dimension called '${tag}' from the Procountor.`)
+      }
+      const [dim, item] = res
+      if (!result[dim.id]) {
+        result[dim.id] = []
+      }
+      result[dim.id].push(item.id)
+      if (result[dim.id].length > 1) {
+        throw new Error(`Splitting an accounting value between more than two dimensions ${line.extras.tags.join(', ')} is not implemented.`)
+      }
+    }
+
+    // Construct the result.
+    const dims: ProcountorDimensionValue[] = []
+    Object.keys(result).forEach(dimensionId => {
+      result[dimensionId].forEach(itemId => {
+        dims.push({
+          dimensionId: parseInt(dimensionId),
+          itemId,
+          value: this.accountingValue(line.amount)
+        })
+      })
+    })
+    return dims
+  }
+
   async deliverOutput(output: OutputItemModel, unified: UnifiedItemModel): Promise<RemoteId> {
     const tx = output.data.data as unknown as Transaction
     this.state = await this.autheticate()
@@ -170,20 +257,24 @@ export class ProcountorDriver extends OutputDriver {
     // TODO: In future when we have VAT entries, need to reconstruct entries here accordingly.
     const vat = unified.isSales() ? await this.getVAT('0% VAT turnover') : await this.getVAT('No VAT reg.')
 
-    // TODO: Handle dimensions.
     const receipt = {
       type: 'JOURNAL',
       name: this.name(tx),
       receiptDate: tx.time.substring(0, 10),
       vatType: unified.isSales() ? 'SALES' : 'PURCHASE',
       vatStatus: vat.vatStatus,
-      transactions: tx.lines.map(line => ({
+      transactions: [] as ProcountorTransaction[]
+    }
+
+    for (const line of tx.lines) {
+      receipt.transactions.push({
         transactionType: 'ENTRY',
         account: this.getAccount(line),
-        accountingValue: line.amount,
+        accountingValue: this.accountingValue(line.amount),
         description: line.text,
         vatPercent: 0,
-      }))
+        dimensionItemValues: await this.resolveDimensions(line),
+      })
     }
 
     const res = await this.POST('/api/ledgerreceipts', receipt) as { id: number }
