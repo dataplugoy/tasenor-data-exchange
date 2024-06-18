@@ -2,7 +2,7 @@
   "title": "CreateFlowPlanRequest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["title", "projectId", "source", "destination", "setup"],
+  "required": ["title", "projectId", "firstDate", "source", "destination", "setup"],
   "properties": {
     "title": {
       "type": "string"

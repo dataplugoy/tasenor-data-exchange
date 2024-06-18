@@ -10,6 +10,7 @@ describe('Flow Plan API', () => {
       cy.apiCall('POST', '/flow-plans', {
         title: 'UI Test',
         projectId: 1,
+        firstDate: '1900-01-01',
         source: {
           type: 'TEST_MOCK',
           settings: {
