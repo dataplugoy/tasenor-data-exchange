@@ -27,7 +27,7 @@ router.post('/',
   validate(CreateFlowPlanRequest),
   async (req, res) => {
     const userId = res.locals.userId
-    const { projectId, title, source, destination, setup } = req.body
+    const { projectId, title, firstDate, source, destination, setup } = req.body
     const project = await ProjectModel.get(projectId)
 
     if (!project) {
@@ -41,6 +41,7 @@ router.post('/',
 
     const plan = await FlowPlanModel.save({
       title,
+      firstDate: new Date(firstDate + 'T00:00:00Z'),
       projectId,
       setup,
     })

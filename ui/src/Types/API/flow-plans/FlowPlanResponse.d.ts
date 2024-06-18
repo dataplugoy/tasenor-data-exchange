@@ -21,6 +21,7 @@ export interface FlowPlan {
   state: {
     [k: string]: unknown;
   };
+  firstDate?: string;
   lastStamp: string | null;
   stock: StockData;
   balance?: BalanceData;

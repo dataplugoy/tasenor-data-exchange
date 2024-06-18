@@ -93,6 +93,7 @@ model FlowPlan {
   updated     DateTime        @updatedAt
 
   title       String
+  firstDate   DateTime
   state       Json            @default("{}")
 
   projectId   Int

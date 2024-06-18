@@ -6,6 +6,8 @@ import { AppProvider } from './Hooks/useApp'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { theme } from './theme'
 import { I18nextProvider } from 'react-i18next'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import en from './i18n/en.json'
 import fi from './i18n/fi.json'
 
@@ -47,11 +49,13 @@ if (language in resources) {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <I18nextProvider i18n={ i18next }>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppProvider>
-        <App />
-      </AppProvider>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </ThemeProvider>
+    </LocalizationProvider>
   </I18nextProvider>
 )

@@ -5,6 +5,8 @@ import { useApp } from '../Hooks/useApp'
 import { usePOST } from '../Hooks/useNet'
 import { CreateFlowPlanResponse } from '../Types/API/flow-plans/CreateFlowPlanResponse'
 import { useNavigate } from 'react-router-dom'
+import { DatePicker } from '@mui/x-date-pickers'
+import { DateTime } from 'luxon'
 
 declare const NODE_ENV: string
 
@@ -28,6 +30,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
   const { t } = useTranslation()
   const [title, setTitle] = useState('')
+  const [firstDate, setFirstDate] = useState<DateTime | null>(DateTime.fromISO('1970-01-01'))
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('NO_ACTION')
   const [fileUrl, setFileUrl] = useState('file:///')
@@ -74,6 +77,8 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
   }
 
   const onCreate = async () => {
+
+    if (!firstDate || !firstDate.isValid) return app.addError(t('Valid starting date is required.'))
     if (!title) return app.addError(t('Name is required.'))
     if (!input) return app.addError(t('Data source must be selected.'))
 
@@ -86,6 +91,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
     const data = {
       title,
+      firstDate: firstDate.toISODate(),
       projectId: app.project.id,
       source: {
         type: input,
@@ -119,6 +125,8 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
       <Box sx={{ mt: 5, textAlign: 'center', ml: '35%' }}>
         <Box sx={{ display: 'grid', textAlign: 'left', gridTemplateColumns: '50%', rowGap: '1rem' }}>
           <TextField autoComplete="off" required fullWidth onChange={e => setTitle(e.target.value)} value={title} name="name" label={t('Name')}/>
+
+          <DatePicker label={t('Ignore older events than this date')} value={firstDate} onChange={date => setFirstDate(date)}/>
 
           <TextField data-cy="Data Source" select label={t('Data Source')} value={input} onChange={e => setInput(e.target.value)}>
             {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK"><Trans>Fixed Test File</Trans></MenuItem>}

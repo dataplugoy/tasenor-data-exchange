@@ -2,7 +2,7 @@ import dot from 'dot-object'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
-import { Language, error, log } from '@tasenor/common'
+import { Language, error, log, warning } from '@tasenor/common'
 import { InputSourceModel } from './InputSourceModel'
 import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'
@@ -295,13 +295,25 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   private async itemizeInput(options: RuntimeOptions, batch: BatchModel, run: RunModel): Promise<'OK' | 'FAIL'> {
     let result: 'OK' | 'FAIL' = 'OK'
+    const firstDate = DateTime.fromJSDate(this.data.firstDate).toISO()?.substring(0, 10) as string
 
     try {
       const driver = await this.getInputDriver(options)
       await batch.detectEncoding()
       const items = await driver.itemizeInput(batch)
 
+      const total = items.length
+      let done = 0
+      let skipped = 0
+
       for (const data of items) {
+        // Check for first date.
+        if (data.time.substring(0, 10) < firstDate) {
+          warning(`Ignoring old transaction from ${data.time} since it is older than ${firstDate}.`)
+          skipped++
+          continue
+        }
+
         await InputItemModel.save({
           data: data as unknown as JsonValue,
           hash: driver.inputHash(data),
@@ -311,9 +323,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           processed: false,
           skipped: false,
         })
+        done++
       }
       log(`${this} created ${items.length} input items for ${batch}.`)
-      await run.result(items.length, items.length, 0, items.length > 0 ? 'ALL_SUCCESS' : 'NO_PROGRESS')
+      await run.result(done, total, skipped)
     } catch (err) {
       if (err instanceof AlertException) {
         throw err

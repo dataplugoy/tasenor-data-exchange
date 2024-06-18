@@ -18,6 +18,7 @@ export type DriverType =
 export interface CreateFlowPlanRequest {
   title: string;
   projectId: number;
+  firstDate?: string;
   source: {
     type: DriverType;
     settings: {
