@@ -248,11 +248,6 @@ export class TasenorDriver extends OutputDriver {
       entries: [] as ID[]
     }
 
-    let row = 1
-    for (const line of tx.lines) {
-      const entry = this.getEntry(document, line, row++)
-    }
-
     try {
       let row = 1
       for (const line of tx.lines) {
