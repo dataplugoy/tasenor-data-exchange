@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArticleTwoTone, AttachMoneyTwoTone, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { ArticleTwoTone, AttachMoneyTwoTone, Balance, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown, blueGrey } from '@mui/material/colors'
@@ -202,6 +202,12 @@ export const ViewUnified = (props: ViewUnifiedProps): React.JSX.Element => {
       const strings = Object.keys(rates).map(c => `1 ${c} = ${rates[c]} ${currency}`)
       rendered.push(<Typography sx={{ ml: 1 }} key="rates" component="span" className="unified rates" title={t('Conversion rates to the default currency')}><CurrencyExchangeTwoTone sx={{ mb: -0.7 }}/> {strings.join(', ')}</Typography>)
     }
+  }
+
+  // Running balance.
+  const balance = pick('balance')
+  if (balance !== undefined) {
+    rendered.push(<Typography sx={{ ml: 1 }} key="balance" component="span" className="unified balance" title={t('Running balance of the currency')}><Balance sx={{ mb: -0.7 }}/> {balance}</Typography>)
   }
 
   // Append text if given.

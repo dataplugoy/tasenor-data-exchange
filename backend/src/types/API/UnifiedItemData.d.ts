@@ -79,6 +79,10 @@ export interface UnifiedItemData {
    */
   assetTypeOut?: string;
   /**
+   * If known, this is the running balance of the transaction currency after this item applied.
+   */
+  balance?: number | string;
+  /**
    * Amount of fee charged as a part of the transaction.
    */
   fee?: number | string;

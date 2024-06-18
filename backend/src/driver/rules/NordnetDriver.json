@@ -113,6 +113,7 @@
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
+      "balance": "Saldo",
       "multipart": "Vahvistusnumero",
       "assetOut": "Valuutta",
       "assetAmountOut": "-Summa",
@@ -136,6 +137,7 @@
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
+      "balance": "Saldo",
       "multipart": "Vahvistusnumero",
       "assetOut": "Valuutta",
       "assetAmountOut": "-Summa",
@@ -170,6 +172,7 @@
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
+      "balance": "Saldo",
       "multipart": "Vahvistusnumero",
       "assetIn": "Valuutta",
       "assetAmountIn": "Summa",

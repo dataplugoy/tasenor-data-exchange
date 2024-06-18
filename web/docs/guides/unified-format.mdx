@@ -155,6 +155,13 @@ income or expense.
 
 ## Miscellaneous
 
+### `balance` <Type file="UnifiedItemData.json" field="balance"/>
+
+The balance field can be used give hint to analysis when the account should match zero. This is
+useful to trim away little rounding errors caused by different sources of forex conversions.
+Whenever the balance is reaching zero, the analyser compares the running balance to that and
+records the difference as profit or loss.
+
 ### `multipart` <Type file="UnifiedItemData.json" field="multipart"/>
 
 In a case that driver is not able to combine input items together to form information for complete

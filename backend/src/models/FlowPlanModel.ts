@@ -780,10 +780,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   static async findForUser(userId: number, name: string | null = null): Promise<FlowPlanModel | FlowPlanModel[] | null> {
     if (name === null) {
-      const plans = await this.db.findMany({ where: { project: { userId } } })
+      const plans = await this.db.findMany({ where: { project: { userId } }, orderBy: { title: 'asc' } })
       return plans.map(p => new FlowPlanModel(p))
     }
-    const plans = await this.db.findMany({ where: { title: name, project: { userId } } })
+    const plans = await this.db.findMany({ where: { title: name, project: { userId } }, orderBy: { title: 'asc' } })
     if (plans.length > 1) {
       throw new Error(`Too many flows named as '${name}' for user ${userId}.`)
     }
@@ -796,7 +796,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @returns
    */
   static async findForProject(projectId: number): Promise<FlowPlanModel[]> {
-    const plans = await FlowPlanModel.findMany<prisma.FlowPlan, FlowPlanModel>({ projectId })
+    const plans = await FlowPlanModel.findMany<prisma.FlowPlan, FlowPlanModel>({ projectId }, [{ title: 'asc' }])
     return plans
   }
 
