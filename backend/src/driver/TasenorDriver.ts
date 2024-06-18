@@ -140,6 +140,7 @@ export class TasenorDriver extends OutputDriver {
       switch (key) {
         case 'asset':
           break
+
         case 'assetChange':
           ret.stock = {
             change: {
@@ -150,6 +151,11 @@ export class TasenorDriver extends OutputDriver {
             }
           }
           break
+
+        case 'tags':
+          ret.text = extras[key]?.map(k => `[${k}]`).join('')
+          break
+
         default:
           throw new Error(`TasenorDriver does not handle extra field '${key}' yet in ${JSON.stringify(extras)}.`)
       }
@@ -196,15 +202,22 @@ export class TasenorDriver extends OutputDriver {
    */
   getEntry(doc: DocumentModelData, line: TransactionLine, row: number): EntryModelData {
     const amount = dec(line.amount).toNumber()
+    const data = this.resolveExtras(line)
+
+    let prefix = ''
+    if (data.text) {
+      prefix = `${data.text} `
+      delete data.text
+    }
 
     return {
       document_id: doc.id,
       account_id: this.findAccount(line.account as AccountCode).id,
       debit: amount >= 0 ? 1 : 0,
       amount: Math.abs(amount) * 100,
-      description: line.text,
+      description: `${prefix}${line.text}`,
       row_number: row,
-      data: this.resolveExtras(line)
+      data
     }
   }
 
@@ -233,6 +246,11 @@ export class TasenorDriver extends OutputDriver {
       period: period.id,
       doc: document.id,
       entries: [] as ID[]
+    }
+
+    let row = 1
+    for (const line of tx.lines) {
+      const entry = this.getEntry(document, line, row++)
     }
 
     try {
