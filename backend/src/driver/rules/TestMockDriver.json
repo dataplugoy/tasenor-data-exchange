@@ -1,5 +1,25 @@
 [
   {
+    "name": "Deposits",
+    "key": "Deposit",
+    "filter": "word1 == 'Deposit'",
+    "result": {
+      "type": "'deposit'",
+      "value": "total",
+      "service": "'Mockery'"
+    }
+  },
+  {
+    "name": "Random Income",
+    "key": "Earn",
+    "filter": "word1 == 'Earn'",
+    "result": {
+      "type": "'income'",
+      "value": "total",
+      "reason": "'OTHER'"
+    }
+  },
+  {
     "name": "Buying",
     "key": "Buy",
     "filter": "word1 == 'Buy'",
