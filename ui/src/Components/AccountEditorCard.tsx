@@ -37,13 +37,14 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
 
 interface AccountEditProps {
   code: Account
+  disabled?: boolean
   remote?: RemoteAccount
   options: RemoteAccount[]
   onChange: (acc: AccountNumber | null) => void
 }
 
 export const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
-  const { code, remote, options, onChange } = props
+  const { code, remote, options, onChange, disabled } = props
   const none = { number: '', name: '' }
   const scores: Record<AccountNumber, number> = {}
 
@@ -72,6 +73,7 @@ export const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
   }
 
   return <Autocomplete
+    disabled={disabled}
     options={[none].concat(options)}
     getOptionLabel={(option) => option.number === '' && option.name === '' ? '' : `${option.number} ${option.name}${stars(option.number)}`}
     value={remote || none}

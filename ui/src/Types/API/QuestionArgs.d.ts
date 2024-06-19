@@ -6,5 +6,6 @@
  */
 
 export interface QuestionArgs {
+  currency?: string;
   options?: string[];
 }

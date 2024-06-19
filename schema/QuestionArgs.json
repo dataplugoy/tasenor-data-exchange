@@ -4,6 +4,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z][A-Z]$"
+    },
     "options": {
       "type": "array",
       "items": {

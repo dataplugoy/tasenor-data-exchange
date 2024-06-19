@@ -10,7 +10,7 @@ interface QuestionBooleanPanelProps {
 }
 
 /**
- * Display error in nicely formatted manner.
+ * Ask boolean value.
  * @param props
  * @returns
  */

@@ -2,8 +2,9 @@ import { AlertException } from './AlertException'
 import { Question } from '../types/API/Question'
 import { Notes } from '../types/API/Notes'
 import { AccountCode } from '../types/AccountCode'
-import { Language } from '@tasenor/common'
+import { Currency, Language } from '@tasenor/common'
 import { t } from '../lib/i18n/t'
+import { QuestionType } from '../types/API/QuestionType'
 
 /**
  * Collection of variables.
@@ -115,6 +116,27 @@ export class AnswersRequired extends AlertException<Question[]> {
     }
 
     const alert = new AnswersRequired(url, userId, questions)
+    throw alert
+  }
+
+  /**
+   * Ask if debt should be recorded for an account.
+   * @param url
+   * @param language
+   * @param account
+   */
+  static forDebt(url: string, language: Language, userId: number, destinationId: number, currency: Currency) {
+    const question = {
+      type: 'DEBT_ACCOUNT' as QuestionType,
+      help: t(language, 'Currency account is going to have negative balance. Do we want to record negative balances to separate debt accounts?'),
+      label: t(language, 'Use separate debt account'),
+      args: {
+        destinationId,
+        currency
+      },
+      variable: `settings.debtAccounts`
+    }
+    const alert = new AnswersRequired(url, userId, question)
     throw alert
   }
 }

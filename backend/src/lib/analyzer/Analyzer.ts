@@ -28,6 +28,7 @@ import { Setup } from '../../types/API/Setup'
 import { resolveAccount } from './resolver'
 import { RuntimeOptions } from '../../types/RuntimeOptions'
 import { AnswersRequired } from '../../exceptions/AnswersRequired'
+import { FlowPlanModel } from '../../models/FlowPlanModel'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -42,7 +43,6 @@ export class Analyzer {
   protected lastInput: UnifiedItemData | null
   protected lastTime: Timestring
   protected lastResult: Transaction | null
-  // TODO: Rename to projectSettings
   protected readonly config: ProjectSettings
   protected readonly setup: Setup
   protected readonly runtimeOptions: RuntimeOptions
@@ -179,14 +179,15 @@ export class Analyzer {
     }
 
     // Check for debt in currency accounts.
-    this.lastResult?.lines.forEach(line => {
+    for (const line of this.lastResult?.lines || []) {
       if (/^CURRENCY_/.test(line.account)) {
         const balance = this.balance.getBalance(line.account as AccountCode)
         if (balance.add(line.amount).lt(0)) {
-          // TODO: Ask.
+          const debt = await this.getDebtAccount(line.account.substring(9) as Currency)
+          // TODO: Finish
         }
       }
-    })
+    }
 
     if (!this.lastResult) {
       throw new Error(`A function ${input.type} failed to produce the result.`)
@@ -268,6 +269,27 @@ export class Analyzer {
    */
   getStockChange(tx: Transaction): Record<AccountCode, StockDataRecord> {
     return this.stock.getStockChange(tx)
+  }
+
+  /**
+   * Find the corresponding debt account or null if not used. Throw an exception if we don't know.
+   * @param currency
+   */
+  async getDebtAccount(currency: Currency) {
+    const plan = await FlowPlanModel.get(this.runtimeOptions.flowPlanId as number)
+    if (!plan) {
+      throw new Error('Cannot find flow plan.')
+    }
+    const settings = (plan.data?.setup as Setup).settings || {}
+    if (settings.debtAccounts !== null && settings.debtAccounts instanceof Object) {
+      if (currency in settings.debtAccounts) {
+        return settings.debtAccounts[currency]
+      }
+    }
+
+    const destination = await plan.getDestination()
+
+    AnswersRequired.forDebt(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, destination.id, currency)
   }
 
   /**

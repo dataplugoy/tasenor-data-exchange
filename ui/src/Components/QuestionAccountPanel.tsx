@@ -13,7 +13,7 @@ interface QuestionAccountPanelProps {
 }
 
 /**
- * Display error in nicely formatted manner.
+ * Ask for an account.
  * @param props
  * @returns
  */

@@ -12,6 +12,10 @@ router.get('/:id/accounts',
   param('outputDestinationId'),
   async (_req, res) => {
     const driver = await res.locals.flowPlan.getOutputDriver({ userId: res.locals.userId })
+
+    if (!driver.needConfiguredAccounts()) {
+      return res.send([])
+    }
     try {
       const accounts = await driver.fetchRemoteAccounts()
       res.send(accounts)

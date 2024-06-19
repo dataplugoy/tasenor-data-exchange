@@ -27,8 +27,9 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   const app = useApp()
 
   useEffect(() => {
-    const accountQuestion = questions.find(question => question.type === 'ACCOUNT')
+    const accountQuestion = questions.find(question => question.type === 'ACCOUNT' || question.type === 'DEBT_ACCOUNT')
     if (accountQuestion) {
+      // TODO: For debt account we need different hints.
       GET(`/output-destinations/${accountQuestion.args?.destinationId}/accounts`).then(res => {
         res && setRemotes(res.reduce((prev, cur) => ({ ...prev, [cur.number]: cur }), {}))
         app.setDimming(false)

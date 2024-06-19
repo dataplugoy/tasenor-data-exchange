@@ -12,7 +12,7 @@ interface QuestionEnumPanelProps {
 }
 
 /**
- * Display error in nicely formatted manner.
+ * Ask enumerated values.
  * @param props
  * @returns
  */
