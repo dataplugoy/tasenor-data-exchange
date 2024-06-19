@@ -61,4 +61,7 @@ export interface Settings {
   skipDeposits?: boolean;
   skipWithdrawals?: boolean;
   tags?: string[];
+  debtAccounts?: {
+    [k: string]: unknown;
+  };
 }

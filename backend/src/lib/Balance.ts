@@ -23,6 +23,14 @@ export class Balance {
     }
   }
 
+  getBalance(acc: AccountCode): Decimal {
+    if (acc in this.balance) {
+      return this.balance[acc]
+    } else {
+      return dec(0)
+    }
+  }
+
   toJSON(decimalsToString = false): JsonValue {
     return toJSON(this.balance, decimalsToString)
   }

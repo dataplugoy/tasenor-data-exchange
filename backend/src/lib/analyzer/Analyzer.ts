@@ -166,7 +166,7 @@ export class Analyzer {
       throw new Error(`Analyzer does not yet implement input type '${input.type}'.`)
     }
 
-    // Creat the result.
+    // Create the result.
     this.lastResult = await this[`${input.type}Handler`](time, input)
     this.lastResult && this.resolveAccounts(this.lastResult)
     if (input.tags) {
@@ -177,6 +177,16 @@ export class Analyzer {
         line.extras.tags = clone(input.tags)
       })
     }
+
+    // Check for debt in currency accounts.
+    this.lastResult?.lines.forEach(line => {
+      if (/^CURRENCY_/.test(line.account)) {
+        const balance = this.balance.getBalance(line.account as AccountCode)
+        if (balance.add(line.amount).lt(0)) {
+          // TODO: Ask.
+        }
+      }
+    })
 
     if (!this.lastResult) {
       throw new Error(`A function ${input.type} failed to produce the result.`)
