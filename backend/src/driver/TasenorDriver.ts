@@ -117,11 +117,7 @@ export class TasenorDriver extends OutputDriver {
    * @param code
    */
   findAccount(code: AccountCode): AccountModelData {
-    const map: Record<AccountCode, AccountNumber> = this.setup.accounts as Record<AccountCode, AccountNumber> || {}
-    if (!map[code]) {
-      throw new AccountException(code)
-    }
-    const number = map[code]
+    const number = this.configuredAccount(code)
     if (!this.accounts[number]) {
       throw new Error(`It seems that configured account '${number}' for '${code}' does not exist anymore.`)
     }

@@ -1,7 +1,10 @@
+import { AccountException } from '../exceptions/AccountException'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { RemoteId } from '../types/API/RemoteId'
+import { Settings } from '../types/API/Settings'
+import { AccountCode } from '../types/AccountCode'
 import { Driver } from './Driver'
 
 /**
@@ -11,6 +14,25 @@ export class OutputDriver extends Driver {
 
   canHandleOutput(): boolean {
     return true
+  }
+
+  /**
+   * Find the number of configured account.
+   */
+  configuredAccount<T=string>(code: AccountCode): T {
+    const map: Record<AccountCode, T> = this.setup.accounts as Record<AccountCode, T> || {}
+    if (!map[code]) {
+      if (code.startsWith('DEBT_CURRENCY_')) {
+        const currency = code.substring(14)
+        const settings: Settings = this.setup.settings || {}
+        const debtAccounts = settings.debtAccounts || {}
+        if (currency in debtAccounts) {
+          return debtAccounts[currency] as T
+        }
+      }
+      throw new AccountException(code)
+    }
+    return map[code]
   }
 
   /**

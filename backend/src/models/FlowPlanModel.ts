@@ -704,18 +704,24 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       return
     }
 
+    // Collect existing accounts.
     const accounts = new Set<AccountCode>()
     for (const item of output) {
       const lines = item.transaction.lines
       lines.map(line => line.account).forEach(acc => accounts.add(acc as AccountCode))
     }
 
-    const existing = this.setup.accounts || {}
+    // Remove what we know from accounts.
+    const configuredAccounts = this.setup.accounts || {}
     for (const account of accounts) {
-      if (account in existing && existing[account] !== null && existing[account] !== undefined) {
+      if (account in configuredAccounts && configuredAccounts[account] !== null && configuredAccounts[account] !== undefined) {
         accounts.delete(account)
       }
     }
+
+    // Remove known debt accounts.
+    const debtAccounts = this.setup.settings?.debtAccounts || {}
+    Object.keys(debtAccounts).forEach(currency => accounts.delete(`DEBT_CURRENCY_${currency}` as AccountCode))
 
     if (accounts.size > 0) {
       AnswersRequired.forAccounts(`/flow-plans/${this.id}/configure`, driver.projectSettings.language as Language, driver.options.userId, destination.id, accounts)
