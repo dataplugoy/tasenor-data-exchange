@@ -49,7 +49,7 @@ describe('Analyzer', () => {
   })
 
 
-  test.only('handling debt with non-zero balance', async () => {
+  test('handling debt with non-zero balance', async () => {
 
     const driver = getDriver('TEST_MOCK', {}, projectSettings, {}) as InputDriver as InputDriver
     const batch = createBatchFrom('Mock-debt.csv')
@@ -68,6 +68,76 @@ describe('Analyzer', () => {
       }
     })
 
-    // TODO: Once works, add expect(txs).toStrictEqual()
+    expect(txs).toStrictEqual([
+      {
+        time: '2000-01-01T10:00:00.000Z',
+        lines: [
+          {
+            account: 'DEBT_CURRENCY_EUR',
+            amount: '-1000',
+            text: 'Bought +1 ETH',
+            extras: {}
+          },
+          {
+            account: 'CRYPTO_ETH',
+            amount: '1000',
+            text: 'Bought +1 ETH',
+            extras: { asset: 'ETH', assetChange: '1' }
+          }
+        ]
+      },
+      {
+        time: '2000-01-01T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '1000',
+            text: 'Sold -1 ETH',
+            extras: {}
+          },
+          {
+            account: 'CRYPTO_ETH',
+            amount: '-1000',
+            text: 'Sold -1 ETH',
+            extras: { asset: 'ETH', assetChange: '-1' }
+          },
+          {
+            account: 'PROFIT_ETH',
+            amount: '-1000',
+            text: 'Sold -1 ETH',
+            extras: {}
+          },
+          {
+            account: 'DEBT_CURRENCY_EUR',
+            amount: '1000',
+            text: 'Sold -1 ETH',
+            extras: {}
+          }
+        ]
+      },
+      {
+        time: '2000-01-01T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-1000',
+            text: 'Bought +3 ETH',
+            extras: {}
+          },
+          {
+            account: 'CRYPTO_ETH',
+            amount: '3000',
+            text: 'Bought +3 ETH',
+            extras: { asset: 'ETH', assetChange: '3' }
+          },
+          {
+            account: 'DEBT_CURRENCY_EUR',
+            amount: '-2000',
+            text: 'Bought +3 ETH',
+            extras: {}
+          }
+        ]
+      }
+    ])
   })
 })

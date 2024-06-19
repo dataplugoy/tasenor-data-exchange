@@ -180,15 +180,20 @@ export class Analyzer {
       })
     }
 
-    // Handle debt.
+    // Final adustments.
     let debtLine: TransactionLine | null = null
     for (const line of this.lastResult?.lines || []) {
 
-      // Check for additional debt in currency accounts.
+      // Handle debt.
       if (/^CURRENCY_/.test(line.account)) {
+
         const balance = this.balance.getBalance(line.account as AccountCode)
-        if (balance.add(line.amount).lt(0)) {
-          const debtAccount = await this.getDebtAccount(line.account.substring(9) as Currency)
+        const amount = dec(line.amount)
+        const currency = line.account.substring(9) as Currency
+
+        // Handle additional debt in currency accounts.
+        if (amount.lt(0) && balance.add(amount).lt(0)) {
+          const debtAccount = await this.getDebtAccount(currency)
           if (debtAccount === null) {
             continue
           }
@@ -198,14 +203,29 @@ export class Analyzer {
             continue
           }
           // Spend all and then take debt.
-          const debt = dec(line.amount).plus(balance)
-          console.log(balance, line.amount, debt)
+          const debt = amount.plus(balance)
           line.amount = balance.neg().toString()
           debtLine = {
             account: `DEBT_${line.account}`,
             amount: debt.toString(),
             text: line.text,
             extras: {},
+          }
+        }
+
+        // Pay back if we have existing debt.
+        if (amount.gt(0) && this.hasDebtAccount(currency)) {
+          const oldDebt = this.balance.getBalance(`DEBT_${line.account}` as AccountCode).neg()
+          if (oldDebt.lt(amount)) {
+            line.amount = amount.minus(oldDebt).toString()
+            debtLine = {
+              account: `DEBT_${line.account}`,
+              amount: oldDebt.toString(),
+              text: line.text,
+              extras: {},
+            }
+          } else {
+            line.account = `DEBT_${line.account}`
           }
         }
       }
@@ -298,6 +318,20 @@ export class Analyzer {
    */
   getStockChange(tx: Transaction): Record<AccountCode, StockDataRecord> {
     return this.stock.getStockChange(tx)
+  }
+
+  /**
+   * Check if we have a debt account for a currency.
+   * @param currency
+   */
+  hasDebtAccount(currency: Currency): boolean  {
+    const settings = this.setup.settings || {}
+    if (settings.debtAccounts !== null && settings.debtAccounts instanceof Object) {
+      if (currency in settings.debtAccounts) {
+        return settings.debtAccounts[currency] !== null
+      }
+    }
+    return false
   }
 
   /**
