@@ -1,6 +1,6 @@
-import { beforeAll, describe, expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { getDriver } from '../../backend/src/driver'
-import { analyzeItems, beforeModelTesting, createBatchFrom, unifyItems } from '../lib/unit-testing'
+import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
 
 describe('Analyzer', () => {
@@ -46,5 +46,28 @@ describe('Analyzer', () => {
       }
     ])
 
+  })
+
+
+  test.only('handling debt with non-zero balance', async () => {
+
+    const driver = getDriver('TEST_MOCK', {}, projectSettings, {}) as InputDriver as InputDriver
+    const batch = createBatchFrom('Mock-debt.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(3)
+
+    const unifieds = await unifyItems(driver, items, 'TestMockDriver.json')
+    expect(unifieds.length).toBe(3)
+
+    const txs = await analyzeItems(unifieds, projectSettings, {
+      settings: {
+        debtAccounts: {
+          'EUR': '999'
+        }
+      }
+    })
+
+    // TODO: Once works, add expect(txs).toStrictEqual()
   })
 })

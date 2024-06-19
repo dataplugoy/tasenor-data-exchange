@@ -30,6 +30,7 @@ import { RuntimeOptions } from '../../types/RuntimeOptions'
 import { AnswersRequired } from '../../exceptions/AnswersRequired'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { DbException } from '../../exceptions/DbException'
+import { TransactionLine } from '../../types/API/TransactionLine'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -179,7 +180,10 @@ export class Analyzer {
       })
     }
 
+    // Handle debt.
+    let debtLine: TransactionLine | null = null
     for (const line of this.lastResult?.lines || []) {
+
       // Check for additional debt in currency accounts.
       if (/^CURRENCY_/.test(line.account)) {
         const balance = this.balance.getBalance(line.account as AccountCode)
@@ -188,15 +192,26 @@ export class Analyzer {
           if (debtAccount === null) {
             continue
           }
+          // Already fully in debt.
           if (balance.lte(0)) {
             line.account = `DEBT_${line.account}`
             continue
           }
-          console.log(balance)
-          console.log(line)
-          throw new Error('PAY YOUR DEBT')
+          // Spend all and then take debt.
+          const debt = dec(line.amount).plus(balance)
+          console.log(balance, line.amount, debt)
+          line.amount = balance.neg().toString()
+          debtLine = {
+            account: `DEBT_${line.account}`,
+            amount: debt.toString(),
+            text: line.text,
+            extras: {},
+          }
         }
       }
+    }
+    if (debtLine) {
+      this.lastResult?.lines.push(debtLine)
     }
 
     if (!this.lastResult) {
