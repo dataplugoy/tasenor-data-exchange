@@ -9,7 +9,7 @@ describe('Nordnet', () => {
 
   test('deposit, buying, fee', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver as InputDriver
     const batch = createBatchFrom('Nordnet-deposit-buy-fee.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -129,7 +129,7 @@ describe('Nordnet', () => {
 
   test('sell', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-sell.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -228,7 +228,7 @@ describe('Nordnet', () => {
 
   test('dividend', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-dividend.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -315,7 +315,7 @@ describe('Nordnet', () => {
 
   test('withdrawal', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-withdrawal.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -349,7 +349,7 @@ describe('Nordnet', () => {
 
   test('interest', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-interest.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -401,7 +401,7 @@ describe('Nordnet', () => {
 
   test('forex', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-forex.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -451,7 +451,7 @@ describe('Nordnet', () => {
 
   test('forex 2', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-forex2.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -502,7 +502,7 @@ describe('Nordnet', () => {
 
   test('rename instrument', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-rename.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -536,7 +536,7 @@ describe('Nordnet', () => {
 
   test('split', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-split.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -570,7 +570,7 @@ describe('Nordnet', () => {
 
   test('withholding tax', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-withholding-tax.csv')
 
     const items = await driver.itemizeInput(batch)
@@ -610,7 +610,7 @@ describe('Nordnet', () => {
 
   test('interest correction', async () => {
 
-    const driver = getDriver('NORDNET', {}, projectSettings) as InputDriver
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
     const batch = createBatchFrom('Nordnet-interest-correction.csv')
 
     const items = await driver.itemizeInput(batch)
