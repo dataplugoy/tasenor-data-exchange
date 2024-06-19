@@ -183,8 +183,14 @@ export class Analyzer {
       if (/^CURRENCY_/.test(line.account)) {
         const balance = this.balance.getBalance(line.account as AccountCode)
         if (balance.add(line.amount).lt(0)) {
-          const debt = await this.getDebtAccount(line.account.substring(9) as Currency)
-          // TODO: Finish
+          const debtAccount_real = await this.getDebtAccount(line.account.substring(9) as Currency)
+          const debtAccount = '999' // TODO: Drop debug.
+          if (debtAccount === null) {
+            continue
+          }
+          console.log(balance)
+          console.log(line)
+          throw new Error('PAY YOUR DEBT')
         }
       }
     }
@@ -201,7 +207,11 @@ export class Analyzer {
    */
   resolveAccounts(tx: Transaction): void {
     tx.lines.forEach(line => {
-      line.account = this.resolveAccount(line.account)
+      if (line.account.startsWith('ACCOUNT_')) {
+        line.account = line.account.substring(8)
+      } else {
+        line.account = this.resolveAccount(line.account)
+      }
     })
   }
 
