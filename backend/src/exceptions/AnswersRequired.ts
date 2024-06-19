@@ -126,14 +126,16 @@ export class AnswersRequired extends AlertException<Question[]> {
    * @param account
    */
   static forDebt(url: string, language: Language, userId: number, destinationId: number, currency: Currency) {
+    const args = {
+      destinationId,
+      currency,
+    }
+
     const question = {
       type: 'DEBT_ACCOUNT' as QuestionType,
-      help: t(language, 'Currency account is going to have negative balance. Do we want to record negative balances to separate debt accounts?'),
+      help: t(language, 'Currency account for {{currency}} is going to have negative balance. Do we want to record negative balance to the separate debt account?', args),
       label: t(language, 'Use separate debt account'),
-      args: {
-        destinationId,
-        currency
-      },
+      args,
       variable: `settings.debtAccounts`
     }
     const alert = new AnswersRequired(url, userId, question)

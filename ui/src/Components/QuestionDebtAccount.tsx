@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Switch } from '@mui/material'
 import { Question } from '../Types/API/Question'
-import { AccountNumber } from '@tasenor/common'
+import { AccountNumber, Currency } from '@tasenor/common'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
 import { AccountEdit } from './AccountEditorCard'
 
 interface QuestionDebtAccountPanelProps {
   question: Question
-  value?: Record<AccountNumber, RemoteAccount>
+  value?: Record<AccountNumber, AccountNumber | null>
   noHelp?: boolean
-  onChange: (variable: string, value: Record<AccountNumber, RemoteAccount>) => void
+  onChange: (variable: string, value: Record<AccountNumber, AccountNumber | null>) => void
   remotes: Record<AccountNumber, RemoteAccount>
 }
 
@@ -19,16 +19,34 @@ interface QuestionDebtAccountPanelProps {
  * @returns
  */
 export const QuestionDebtAccountPanel = (props: QuestionDebtAccountPanelProps): React.JSX.Element => {
-  const { remotes, question, noHelp } = props
+  const { remotes, question, noHelp, value } = props
   const { variable, help, label } = question
-  const [debtAccount, setDebtAccount] = useState<RemoteAccount | undefined>(undefined)
+  const [debtAccount, setDebtAccount] = useState<RemoteAccount | null>(null)
   const [enabled, setEnabled] = useState(false)
+  const currency = question.args?.currency as Currency
 
-  const onChange = () => {
+  const setTo = (code) => {
+    props.onChange(variable, { ...value, [currency]: code })
+  }
+
+  useEffect(() => {
+    if (!value || !value[currency]) {
+      setTo(null)
+    }
+  }, [])
+
+  const onChange = (code) => {
+    setDebtAccount(remotes[code])
+    setTo(code)
   }
 
   const onToggle = () => {
     setEnabled(!enabled)
+    if (enabled) {
+      setTo(null)
+    } else {
+      setTo(debtAccount?.number || null)
+    }
   }
 
   return (
@@ -41,7 +59,7 @@ export const QuestionDebtAccountPanel = (props: QuestionDebtAccountPanelProps): 
       </FormControl>
 
       <FormControl sx={{ mt: 1 }}>
-        <AccountEdit disabled={!enabled} code={''} remote={undefined} options={Object.values(remotes)} onChange={onChange}/>
+        <AccountEdit disabled={!enabled} code={`DEBT_CURRENCY_${currency}`} remote={debtAccount || undefined} options={Object.values(remotes)} onChange={onChange}/>
       </FormControl>
     </FormGroup>
   )

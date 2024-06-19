@@ -1,4 +1,5 @@
 {
+  "ACCOUNT_DEBT_CURRENCY": "Debt account for currency {{currency}}",
   "ACCOUNT_CURRENCY": "Account for currency {{currency}}",
   "ACCOUNT_CRYPTO": "Account for crypto currency {{currency}}",
   "ACCOUNT_STOCK": "Account for stocks with ticker {{ticker}}",

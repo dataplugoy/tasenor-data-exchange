@@ -19,6 +19,8 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
   let text = code
   if (/^CURRENCY_/.test(code)) {
     text = t('ACCOUNT_CURRENCY', { currency: code.substring(9) })
+  } else if (/^DEBT_CURRENCY_/.test(code)) {
+    text = t('ACCOUNT_DEBT_CURRENCY', { currency: code.substring(14) })
   } else if (/^EXTERNAL_NORDNET_/.test(code)) {
     text = t('ACCOUNT_NORDNET', { currency: code.substring(17) })
   } else if (/^CRYPTO_/.test(code)) {

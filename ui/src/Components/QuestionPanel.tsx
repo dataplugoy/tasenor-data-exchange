@@ -45,7 +45,7 @@ export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
       </Box>
     case 'DEBT_ACCOUNT':
       return <Box sx={sx}>
-        <QuestionDebtAccountPanel question={question} value={value as undefined | Record<AccountNumber, RemoteAccount>} onChange={onChange} remotes={remotes}/>
+        <QuestionDebtAccountPanel question={question} value={value as undefined | Record<AccountNumber, AccountNumber | null>} onChange={onChange} remotes={remotes}/>
       </Box>
   }
 
