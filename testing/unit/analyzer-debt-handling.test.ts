@@ -48,7 +48,6 @@ describe('Analyzer', () => {
 
   })
 
-
   test('handling debt with non-zero balance', async () => {
 
     const driver = getDriver('TEST_MOCK', {}, projectSettings, {}) as InputDriver as InputDriver
@@ -63,7 +62,7 @@ describe('Analyzer', () => {
     const txs = await analyzeItems(unifieds, projectSettings, {
       settings: {
         debtAccounts: {
-          'EUR': '999'
+          EUR: '999'
         }
       }
     })

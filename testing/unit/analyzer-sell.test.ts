@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
+import { runAnalyzer } from '../lib/unit-testing'
 
 describe('Analyzer', () => {
 
@@ -20,7 +20,7 @@ describe('Analyzer', () => {
       assetAmountOut: 5,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
         CRYPTO_ETH: -5000,
@@ -78,7 +78,7 @@ describe('Analyzer', () => {
       text: 'Sell some ETH'
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
         CRYPTO_ETH: -5000,
@@ -137,7 +137,7 @@ describe('Analyzer', () => {
       text: 'Sell some ETH'
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
         CRYPTO_ETH: -2000,
@@ -189,7 +189,7 @@ describe('Analyzer', () => {
       fee: 10,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
@@ -252,7 +252,7 @@ describe('Analyzer', () => {
       fee: 10,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: { CURRENCY_EUR: 4000, CRYPTO_ETH: -5000, LOSS_ETH: 990, FEE_EUR: 10 },
@@ -311,7 +311,7 @@ describe('Analyzer', () => {
       fee: 10,
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       balances: { CURRENCY_EUR: 1990, CRYPTO_ETH: -2000, FEE_EUR: 10 },

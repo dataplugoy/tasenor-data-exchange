@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
+import { runAnalyzer } from '../lib/unit-testing'
 
 describe('Analyzer', () => {
   const projectSettings = { currency: 'EUR', language: 'en' }
@@ -17,7 +17,7 @@ describe('Analyzer', () => {
       reason: 'DIVIDEND',
     }
 
-    const analyzer = await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
 
     expect(analyzer.toJSON()).toStrictEqual({
       tx: {

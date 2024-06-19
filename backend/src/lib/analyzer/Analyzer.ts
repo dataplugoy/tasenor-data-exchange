@@ -385,11 +385,11 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, runtimeOptions: RuntimeOptions = { userId: 0 }, setup: Setup = {}, services: undefined | Service[] = undefined): Promise<Analyzer> {
+  static async run(settings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, runtimeOptions: RuntimeOptions, setup: Setup, services: Service[]): Promise<Analyzer> {
     const stock = new Stock(stockData)
     const analyzer = new Analyzer(settings, stock, {}, setup, runtimeOptions)
 
-    if (services !== undefined) {
+    if (services.length) {
       analyzer.setServices(services)
     }
 

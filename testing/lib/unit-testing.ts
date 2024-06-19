@@ -12,7 +12,7 @@ import { RuleModel } from '../../backend/src/models/RuleModel'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
 import { UnifiedItemModel } from '../../backend/src/models/UnifiedItemModel'
 import { Transaction } from '../../backend/src/types/API/Transaction'
-import { Stock } from '../../backend/src/lib/Stock'
+import { InitialStockData, Stock } from '../../backend/src/lib/Stock'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { DateTime } from 'luxon'
 import chardet from 'chardet'
@@ -21,6 +21,10 @@ import { UnifiedItem } from '../../backend/src/types/API/UnifiedItem'
 import { ProjectSettings } from '../../backend/src/types/API/Project'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
 import { Setup } from '../../backend/src/types/API/Setup'
+import { Timestring } from '@tasenor/common'
+import { UnifiedItemData } from '../../backend/src/types/API/UnifiedItemData'
+import { RuntimeOptions } from '../../backend/src/types/RuntimeOptions'
+import { Service } from '../../backend/src/lib/services/Service'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -199,20 +203,27 @@ export async function unifyItems(driver: InputDriver, items: InputItemData[], ru
   return unified
 }
 
+function defaultSetup(): Setup {
+  return {
+    settings: {
+      skipDeposits: false,
+      skipWithdrawals: false,
+      allowShortSelling: true,
+      debtAccounts: {
+        EUR: null,
+        USD: null,
+      }
+    }
+  }
+}
+
 export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings, setup: Setup | null = null): Promise<Transaction[]> {
   const stock = new Stock({})
   const analyzer = new Analyzer(
     config,
     stock,
     {},
-    setup ||
-    {
-      settings: {
-        skipDeposits: false,
-        skipWithdrawals: false,
-        allowShortSelling: true,
-      }
-    },
+    setup || defaultSetup(),
     { userId: 0, flowPlanId: 0 }
   )
 
@@ -225,4 +236,9 @@ export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSet
   }
 
   return txs
+}
+
+export async function runAnalyzer(projectSettings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, runtimeOptions: RuntimeOptions = { userId: 0 }, setup: Setup | null = null, services: undefined | Service[] = []): Promise<Analyzer> {
+  setup = setup || defaultSetup()
+  return await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stockData, input, runtimeOptions, setup, services)
 }
