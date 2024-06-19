@@ -20,6 +20,7 @@ import { parseEncoding } from '../../backend/src/lib/utils'
 import { UnifiedItem } from '../../backend/src/types/API/UnifiedItem'
 import { ProjectSettings } from '../../backend/src/types/API/Project'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
+import { Setup } from '../../backend/src/types/API/Setup'
 
 /**
  * Set up the dtabase for testing with DB models.
@@ -198,12 +199,13 @@ export async function unifyItems(driver: InputDriver, items: InputItemData[]): P
   return unified
 }
 
-export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings): Promise<Transaction[]> {
+export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings, setup: Setup | null = null): Promise<Transaction[]> {
   const stock = new Stock({})
   const analyzer = new Analyzer(
     config,
     stock,
     {},
+    setup ||
     {
       settings: {
         skipDeposits: false,

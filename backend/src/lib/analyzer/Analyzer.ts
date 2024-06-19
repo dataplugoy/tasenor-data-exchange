@@ -29,6 +29,7 @@ import { resolveAccount } from './resolver'
 import { RuntimeOptions } from '../../types/RuntimeOptions'
 import { AnswersRequired } from '../../exceptions/AnswersRequired'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
+import { DbException } from '../../exceptions/DbException'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -178,14 +179,17 @@ export class Analyzer {
       })
     }
 
-    // Check for debt in currency accounts.
     for (const line of this.lastResult?.lines || []) {
+      // Check for additional debt in currency accounts.
       if (/^CURRENCY_/.test(line.account)) {
         const balance = this.balance.getBalance(line.account as AccountCode)
         if (balance.add(line.amount).lt(0)) {
-          const debtAccount_real = await this.getDebtAccount(line.account.substring(9) as Currency)
-          const debtAccount = '999' // TODO: Drop debug.
+          const debtAccount = await this.getDebtAccount(line.account.substring(9) as Currency)
           if (debtAccount === null) {
+            continue
+          }
+          if (balance.lte(0)) {
+            line.account = `DEBT_${line.account}`
             continue
           }
           console.log(balance)
@@ -286,17 +290,29 @@ export class Analyzer {
    * @param currency
    */
   async getDebtAccount(currency: Currency) {
-    const plan = await FlowPlanModel.get(this.runtimeOptions.flowPlanId as number)
-    if (!plan) {
-      throw new Error('Cannot find flow plan.')
-    }
-    const settings = (plan.data?.setup as Setup).settings || {}
+
+    // Check the existing.
+    const settings = this.setup.settings || {}
     if (settings.debtAccounts !== null && settings.debtAccounts instanceof Object) {
       if (currency in settings.debtAccounts) {
         return settings.debtAccounts[currency]
       }
     }
 
+    // Just catch DB error since it is difficult to debug inside a test.
+    let plan
+    try {
+      plan = await FlowPlanModel.get(this.runtimeOptions.flowPlanId as number)
+    } catch(err) {
+      if (err instanceof DbException) {
+        throw new Error(`Error with DB. If you are runnig a test, please define setup variable 'debtAccounts' for '${currency}'.`)
+      }
+      throw err
+    }
+
+    if (!plan) {
+      throw new Error('Cannot find flow plan.')
+    }
     const destination = await plan.getDestination()
 
     AnswersRequired.forDebt(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, destination.id, currency)

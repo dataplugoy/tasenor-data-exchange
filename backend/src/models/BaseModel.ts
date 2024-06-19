@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { Constructor, error } from '@tasenor/common'
+import { DbException } from '../exceptions/DbException'
 
 export interface MinimalModel {
   id: number
@@ -84,10 +85,10 @@ export class BaseModel<T extends MinimalModel> {
    */
   static get db() {
     if (!BaseModel.prismaClient) {
-      throw new Error('Cannot use BaseModel.db before it is initialized with BaseModel.setDb().')
+      throw new DbException('Cannot use BaseModel.db before it is initialized with BaseModel.setDb().')
     }
     if (!BaseModel.prismaClient[this.table]) {
-      throw new Error(`Cannot find table '${this.table}' (it must be one of the ${Object.keys(this.prismaClient).filter(k => k.substring(0, 1) !== '_')}).`)
+      throw new DbException(`Cannot find table '${this.table}' (it must be one of the ${Object.keys(this.prismaClient).filter(k => k.substring(0, 1) !== '_')}).`)
     }
     return BaseModel.prismaClient[this.table]
   }
@@ -146,7 +147,7 @@ export class BaseModel<T extends MinimalModel> {
   static async findById<T extends MinimalModel, C extends BaseModel<T>>(id: number): Promise<C> {
     const item = await this.findUnique({ id })
     if (!item) {
-      throw new Error(`Cannot find row with id ${id} from ${this.table}-table.`)
+      throw new DbException(`Cannot find row with id ${id} from ${this.table}-table.`)
     }
     return item as C
   }
