@@ -1,3 +1,4 @@
+import { warning } from '@tasenor/common'
 import { AlertException } from '../exceptions/AlertException'
 import { BaseModel } from './BaseModel'
 import prisma, { AlertMethod } from '@prisma/client'
@@ -30,6 +31,7 @@ export class AlertModel extends BaseModel<prisma.Alert> {
       payload,
       delivered: null
     }
+    warning(`Alert ${data.type} for user #${err.userId}: ${payload}`)
     return AlertModel.create<prisma.Alert, AlertModel>(data)
   }
 }

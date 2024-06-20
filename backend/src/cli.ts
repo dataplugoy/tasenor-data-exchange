@@ -70,7 +70,6 @@ async function executeRun(args) {
   const plan = await flowPlan(args, options)
   const res = await plan.run(options)
   // TODO: We could dig last run and show notes and status.
-  // TODO: Shouldn't there be more clear logging also when an alert is delivered non-interactively?
   if ('success' in res && !res.success) {
     error('Run not successful.')
   }
