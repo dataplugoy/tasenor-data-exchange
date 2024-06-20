@@ -7,7 +7,7 @@ import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
 import { Transaction, TransactionExtras, TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
-import { Timestring, error, sorted, warning } from '@tasenor/common'
+import { Timestring, error, note, sorted, warning } from '@tasenor/common'
 import colors from 'colors/safe'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
@@ -267,6 +267,22 @@ async function executeJournal(args) {
 }
 
 /**
+ * Configure plan.
+ * @param args
+ */
+async function executeSetup(args) {
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+  }
+  const plan = await flowPlan(args, options)
+  const setup = JSON.parse(args.json)
+  note(`Update ${plan} setup: ${JSON.stringify(setup)}`)
+  await plan.updateSetup(setup)
+}
+
+/**
  * File upload.
  * @param args
  */
@@ -318,13 +334,19 @@ export async function execute(...args: string[]): Promise<void> {
   journal.set_defaults({ func: executeJournal })
 
   // Upload command.
+  const setup = subparser.add_parser('setup', { description: 'Change the plan setup.' })
+  setup.add_argument('flow', { help: 'Name of the flow.' })
+  setup.add_argument('json', { help: 'Update to the setup in JSON format.' })
+  setup.set_defaults({ func: executeSetup })
+
+  // Upload command.
   const upload = subparser.add_parser('upload', { description: 'Upload a file to the batch waiting.' })
   upload.add_argument('flow', { help: 'Name of the flow.' })
   upload.add_argument('path', { help: 'A path to the file to upload.' })
   upload.set_defaults({ func: executeUpload })
 
   // Prepare and execute.
-  const commandArgs = parser.parse_args(args)
+  const commandArgs = parser.parse_args(args.length ? args : ['-h'])
 
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
