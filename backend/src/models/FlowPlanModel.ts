@@ -97,6 +97,18 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Find the last run if any.
+   */
+  async lastRun(): Promise<RunModel|null> {
+    const batch = await BatchModel.getLatest(this)
+    if (!batch) {
+      return null
+    }
+    const runs = await RunModel.findForBatch(batch.id)
+    return runs.length ? runs[0] : null
+  }
+
+  /**
    * Delete this and everything related.
    */
   async destroy(): Promise<void> {

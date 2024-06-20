@@ -7,7 +7,7 @@ import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
 import { Transaction, TransactionExtras, TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
-import { Timestring, error, sorted } from '@tasenor/common'
+import { Timestring, error, sorted, warning } from '@tasenor/common'
 import colors from 'colors/safe'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
@@ -69,9 +69,16 @@ async function executeRun(args) {
 
   const plan = await flowPlan(args, options)
   const res = await plan.run(options)
-  // TODO: We could dig last run and show notes and status.
+
   if ('success' in res && !res.success) {
-    error('Run not successful.')
+    const run = await plan.lastRun()
+    if (run?.data.result === 'WAITING') {
+      warning('Batch is now waiting.')
+    } else {
+      error('Run not successful.')
+      error(run?.data.error)
+      return 1
+    }
   }
 }
 
@@ -327,5 +334,5 @@ export async function execute(...args: string[]): Promise<void> {
     return
   }
 
-  await commandArgs.func(commandArgs)
+  return await commandArgs.func(commandArgs)
 }
