@@ -78,7 +78,33 @@ if [ "$1" == latest ]; then
 
 elif [ "$1" == prod ]; then
 
-  echo "NOT YET IMPLEMENTED"
+  echo docker pull dataplug/tasenor:tadex-api-latest
+  docker pull dataplug/tasenor:tadex-api-latest
+  echo docker tag dataplug/tasenor:tadex-api-latest dataplug/tasenor:tadex-api-prod
+  docker tag dataplug/tasenor:tadex-api-latest dataplug/tasenor:tadex-api-prod
+  echo docker push dataplug/tasenor:tadex-api-prod
+  docker push dataplug/tasenor:tadex-api-prod
+
+  echo docker pull dataplug/tasenor:tadex-latest
+  docker pull dataplug/tasenor:tadex-latest
+  echo docker tag dataplug/tasenor:tadex-latest dataplug/tasenor:tadex-prod
+  docker tag dataplug/tasenor:tadex-latest dataplug/tasenor:tadex-prod
+  echo docker push dataplug/tasenor:tadex-prod
+  docker push dataplug/tasenor:tadex-prod
+
+  echo docker pull dataplug/tasenor:tadex-db-latest
+  docker pull dataplug/tasenor:tadex-db-latest
+  echo docker tag dataplug/tasenor:tadex-db-latest dataplug/tasenor:tadex-db-prod
+  docker tag dataplug/tasenor:tadex-db-latest dataplug/tasenor:tadex-db-prod
+  echo docker push dataplug/tasenor:tadex-db-prod
+  docker push dataplug/tasenor:tadex-db-prod
+
+  echo docker pull dataplug/tasenor:tadex-web-latest
+  docker pull dataplug/tasenor:tadex-web-latest
+  echo docker tag dataplug/tasenor:tadex-web-latest dataplug/tasenor:tadex-web-prod
+  docker tag dataplug/tasenor:tadex-web-latest dataplug/tasenor:tadex-web-prod
+  echo docker push dataplug/tasenor:tadex-web-prod
+  docker push dataplug/tasenor:tadex-web-prod
 
 else
   usage
