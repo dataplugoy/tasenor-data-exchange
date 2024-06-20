@@ -33,6 +33,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   async setEndState(endStock: JsonValue, endBalance: JsonValue): Promise<void> {
+    // TODO: We could actually do cleanup here and remove all { value: 0, amount: 0 } entries before saving.
     this.data.endStock = endStock
     this.data.endBalance = endBalance
     await BatchModel.update<prisma.Batch, BatchModel>(this, { endStock, endBalance })

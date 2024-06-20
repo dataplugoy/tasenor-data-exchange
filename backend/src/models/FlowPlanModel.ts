@@ -148,7 +148,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param options
    */
   async run(options: RuntimeOptions, notes: Notes = {}, counter = 0): Promise<FlowPlanRunResponse> {
-    const [batch,, result] = await this.runStep(options, notes)
+    const [batch, , result] = await this.runStep(options, notes)
+
     if (batch.data.completed || result === 'FAIL' || result === 'WAIT' || options.repeat === 1) {
       return {
         success: result === 'OK',
@@ -521,12 +522,17 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       const project = await this.getProject()
 
+      // Find out the balance and stock.
+      const { initialStock, endStock, initialBalance, endBalance } = batch.data
+      const latestStock = Object.keys(endStock as JsonObject).length ? endStock : initialStock
+      const latestBalance = Object.keys(endBalance as JsonObject).length ? endBalance : initialBalance
+
       // Unified items must be processed in order and batch must stop if one fails.
-      const stock = new Stock(batch.data.initialStock as StockDataRecord)
+      const stock = new Stock(latestStock as StockDataRecord)
       const analyzer = new Analyzer(
         project.settings,
         stock,
-        batch.data.initialBalance as BalanceData,
+        latestBalance as BalanceData,
         this.data.setup as Setup,
         options
       )
@@ -534,9 +540,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       for (const unified of unifieds) {
 
-        // Skip processed, but calculate current stock values.
+        // Skip processed.
         if (unified.data.processed) {
-          stock.apply(unified.data.stockChange as Record<AccountCode, StockDataRecord>)
           done++
           continue
         }
@@ -556,7 +561,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             continue
           }
 
-          // Save success.
+          // Save the output canditate.
           const output = await OutputItemModel.save({
             data: toJSON(tx),
             hash: driver.outputHash(tx),
@@ -590,7 +595,11 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             // Pass through since value is 'Always'.
           }
 
+          // Mark success and update balance & stock for batch.
           await unified.success()
+          const json = analyzer.toJSON()
+          await batch.setEndState(json.stock, json.balances)
+
           done++
         } catch (err) {
           if (err instanceof AlertException) {
@@ -607,8 +616,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       log(`${this} analyzed and created ${done}/${total} output items for ${batch}.`)
       await run.result(done, total, skipped)
-      const json = analyzer.toJSON(true)
-      await batch.setEndState(json.stock, json.balances)
 
     } catch (err) {
       if (err instanceof AlertException) {

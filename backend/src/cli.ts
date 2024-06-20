@@ -7,7 +7,7 @@ import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
 import { Transaction, TransactionExtras, TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
-import { Timestring, sorted } from '@tasenor/common'
+import { Timestring, error, sorted } from '@tasenor/common'
 import colors from 'colors/safe'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
@@ -68,7 +68,12 @@ async function executeRun(args) {
   }
 
   const plan = await flowPlan(args, options)
-  await plan.run(options)
+  const res = await plan.run(options)
+  // TODO: We could dig last run and show notes and status.
+  // TODO: Shouldn't there be more clear logging also when an alert is delivered non-interactively?
+  if ('success' in res && !res.success) {
+    error('Run not successful.')
+  }
 }
 
 /**

@@ -11,7 +11,6 @@ import { Setup } from '../types/API/Setup'
 import { jwtDecode } from 'jwt-decode'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { Account } from '../types/API/Account'
-import { AccountException } from '../exceptions/AccountException'
 import { RemoteId } from '../types/API/RemoteId'
 import { OutputDriver } from './OutputDriver'
 
