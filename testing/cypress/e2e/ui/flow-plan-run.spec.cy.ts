@@ -22,7 +22,7 @@ describe('Flow Plans', () => {
     cy.get('body').should('contain', 'Converted to standard format')
     cy.get('body').should('contain', 'Analysed and converted to results')
     cy.get('body').should('contain', 'Results successfully delivered')
-    cy.get('[data-cy="Batch-#1"] [data-cy="output"]').should('have.text', '3')
+    cy.get('[data-cy="Batch-#1"] [data-cy="output"]').should('have.text', '4')
 
     cy.get('button').contains('Run').click()
     cy.get('[data-cy="Batch-#2"] [data-cy="output"]').should('have.text', '1')
