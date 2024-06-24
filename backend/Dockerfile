@@ -18,4 +18,6 @@ ADD prisma .
 ADD bin bin
 ADD samples samples
 
+RUN pnpm build
+
 CMD ["pnpm", "run", "docker"]

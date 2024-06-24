@@ -5,9 +5,9 @@
   "scripts": {
     "build": "npx vite build ./src",
     "dev": "cd src && npx vite --port ${PORT:=7301}",
-    "docker": "cd src && npx vite --host 0.0.0.0 --port ${PORT:=7301}",
+    "docker": "cd src && npx vite preview --host 0.0.0.0 --port ${PORT:=7301}",
     "fix": "eslint --fix src/**/*.{ts,tsx}",
-    "lint": "eslint src/**/*.{ts,tsx}"
+    "lint": "eslint src/**/*.{ts,tsx} && pnpm build"
   },
   "keywords": [],
   "author": "Dataplug Oy",
