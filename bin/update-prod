@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+echo "==================#==================================================================="
+echo "PRODUCTION UPDATE ‖"
+echo "==================#"
+echo
+
+FILE=`dirname "${BASH_SOURCE[0]}"`/..
+ROOT=`readlink -f "$FILE"`
+
+REMOTE_USER=debian
+REMOTE_SERVER=data-exchange.tasenor.com
+REMOTE_DIR=/home/debian/tasenor-devops/data-exchange.tasenor.com
+
+ssh "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_DIR && git reset --hard && git clean -f -d && git pull -q && ./bin/update"
