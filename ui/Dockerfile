@@ -15,4 +15,6 @@ RUN pnpm install
 ADD tsconfig.json .
 ADD src src
 
+RUN pnpm build
+
 CMD ["pnpm", "run", "docker"]
