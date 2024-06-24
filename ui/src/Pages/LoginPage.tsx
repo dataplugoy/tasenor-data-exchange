@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
+import logo from '../Images/logo.jpeg'
 
 export const LoginPage = (): React.JSX.Element => {
 
@@ -34,7 +35,7 @@ export const LoginPage = (): React.JSX.Element => {
   }
 
   return <Box sx={{ p: 4, textAlign: 'center' }}>
-    <img src="/Images/logo.jpeg"/>
+    <img src={logo}/>
     <Box sx={{ mt: 2 }}>
       <TextField onChange={e => setEmail(e.target.value)} value={email} name="email" label={t('Email')}/>
       <TextField onChange={e => setPassword(e.target.value)} value={password} name="password" type="password" label={t('Password')}/>
