@@ -127,7 +127,10 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
           <DatePicker label={t('Ignore older events than this date')} value={firstDate} onChange={date => setFirstDate(date)}/>
 
           <TextField data-cy="Data Source" select label={t('Data Source')} value={input} onChange={e => setInput(e.target.value)}>
-            {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK"><Trans>Fixed Test File</Trans></MenuItem>}
+            {
+              /* eslint-disable-next-line */
+              NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK"><Trans>Fixed Test File</Trans></MenuItem>
+            }
             <MenuItem value="ENABLE_BANKING"><Trans>Enable Banking Service</Trans></MenuItem>
             <MenuItem value="NORDNET"><Trans>Upload Nordnet Statement</Trans></MenuItem>
             <MenuItem value="S_PANKKI"><Trans>Upload S-Pankki Statement</Trans></MenuItem>
@@ -140,7 +143,10 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
           }
 
           <TextField select label={t('Bookkeeping Destination')} value={output} onChange={e => setOutput(e.target.value)}>
-            {NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>}
+            {
+              /* eslint-disable-next-line */
+              NODE_ENV !== 'prod' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>
+            }
             <MenuItem value="NO_ACTION"><Trans>Keep results in TaDeX</Trans></MenuItem>
             <MenuItem value="TASENOR"><Trans>Upload results to Tasenor</Trans></MenuItem>
             <MenuItem value="PROCOUNTOR"><Trans>Upload results to Procountor</Trans></MenuItem>

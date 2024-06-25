@@ -1,14 +1,15 @@
+/* eslint-disable */
 declare module '*.png' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 declare module '*.jpg' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 declare module '*.jpeg' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
-declare const DEBUG;
-declare const NODE_ENV;
+declare const DEBUG
+declare const NODE_ENV

@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 import logo from '../Images/logo.jpeg'
-import { Link } from 'react-router-dom'
 
 export const LoginPage = (): React.JSX.Element => {
 
@@ -36,9 +35,11 @@ export const LoginPage = (): React.JSX.Element => {
   }
 
   let docs = 'https://data-exchange.stg.tasenor.com'
+  /* eslint-disable-next-line */
   if (NODE_ENV === 'prod') {
     docs = 'https://data-exchange.tasenor.com'
-  } else if (NODE_ENV === 'dev') {
+  /* eslint-disable-next-line */
+} else if (NODE_ENV === 'dev') {
     docs = 'http://localhost:7304'
   }
 
