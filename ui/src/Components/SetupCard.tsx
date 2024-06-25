@@ -36,7 +36,7 @@ export const SetupCard = (props: SetupCardProps): React.JSX.Element => {
 
   const onSave = (): void => {
     PATCH(`/flow-plans/${output.flowPlanId}/setup`, { ...setup, settings: values }).then(res => {
-      if (res) app.addInfo(t('FLow plan setup saved'))
+      if (res) app.addInfo(t('Flow plan setup saved'))
     })
   }
 

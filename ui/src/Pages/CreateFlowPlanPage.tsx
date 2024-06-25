@@ -163,7 +163,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
           {
             output === 'PROCOUNTOR' && <>
-              <TextField autoComplete="off" required fullWidth onChange={e => setApiKey(e.target.value)} value={apiKey} name="apiKey" label={t('Procountor API Key')}/>
+              <TextField autoComplete="off" required fullWidth onChange={e => setApiKey(e.target.value)} value={apiKey} name="apiKey" label={t('Procountor API key')}/>
             </>
           }
 
