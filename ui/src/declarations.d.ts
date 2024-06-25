@@ -10,3 +10,5 @@ declare module '*.jpeg' {
   const src: string;
   export default src;
 }
+declare const DEBUG;
+declare const NODE_ENV;

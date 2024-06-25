@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 
-declare const NODE_ENV: string
-
 const DEFAULTS: Record<string, Record<string, unknown>> = {
   TASENOR: {
     accountGrouping: {

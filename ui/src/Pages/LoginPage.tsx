@@ -7,6 +7,7 @@ import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 import logo from '../Images/logo.jpeg'
+import { Link } from 'react-router-dom'
 
 export const LoginPage = (): React.JSX.Element => {
 
@@ -34,6 +35,13 @@ export const LoginPage = (): React.JSX.Element => {
     navigate('/register')
   }
 
+  let docs = 'https://data-exchange.stg.tasenor.com'
+  if (NODE_ENV === 'prod') {
+    docs = 'https://data-exchange.tasenor.com'
+  } else if (NODE_ENV === 'dev') {
+    docs = 'http://localhost:7304'
+  }
+
   return <Box sx={{ p: 4, textAlign: 'center' }}>
     <img src={logo}/>
     <Box sx={{ mt: 2 }}>
@@ -44,6 +52,9 @@ export const LoginPage = (): React.JSX.Element => {
       </Box>
       <Box sx={{ mt: 2 }}>
         <Button onClick={onRegister}><Trans>Register</Trans></Button>
+      </Box>
+      <Box sx={{ mt: 2, color: 'secondary.dark', userSelect: 'none', cursor: 'pointer' }}>
+        <Link to={docs}><Trans>Check out the documentation</Trans></Link>
       </Box>
     </Box>
   </Box>
