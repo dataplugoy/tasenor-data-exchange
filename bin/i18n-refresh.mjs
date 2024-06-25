@@ -26,7 +26,7 @@ const PATTERNS = {
   ]
 }
 const CODE_PATTERN = /^[A-Z_]+( - [A-Z_]+)?$/
-const PREFIXED_PATTERN = /^(Option|Label-Specific)-/
+const PREFIXED_PATTERN = /^(Option)-/
 const IGNORE_SENTENCES = new Set([])
 const FIXED_ENTRIES = new Set([
   'Bought {{amount}} {{asset}}',
