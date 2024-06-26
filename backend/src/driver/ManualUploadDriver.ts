@@ -1,12 +1,12 @@
 import clone from 'clone'
 import prisma from '@prisma/client'
 import { UploadRequired } from '../exceptions/UploadRequired'
-import { _ } from '../lib/i18n/t'
+import { t } from '../lib/i18n/t'
 import { BatchModel } from '../models/BatchModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ManualUploadDriverSettings } from '../types/DriverSettings'
 import { ManualUploadFlowState } from '../types/FlowState'
-import { num } from '@tasenor/common'
+import { Language, num } from '@tasenor/common'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
 import { InputDriver } from './InputDriver'
@@ -42,7 +42,7 @@ export class ManualUploadDriver extends InputDriver {
     throw new UploadRequired(
       `/api/v1/flow-plans/${flowPlan.id}/upload`,
       this.options.userId,
-      _('Please select a statement to upload.'),
+      t(this.projectSettings.language as Language, 'Please select a statement to upload.'),
     )
   }
 

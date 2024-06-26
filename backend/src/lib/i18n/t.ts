@@ -64,12 +64,3 @@ export function t(lang: Language, s: string, values: Record<string, string | num
   }
   return fn(s, values)
 }
-
-/**
- * Placeholder to help scanning translation texts for UI. This function does nothing.
- * @param s
- * @returns
- */
-export function _(s: string): string {
-  return s
-}
