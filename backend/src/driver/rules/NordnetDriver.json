@@ -46,7 +46,7 @@
       "assetTypeIn": "'STOCK'",
       "fee": "Kokonaiskulut",
       "feeAsset": "$('Kokonaiskulut Valuutta')",
-      "rates": "rates(Valuutta, Vaihtokurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
@@ -62,7 +62,7 @@
       "assetTypeOut": "'STOCK'",
       "fee": "Kokonaiskulut",
       "feeAsset": "$('Kokonaiskulut Valuutta')",
-      "rates": "rates(Valuutta, Vaihtokurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
@@ -77,7 +77,7 @@
       "reason": "'DIVIDEND'",
       "reasonAsset": "Arvopaperi",
       "text": "Tapahtumateksti",
-      "rates": "rates(Valuutta, Viitevaluuttakurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Viitevaluuttakurssi)"
     }
   },
   {
@@ -92,7 +92,7 @@
       "reason": "'DIVIDEND'",
       "reasonAsset": "Arvopaperi",
       "text": "Tapahtumateksti",
-      "rates": "rates(Valuutta, Vaihtokurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
@@ -104,7 +104,7 @@
       "valueAsset": "Valuutta",
       "account": "'EXPENSE_INTEREST'",
       "reason": "'INTEREST'",
-      "rates": "rates(Valuutta, Vaihtokurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
@@ -117,7 +117,7 @@
       "multipart": "Vahvistusnumero",
       "assetOut": "Valuutta",
       "assetAmountOut": "-Summa",
-      "rates": "rates(Valuutta, 1 / Vaihtokurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : 1 / Vaihtokurssi)"
     }
   },
   {
@@ -141,7 +141,7 @@
       "multipart": "Vahvistusnumero",
       "assetOut": "Valuutta",
       "assetAmountOut": "-Summa",
-      "rates": "rates(Valuutta, Vaihtokurssi)"
+      "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
@@ -176,7 +176,7 @@
       "multipart": "Vahvistusnumero",
       "assetIn": "Valuutta",
       "assetAmountIn": "Summa",
-      "rates": "rates($('Kokonaiskulut Valuutta'), Vaihtokurssi)"
+      "rates": "rates($('Kokonaiskulut Valuutta'), $('Kokonaiskulut Valuutta') == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
