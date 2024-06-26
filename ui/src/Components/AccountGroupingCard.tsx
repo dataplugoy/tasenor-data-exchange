@@ -30,12 +30,11 @@ const AccountGroupingToggle = (props: AccountGroupingToggleProps): React.JSX.Ele
 interface AccountGroupingCardProps {
   setup: Setup
   output: OutputDestination
-  hasRemoteAccounts: boolean
   onSave: (update: Partial<Setup>) => void
 }
 
 export const AccountGroupingCard = (props: AccountGroupingCardProps): React.JSX.Element => {
-  const { setup, hasRemoteAccounts } = props
+  const { setup } = props
   const accountGrouping = setup.accountGrouping || {}
 
   const onChange = (variable: string, state: boolean) => {
@@ -53,28 +52,16 @@ export const AccountGroupingCard = (props: AccountGroupingCardProps): React.JSX.
       title={<Typography variant="subtitle1"><Trans>Account Grouping</Trans></Typography>}
     />
     <CardContent>
-      {
-        hasRemoteAccounts && <>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleFeeAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleTaxAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleLossAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleStockAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleCryptoAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleIncomeAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleProfitAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleExpenseAccount"/>
-          <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleDividendAccount"/>
-        </>
-      }
-        {
-          !hasRemoteAccounts && <Box>
-            <Trans>The selected bookkeeping destination does not need account grouping.</Trans>
-          </Box>
-        }
-      {
-        hasRemoteAccounts &&
-          <Button disabled={!hasRemoteAccounts} onClick={onSave}><Trans>Save</Trans></Button>
-      }
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleFeeAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleTaxAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleLossAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleStockAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleCryptoAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleIncomeAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleProfitAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleExpenseAccount"/>
+      <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleDividendAccount"/>
+     <Button onClick={onSave}><Trans>Save</Trans></Button>
     </CardContent>
   </Card>
 }

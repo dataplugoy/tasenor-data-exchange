@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useParams } from 'react-router-dom'
 import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 import logo from '../Images/logo.jpeg'
-import { useParams } from 'react-router-dom'
 
 export const LoginPage = (): React.JSX.Element => {
 

@@ -64,7 +64,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
 
     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
       {setup && output && <AccountEditorCard onSave={onSave} hasRemoteAccounts={hasRemoteAccounts} setup={setup} output={output}/>}
-      {setup && output && <AccountGroupingCard onSave={onSave} hasRemoteAccounts={hasRemoteAccounts} setup={setup} output={output}/>}
+      {setup && output && <AccountGroupingCard onSave={onSave} setup={setup} output={output}/>}
       {setup && input && <InputSettingsCard setup={setup} input={input}/>}
       {setup && output && <OutputSettingsCard setup={setup} output={output}/>}
       {setup && output && <SetupCard setup={setup} output={output}/>}
