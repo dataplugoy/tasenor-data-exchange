@@ -27,8 +27,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3(preact@10.20.2)
       '@tasenor/common':
-        specifier: ^1.13.14
-        version: 1.13.14
+        specifier: ^1.13.20
+        version: 1.13.20
       '@tasenor/config':
         specifier: ^1.13.0
         version: 1.13.0
@@ -725,8 +725,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tasenor/common@1.13.14':
-    resolution: {integrity: sha512-xpBtyJ5A2l69h7vjbBe7Y34hC5odD2/0JgEoqNnBN2S3R1e7d/vjdJAZkfmARMZTbU/HvhrAqwluTRMlp1fJVQ==}
+  '@tasenor/common@1.13.20':
+    resolution: {integrity: sha512-wViZeAczo8eckosSIrUaq/PLkMPBFemloYWaS0PSEUMpBADyMSQ5aVJdWeVS9WvMvWo6gL03Fz+ry6v4Htu8Lw==}
 
   '@tasenor/config@1.13.0':
     resolution: {integrity: sha512-Y2N0uzIPb9kqd/MxA1hnz6WqvEXLikTqyA2uxFe/MW8JegqlcT4QgVBg3E3MIvrEShOH+ChAosrxOz7gEI/cFQ==}
@@ -2668,7 +2668,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.13.1':
     optional: true
 
-  '@tasenor/common@1.13.14':
+  '@tasenor/common@1.13.20':
     dependencies:
       axios: 1.6.8
       buffer: 6.0.3
@@ -3748,7 +3748,7 @@ snapshots:
 
   mathjs@12.4.1:
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       complex.js: 2.1.1
       decimal.js: 10.4.3
       escape-latex: 1.2.0
