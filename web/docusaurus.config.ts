@@ -98,11 +98,6 @@ const config: Config = {
       },
       items: process.env.NODE_ENV === 'dev' ? [
         {
-          to: '/',
-          position: 'right',
-          label: 'Home',
-        },
-        {
           to: 'service',
           position: 'right',
           label: 'Service',
@@ -129,11 +124,6 @@ const config: Config = {
           className: 'language-selector',
         },
       ]: [
-        {
-          to: '/',
-          position: 'right',
-          label: 'Home',
-        },
         {
           to: 'service',
           position: 'right',
