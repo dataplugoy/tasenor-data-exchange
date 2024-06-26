@@ -9,7 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 
 const DEFAULTS: Record<string, Record<string, unknown>> = {
-  TASENOR: {
+  NORDNET: {
     accountGrouping: {
       singleFeeAccount: false,
       singleTaxAccount: true,
