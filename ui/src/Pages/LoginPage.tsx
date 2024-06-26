@@ -53,6 +53,10 @@ export const LoginPage = (): React.JSX.Element => {
     docs = 'http://localhost:7304'
   }
 
+  if (i18next.language !== 'en') {
+    docs += `/${i18next.language}`
+  }
+
   return <Box sx={{ p: 4, textAlign: 'center' }}>
     <img src={logo}/>
     <Box sx={{ mt: 2 }}>
