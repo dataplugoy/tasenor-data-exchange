@@ -24,8 +24,8 @@ export default function Index(): JSX.Element {
 
         <ul>
           <li><Translate>You can join our beta program NOW!</Translate></li>
-          <li><Translate>You will get free use for 3 years.</Translate></li>
-          <li><Translate>Currently we can do from Nordnet to Procountor, but more partners will be added soon</Translate></li>
+          <li><Translate>You will get free usage for 3 years.</Translate></li>
+          <li><Translate>Currently we can do from Nordnet to Procountor, but more partners will be added soon.</Translate></li>
         </ul>
 
         <br/>

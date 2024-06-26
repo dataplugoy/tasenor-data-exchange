@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import i18next from 'i18next'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
 import { useApp } from '../Hooks/useApp'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ProjectResponse } from '../Types/API/projects/ProjectResponse'
 
 export const RegisterPage = (): React.JSX.Element => {
@@ -22,6 +23,14 @@ export const RegisterPage = (): React.JSX.Element => {
   const GET = useGET<ProjectResponse>()
   const app = useApp()
   const navigate = useNavigate()
+  const params = useParams()
+
+  useEffect(() => {
+    if (params.lang) {
+      i18next.changeLanguage(params.lang)
+      localStorage.setItem('language', params.lang)
+    }
+  }, [])
 
   const onRegister = () => {
 

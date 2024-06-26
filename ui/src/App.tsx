@@ -37,9 +37,11 @@ export const App = (): React.JSX.Element => {
             <Routes>
               <Route path="/" element={<IndexPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
+              <Route path="/:lang/login" element={<LoginPage/>}/>
               <Route path="/home/:id" element={<HomePage/>}/>
               <Route path="/home" element={<HomePage/>}/>
               <Route path="/register" element={<RegisterPage/>}/>
+              <Route path="/:lang/register" element={<RegisterPage/>}/>
               <Route path="/results/:id" element={<ResultsPage/>}/>
               <Route path="/results" element={<ResultsPage/>}/>
               <Route path="/rules/:id" element={<EditRulesPage/>}/>
