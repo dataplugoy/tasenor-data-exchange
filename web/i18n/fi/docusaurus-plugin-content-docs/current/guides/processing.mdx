@@ -1,0 +1,140 @@
+---
+sidebar_position: 100
+---
+
+# Processing
+
+How the processing works? This chapter provides a detailed explanation.
+
+## Definitions
+
+* **Flow plan**
+  A *flow plan* outlines how to transfer information from a single source to a specific
+  bookkeeping destination
+* **Batch** refers to each completed cycle of retrieving information, processing it,
+  and delivering the result.
+* **Run** button on the app executes the configured flow plan. A run involves creating
+  and executing as many steps of a single batch as possible. The run can have three
+  outcomes: *completion*, *waiting*, or *failure*.
+  * *Failure* can be fixed by adjusting settings and retrying.
+  * *Waiting* suggests a need for more information before continuing.
+     After providing additional information, one can execute another run.
+
+
+## Batch Processing Steps
+
+Each run executes as many steps as possible.
+
+### 1. Data Fetching
+
+
+First, the system fetches the original data. Data can be downloaded from a specific URL or uploaded manually. In this step, the system also stores the latest timestamp from the previous fetch. Accuracy depends on the data source. Despite this, the process prioritizes retrieving duplicate entries over data loss.
+
+<figure>
+<figcaption>**Example**: *A transaction in a financial statement issued by Nordnet.*</figcaption>
+```
+Id	        Kirjauspäivä	Kauppapäivä	Maksupäivä	Salkku	Tapahtumatyyppi	Arvopaperi	Instrumenttityyppi	ISIN	Määrä	Kurssi	Korko	Kokonaiskulut	Valuutta	Summa	Valuutta	Hankinta-arvo	Valuutta	Tulos	Valuutta	Kokonaismäärä	Saldo	Vaihtokurssi	Tapahtumateksti	Mitätöintipäivä	Laskelma	Vahvistusnumero	Välityspalkkio	Valuutta
+123456789	2000-05-09	2000-05-09	2000-05-09	12345678 NOSTO				0	0	0	0	EUR	-1 930	EUR	0		0		0	-1 902,68	1	NOSTO			9876543210
+```
+</figure>
+
+### 2. Data Parsing
+
+Every data source has its specific format. It could be API data or a CSV file, for example. However, before processing begins, we convert all data into JSON format to preserve its original information in a common format.
+
+In a simple case, it could be just a CSV file converted to the key-value pairs according to the known column names. The system splits the data into items that present either a full transaction or a part of the transaction. Read more about partial items [here](/docs/guides/unified-format#multipart-).
+
+
+<figure>
+<figcaption>**Example**: *A single item in a parsed version of the Nordnet statement.*</figcaption>
+```json
+{
+  "Id":"123456789",
+  "ISIN":"",
+  "Korko":"0",
+  "Saldo":-1902.68,
+  "Summa":-1930,
+  "Tulos":"0",
+  "Kurssi":0,
+  "Salkku":"12345678",
+  "Laskelma":"",
+  "Määrä":0,
+  "Valuutta":"EUR",
+  "Arvopaperi":"",
+  "Maksupäivä":"2000-05-09",
+  "Vaihtokurssi":1,
+  "Hankinta-arvo":0,
+  "Kauppapäivä":"2000-05-09",
+  "Kokonaiskulut":0,
+  "Kirjauspäivä":"2000-05-09",
+  "Tulos Valuutta":"",
+  "Tapahtumateksti":"NOSTO",
+  "Tapahtumatyyppi":"NOSTO",
+  "Vahvistusnumero":"9876543210",
+  "Välityspalkkio":null,
+  "Kokonaismäärä":0,
+  "Instrumenttityyppi":"",
+  "Mitätöintipäivä":"",
+  "Hankinta-arvo Valuutta":"",
+  "Kokonaiskulut Valuutta":"EUR",
+  "Välityspalkkio Valuutta":""
+}
+```
+</figure>
+
+### 3. Unifying Items
+
+Now comes the trickiest part. We need to understand the original data and convert it into an intermediate format that includes all the required information for bookkeeping. To accomplish this, a *[unified format](/docs/guides/unified-format)* for describing transactions has been created.
+
+Transformation occurs through the use of personalized rules. A well-known data source, such as a stockbroker, can have a complete rule set to handle the entire statement. However, with a generic bank statement, individuals will have to devise own *[formulass](/docs/guides/rules)* to convert data to a standardized format.
+
+<figure>
+<figcaption>**Example**: *Withdrawal transaction from Nordnet in a standardized format.*</figcaption>
+```json
+{
+  "type":"withdrawal",
+  "value":1930,
+  "service":"Nordnet",
+  "valueAsset":"EUR"
+}
+```
+</figure>
+
+
+### 4. Analysis
+
+In the analysis step, we process all unified items once in their chronological order. Any change in an account’s balance is monitored and tracked.
+
+Asset purchase prices are recorded alongside their accounts. Fees and transactions have separate designated accounts.
+When items such as stocks are sold, profit or loss is determined by the difference between buying and selling price.
+One can customize certain accounts to have a negative balance and use a separate debt account to represent borrowed funds. Typically, this happens when a stockbroker grants you access to margin, which involves loaning you money.
+
+This step produces *[generic transactions](/docs/guides/generic-transactions)* that resemble normal bookkeeping transactions, but actual information of accounts is still missing. Hence, text symbols are used to represent destination accounts.
+
+<figure>
+<figcaption>**Example**: *A generic withdrawal transaction.*</figcaption>
+```json
+{
+  "time": "2000-05-09T12:00:00.000Z",
+  "lines": [
+    {
+      "text": "Withdrawal from Nordnet-service",
+      "amount": "-1930",
+      "extras": {},
+      "account": "CURRENCY_EUR"
+    },
+    {
+      "text": "Withdrawal from Nordnet-service",
+      "amount": "1930",
+      "extras": {},
+      "account": "EXTERNAL_NORDNET_EUR"
+    }
+  ]
+}
+```
+</figure>
+
+### 5. Output
+
+
+The last step is to transfer the transactions to the real bookkeeping system. The key focus is on configuring the actual accounts to correspond with the generic account symbols that were generated during the analysis. Last, most bookkeeping systems have an API that ensures automatic updates for any changes made.

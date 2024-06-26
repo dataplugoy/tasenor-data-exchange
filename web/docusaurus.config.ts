@@ -26,7 +26,17 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'fi'],
+    localeConfigs: {
+      en: {
+        label: 'EN',
+        htmlLang: 'en-GB',
+      },
+      fi: {
+        label: 'FI',
+        htmlLang: 'fi-FI',
+      },
+    },
   },
 
   staticDirectories: ['public'],
@@ -114,10 +124,9 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          to: 'https://tadex.stg.tasenor.com/app/register',
-          class: 'demo-button',
+          type: 'localeDropdown',
           position: 'right',
-          label: 'Try Demo',
+          className: 'language-selector',
         },
       ]: [
         {
@@ -142,10 +151,9 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          to: 'https://tadex.stg.tasenor.com/app/register',
-          class: 'demo-button',
+          type: 'localeDropdown',
           position: 'right',
-          label: 'Try Demo',
+          className: 'language-selector',
         },
       ]
     },

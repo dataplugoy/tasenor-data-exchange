@@ -1,5 +1,12 @@
 # Web Pages
 
+## Localization
+
+Need to start specific language:
+```
+pnpm run dev --locale fi
+```
+
 ## Source Data
 
 Original copy

@@ -71,6 +71,24 @@ a.demo-button {
   font-style: normal;
 }
 
+/* Language selector */
+.navbar__link.language-selector {
+  color: white;
+}
+
+.dropdown__link[lang="en"] {
+  background: url(/gb.png);
+  background-repeat: no-repeat;
+  background-size: 2rem;
+  background-position: right;
+}
+.dropdown__link[lang="fi"] {
+  background: url(/fi.png);
+  background-repeat: no-repeat;
+  background-size: 2rem;
+  background-position: right;
+}
+
 /* TxTypes */
 .tx-types {
   color: #004AAD;

@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "Tasenor Data Exchange",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Site Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Home": {
+    "message": "Home",
+    "description": "Navbar item with label Home"
+  },
+  "item.label.Service": {
+    "message": "Service",
+    "description": "Navbar item with label Service"
+  },
+  "item.label.Team": {
+    "message": "Team",
+    "description": "Navbar item with label Team"
+  },
+  "item.label.Documentation": {
+    "message": "Documentation",
+    "description": "Navbar item with label Documentation"
+  }
+}
