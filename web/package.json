@@ -4,7 +4,8 @@
   "description": "TaDeX documentation",
   "scripts": {
     "dev": "NODE_ENV=dev docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify",
-    "docker": "NODE_ENV=prod docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify"
+    "build": "docusaurus build",
+    "docker": "NODE_ENV=prod docusaurus serve --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open"
   },
   "keywords": [],
   "author": "Dataplug Oy",
