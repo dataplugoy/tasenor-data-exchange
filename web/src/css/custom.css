@@ -70,6 +70,10 @@ a.demo-button {
   font-style: normal;
 }
 
+figcaption {
+  margin-bottom: 1rem;
+}
+
 /* Language selector */
 .navbar__link.language-selector {
   color: white;
