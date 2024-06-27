@@ -31,9 +31,14 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
     text = t('ACCOUNT_FEE', { currency: code.substring(4) })
   } else if (/^STOCK_/.test(code)) {
     text = t('ACCOUNT_STOCK', { ticker: code.substring(6) })
+  } else if (/^INCOME_/.test(code)) {
+    text = t(`ACCOUNT_INCOME_${code.substring(7)}`)
+  } else if (/^EXPENSE_/.test(code)) {
+    text = t(`ACCOUNT_EXPENSE_${code.substring(8)}`)
   } else if (!/_/.test(code)) {
     text = t(`ACCOUNT_GENERAL_${code}`)
   }
+
   return <Box component="span">{text}</Box>
 }
 

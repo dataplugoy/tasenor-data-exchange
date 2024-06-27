@@ -81,7 +81,7 @@
     "reason": {
       "description": "If income or expense have some specific reason, it can be determined here.",
       "type": "string",
-      "pattern": "^(DIVIDEND)$"
+      "pattern": "^(DIVIDEND|MONTLY_FEE|OTHER)$"
     },
     "reasonAsset": {
       "description": "An asset triggering the income or expense.",

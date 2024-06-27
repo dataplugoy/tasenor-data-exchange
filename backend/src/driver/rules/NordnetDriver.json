@@ -30,7 +30,7 @@
       "value": "-Summa",
       "valueAsset": "Valuutta",
       "account": "'FEE_MONTHLY_SAVING'",
-      "text": "Tapahtumateksti"
+      "text": "language == 'fi' ? Tapahtumateksti : undefined"
     }
   },
   {
@@ -76,7 +76,7 @@
       "valueAsset": "Valuutta",
       "reason": "'DIVIDEND'",
       "reasonAsset": "Arvopaperi",
-      "text": "Tapahtumateksti",
+      "text": "language == 'fi' ? Tapahtumateksti : undefined",
       "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Viitevaluuttakurssi)"
     }
   },
@@ -91,7 +91,7 @@
       "valueAsset": "Valuutta",
       "reason": "'DIVIDEND'",
       "reasonAsset": "Arvopaperi",
-      "text": "Tapahtumateksti",
+      "text": "language == 'fi' ? Tapahtumateksti : undefined",
       "rates": "rates(Valuutta, Valuutta == currency ? 1.0 : Vaihtokurssi)"
     }
   },
@@ -189,7 +189,7 @@
       "assetOut": "Arvopaperi",
       "assetAmountOut": "Määrä",
       "assetTypeOut": "'STOCK'",
-      "text": "Tapahtumateksti"
+      "text": "language == 'fi' ? Tapahtumateksti : undefined"
     }
   },
   {
@@ -215,7 +215,7 @@
       "multipart": "Vahvistusnumero",
       "assetAmountOut": "Määrä",
       "assetTypeOut": "'STOCK'",
-      "text": "Tapahtumateksti"
+      "text": "language == 'fi' ? Tapahtumateksti : undefined"
     }
   },
   {
