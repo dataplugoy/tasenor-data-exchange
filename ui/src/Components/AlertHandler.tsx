@@ -55,7 +55,15 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   }
 
   const onEditSave = (answers: Record<string, unknown>) => {
-    PATCH(alert.url, dot.object(answers) as Record<string, unknown>).then((res) => {
+
+    // Merge dotted notations to structure first.
+    Object.keys(answers).filter(k => k.indexOf('.') > 0).forEach(k => {
+      const newValues = answers[k]
+      delete answers[k]
+      dot.copy('this', k, { this: newValues}, answers)
+    })
+
+    PATCH(alert.url, answers as Record<string, unknown>).then((res) => {
       if (res) {
         setQuestions([])
         props.onSuccess(res)
