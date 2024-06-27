@@ -40,6 +40,7 @@ import UnifiedItem from '../../src/types/API/UnifiedItem.json'
 import UnifiedItemData from '../../src/types/API/UnifiedItemData.json'
 import UnifiedItemRule from '../../src/types/API/UnifiedItemRule.json'
 import UnifiedItemType from '../../src/types/API/UnifiedItemType.json'
+import UserSettings from '../../src/types/API/UserSettings.json'
 import { error } from '@tasenor/common'
 
 export const ajv = new Ajv({ allowUnionTypes: true })
@@ -85,6 +86,7 @@ ajv.addSchema(UnifiedItemData)
 ajv.addSchema(UnifiedItem)
 ajv.addSchema(UnifiedItemRule)
 ajv.addSchema(UnifiedItemType)
+ajv.addSchema(UserSettings)
 
 export const validate = (schema) => {
   return (req, res, next) => {

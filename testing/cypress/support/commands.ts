@@ -41,6 +41,7 @@ import UnifiedItem from '../e2e/api/schema/UnifiedItem.json'
 import UnifiedItemData from '../e2e/api/schema/UnifiedItemData.json'
 import UnifiedItemRule from '../e2e/api/schema/UnifiedItemRule.json'
 import UnifiedItemType from '../e2e/api/schema/UnifiedItemType.json'
+import UserSettings from '../e2e/api/schema/UserSettings.json'
 
 
 /**
@@ -133,6 +134,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(UnifiedItem)
   ajv.addSchema(UnifiedItemRule)
   ajv.addSchema(UnifiedItemType)
+  ajv.addSchema(UserSettings)
 
   if (!ajv.validate(json, res.body)) {
     const errors = JSON.stringify(ajv.errors)
