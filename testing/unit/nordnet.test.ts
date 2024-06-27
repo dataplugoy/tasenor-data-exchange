@@ -112,13 +112,13 @@ describe('Nordnet', () => {
           {
             account: 'CURRENCY_EUR',
             amount: '-2.5',
-            text: 'ETF-kuukausisaastosopimuksen palvelumaksu',
+            text: 'Monthly fee',
             extras: {}
           },
           {
-            account: 'FEE_MONTHLY_SAVING',
+            account: 'EXPENSE_MONTHLY_FEE',
             amount: '2.5',
-            text: 'ETF-kuukausisaastosopimuksen palvelumaksu',
+            text: 'Monthly fee',
             extras: {}
           }
         ]
@@ -247,13 +247,13 @@ describe('Nordnet', () => {
             {
               account: 'CURRENCY_USD',
               amount: '8.712298',
-              text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
+              text: 'Dividend for IQQQ',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
               amount: '-8.712298',
-              text: 'OSINKO IQQQ.DE 0.2587 USD/OSAKE',
+              text: 'Dividend for IQQQ',
               extras: {}
             }
           ]
@@ -264,13 +264,13 @@ describe('Nordnet', () => {
             {
               account: 'CURRENCY_USD',
               amount: '9.152124',
-              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
+              text: 'Dividend for IQQH',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
               amount: '-9.152124',
-              text: 'OSINKO IQQH 0.0263 USD/OSAKE',
+              text: 'Dividend for IQQH',
               extras: {}
             }
           ]
@@ -281,13 +281,13 @@ describe('Nordnet', () => {
             {
               account: 'CURRENCY_USD',
               amount: '17.288052',
-              text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
+              text: 'Dividend for IQQQ',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
               amount: '-17.288052',
-              text: 'OSINKO IQQQ.DE 0.4826 USD/OSAKE',
+              text: 'Dividend for IQQQ',
               extras: {}
             }
           ]
@@ -298,13 +298,13 @@ describe('Nordnet', () => {
             {
               account: 'CURRENCY_USD',
               amount: '19.832574',
-              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              text: 'Dividend for IQQH',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
               amount: '-19.832574',
-              text: 'OSINKO IQQH 0.0447 USD/OSAKE',
+              text: 'Dividend for IQQH',
               extras: {}
             }
           ]
@@ -520,13 +520,13 @@ describe('Nordnet', () => {
           {
             account: 'STOCK_NDA1V',
             amount: '-5003.39',
-            text: 'FUUSIO / MERGER NDA1V -> NDA FI',
+            text: 'Renamed +549 NDA1V to NDA FI',
             extras: { asset: 'NDA1V', assetChange: '-549' }
           },
           {
             account: 'STOCK_NDA_FI',
             amount: '5003.39',
-            text: 'FUUSIO / MERGER NDA1V -> NDA FI',
+            text: 'Renamed +549 NDA1V to NDA FI',
             extras: { asset: 'NDA FI', assetChange: '549' }
           }
         ]
@@ -554,13 +554,13 @@ describe('Nordnet', () => {
           {
             account: 'STOCK_CTY1S',
             amount: '-5520.06',
-            text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
+            text: 'Split CTY1S (converted 3135 to 627)',
             extras: { asset: 'CTY1S', assetChange: '-3135' }
           },
           {
             account: 'STOCK_CTY1S',
             amount: '5520.06',
-            text: 'REVERSE SPLIT 5:1 CTY1S -> CTY1SX',
+            text: 'Split CTY1S (converted 3135 to 627)',
             extras: { asset: 'CTY1S', assetChange: '627' }
           }
         ]
@@ -588,19 +588,19 @@ describe('Nordnet', () => {
           {
             account: 'CURRENCY_SEK',
             amount: '124.614',
-            text: 'OSINKO TELIA1 0,90 SEK/OSAKE',
+            text: 'Dividend for TELIA1',
             extras: {}
           },
           {
             account: 'INCOME_DIVIDEND',
             amount: '-105.92236',
-            text: 'OSINKO TELIA1 0,90 SEK/OSAKE',
+            text: 'Dividend for TELIA1',
             extras: {}
           },
           {
             account: 'TAX_WITHHOLDING',
             amount: '-18.69164',
-            text: 'OSINKO TELIA1 0,90 SEK/OSAKE',
+            text: 'Dividend for TELIA1',
             extras: {}
           }
         ]

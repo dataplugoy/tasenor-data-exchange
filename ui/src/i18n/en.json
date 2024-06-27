@@ -26,6 +26,7 @@
   "FOREX": "Forex",
   "INCOME_DIVIDEND": "Dividend for {{asset}}",
   "ACCOUNT_INCOME_DIVIDEND": "Dividend income",
+  "INCOME_INTEREST_REFUND": "Interest expense refund",
   "ACCOUNT_INCOME_INTEREST_REFUND": "Interest expense refund",
   "ACCOUNT_INCOME_OTHER": "Other income",
   "ITEMS_UNIFIED - ITEMS_UNIFIED": "Unable to complete analysis",
