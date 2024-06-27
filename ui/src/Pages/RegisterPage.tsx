@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, FormControlLabel, FormLabel, Switch, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useGET, usePOST } from '../Hooks/useNet'
 import { AuthResponse } from '../Types/API/auth/AuthResponse'
@@ -19,6 +19,7 @@ export const RegisterPage = (): React.JSX.Element => {
   const [zip, setZip] = useState('')
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
+  const [spam, setSpam] = useState(false)
   const POST = usePOST<AuthResponse>()
   const GET = useGET<ProjectResponse>()
   const app = useApp()
@@ -39,7 +40,7 @@ export const RegisterPage = (): React.JSX.Element => {
       return
     }
 
-    POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project') }).then(async (res) => {
+    POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project'), allowProductAnnouncement: spam }).then(async (res) => {
       if (res) {
         app.setAuth(res)
         GET(`/projects/${res.user.settings.projectId}?token=${res.token}`).then(res => {
@@ -63,6 +64,10 @@ export const RegisterPage = (): React.JSX.Element => {
         <TextField onChange={e => setCity(e.target.value)} value={city} name="city" label={t('City')}/>
       </Box>
       <TextField fullWidth onChange={e => setCountry(e.target.value)} value={country} name="country" label={t('Country')}/>
+
+      <FormControlLabel control={
+          <Switch checked={spam} onChange={() => setSpam(!spam)} />
+        } label={<FormLabel><Trans>Receive product update information via email (no marketing)?</Trans></FormLabel>} />
 
       <Button sx={{ mt: 2 }} onClick={onRegister} variant="outlined"><Trans>Register</Trans></Button>
     </Box>

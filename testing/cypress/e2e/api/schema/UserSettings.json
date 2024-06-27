@@ -1,0 +1,14 @@
+{
+  "$id": "UserSettings.json",
+  "title": "UserSettings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "projectId": {
+      "type": "integer"
+    },
+    "allowProductAnnouncement": {
+      "type": "boolean"
+    }
+  }
+}

@@ -14,4 +14,5 @@ export interface RegisterRequest {
   city?: string;
   country?: string;
   projectName?: string;
+  allowProductAnnouncement?: boolean;
 }

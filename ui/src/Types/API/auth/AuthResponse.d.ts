@@ -15,9 +15,10 @@ export interface AuthResponse {
     zip?: string;
     city?: string;
     country?: string;
-    settings: {
-      projectId: number;
-      [k: string]: unknown;
-    };
+    settings: UserSettings;
   };
+}
+export interface UserSettings {
+  projectId?: number;
+  allowProductAnnouncement?: boolean;
 }

@@ -48,7 +48,7 @@ router.post('/',
 router.post('/register',
   validate(RegisterRequest),
   async (req, res) => {
-    const { email, password, name, address, zip, city, country, projectName } = req.body
+    const { email, password, name, address, zip, city, country, projectName, allowProductAnnouncement } = req.body
     const old = await UserModel.find(email)
     if (old) {
       return res.status(400).send({ message: 'User already registered.' })
@@ -69,12 +69,15 @@ router.post('/register',
       address,
       zip,
       city,
-      country
+      country,
+      settings: {
+        allowProductAnnouncement
+      }
     })
     const token = await sign({ id: user.id }, 'tadex-api')
 
     const project = await ProjectModel.save({ userId: user.id, name: projectName, settings: { currency: 'EUR', language: 'fi' } })
-    await UserModel.update<prisma.User, UserModel>(user, { settings: { projectId: project.id } })
+    await UserModel.update<prisma.User, UserModel>(user, { settings: { projectId: project.id, allowProductAnnouncement } })
 
     return res.status(201).send({
       token,
@@ -86,7 +89,7 @@ router.post('/register',
         zip: user.data.zip,
         city: user.data.city,
         country: user.data.country,
-        settings: { projectId: project.id },
+        settings: { projectId: project.id, allowProductAnnouncement },
       }
     })
   }
