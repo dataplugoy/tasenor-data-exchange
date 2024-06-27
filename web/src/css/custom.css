@@ -80,6 +80,11 @@ figcaption {
   font-style: italic;
 }
 
+code {
+  color: wheat;
+  background-color: inherit;
+}
+
 /* Language selector */
 .navbar__link.language-selector {
   color: white;
@@ -100,12 +105,12 @@ figcaption {
 
 /* TxTypes */
 .tx-types {
-  color: #004AAD;
+  color: wheat;
   font-family: 'Courier New', Courier, monospace;
 }
 
 /* Type */
 .tx-type {
-  color: rgba(0,0,0,0.5);
+  color: wheat;
   font-size: 80%;
 }
