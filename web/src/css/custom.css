@@ -109,32 +109,3 @@ figcaption {
   color: rgba(0,0,0,0.5);
   font-size: 80%;
 }
-
-/* Pages */
-.beta-campaign {
-  padding: 5rem;
-}
-
-.beta-campaign .brief {
-  font-weight: 500;
-  font-size: 1.2rem;
-}
-
-.beta-campaign .partner-images {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 2rem;
-  width: 50%;
-  margin-top: 4rem;
-  margin-bottom: 2rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.beta-campaign .partner-images img {
-  width: 10rem;
-}
-
-.beta-campaign ul {
-  color: #E3D344;
-}

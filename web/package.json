@@ -11,6 +11,7 @@
   "author": "Dataplug Oy",
   "license": "UNLICENSED",
   "dependencies": {
+    "@custom-react-hooks/use-media-query": "^1.4.19",
     "@docusaurus/core": "^3.4.0",
     "@docusaurus/module-type-aliases": "^3.4.0",
     "@docusaurus/plugin-content-docs": "^3.4.0",
