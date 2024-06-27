@@ -75,6 +75,9 @@ a.demo-button {
 
 figcaption {
   margin-bottom: 1rem;
+  font-family: "EB Gramond";
+  font-size: 1.2rem;
+  font-style: italic;
 }
 
 /* Language selector */

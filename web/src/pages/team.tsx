@@ -26,7 +26,7 @@ export default function Index(): JSX.Element {
 
   return (
     <Layout title={`${siteConfig.title}`}>
-      <img src="3.svg" width="100%" onClick={onClick}/>
+      <img src="3.png" width="100%" onClick={onClick}/>
     </Layout>
   )
 }

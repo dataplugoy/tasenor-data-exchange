@@ -11,7 +11,7 @@ export default function Index(): JSX.Element {
   return (
     <Layout title={`${siteConfig.title}`}>
       <Link to="./team">
-        <img src="2.svg" width="100%"/>
+        <img src="2.png" width="100%"/>
       </Link>
     </Layout>
   )

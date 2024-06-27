@@ -9,7 +9,7 @@ export default function Index(): JSX.Element {
 
   return (
     <Layout title={`${siteConfig.title}`}>
-      <img src="4.svg" width="100%"/>
+      <img src="4.png" width="100%"/>
     </Layout>
   )
 }
