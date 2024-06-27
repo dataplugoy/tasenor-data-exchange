@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
-import { Asset, Timestring, ucfirst } from '@tasenor/common'
+import { dec } from '../../utils'
+import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
 import { AccountCode } from '../../../types/AccountCode'
@@ -30,7 +30,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
     this.validateError(`Either 'account' or 'reason' must be given to determine income.`)
   }
   if (text === undefined && reason === undefined) {
-    this.validateError(`Either 'account' or 'reason' must be given to determine income.`)
+    this.validateError(`Either 'text' or 'reason' must be given to determine income.`)
   }
 
   const resultText = text || t(this.language, `INCOME_${reason}`, { asset: reasonAsset || 'UNKNOWN' })

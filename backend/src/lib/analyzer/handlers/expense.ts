@@ -22,12 +22,12 @@ export async function expense(this: Analyzer, time: DateTime, input: UnifiedItem
 
   const { account, text, reason } = input
   const value = await this.validateValue(true)
-
+  console.log(account, reason, text)
   if (account === undefined && reason === undefined) {
-    this.validateError('Either \'account\' or \'reason\' must be given to determine income.')
+    this.validateError('Either \'account\' or \'reason\' must be given to determine expense.')
   }
   if (text === undefined && reason === undefined) {
-    this.validateError('Either \'account\' or \'reason\' must be given to determine income.')
+    this.validateError('Either \'text\' or \'reason\' must be given to determine expense.')
   }
 
   const resultText = text || t(this.language, `EXPENSE_${reason}`)

@@ -29,7 +29,7 @@
       "type": "'expense'",
       "value": "-Summa",
       "valueAsset": "Valuutta",
-      "account": "'FEE_MONTHLY_SAVING'",
+      "reason": "'MONTHLY_FEE'",
       "text": "language == 'fi' ? Tapahtumateksti : undefined"
     }
   },
