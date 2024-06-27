@@ -31,7 +31,10 @@ export default function Index(): JSX.Element {
         <br/>
 
         <center>
-          <a className="demo-button">Read More</a>
+          <a className="demo-button" href="/docs/guides/nordnet-example">Read More</a>
+          <br/>
+          <br/>
+          <a target="_new" href="mailto:communications.tasenor@gmail.com">Ask for More Information</a>
         </center>
       </div>
     </Layout>

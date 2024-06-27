@@ -55,6 +55,9 @@ a.demo-button {
 
   text-align: center;
   text-transform: uppercase;
+
+  cursor: pointer;
+  user-select: none;
 }
 
 .footer.footer {
