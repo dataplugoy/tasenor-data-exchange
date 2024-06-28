@@ -31,7 +31,7 @@ Each run executes as many steps as possible.
 First, the system fetches the original data. Data can be downloaded from a specific URL or uploaded manually. In this step, the system also stores the latest timestamp from the previous fetch. Accuracy depends on the data source. Despite this, the process prioritizes retrieving duplicate entries over data loss.
 
 <figure>
-<figcaption>**Example**: *A transaction in a financial statement issued by Nordnet.*</figcaption>
+<figcaption>**Example**: A transaction in a financial statement issued by Nordnet.</figcaption>
 ```
 Id	        Kirjauspäivä	Kauppapäivä	Maksupäivä	Salkku	Tapahtumatyyppi	Arvopaperi	Instrumenttityyppi	ISIN	Määrä	Kurssi	Korko	Kokonaiskulut	Valuutta	Summa	Valuutta	Hankinta-arvo	Valuutta	Tulos	Valuutta	Kokonaismäärä	Saldo	Vaihtokurssi	Tapahtumateksti	Mitätöintipäivä	Laskelma	Vahvistusnumero	Välityspalkkio	Valuutta
 123456789	2000-05-09	2000-05-09	2000-05-09	12345678 NOSTO				0	0	0	0	EUR	-1 930	EUR	0		0		0	-1 902,68	1	NOSTO			9876543210
@@ -46,7 +46,7 @@ In a simple case, it could be just a CSV file converted to the key-value pairs a
 
 
 <figure>
-<figcaption>**Example**: *A single item in a parsed version of the Nordnet statement.*</figcaption>
+<figcaption>**Example**: A single item in a parsed version of the Nordnet statement.</figcaption>
 ```json
 {
   "Id":"123456789",
@@ -89,7 +89,7 @@ Now comes the trickiest part. We need to understand the original data and conver
 Transformation occurs through the use of personalized rules. A well-known data source, such as a stockbroker, can have a complete rule set to handle the entire statement. However, with a generic bank statement, individuals will have to devise own *[formulass](/docs/guides/rules)* to convert data to a standardized format.
 
 <figure>
-<figcaption>**Example**: *Withdrawal transaction from Nordnet in a standardized format.*</figcaption>
+<figcaption>**Example**: Withdrawal transaction from Nordnet in a standardized format.</figcaption>
 ```json
 {
   "type":"withdrawal",
@@ -112,7 +112,7 @@ One can customize certain accounts to have a negative balance and use a separate
 This step produces *[generic transactions](/docs/guides/generic-transactions)* that resemble normal bookkeeping transactions, but actual information of accounts is still missing. Hence, text symbols are used to represent destination accounts.
 
 <figure>
-<figcaption>**Example**: *A generic withdrawal transaction.*</figcaption>
+<figcaption>**Example**: A generic withdrawal transaction.</figcaption>
 ```json
 {
   "time": "2000-05-09T12:00:00.000Z",

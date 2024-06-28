@@ -4,8 +4,49 @@ sidebar_position: 400
 
 # Rules
 
-TODO: Explain rules.
+Rule system is based on custom programming language designed for transaction processing.
 
-For now, refer to functions in [https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine](https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine)
+<figure>
+<figcaption>**Example**: A rule handling withdrawal from Nordnet.</figcaption>
+```json
+  {
+    "name": "Deposit",
+    "filter": "Tapahtumatyyppi == 'TALLETUS'",
+    "key": "TALLETUS",
+    "result": {
+      "type": "'deposit'",
+      "value": "Summa",
+      "valueAsset": "Valuutta",
+      "service": "'Nordnet'"
+    }
+  }
+```
+</figure>
 
-Also standard [MathJS features and functions](https://mathjs.org/docs/index.html) are available
+The rule set for an information source consists of an array of JSON objects like the one above.
+It has the following fields:
+* **name** Display name for the rule.
+* **filter** This expression is executed and the first one to resolve to truthy value, the result is calculated based on that rule.
+* **key** The driver may pick a dedicated field from the source data that can be used to speed up finding a matching rule. In this example the field `Tapahtumatyyppi` is a good lookup key, since it is used in every rule `filter`.
+* **result** When the matching rule is found, each field of the `result` is evaluated and thus an item in [unified format](./unified-format) is a final result.
+
+<figure>
+<figcaption>**Example 2**: A result after match is found and the result is evaluated.</figcaption>
+```json
+  {
+    "type": "deposit",
+    "value": "2500.00",
+    "valueAsset": "EUR",
+    "service": "Nordnet"
+  }
+```
+</figure>
+
+
+## Functions
+
+In addition to simple constants, variables and arithemtic operations, there are plenty of functions to use in the rule.
+
+Core is based on the [MathJS](https://mathjs.org) and so [all MathJS features and functions](https://mathjs.org/docs/index.html) are available.
+
+On the top of that there are some speficically crafted functions documented in [https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine](https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine)
