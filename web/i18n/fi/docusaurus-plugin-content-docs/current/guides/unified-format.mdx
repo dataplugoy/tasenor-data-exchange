@@ -8,22 +8,17 @@ import EnumValues from '@site/src/components/EnumValues';
 
 # Unified Format
 
-Unified format is a rich JSON format to express all possible transactions supported
-and understood by TaDeX. It also allows incompleteness to some extend. Enything that
-can be resolved in analysis step, can be left out. For example, if the actual currency
-exchange rate is not given, it is fetched from the third party as long as the date
-of the transaction is known.
-
+The unified format is a comprehensive JSON format that represents all the supported transactions that TaDeX can understand. It also permits a certain level of incompleteness. If an issue can be solved through analysis, it can be disregarded. For instance, if the current exchange rate is not provided, it can be obtained from a third party as long as the transaction date is known.
 
 ## Types
 
 ### Enum
 
-Enumerated type is a fixed list of accepted string values.
+An enumerated type is a fixed list of accepted string values.
 
 ### Number
 
-Number type is either an actual number or a string that can have arbitrary precisision.
+A number type is an actual number or a string that can have arbitrary precision.
 
 ### String
 
@@ -31,72 +26,59 @@ A string is UTF-8 encoded string possibly limited by some regular expression pat
 
 ### Asset
 
-An asset is special string type that refers to the ISO-4217 currency codes, stock ticker
-or crypto currency symbol.
+An asset is a special string type that refers to the ISO-4217 currency codes, stock ticker or crypto currency symbol.
 
 ### Asset Type
 
-Either `STOCK` or `CRYPTO`.
+An asset type can be classified as either STOCK or CRYPTO.
 
 ### Map
 
-A key value mapping that has string keys that maps to the arbitrary values.
+A key-value mapping, known as a map, uses string keys to link to arbitrary values.
 
 
 ## Common Fields
 
 ### `type` <Type file="UnifiedItemData.json" field="type"/>
 
-This defines the idea of the transaction. Each *type* of transaction has different
-fields it requires by default and some of the fields it can determine according to the type.
-Supported types are <TxTypes/>.
+This defines the idea of the transaction. Each type of transaction has different fields it requires by default and some fields it can determine according to the type. Supported types are <TxTypes/>.
 
 ### `value` <Type file="UnifiedItemData.json" field="value"/>
 
-This field is determining *total value* of the transaction. That must
-include additional fees for example. Value can be given either as number or as
-high precision string. Value is usually measured in *default currency* of the flow plan.
+This field is used to calculate the total transaction value, including additional fees, for example. There are two ways to input a value: as a number or as a high-precision string. The default currency in the flow plan measures value.
 
 ### `text` <Type file="UnifiedItemData.json" field="text"/>
 
-Meny transaction types can determine description on its own in the default language
-of the flow plan. If text field is given, it overrides the generated default text.
+The default language of the flow plan allows for individual descriptions of many transaction types. If there’s a text field, it replaces the default text.
 
 
 ## Some Optional Fields
 
 ### `valueAsset` <Type file="UnifiedItemData.json" field="valueAsset"/>
 
-It is not necessary to define total value in default currency. If some other currency
-or crypto currency is used instead, this field can name it.
+It is unnecessary to define total value in default currency. If a different currency or crypto currency is used, this field can specify it.
 
 ### `rates` <Type file="UnifiedItemData.json" field="rates"/>
 
-If conversion rates from other currencies to the default currency is known, it can
-be given here. Otherwise it is resolved using other services. The format of this field
-is a map from the currency (or any other asset) name(s) to the conversion rate(s) in
-the default currency. That is the value of the single (1.0) unit of the target asset expressed
-in the default currency.
+If the exchange rates from other currencies to the default currency are known, they can be provided here. Alternatively, it can be resolved using different services. The field format consists of a mapping that includes the name(s) of the currency or asset and their corresponding conversion rate(s) in the default currency. The single unit of the target asset has a value of 1.0 in the default currency.
 
 ## Assets
 
 ### `assetIn` <Type file="UnifiedItemData.json" field="assetIn"/>
 
-In a `buy` transaction and simimlar we are receiving some assset. This field is a crypto currency
-symbol, stock ticker or similar to be used as an identifier for that kind of asset.
+In buy transactions and similar situations, we receive an asset. This field serves as an identifier for assets like cryptocurrencies, stock tickers, or similar items.
 
 ### `assetAmountIn` <Type file="UnifiedItemData.json" field="assetAmountIn"/>
 
-How many units of the asset we have received in this transaction.
+This field displays the amount of units of the asset received here.
 
 ### `assetValueIn` <Type file="UnifiedItemData.json" field="assetValueIn"/>
 
-If value in the default currency is already known, it can be defined here. Otherwise an attempt
-is made to figure out the value from other sources.
+Default currency value can be defined here if already known. If not, value is determined from other sources.
 
 ### `assetTypeIn` <Type file="UnifiedItemData.json" field="assetTypeIn"/>
 
-Defines the type of the asset received.
+Specifies the asset type received.
 
 ### `assetOut` <Type file="UnifiedItemData.json" field="assetOut"/>
 
@@ -117,77 +99,60 @@ Similar to `assetTypeIn` but when giving away an asset.
 
 ## Fees
 
-The difference between types *fee* and *expense* is that the fee is added as an additional line to other transaction
-like selling or buying stocks. An expense contributes completely separate independent transaction
-on its own.
+Transactions, such as buying or selling stocks, have a separate line item for the fee, distinguishing it from the expense. Each expense is a separate and independent transaction.
 
 ### `fee` <Type file="UnifiedItemData.json" field="fee"/>
 
-Amount of fee charged as a part of the transaction.
+The fee charged for the transaction.
 
 ### `feeAsset` <Type file="UnifiedItemData.json" field="feeAsset"/>
 
-Ticker of the fee charged as a currency or other asset ticker.
+The fee charged for the transaction.
 
 
 ## Taxes
 
-A *tax* is similar to fee, but instead of the service provider it goes to the tax collector.
+A tax is similar to a fee, but it goes to the tax collector instead of the service provider.
 
 ### `taxType` <Type file="UnifiedItemData.json" field="taxType"/>
 
-A type of the tax charged. Currently either `vat` or `withholding`.
+A type of the tax charged. Currently, either `vat` or `withholding` tax is applicable.
 
 ### `taxAmount` <Type file="UnifiedItemData.json" field="taxAmount"/>
 
-If exact amount of tax is known already, it is given here.
+The exact tax amount, if known, is provided here.
 
 ### `taxAsset` <Type file="UnifiedItemData.json" field="taxAsset"/>
 
-In case that the tax amount is given in other currency (or even in other asset), it can
-be defined in this field.
+This field specifies the tax amount, if it is given in a currency or asset other than the default.
 
 ### `taxPercentage` <Type file="UnifiedItemData.json" field="taxPercentage"/>
 
-Instead of exact amount, the tax amount can be given also as an percentage of actual
-income or expense.
+The tax amount can be provided as a percentage of actual income or expense, instead of the exact amount.
 
 
 ## Miscellaneous
 
 ### `balance` <Type file="UnifiedItemData.json" field="balance"/>
 
-The balance field can be used give hint to analysis when the account should match zero. This is
-useful to trim away little rounding errors caused by different sources of forex conversions.
-Whenever the balance is reaching zero, the analyser compares the running balance to that and
-records the difference as profit or loss.
+The balance field provides a hint for when the account should be zero. It’s useful for trimming rounding errors from forex conversions. The analyser compares the running balance to zero and records profit or loss.
 
 ### `multipart` <Type file="UnifiedItemData.json" field="multipart"/>
 
-In a case that driver is not able to combine input items together to form information for complete
-transaction, it can be provided in pieces. In that case, every piece must have some unique
-identifier given in this field. When processing, all parts provided having the same `multipart`
-filed are combined together. If fields are overrlapping with different values, the combined result
-is not guaranteed.
+Where the input items cannot form complete transaction alone, they can be given individually. If that’s the case, every item needs to have a specific identifier listed in this section. When processing, parts with identical multipart fields are combined into one. The combined result cannot be guaranteed if there are overlapping fields with different values.
 
 ### `reason` <Type file="UnifiedItemData.json" field="reason"/>
 
-For automatic text construction for income and expense, there are some pre-defined *reason* symbols
-that are automatically used when translating text to the transaction. Currently reason can be one
-of the following: <EnumValues file="UnifiedItemData.json" field="reason"/>.
+In order to translate text into transactions, predefined reason symbols are automatically utilized when constructing automatic text for income and expenses. Currently reason can be one of the following: <EnumValues file="UnifiedItemData.json" field="reason"/>.
 
 ### `reasonAsset` <Type file="UnifiedItemData.json" field="reasonAsset"/>
 
-Sometimes the asset needs to be referenced in the automatic text generation. For example when paying
-dividends, it is preferred to have information about the stock ticker paying dividends.
+Sometimes the asset needs to be referenced in the automatic text generation. For example, having details of a stock ticker paying dividends is preferred.
 
 ### `service` <Type file="UnifiedItemData.json" field="service"/>
 
-Name of the service providing the data. Used in the automatic text generation for example when
-refering to withdrawing or depositing from/to service.
+Name of the service providing the data. Used in automatic text generation for service withdrawals or deposits, for example.
 
 ### `tags` <Type file="UnifiedItemData.json" field="tags"/>
 
-Tags are arbitrary non-empty strings attached to the transaction. Typically these can be used as
-dimensions in the destination bookkeepping. If the field exists in the rule, it must resolve to
-an array.
+Tags are arbitrary non-empty strings attached to the transaction. Typically, these can be used as dimensions in the destination bookkeeping. The field should be an array if it exists in the rule.
