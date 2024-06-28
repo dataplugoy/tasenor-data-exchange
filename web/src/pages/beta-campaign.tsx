@@ -4,18 +4,16 @@ import React from 'react'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import Translate from '@docusaurus/Translate'
-import useMediaQuery from '@custom-react-hooks/use-media-query'
 import { localeUrl } from '../components/utils'
 
 export default function Index(): JSX.Element {
   const { siteConfig } = useDocusaurusContext()
-  const isWide = useMediaQuery('(min-width: 800px)')
 
   return (
     <Layout title={`${siteConfig.title}`}>
       <div style={{ padding: '6rem' }}>
 
-        <div style={{ display: isWide ? 'grid' : 'block', gridTemplateColumns: '1fr 1fr', columnGap: '3rem' }}>
+        <div className="split-half">
 
           <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
             <img src="circuit.jpeg" style={{ borderRadius: '50%', width: '80%' }}/>

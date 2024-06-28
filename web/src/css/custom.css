@@ -103,6 +103,19 @@ code {
   background-position: right;
 }
 
+/* Split screen */
+.split-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3rem;
+}
+
+@media only screen and (max-width: 800px) {
+  .split-half {
+    display: block;
+  }
+}
+
 /* TxTypes */
 .tx-types {
   color: wheat;

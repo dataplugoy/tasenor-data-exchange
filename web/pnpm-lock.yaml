@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@custom-react-hooks/use-media-query':
-        specifier: ^1.4.19
-        version: 1.4.19(react@18.3.1)
       '@docusaurus/core':
         specifier: ^3.4.0
         version: 3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.3)
@@ -780,11 +777,6 @@ packages:
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
-
-  '@custom-react-hooks/use-media-query@1.4.19':
-    resolution: {integrity: sha512-jCyb7BqBjZA10Ht5y5goXNfUfl2/p4cvsrXXWCY2ReDTKyig79HPG7g4kxABRJurgAr/D/OD1lIe7AYt5CKHkg==}
-    peerDependencies:
-      react: '>=16'
 
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -5829,10 +5821,6 @@ snapshots:
 
   '@colors/colors@1.5.0':
     optional: true
-
-  '@custom-react-hooks/use-media-query@1.4.19(react@18.3.1)':
-    dependencies:
-      react: 18.3.1
 
   '@discoveryjs/json-ext@0.5.7': {}
 
