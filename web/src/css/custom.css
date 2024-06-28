@@ -40,24 +40,8 @@ a.navbar__item.navbar__link {
   font-style: normal;
 }
 
-a.demo-button {
-  background-color: #4294d4;
-  border: #255fb0 3px solid;
-  color: white;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  border-radius: 2rem;
-
-  letter-spacing: 0.1rem;
-  font-size: 16pt;
-  font-weight: 900;
-  font-family: "Red Hat Display", sans-serif;
-
-  text-align: center;
-  text-transform: uppercase;
-
-  cursor: pointer;
-  user-select: none;
+.breadcrumbs__link {
+  color: #fff;
 }
 
 .footer.footer {
@@ -126,4 +110,25 @@ code {
 .tx-type {
   color: wheat;
   font-size: 80%;
+}
+
+/* Custom button */
+a.demo-button {
+  background-color: #4294d4;
+  border: #255fb0 3px solid;
+  color: white;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 2rem;
+
+  letter-spacing: 0.1rem;
+  font-size: 16pt;
+  font-weight: 900;
+  font-family: "Red Hat Display", sans-serif;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  user-select: none;
 }

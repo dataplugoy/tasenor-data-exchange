@@ -22,6 +22,7 @@ export default function Index(): JSX.Element {
           <div>
             <div style={{ fontWeight: 500, fontSize: '1.2rem' }}>
               <Translate id="beta-campaign.1">We have developed an application that auto-generates bookkeeping transactions from stockbroker data and effortlessly transfers them to your current bookkeeping system.</Translate>
+              <> </>
               <Translate id="beta-campaign.2">Currently, we offer integration between Nordnet and Procountor, and plan to add more partners soon.</Translate>
             </div>
 
