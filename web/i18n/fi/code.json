@@ -285,5 +285,23 @@
   "theme.unlistedContent.message": {
     "message": "This page is unlisted. Search engines will not index it, and only users having a direct link can access it.",
     "description": "The unlisted content banner message"
+  },
+  "beta-campaign.1": {
+    "message": "Olemme kehittäneet järjestelmän, joka luo automaattisesti osakevälittäjien raporttien tai APIn pohjalta kirjanpitotapahtumat kirjanpitoosi."
+  },
+  "beta-campaign.2": {
+    "message": "Tällä hetkellä integraatio on Nordnetistä Procountoriin, mutta lisää vaihtoehtoja on tulossa pian."
+  },
+  "beta-campaign.3": {
+    "message": "Osallistu betatestaukseen NYT!"
+  },
+  "beta-campaign.4": {
+    "message": "Saat 3 vuotta ilmaista käyttöaikaa."
+  },
+  "read-more": {
+    "message": "Lue Lisää"
+  },
+  "ask-for-more-info": {
+    "message": "Kysy lisätietoja"
   }
 }

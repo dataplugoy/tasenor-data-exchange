@@ -4,23 +4,19 @@
     "description": "The title in the navbar"
   },
   "logo.alt": {
-    "message": "Site Logo",
+    "message": "Sivuston Logo",
     "description": "The alt text of navbar logo"
   },
-  "item.label.Home": {
-    "message": "Home",
-    "description": "Navbar item with label Home"
-  },
   "item.label.Service": {
-    "message": "Service",
+    "message": "Palvelut",
     "description": "Navbar item with label Service"
   },
   "item.label.Team": {
-    "message": "Team",
+    "message": "Tiimi",
     "description": "Navbar item with label Team"
   },
   "item.label.Documentation": {
-    "message": "Documentation",
+    "message": "Dokumentaatio",
     "description": "Navbar item with label Documentation"
   }
 }

@@ -22,26 +22,26 @@ export default function Index(): JSX.Element {
 
           <div>
             <div style={{ fontWeight: 500, fontSize: '1.2rem' }}>
-              <Translate>We have developed an application that auto-generates bookkeeping transactions from stockbroker data and effortlessly transfers them to your current bookkeeping system.</Translate>
-              <Translate>Currently, we offer integration between Nordnet and Procountor, and plan to add more partners soon.</Translate>
+              <Translate id="beta-campaign.1">We have developed an application that auto-generates bookkeeping transactions from stockbroker data and effortlessly transfers them to your current bookkeeping system.</Translate>
+              <Translate id="beta-campaign.2">Currently, we offer integration between Nordnet and Procountor, and plan to add more partners soon.</Translate>
             </div>
 
             <br/>
             <br/>
 
             <ul style={{ color: '#E3D344' }}>
-              <li><Translate>Join our beta program NOW!</Translate></li>
-              <li><Translate>Early adopters get 3 years of free usage.</Translate></li>
+              <li><Translate id="beta-campaign.3">Join our beta program NOW!</Translate></li>
+              <li><Translate id="beta-campaign.4">Early adopters get 3 years of free usage.</Translate></li>
             </ul>
 
             <br/>
             <br/>
 
             <center>
-              <a className="demo-button" href="/docs/guides/nordnet-example">Read More</a>
+              <a className="demo-button" href="/docs/guides/nordnet-example"><Translate id="read-more">Read More</Translate></a>
               <br/>
               <br/>
-              <a target="_new" href="mailto:communications.tasenor@gmail.com">Ask for More Information</a>
+              <a target="_new" href="mailto:communications.tasenor@gmail.com"><Translate id="ask-for-more-info">Ask for More Information</Translate></a>
             </center>
           </div>
         </div>
