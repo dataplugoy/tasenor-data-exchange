@@ -60,7 +60,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
     Object.keys(answers).filter(k => k.indexOf('.') > 0).forEach(k => {
       const newValues = answers[k]
       delete answers[k]
-      dot.copy('this', k, { this: newValues}, answers)
+      dot.copy('this', k, { this: newValues }, answers)
     })
 
     PATCH(alert.url, answers as Record<string, unknown>).then((res) => {
