@@ -17,8 +17,8 @@ export default function Index(): JSX.Element {
 
         <div style={{ display: isWide ? 'grid' : 'block', gridTemplateColumns: '1fr 1fr', columnGap: '3rem' }}>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <img src="circuit.jpeg" style={{ borderRadius: '50%' }}/>
+          <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            <img src="circuit.jpeg" style={{ borderRadius: '50%', width: '80%' }}/>
           </div>
 
           <div>
