@@ -1,6 +1,7 @@
 ---
 sidebar_position: 100
 ---
+import Link from '@docusaurus/Link'
 
 # Processing
 
@@ -42,7 +43,7 @@ Id	        Kirjauspäivä	Kauppapäivä	Maksupäivä	Salkku	Tapahtumatyyppi	Arvo
 
 Every data source has its specific format. It could be API data or a CSV file, for example. However, before processing begins, we convert all data into JSON format to preserve its original information in a common format.
 
-In a simple case, it could be just a CSV file converted to the key-value pairs according to the known column names. The system splits the data into items that present either a full transaction or a part of the transaction. Read more about partial items [here](/docs/guides/unified-format#multipart-).
+In a simple case, it could be just a CSV file converted to the key-value pairs according to the known column names. The system splits the data into items that present either a full transaction or a part of the transaction. Read more about partial items [here](./unified-format#multipart-).
 
 
 <figure>
@@ -109,7 +110,7 @@ Asset purchase prices are recorded alongside their accounts. Fees and transactio
 When items such as stocks are sold, profit or loss is determined by the difference between buying and selling price.
 One can customize certain accounts to have a negative balance and use a separate debt account to represent borrowed funds. Typically, this happens when a stockbroker grants you access to margin, which involves loaning you money.
 
-This step produces *[generic transactions](/docs/guides/generic-transactions)* that resemble normal bookkeeping transactions, but actual information of accounts is still missing. Hence, text symbols are used to represent destination accounts.
+This step produces *[generic transactions](./generic-transactions)* that resemble normal bookkeeping transactions, but actual information of accounts is still missing. Hence, text symbols are used to represent destination accounts.
 
 <figure>
 <figcaption>**Example**: A generic withdrawal transaction.</figcaption>

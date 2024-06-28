@@ -5,6 +5,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import Translate from '@docusaurus/Translate'
 import useMediaQuery from '@custom-react-hooks/use-media-query'
+import { localeUrl } from '../components/utils'
 
 export default function Index(): JSX.Element {
   const { siteConfig } = useDocusaurusContext()
@@ -38,7 +39,7 @@ export default function Index(): JSX.Element {
             <br/>
 
             <center>
-              <a className="demo-button" href="/docs/guides/nordnet-example"><Translate id="read-more">Read More</Translate></a>
+              <a className="demo-button" href={localeUrl('/docs/guides/nordnet-example')}><Translate id="read-more">Read More</Translate></a>
               <br/>
               <br/>
               <a target="_new" href="mailto:communications.tasenor@gmail.com"><Translate id="ask-for-more-info">Ask for More Information</Translate></a>

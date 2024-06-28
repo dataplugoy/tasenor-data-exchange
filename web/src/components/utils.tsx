@@ -1,4 +1,5 @@
 import React from 'react'
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import UnifiedItemData from '../schema/UnifiedItemData.json'
 import UnifiedItemType from '../schema/UnifiedItemType.json'
 import Asset from '../schema/Asset.json'
@@ -127,4 +128,20 @@ export function getType(file, field) {
   if (text) return <span className="tx-type">({text})</span>
 
   return <>TODO: {file} '{field}' {schema[file].type}</>
+}
+
+/**
+ * Check the current language and if not 'en', return url path `<lang>/`.
+ */
+export function lang(): string {
+  const { i18n } = useDocusaurusContext();
+  return i18n.currentLocale === 'en' ? '' : `/${i18n.currentLocale}`
+}
+
+/**
+ * Prefix url with locale.
+ * @param url
+ */
+export function localeUrl(url: string): string {
+  return lang() + url
 }
