@@ -75,7 +75,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
     </Box>
 
     <Dialog open={deleting} fullWidth>
-      <DialogTitle>Deleting the Flow Plan</DialogTitle>
+      <DialogTitle><Trans>Deleting the Flow Plan</Trans></DialogTitle>
 
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>

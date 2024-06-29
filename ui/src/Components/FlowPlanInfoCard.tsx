@@ -106,7 +106,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
       {alert && <AlertHandler alert={alert} onCancel={onCancel} onSuccess={onSuccess}/>}
 
       <Dialog open={abandoning} fullWidth>
-        <DialogTitle>Abandon the Latest Batch</DialogTitle>
+        <DialogTitle><Trans>Abandon the Latest Batch</Trans></DialogTitle>
 
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>
