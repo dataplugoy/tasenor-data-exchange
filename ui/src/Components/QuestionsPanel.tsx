@@ -53,7 +53,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
 
   return (
     <Dialog open={questions.length > 0} fullWidth>
-      <DialogTitle>We Need More Information</DialogTitle>
+      <DialogTitle><Trans>We Need More Information</Trans></DialogTitle>
 
       <DialogContent>
         {questions.map((question, idx) => <QuestionPanel onChange={onChange} key={idx} remotes={remotes} question={question}/>)}
