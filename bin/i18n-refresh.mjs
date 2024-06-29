@@ -128,6 +128,7 @@ async function main() {
 
   Object.values(AnswersRequired.VARIABLES).forEach(varSpec => {
     sentences.add(varSpec.help)
+    sentences.add(varSpec.label)
   })
 
   for (const file of await glob(path.join(I18N_DIR, '[a-z][a-z].json'))) {
