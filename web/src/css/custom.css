@@ -70,6 +70,15 @@ code {
   background-color: inherit;
 }
 
+.title {
+  font-size: 3.125rem;
+}
+
+.body-text {
+  font-weight: 100;
+  font-size: 1.4rem;
+}
+
 /* Language selector */
 .navbar__link.language-selector {
   color: white;

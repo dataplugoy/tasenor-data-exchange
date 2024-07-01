@@ -17,8 +17,7 @@ export default function Index(): JSX.Element {
         backgroundSize: '15rem 15rem',
       }}>
 
-        <div style={{
-          fontSize: '3.125rem',
+        <div className="title" style={{
           textAlign: 'right',
           marginRight: '10rem'
         }}>

@@ -19,6 +19,12 @@ export default function Index(): JSX.Element {
     case '?prod-registration-fi':
       redirectUrl = 'https://tadex-app.tasenor.com/app/fi/register'
       break
+    case '?prod-login':
+      redirectUrl = 'https://tadex-app.tasenor.com/app/login'
+      break
+    case '?prod-login-fi':
+      redirectUrl = 'https://tadex-app.tasenor.com/app/fi/login'
+      break
   }
 
   useEffect(() => {
