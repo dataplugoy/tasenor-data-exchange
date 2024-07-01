@@ -83,7 +83,7 @@
   "Create transaction duplicates": "Luo tilitapahtumien duplikaatteja",
   "Credit": "Kredit",
   "Currency": "Valuutta",
-  "Currency account for {{currency}} is going to have negative balance. Do we want to record negative balance to the separate debt account?": "Valuuttatili valuutalle {{currency}} menee negatiiviseksi. Haluammeko kirjata negatiivisen saldon erilliselle lainatilille?",
+  "Currency account for {{currency}} is going to have negative balance. Do we want to record negative balance to the separate debt account?": "Valuuttatilin saldo valuutalle {{currency}} on menossa negatiiviseksi. Haluammeko kirjata negatiivisen saldon erilliselle lainatilille?",
   "Current": "Nykyinen",
   "Dashboard": "Aloitussivu",
   "Data Flow Plan": "Tietovirtasuunnitelma",
