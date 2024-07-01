@@ -306,5 +306,44 @@
   },
   "ask-for-more-info": {
     "message": "Kysy lisätietoja"
+  },
+  "embrace-automation": {
+    "message": "Automaatio hallintaan"
+  },
+  "automate-simplify-excel": {
+    "message": "automatisoi. yksinkertaista. loista"
+  },
+  "service": {
+    "message": "Palvelumme"
+  },
+  "service-1": {
+    "message": "En tiedä, mutta joskus tuntuu työläältä pikkutarkka numeroiden keräily erilaisista tiliotteista kirjanpitoon."
+  },
+  "service-2": {
+    "message": "Sitä paitsi virheet numeroissa voivat johtaa vääristyneisiin kirjanpitoraportteihin, menetettyihin veroetuihin tai jopa sakkomaksuihin."
+  },
+  "service-3": {
+    "message": "Tuntuuko sinusta samalta? Meillä on ratkaisu."
+  },
+  "service-4": {
+    "message": "Se on palvelu joka helpottaa ja yksinkertaistaa hyvin tarkan tiedonsiirron kirjanpitoon eri lähteistä."
+  },
+  "How TaDeX Works?": {
+    "message": "Miten TaDeX Toimii?"
+  },
+  "team": {
+    "message": "Tiimi"
+  },
+  "service-5": {
+    "message": "Syötä tiliote tai anna sen hakea tiedot API:n kautta (mikäli sellainen on käytettävissä) ja TaDeX selvittelee tilitapahtumat ja luo ne kirjanpitoosi."
+  },
+  "team-lead": {
+    "message": "Projektin johto ja tutkimus"
+  },
+  "team-web": {
+    "message": "Webbi ja markkinointi"
+  },
+  "team-dev": {
+    "message": "Ohjelmointi ja ylläpito"
   }
 }

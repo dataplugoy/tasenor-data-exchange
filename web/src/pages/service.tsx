@@ -13,22 +13,28 @@ export default function Index(): JSX.Element {
     <Layout title={`${siteConfig.title}`}>
       <div className="split-half" style={{ padding: '3rem' }}>
         <div>
-          <div className="title"><Translate>Service</Translate></div>
+          <div className="title"><Translate id="service">Service</Translate></div>
 
           <div className="body-text">
+            <Translate id="service-1">
             We can't speak for you, but we find the meticulous task of extracting data from bank statements for bookkeeping tiresome.
+            </Translate>
           </div>
 
           <br/>
 
           <div className="body-text">
+            <Translate id="service-2">
             Moreover, incorrect data can distort financial reports, leading to missed tax benefits or potential penalties.
+            </Translate>
           </div>
 
           <br/>
 
           <div className="body-text">
+            <Translate id="service-3">
             Do you share the same frustrations? We created a solution with you in mind.
+            </Translate>
           </div>
 
           <br/>
@@ -38,7 +44,9 @@ export default function Index(): JSX.Element {
 
           <br/>
           <div className="body-text">
+            <Translate id="service-4">
             It's a service that automates and simplifies data processing for accurate bookkeeping and financial management.
+            </Translate>
           </div>
 
           <br/>
@@ -48,7 +56,9 @@ export default function Index(): JSX.Element {
 
           <br/>
           <div className="body-text">
+            <Translate id="service-5">
             Simply upload your bank statements and TaDeX will automatically organise and input the data into your bookkeeping system.
+            </Translate>
           </div>
         </div>
 

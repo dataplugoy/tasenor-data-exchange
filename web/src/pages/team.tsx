@@ -38,7 +38,7 @@ export default function Index(): JSX.Element {
             <span className="link-button" style={{ display: 'inline-block', marginTop: '1rem' }}>
               Matias Aunola
               <br/>
-              Project Lead & Research
+              <Translate id="team-lead">Project Lead & Research</Translate>
             </span>
             <div style={{ marginTop: '2rem' }}>
               <a target="_new" href="https://www.linkedin.com/in/matiasaunola/">
@@ -54,7 +54,7 @@ export default function Index(): JSX.Element {
             <span className="link-button" style={{ display: 'inline-block', marginTop: '1rem' }}>
               Khaya Ronkainen
               <br/>
-              Web & Marketing
+              <Translate id="team-web">Web & Marketing</Translate>
             </span>
             <div style={{ marginTop: '2rem' }}>
               <a target="_new" href="https://www.linkedin.com/in/khayaronkainen/">
@@ -70,7 +70,7 @@ export default function Index(): JSX.Element {
             <span className="link-button" style={{ display: 'inline-block', marginTop: '1rem' }}>
               Tommi Ronkainen
               <br/>
-              Development & Maintenance
+              <Translate id="team-dev">Development & Maintenance</Translate>
             </span>
             <div style={{ marginTop: '2rem' }}>
               <a target="_new" href="https://www.linkedin.com/in/wigys/">
