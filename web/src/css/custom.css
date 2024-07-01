@@ -114,7 +114,7 @@ code {
 }
 
 /* Custom buttons */
-a.demo-button {
+.demo-button {
   background-color: #4294d4;
   border: #255fb0 3px solid;
   color: white;
@@ -134,10 +134,15 @@ a.demo-button {
   user-select: none;
 }
 
-a.link-button {
+.link-button {
   border: white 1px solid;
   color: white;
   padding: 0.5rem 4rem;
   border-top-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
+}
+
+.linked-in {
+  height: 2.5rem;
+  width: 2.5rem;
 }

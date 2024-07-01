@@ -12,7 +12,7 @@ export default function Index(): JSX.Element {
   return (
     <Layout title={`${siteConfig.title}`}>
       <div style={{
-            backgroundImage: 'url("background.png")',
+            backgroundImage: 'url(background.png)',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center'
       }}>

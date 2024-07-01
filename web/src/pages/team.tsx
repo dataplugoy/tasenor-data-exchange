@@ -3,30 +3,86 @@
 import React from 'react'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
-import Link from '@docusaurus/Link'
+import Translate from '@docusaurus/Translate'
 
 export default function Index(): JSX.Element {
   const { siteConfig } = useDocusaurusContext()
 
-  const onClick = (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const pos = (x / (rect.right - rect.left))
-    if (pos < 0.34) {
-      document.location = 'https://www.linkedin.com/in/matiasaunola/'
-      return
-    }
-    if (pos > 0.64) {
-      document.location = 'https://www.linkedin.com/in/wigys/'
-      return
-    }
-    document.location = 'https://www.linkedin.com/in/khayaronkainen/'
-  }
-
   return (
     <Layout title={`${siteConfig.title}`}>
-      <img src="3.png" width="100%" onClick={onClick}/>
+      <div style={{
+        backgroundImage: 'url(background.png)',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'right top',
+        backgroundSize: '15rem 15rem',
+      }}>
+
+        <div style={{
+          fontSize: '3.125rem',
+          textAlign: 'right',
+          marginRight: '10rem'
+        }}>
+          <Translate id="team">Team</Translate>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'auto 30rem 30rem 30rem auto',
+          marginTop: '4rem',
+        }}>
+          <div></div>
+
+          <div style={{
+            textAlign: 'center'
+          }}>
+            <img style={{ width: '70%', height: '400px', borderRadius: '1rem' }} src="matias.png"/>
+            <span className="link-button" style={{ display: 'inline-block', marginTop: '1rem' }}>
+              Matias Aunola
+              <br/>
+              Project Lead & Research
+            </span>
+            <div style={{ marginTop: '2rem' }}>
+              <a target="_new" href="https://www.linkedin.com/in/matiasaunola/">
+                <img src="in.png" className="linked-in"/>
+              </a>
+            </div>
+          </div>
+
+          <div style={{
+            textAlign: 'center'
+          }}>
+            <img style={{ width: '70%', height: '400px', borderRadius: '1rem' }} src="khaya.png"/>
+            <span className="link-button" style={{ display: 'inline-block', marginTop: '1rem' }}>
+              Khaya Ronkainen
+              <br/>
+              Web & Marketing
+            </span>
+            <div style={{ marginTop: '2rem' }}>
+              <a target="_new" href="https://www.linkedin.com/in/khayaronkainen/">
+                <img src="in.png" className="linked-in"/>
+              </a>
+            </div>
+          </div>
+
+          <div style={{
+            textAlign: 'center'
+          }}>
+            <img style={{ width: '70%', height: '400px', borderRadius: '1rem' }} src="tommi.png"/>
+            <span className="link-button" style={{ display: 'inline-block', marginTop: '1rem' }}>
+              Tommi Ronkainen
+              <br/>
+              Development & Maintenance
+            </span>
+            <div style={{ marginTop: '2rem' }}>
+              <a target="_new" href="https://www.linkedin.com/in/wigys/">
+                <img src="in.png" className="linked-in"/>
+              </a>
+            </div>
+          </div>
+
+          <div></div>
+        </div>
+      </div>
     </Layout>
   )
 }
