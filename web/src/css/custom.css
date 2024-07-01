@@ -6,6 +6,7 @@
 :root {
   color: white;
   background-color: #131345;
+  --tadex-fg-color: #E3D344
 }
 
 [data-theme='dark']:root {
@@ -17,7 +18,7 @@ nav.navbar {
 }
 
 .navbar__title {
-  color: #E3D344;
+  color: var(--tadex-fg-color);
 
   letter-spacing: 0.05rem;
   font-size: 18pt;
@@ -47,7 +48,7 @@ a.navbar__item.navbar__link {
 .footer.footer {
   margin-top: -7px;
   background-color: #004AAD;
-  color: #E3D344;
+  color: var(--tadex-fg-color);
 
   letter-spacing: 0.08rem;
   font-size: 12pt;
