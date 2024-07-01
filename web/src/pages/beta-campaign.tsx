@@ -17,6 +17,14 @@ export default function Index(): JSX.Element {
 
           <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
             <img src="circuit.jpeg" style={{ borderRadius: '50%', width: '80%' }}/>
+
+            <br/>
+            <br/>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+              <a className="link-button" href={localeUrl('/docs/guides/nordnet-example')}><Translate id="read-more">Learn More</
+            Translate></a>
+              <a className="link-button" target="_new" href="mailto:communications.tasenor@gmail.com"><Translate id="ask-for-more-info">Contact US</Translate></a>
+            </div>
           </div>
 
           <div>
@@ -38,10 +46,7 @@ export default function Index(): JSX.Element {
             <br/>
 
             <center>
-              <a className="demo-button" href={localeUrl('/docs/guides/nordnet-example')}><Translate id="read-more">Read More</Translate></a>
-              <br/>
-              <br/>
-              <a target="_new" href="mailto:communications.tasenor@gmail.com"><Translate id="ask-for-more-info">Ask for More Information</Translate></a>
+              <a className="demo-button" href={localeUrl('/go?prod-registration')}><Translate id="join-now">JOIN NOW</Translate></a>
             </center>
           </div>
         </div>
