@@ -1,8 +1,6 @@
-import {themes as prismThemes} from 'prism-react-renderer'
-import type {Config} from '@docusaurus/types'
-import type * as Preset from '@docusaurus/preset-classic'
-
-console.log(`Loading config for ${process.env.NODE_ENV}.`)
+import {themes as prismThemes} from 'prism-react-renderer';
+import type {Config} from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Tasenor Data Exchange',
@@ -80,6 +78,37 @@ const config: Config = {
         href: 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Red+Hat+Display:ital@0;1&display=swap',
       },
     },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://www.google-analytics.com',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://www.googletagmanager.com',
+      },
+    },
+    // https://developers.google.com/analytics/devguides/collection/gtagjs/#install_the_global_site_tag
+    {
+      tagName: 'script',
+      attributes: {
+        src: `https://www.googletagmanager.com/gtag/js?id=G-GL9P9RSCVH`,
+      },
+    },
+    {
+      tagName: 'script',
+      attributes: {},
+      innerHTML: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-GL9P9RSCVH');
+        `,
+    },
   ],
 
   themeConfig: {
@@ -98,7 +127,34 @@ const config: Config = {
         width: 32,
         height: 32,
       },
-      items: [
+      items: process.env.NODE_ENV === 'dev' ? [
+        {
+          to: 'service',
+          position: 'right',
+          label: 'Service',
+        },
+        {
+          to: 'team',
+          position: 'right',
+          label: 'Team',
+        },
+        {
+          to: 'contact',
+          position: 'right',
+          label: 'Contact',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'docSidebarId',
+          position: 'right',
+          label: 'Documentation',
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
+          className: 'language-selector',
+        },
+      ]: [
         {
           to: 'service',
           position: 'right',
