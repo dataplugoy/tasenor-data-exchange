@@ -3,9 +3,9 @@
   "name": "@tasenor/tadex-web",
   "description": "TaDeX documentation",
   "scripts": {
-    "dev": "NODE_ENV=dev docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open --no-minify",
+    "dev": "docusaurus start --port ${DOC_PORT:=7304} --host 0.0.0.0  --config docusaurus.config.dev.ts --no-open --no-minify",
     "build": "docusaurus build",
-    "docker": "docusaurus serve --port ${DOC_PORT:=7304} --host 0.0.0.0 --no-open"
+    "docker": "docusaurus serve --port ${DOC_PORT:=7304} --host 0.0.0.0 --config docusaurus.config.${NODE_ENV}.ts --no-open"
   },
   "keywords": [],
   "author": "Dataplug Oy",
