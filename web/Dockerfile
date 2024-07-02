@@ -16,7 +16,7 @@ ADD docs/ docs/
 ADD public/ public/
 ADD src/ src/
 ADD i18n/ i18n/
-ADD docusaurus.config.ts .
+ADD docusaurus.config*.ts .
 ADD sidebars.ts .
 
 RUN pnpm build
