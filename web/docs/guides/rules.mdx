@@ -4,7 +4,7 @@ sidebar_position: 400
 
 # Rules
 
-Rule system is based on custom programming language designed for transaction processing.
+The rule system uses a custom programming language for transaction processing.
 
 <figure>
 <figcaption>**Example**: A rule handling withdrawal from Nordnet.</figcaption>
@@ -23,15 +23,14 @@ Rule system is based on custom programming language designed for transaction pro
 ```
 </figure>
 
-The rule set for an information source consists of an array of JSON objects like the one above.
-It has the following fields:
+The rule set for an information source is an array of JSON objects, like the one shown above. It contains the following fields:
 * **name** Display name for the rule.
-* **filter** This expression is executed and the first one to resolve to truthy value, the result is calculated based on that rule.
-* **key** The driver may pick a dedicated field from the source data that can be used to speed up finding a matching rule. In this example the field `Tapahtumatyyppi` is a good lookup key, since it is used in every rule `filter`.
-* **result** When the matching rule is found, each field of the `result` is evaluated and thus an item in [unified format](./unified-format) is a final result.
+* **filter** The expression is executed and the first true value determines the calculated result based on the matching rule.
+* **key** The driver may pick a dedicated field from the source data that can speed up finding a matching rule. In this example, the driver can pick the field “Tapahtumatyyppi” as a good lookup key since it is used in every rule filter.
+* **result** When the matching rule is found, each field is evaluated to produce a [unified format](./unified-format) item as the result.
 
 <figure>
-<figcaption>**Example 2**: A result after match is found and the result is evaluated.</figcaption>
+<figcaption>**Example 2**: After the match, a result is found and evaluated.</figcaption>
 ```json
   {
     "type": "deposit",
@@ -45,8 +44,10 @@ It has the following fields:
 
 ## Functions
 
-In addition to simple constants, variables and arithmetic operations, there are plenty of functions to use in the rule.
+Besides basic constants, variables, and arithmetic, the rule includes numerous functions to utilize.
 
 Core is based on the [MathJS](https://mathjs.org) and so [all MathJS features and functions](https://mathjs.org/docs/index.html) are available.
 
-On the top of that there are some speficically crafted functions documented in [https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine](https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine)
+[All MathJS features and functions](https://mathjs.org/docs/index.html) are accessible in Core since it’s built on [MathJS](https://mathjs.org).
+
+Furthermore, there are certain custom functions documented at [https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine](https://docs.stg.tasenor.com/api/tasenor-common/class/RulesEngine)
