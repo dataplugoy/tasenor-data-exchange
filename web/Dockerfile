@@ -19,6 +19,4 @@ ADD i18n/ i18n/
 ADD docusaurus.config*.ts .
 ADD sidebars.ts .
 
-RUN pnpm build
-
 CMD ["pnpm", "run", "docker"]
