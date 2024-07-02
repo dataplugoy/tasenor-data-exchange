@@ -4,10 +4,7 @@ sidebar_position: 300
 
 # Generic Transaction
 
-Before the final transactions are delivered, the unified items are transformed to *generic transactions*.
-It presents a compact JSON object containing information to be delivered. However, for example, accounts
-in the target systems are not known before actualy delivery. They are presented as symbols to describe
-the purpose of the account.
+Prior to their delivery, unified items are converted into *generic transactions*. The JSON object is compact and contains the information for delivery. However, the accounts in the target systems remain unknown until the actual delivery. Therefore, they are depicted as symbols that represent the purpose of the account.
 
 The generic transaction looks like this:
 ```json
@@ -37,11 +34,11 @@ The generic transaction looks like this:
 ```
 
 The fields above are:
-* **time** Time stamp of the transaction. If only the date is known it has time added pointing to the midday.
+* **time** The transaction’s timestamp. If only the date is known, time will default to midday.
 * **lines** Each transaction line to be added to the bookkeeping.
-* **account** Symbolic name of the account. The mapping from symbols to the actual account will be configured for each bookkeeping system separately.
-* **text** Description either taken from the statement or automatically constructed for the event.
+* **account** Symbolic name for the account. Each bookkeeping system will have its own configuration for mapping symbols to actual accounts.
+* **text** Description obtained from the statement or created automatically for the event.
 * **extras** Various optional fields:
-  * **tags** Optional dimensions known by the bookkeeping.
-  * **asset** If account holds assets, this is the ticker of the asset.
-  * **assetChange** How many units of the asset has been added or removed from the account in this transaction.
+  * **tags** Optional dimensions recorded by the bookkeeping system.
+  * **asset** For accounts with assets, this is the ticker.
+  * **assetChange** The number of units of assets added or removed in this transaction.
