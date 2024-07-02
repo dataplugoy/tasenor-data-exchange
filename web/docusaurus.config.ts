@@ -63,7 +63,7 @@ const config: Config = {
     mermaid: true,
   },
 
-  headTags: [
+  headTags: process.env.NODE_ENV === 'prod' ? [
     {
       tagName: 'link',
       attributes: {
@@ -108,6 +108,21 @@ const config: Config = {
         gtag('js', new Date());
         gtag('config', 'G-GL9P9RSCVH');
         `,
+    },
+  ] : [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://fonts.googleapis.com',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Red+Hat+Display:ital@0;1&display=swap',
+      },
     },
   ],
 
