@@ -40,6 +40,7 @@ export default function Index(): JSX.Element {
             <ul style={{ color: '#E3D344' }}>
               <li><Translate id="beta-campaign.3">Join our beta program NOW!</Translate></li>
               <li><Translate id="beta-campaign.4">Early adopters get 3 years of free usage.</Translate></li>
+              <li><Translate id="beta-campaign.5">Request features and propose partners to support.</Translate></li>
             </ul>
 
             <br/>
