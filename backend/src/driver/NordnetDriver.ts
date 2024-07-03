@@ -26,9 +26,12 @@ export class NordnetDriver extends ManualUploadDriver {
 
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
 
+    // Note: Version 2 is older than version 1.
+
     const version = await batch.detectVersion([
-      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s+Viitevaluuttakurssi/,
-      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+Instrumenttityyppi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta/,
+      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s+Viitevaluuttakurssi\s*\n/,
+      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+Instrumenttityyppi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta$/,
+      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s+Viitevaluuttakurssi\s+Alkuperäinen korko\s*\n/,
     ])
 
     if (version === null) {
@@ -36,6 +39,10 @@ export class NordnetDriver extends ManualUploadDriver {
     }
 
     this.version = version
+
+    if (version === 3) {
+      return await this.itemizeInputVersion3(batch)
+    }
 
     return version === 2 ? await this.itemizeInputVersion2(batch) : await this.itemizeInputVersion1(batch)
   }
@@ -158,5 +165,66 @@ export class NordnetDriver extends ManualUploadDriver {
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {
     return this.applyUnifyRules(flow, run, input, rules, input.fields.Tapahtumatyyppi as string)
+  }
+
+  async itemizeInputVersion3(batch: BatchModel): Promise<InputItemData[]> {
+
+    const csv = await batch.parseCsvColumns({
+      delimiter: '\t',
+      raw: true,
+      from: 2,
+      columns: [
+        'Id',
+        'Kirjauspäivä',
+        'Kauppapäivä',
+        'Maksupäivä',
+        'Salkku',
+        'Tapahtumatyyppi',
+        'Arvopaperi',
+        'ISIN',
+        'Määrä',
+        'Kurssi',
+        'Korko',
+        'Kokonaiskulut',
+        'Kokonaiskulut Valuutta',
+        'Summa',
+        'Valuutta',
+        'Hankinta-arvo',
+        'Hankinta-arvo Valuutta',
+        'Tulos',
+        'Tulos Valuutta',
+        'Kokonaismäärä',
+        'Saldo',
+        'Vaihtokurssi',
+        'Tapahtumateksti',
+        'Mitätöintipäivä',
+        'Laskelma',
+        'Vahvistusnumero',
+        'Välityspalkkio',
+        'Välityspalkkio Valuutta',
+        'Viitevaluuttakurssi',
+        'Alkuperäinen korko',
+      ]
+    })
+
+    this.preProcess(csv, {
+      numericFields: ['Summa', 'Saldo'],
+      numericOrNullFields: ['Välityspalkkio', 'Määrä', 'Kurssi', 'Kokonaiskulut', 'Kokonaismäärä', 'Hankinta-arvo', 'Vaihtokurssi', 'Viitevaluuttakurssi'],
+      requiredFields: ['Tapahtumatyyppi', 'Summa', 'Kirjauspäivä'],
+      defaults: {
+        Valuutta: this.projectSettings.currency,
+        Vaihtokurssi: 1
+      }
+    })
+
+    return csv.map((line, index) => ({
+      line: index + 2,
+      original: line.raw,
+      version: this.version,
+      time: DateTime.fromISO(`${line.record['Kirjauspäivä']}T12:00:00Z`).toUTC().toISO() as string,
+      text: line.record.Tapahtumateksti || line.record.Tapahtumatyyppi,
+      total: line.record.Summa,
+      fields: line.record
+    }))
   }
 }
