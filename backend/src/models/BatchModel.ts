@@ -1,6 +1,6 @@
 import { JsonValue } from '@prisma/client/runtime/library'
 import chardet from 'chardet'
-import { Options, parse } from 'csv-parse'
+import { Options } from 'csv-parse'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'

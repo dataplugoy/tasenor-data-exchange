@@ -1,4 +1,3 @@
-import fs from 'fs'
 import { Options, parse } from 'csv-parse'
 import { JsonValue } from '@prisma/client/runtime/library'
 import Decimal from 'decimal.js'

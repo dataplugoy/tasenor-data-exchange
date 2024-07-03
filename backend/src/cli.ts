@@ -336,6 +336,36 @@ async function executeInitStock(args) {
   await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(flow, { stock: stock as JsonValue })
 }
 
+/**
+ * Initialize account balances.
+ * @param args
+ */
+async function executeInitBalance(args) {
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+  }
+
+  const flow = await flowPlan(args, options)
+  const batch = await BatchModel.getLatest(flow)
+  if (batch) {
+    throw new Error(`Cannot initialize stock for ${flow} since there are already batches.`)
+  }
+
+  const content = fs.readFileSync(args.path).toString('utf-8')
+  const data = await parseCsv(content)
+  const total: Record<AccountCode, number> = {}
+
+  data.forEach(line => {
+    const [account, balance] = line
+    total[account] = parseFloat(balance)
+    log(`Initializing ${account} to balance ${total[account]}`)
+  })
+
+  await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(flow, { balance: total as JsonValue })
+}
+
 export async function execute(...args: string[]): Promise<void> {
   const parser: ArgumentParser = new ArgumentParser({
     description: 'Tasenor Data Exchange command line tool'
@@ -382,11 +412,17 @@ export async function execute(...args: string[]): Promise<void> {
   upload.set_defaults({ func: executeUpload })
 
   // Initialize assets command.
-  const initStock = subparser.add_parser('init-stock', { description: 'Initialize assets with CSV file (ticker, count, price).' })
+  const initStock = subparser.add_parser('init-stock', { description: 'Initialize assets with CSV file (columns: ticker, count, price).' })
   initStock.add_argument('flow', { help: 'Name of the flow.' })
   initStock.add_argument('account', { help: 'Symbolic name of the account.' })
   initStock.add_argument('path', { help: 'A path to the file to upload.' })
   initStock.set_defaults({ func: executeInitStock })
+
+  // Initialize balance command.
+  const initBalance = subparser.add_parser('init-balance', { description: 'Initialize account balances with CSV file (columns: name, balance).' })
+  initBalance.add_argument('flow', { help: 'Name of the flow.' })
+  initBalance.add_argument('path', { help: 'A path to the file to upload.' })
+  initBalance.set_defaults({ func: executeInitBalance })
 
   // Prepare and execute.
   const commandArgs = parser.parse_args(args.length ? args : ['-h'])
