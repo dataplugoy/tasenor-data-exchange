@@ -10,8 +10,8 @@ const I18N_DIR = path.join(ROOT, 'backend', 'src', 'lib', 'i18n')
 const IGNORE_FILES = [`!${ROOT}/ui/node_modules`, `!${ROOT}/backend/node_modules`, '!**/*.d.ts']
 const PATTERNS = {
   'backend/**/*.ts': [
-    /\bt\([a-zA-Z.]+, '(.*?)'[) ,]/,
-    /\bt\([a-zA-Z.]+, "(.*?)"[) ,]/,
+    /\bt\([a-zA-Z. ]+, '(.*?)'[) ,]/,
+    /\bt\([a-zA-Z. ]+, "(.*?)"[) ,]/,
     /\bvalidateText\('(.*?)'[) ,]/,
     /\bvalidateText\("(.*?)"[) ,]/,
   ],
