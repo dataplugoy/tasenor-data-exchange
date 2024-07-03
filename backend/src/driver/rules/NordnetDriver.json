@@ -68,7 +68,7 @@
   {
     "name": "Dividend v1",
     "key": "OSINKO",
-    "filter": "(version == 1 or version == 3) and Tapahtumatyyppi == 'OSINKO'",
+    "filter": "version == 1 and Tapahtumatyyppi == 'OSINKO'",
     "result": {
       "type": "'income'",
       "multipart": "Vahvistusnumero",
@@ -109,7 +109,7 @@
   },
   {
     "name": "Forex Sell (Foreign to Local) v1",
-    "filter": "(version == 1 or version == 3) and Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
+    "filter": "version == 1 and Tapahtumatyyppi == 'VALUUTAN MYYNTI' and Summa < 0 and currency != Valuutta",
     "key": "VALUUTAN MYYNTI",
     "result": {
       "type": "'forex'",
@@ -122,7 +122,7 @@
   },
   {
     "name": "Forex Buy (Foreign to Local) v1",
-    "filter": "(version == 1 or version == 3) and Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
+    "filter": "version == 1 and Tapahtumatyyppi == 'VALUUTAN OSTO' and Summa > 0 and currency == Valuutta",
     "key": "VALUUTAN OSTO",
     "result": {
       "type": "'forex'",
