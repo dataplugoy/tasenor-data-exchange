@@ -7,7 +7,7 @@ import { FlowPlanModel } from './models/FlowPlanModel'
 import { OutputItemModel } from './models/OutputItemModel'
 import { Transaction, TransactionExtras, TransactionLine } from './types/API/Transaction'
 import { AccountCode } from './types/AccountCode'
-import { Timestring, error, note, sorted, warning } from '@tasenor/common'
+import { Timestring, error, log, note, sorted, warning } from '@tasenor/common'
 import colors from 'colors/safe'
 import { sprintf } from 'sprintf-js'
 import { Stock } from './lib/Stock'
@@ -16,9 +16,12 @@ import { diff } from 'deep-object-diff'
 import fs from 'fs'
 import { BatchModel } from './models/BatchModel'
 import Decimal from 'decimal.js'
-import { dec } from './lib/utils'
+import { dec, parseCsv } from './lib/utils'
 import { Setup } from './types/API/Setup'
 import { initI18N } from './lib/i18n/t'
+import { StockData } from './types/API/StockData'
+import prisma from '@prisma/client'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 Decimal.set({ precision: 50 })
 
@@ -301,6 +304,38 @@ async function executeUpload(args) {
   console.log(`Set data for ${last}.`)
 }
 
+/**
+ * Initialize flow plan assets.
+ * @param args
+ */
+async function executeInitStock(args) {
+
+  const options: RuntimeOptions = {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+  }
+
+  const flow = await flowPlan(args, options)
+  const batch = await BatchModel.getLatest(flow)
+  if (batch) {
+    throw new Error(`Cannot initialize stock for ${flow} since there are already batches.`)
+  }
+
+  const content = fs.readFileSync(args.path).toString('utf-8')
+  const data = await parseCsv(content)
+  const acc = args.account as AccountCode
+  const stock: Record<AccountCode, StockData> = {[acc]: {}}
+
+  data.forEach(line => {
+    const [ticker, count, value] = line
+    stock[acc][ticker] = { value: parseFloat(value), count: parseFloat(count) }
+    log(`Initializing ${acc} ${ticker} to ${count} with value ${value}`)
+  })
+
+  await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(flow, { stock: stock as JsonValue })
+}
+
 export async function execute(...args: string[]): Promise<void> {
   const parser: ArgumentParser = new ArgumentParser({
     description: 'Tasenor Data Exchange command line tool'
@@ -345,6 +380,13 @@ export async function execute(...args: string[]): Promise<void> {
   upload.add_argument('flow', { help: 'Name of the flow.' })
   upload.add_argument('path', { help: 'A path to the file to upload.' })
   upload.set_defaults({ func: executeUpload })
+
+  // Initialize assets command.
+  const initStock = subparser.add_parser('init-stock', { description: 'Initialize assets with CSV file (ticker, count, price).' })
+  initStock.add_argument('flow', { help: 'Name of the flow.' })
+  initStock.add_argument('account', { help: 'Symbolic name of the account.' })
+  initStock.add_argument('path', { help: 'A path to the file to upload.' })
+  initStock.set_defaults({ func: executeInitStock })
 
   // Prepare and execute.
   const commandArgs = parser.parse_args(args.length ? args : ['-h'])

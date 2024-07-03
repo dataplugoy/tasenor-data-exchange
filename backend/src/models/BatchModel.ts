@@ -6,7 +6,7 @@ import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
-import { parseEncoding } from '../lib/utils'
+import { parseCsv, parseEncoding } from '../lib/utils'
 import { log } from '@tasenor/common'
 
 export type CsvOptions = Options & {
@@ -122,28 +122,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       }
     }
 
-    return new Promise((resolve, reject) => {
-      const records: string[][] = []
-      const parser = parse(options)
-
-      parser.on('readable', function() {
-        let record
-        while ((record = parser.read()) !== null) {
-          records.push(record)
-        }
-      })
-
-      parser.on('end', function() {
-        resolve(records)
-      })
-
-      parser.on('error', function(err) {
-        reject(new Error(`CSV Parser failed: ${err.message}`))
-      })
-
-      parser.write(data)
-      parser.end()
-    })
+    return parseCsv(data, options)
   }
 
   /**

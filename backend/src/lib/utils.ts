@@ -1,3 +1,5 @@
+import fs from 'fs'
+import { Options, parse } from 'csv-parse'
 import { JsonValue } from '@prisma/client/runtime/library'
 import Decimal from 'decimal.js'
 
@@ -78,4 +80,34 @@ export function parseEncoding(encoding: string): 'ascii' | 'utf8' | 'utf-8' | 'u
  */
 export function serviceName2Code(service: string): string {
   return service.toUpperCase().replace(/[^A-Z0-9_]/g, '_')
+}
+
+/**
+ * Read in a CSV file.
+ * @param path
+ * @param options
+ * @returns
+ */
+export async function parseCsv(data: string, options: Options = {}): Promise<string[][]> {
+  return new Promise((resolve, reject) => {
+    const records: string[][] = []
+    const parser = parse(options)
+
+    parser.on('readable', function() {
+      let record
+      while ((record = parser.read()) !== null) {
+        records.push(record)
+      }
+    })
+
+    parser.on('end', function() {
+      resolve(records)
+    })
+
+    parser.on('error', function(err) {
+      reject(new Error(`CSV Parser failed: ${err.message}`))
+    })
+    parser.write(data)
+    parser.end()
+  })
 }
