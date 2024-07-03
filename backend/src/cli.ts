@@ -18,6 +18,7 @@ import { BatchModel } from './models/BatchModel'
 import Decimal from 'decimal.js'
 import { dec } from './lib/utils'
 import { Setup } from './types/API/Setup'
+import { initI18N } from './lib/i18n/t'
 
 Decimal.set({ precision: 50 })
 
@@ -350,6 +351,7 @@ export async function execute(...args: string[]): Promise<void> {
 
   const db = await connect(commandArgs.db)
   BaseModel.setDb(db)
+  await initI18N()
 
   if (!commandArgs.func) {
     console.log(colors.red('Command is required.'))
