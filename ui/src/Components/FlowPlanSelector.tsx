@@ -26,14 +26,16 @@ export const FlowPlanSelector = (): React.JSX.Element => {
           avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
           title={<Typography variant="subtitle1"><Trans>Select Flow Plan</Trans></Typography>}
         />
-        <CardContent sx={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+        <CardContent sx={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'flex-start', alignContent: 'flex-start' }}>
           {plans.map(plan =>
             <Button
               key={plan.id}
               sx={{
                 backgroundColor: 'secondary.main',
                 color: 'secondary.contrastText',
-                textTransform: 'none'
+                textTransform: 'none',
+                minWidth: '20rem',
+                height: '3rem',
               }}
               onClick={() => navigate(`/${location.pathname.split('/').slice(-1)[0]}/${plan.id}`)}
               variant="outlined"
