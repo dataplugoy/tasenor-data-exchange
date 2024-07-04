@@ -240,6 +240,10 @@ export function validateAssetInAccount(this: Analyzer, withService: boolean): Ac
  */
 export function validateTicker(this: Analyzer, asset: string): Asset {
   const suspicious = (t: string): boolean => {
+    // Some special valid cases.
+    if (/\b(BULL|BEAR|LONG|SHORT|SHRT)\b/.test(t) && /[- :A-Z._0-9]/.test(t)) {
+      return false
+    }
     // Invalid characters.
     if (/[^- :A-Z._0-9]/.test(t)) {
       return true

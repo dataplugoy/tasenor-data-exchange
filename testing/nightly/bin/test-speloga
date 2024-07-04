@@ -14,7 +14,7 @@ set -e
 
 cd "$ROOT"
 pnpm load
-bin/tadex.mjs setup 'Nightly Testing' '{"settings": {"debtAccounts": {"EUR": null, "USD": null}}}'
+bin/tadex.mjs setup 'Nightly Testing' '{"tickers": {"Aktia Nordic High Yield A": "Aktia Nordic High Yield A"}, "settings": {"debtAccounts": {"EUR": null, "USD": null}}}'
 bin/tadex.mjs run 'Nightly Testing'
 bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Spelöga.csv
 bin/tadex.mjs run 'Nightly Testing' all

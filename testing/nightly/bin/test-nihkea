@@ -14,6 +14,7 @@ set -e
 
 cd "$ROOT"
 pnpm load
+bin/tadex.mjs setup 'Nightly Testing' '{"tickers": {"Aktia Nordic High Yield A": "Aktia Nordic High Yield A"}}'
 bin/tadex.mjs run 'Nightly Testing'
 bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Nihkeä.csv
 bin/tadex.mjs run 'Nightly Testing' all

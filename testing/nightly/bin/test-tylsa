@@ -14,7 +14,7 @@ set -e
 
 cd "$ROOT"
 pnpm load
-bin/tadex.mjs setup 'Nightly Testing' '{"settings": {"debtAccounts": {"EUR": null, "USD": null}}}'
+bin/tadex.mjs setup 'Nightly Testing' '{"tickers": {"iShares MSCI Europe SRI ETF EUR Acc EUR": "iShares MSCI Europe SRI ETF EUR Acc EUR", "SLG OMXH25": "SLG OMXH25", "Xtrackers Comdty ex Agri Swap ETF 1C EUR": "Xtrackers Comdty ex Agri Swap ETF 1C EUR"}, "settings": {"debtAccounts": {"EUR": null, "USD": null}}}'
 bin/tadex.mjs run 'Nightly Testing'
 bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Tylsä.csv
 bin/tadex.mjs run 'Nightly Testing' all
