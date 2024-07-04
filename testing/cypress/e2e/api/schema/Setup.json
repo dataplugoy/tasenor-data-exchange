@@ -9,6 +9,10 @@
       "type": "object",
       "additionalProperties": true
     },
+    "tickers": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "accountGrouping": {
       "type": "object",
       "additionalProperties": false,

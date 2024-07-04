@@ -7,7 +7,8 @@ import { QuestionAccountPanel } from './QuestionAccountPanel'
 import { AccountNumber } from '@tasenor/common'
 import { RemoteAccount } from '../Types/API/RemoteAccount'
 import { QuestionStringsPanel } from './QuestionStringsPanel'
-import { QuestionDebtAccountPanel } from './QuestionDebtAccount'
+import { QuestionDebtAccountPanel } from './QuestionDebtAccountPanel'
+import { QuestionTickerPanel } from './QuestionTickerPanel'
 
 interface QuestionPanelProps {
   question: Question
@@ -42,6 +43,10 @@ export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
     case 'STRINGS':
       return <Box sx={sx}>
         <QuestionStringsPanel question={question} value={value as undefined | string[]} onChange={onChange}/>
+      </Box>
+    case 'TICKER':
+      return <Box sx={sx}>
+        <QuestionTickerPanel question={question} value={value as undefined | Record<string, string>} onChange={onChange}/>
       </Box>
     case 'DEBT_ACCOUNT':
       return <Box sx={sx}>

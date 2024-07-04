@@ -43,6 +43,9 @@ export interface Setup {
   accounts?: {
     [k: string]: unknown;
   };
+  tickers?: {
+    [k: string]: unknown;
+  };
   accountGrouping?: {
     singleStockAccount?: boolean;
     singleCryptoAccount?: boolean;

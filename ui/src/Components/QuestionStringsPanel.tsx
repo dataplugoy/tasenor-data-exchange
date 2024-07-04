@@ -9,7 +9,7 @@ interface QuestionStringsPanelProps {
 }
 
 /**
- * Display error in nicely formatted manner.
+ * Ask comma or semi-colon separated strings.
  * @param props
  * @returns
  */
@@ -29,7 +29,7 @@ export const QuestionStringsPanel = (props: QuestionStringsPanelProps): React.JS
   return (
     <FormGroup>
       <FormControl>
-        <TextField onChange={e => onChange(e.target.value)} fullWidth value={str} name="host" label={label}/>
+        <TextField onChange={e => onChange(e.target.value)} fullWidth value={str} label={label}/>
         <FormHelperText>{help}</FormHelperText>
       </FormControl>
     </FormGroup>

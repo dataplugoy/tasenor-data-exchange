@@ -23,7 +23,7 @@ import { rename } from './handlers/rename'
 import { sell } from './handlers/sell'
 import { split } from './handlers/split'
 import { withdrawal } from './handlers/withdrawal'
-import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validateBasics, validateError, validateFee, validateInput, validateNotEmpty, validateRate, validateRequired, validateRequiredField, validateText, validateValue, validateValueAccount, validateValueOrAsset } from './validators'
+import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validateBasics, validateError, validateFee, validateInput, validateNotEmpty, validateRate, validateRequired, validateRequiredField, validateText, validateTicker, validateValue, validateValueAccount, validateValueOrAsset } from './validators'
 import { Setup } from '../../types/API/Setup'
 import { resolveAccount } from './resolver'
 import { RuntimeOptions } from '../../types/RuntimeOptions'
@@ -76,6 +76,7 @@ export class Analyzer {
   public validateValueAccount: (this: Analyzer, withService: boolean) => AccountCode = validateValueAccount.bind(this)
   public validateAssetOutAccount: (this: Analyzer, withService: boolean) => AccountCode = validateAssetOutAccount.bind(this)
   public validateAssetInAccount: (this: Analyzer, withService: boolean) => AccountCode = validateAssetInAccount.bind(this)
+  public validateTicker: (this: Analyzer, asset: string) => Asset = validateTicker.bind(this)
 
   /**
    * Initialize

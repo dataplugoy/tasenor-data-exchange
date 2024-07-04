@@ -60,7 +60,7 @@ export const VARIABLES: Record<string, Question> = {
     type: 'STRINGS',
     help: 'Optional comma- or semicolon separated list of tags to be added every transaction created by this flow plan.',
     label: 'Additional tags'
-  }
+  },
 }
 
 export class AnswersRequired extends AlertException<Question[]> {
@@ -138,6 +138,26 @@ export class AnswersRequired extends AlertException<Question[]> {
       args,
       variable: 'settings.debtAccounts'
     }
+    const alert = new AnswersRequired(url, userId, question)
+    throw alert
+  }
+
+  /**
+   * Check if ticker needs to be replaced.
+   * @param url
+   * @param language
+   * @param userId
+   * @param ticker
+   */
+  static forTicker(url: string, language: Language, userId: number, ticker: string) {
+    const question = {
+      type: 'TICKER' as QuestionType,
+      help: t(language, 'We have found a ticker "{{ticker}}" which does not sound correct? Do you want to replace it with something else?', { ticker }),
+      label: t(language, 'Replacement ticker'),
+      args: { ticker },
+      variable: 'tickers'
+    }
+
     const alert = new AnswersRequired(url, userId, question)
     throw alert
   }

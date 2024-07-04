@@ -1,10 +1,11 @@
-import { Asset, CryptoCurrency, Currency, isCurrency } from '@tasenor/common'
+import { Asset, CryptoCurrency, Currency, Language, isCurrency } from '@tasenor/common'
 import { t } from '../i18n/t'
 import { dec } from '../utils'
 import { Analyzer } from './Analyzer'
 import Decimal from 'decimal.js'
 import { UnifiedItemData } from '../../types/API/UnifiedItem'
 import { AccountCode } from '../../types/AccountCode'
+import { AnswersRequired } from '../../exceptions/AnswersRequired'
 
 /**
  * Throw a validation error.
@@ -230,4 +231,38 @@ export function validateAssetInAccount(this: Analyzer, withService: boolean): Ac
     return `CURRENCY_${input.assetIn}` as AccountCode
   }
   return `ASSET_${input.assetIn}` as AccountCode
+}
+
+/**
+ * Check that asset seems to be valid ticker. Apply ticker mapping if found for the ticker.
+ * @param this
+ * @param asset
+ */
+export function validateTicker(this: Analyzer, asset: string): Asset {
+  const suspicious = (t: string): boolean => {
+    // Invalid characters.
+    if (/[^- :A-Z._0-9]/.test(t)) {
+      return true
+    }
+    // More than 1 space.
+    if (t.split(' ').length > 2) {
+      return true
+    }
+    // Longer than 6 characters.
+    if (t.length > 6) {
+      return true
+    }
+
+    return false
+  }
+
+  if (this.setup.tickers && this.setup.tickers[asset]) {
+    return this.setup.tickers[asset] as Asset
+  }
+
+  if (suspicious(asset)) {
+    AnswersRequired.forTicker(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, asset)
+  }
+
+  return asset as Asset
 }

@@ -5,4 +5,4 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type QuestionType = "ACCOUNT" | "BOOLEAN" | "DEBT_ACCOUNT" | "ENUM" | "STRINGS";
+export type QuestionType = "ACCOUNT" | "BOOLEAN" | "DEBT_ACCOUNT" | "ENUM" | "STRINGS" | "TICKER";
