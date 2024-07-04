@@ -328,9 +328,9 @@ async function executeInitStock(args) {
   const stock: Record<AccountCode, StockData> = {[acc]: {}}
 
   data.forEach(line => {
-    const [ticker, count, value] = line
-    stock[acc][ticker] = { value: parseFloat(value), count: parseFloat(count) }
-    log(`Initializing ${acc} ${ticker} to ${count} with value ${value}`)
+    const [ticker, amount, value] = line
+    stock[acc][ticker] = { value: parseFloat(value), amount: parseFloat(amount) }
+    log(`Initializing ${acc} ${ticker} to ${amount} with value ${value}`)
   })
 
   await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(flow, { stock: stock as JsonValue })
