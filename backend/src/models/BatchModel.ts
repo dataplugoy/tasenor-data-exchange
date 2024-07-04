@@ -61,7 +61,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Check if any regexp matches the data and return index numbered from 1. Null if no match.
    */
-  async detectVersion(regexes: RegExp[]): Promise<number | null> {
+  async detectVersion(regexes: RegExp[], fullText: boolean = false): Promise<number | null> {
     if (this.data.data === null) {
       throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
     }
@@ -70,8 +70,10 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     }
 
     // eslint-disable-next-line
-    const data = this.data.data.toString(this.data.encoding as BufferEncoding)
-
+    let data = this.data.data.toString(this.data.encoding as BufferEncoding)
+    if (!fullText) {
+      data = data.split('\n')[0]
+    }
     for (let n = 0; n < regexes.length; n++) {
       if (regexes[n].test(data)) {
         return n + 1
