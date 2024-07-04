@@ -20,27 +20,30 @@ export async function rename(this: Analyzer, time: DateTime, input: UnifiedItemD
 
   this.validateRequired('assetIn', 'assetAmountIn', 'assetTypeIn', 'assetOut')
   const { assetOut, assetIn, assetTypeIn, assetAmountIn } = input
-  const text = this.validateText('Renamed {{amount}} {{out}} to {{in}}', { in: assetIn, out: assetOut, amount: chg(assetAmountIn) })
+  const tickerIn = this.validateTicker(assetIn as string)
+  const tickerOut = this.validateTicker(assetOut as string)
+
+  const text = this.validateText('Renamed {{amount}} {{out}} to {{in}}', { in: tickerIn, out: tickerOut, amount: chg(assetAmountIn) })
   const value = await this.validateValue(true)
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `${assetTypeIn}_${assetOut}` as AccountCode,
+        account: `${assetTypeIn}_${tickerOut}` as AccountCode,
         amount: dec(value).negated().toString(),
         text,
         extras: {
-          asset: assetOut,
+          asset: tickerOut,
           assetChange: dec(assetAmountIn).negated().toString(),
         },
       },
       {
-        account: `${assetTypeIn}_${assetIn}` as AccountCode,
+        account: `${assetTypeIn}_${tickerIn}` as AccountCode,
         amount: dec(value).toString(),
         text,
         extras: {
-          asset: assetIn,
+          asset: tickerIn,
           assetChange: dec(assetAmountIn).toString(),
         },
       },

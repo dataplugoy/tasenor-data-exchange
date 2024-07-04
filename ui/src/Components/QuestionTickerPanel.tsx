@@ -21,7 +21,7 @@ export const QuestionTickerPanel = (props: QuestionTickerPanelProps): React.JSX.
 
   const onChange = (s) => {
     setStr(s)
-    props.onChange(variable, {...value, [ticker]: s})
+    props.onChange(variable, { ...value, [ticker]: s })
   }
 
   useEffect(() => {

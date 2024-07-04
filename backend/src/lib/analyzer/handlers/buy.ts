@@ -21,13 +21,13 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
 
   this.validateBasics()
   this.validateRequired('assetIn', 'assetAmountIn', 'assetTypeIn')
-  const ticker = this.validateTicker(assetIn as string)
+  const tickerIn = this.validateTicker(assetIn as string)
 
-  const value = await this.validateValueOrAsset(ticker, dec(assetAmountIn), true)
+  const value = await this.validateValueOrAsset(tickerIn, dec(assetAmountIn), true)
   const [fee, feeAsset, feeAssetChange] = await this.validateFee(true)
-  const account = `${assetTypeIn}_${ticker}` as AccountCode
+  const account = `${assetTypeIn}_${tickerIn}` as AccountCode
 
-  const old = this.stock.getAsset(account, ticker)
+  const old = this.stock.getAsset(account, tickerIn)
 
   if (old.amount.lt(0)) {
 
@@ -35,9 +35,9 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       this.validateError('Buying more of short-sold instrument than negative amount is not implemented.')
     }
     // Reverting short selling.
-    const oldValue = this.stock.getValue(account, ticker)?.mul(assetAmountIn as number)
+    const oldValue = this.stock.getValue(account, tickerIn)?.mul(assetAmountIn as number)
 
-    const text = this.validateText('Closing short position by buying {{amount}} {{asset}}', { asset: ticker, amount: chg(assetAmountIn) })
+    const text = this.validateText('Closing short position by buying {{amount}} {{asset}}', { asset: tickerIn, amount: chg(assetAmountIn) })
 
     const lines: TransactionLine[] = [
       {
@@ -51,7 +51,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
         amount: dec(oldValue).toString(),
         text,
         extras: {
-          asset: ticker,
+          asset: tickerIn,
           assetChange: dec(assetAmountIn).toString(),
         },
       },
@@ -60,7 +60,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     // Making profit.
     if (oldValue?.gt(value)) {
       lines.push({
-        account: `PROFIT_${ticker}` as AccountCode,
+        account: `PROFIT_${tickerIn}` as AccountCode,
         amount: oldValue.minus(value).negated().toString(),
         text,
         extras: {},
@@ -70,7 +70,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     // Making losses.
     if (oldValue?.lt(value)) {
       lines.push({
-        account: `LOSS_${ticker}` as AccountCode,
+        account: `LOSS_${tickerIn}` as AccountCode,
         amount: value.minus(oldValue).toString(),
         text,
         extras: {},
@@ -95,7 +95,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
   }
 
   // Normal buying.
-  const text = this.validateText('Bought {{amount}} {{asset}}', { asset: ticker, amount: chg(assetAmountIn) })
+  const text = this.validateText('Bought {{amount}} {{asset}}', { asset: tickerIn, amount: chg(assetAmountIn) })
 
   const lines: TransactionLine[] = [
     {
@@ -109,7 +109,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       amount: dec(value).minus(fee).toString(),
       text,
       extras: {
-        asset: ticker,
+        asset: tickerIn,
         assetChange: dec(assetAmountIn).toString(),
       },
     },
