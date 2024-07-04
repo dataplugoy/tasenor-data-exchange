@@ -20,27 +20,28 @@ export async function split(this: Analyzer, time: DateTime, input: UnifiedItemDa
 
   this.validateRequired('assetIn', 'assetAmountIn', 'assetTypeIn', 'assetAmountOut')
   const { assetIn, assetTypeIn, assetAmountIn, assetAmountOut } = input
-  const text = this.validateText('Split {{asset}} (converted {{out}} to {{in}})', { asset: assetIn, in: assetAmountIn?.toString(), out: assetAmountOut?.toString() })
+  const tickerIn = this.validateTicker(assetIn as string)
+  const text = this.validateText('Split {{asset}} (converted {{out}} to {{in}})', { asset: tickerIn, in: assetAmountIn?.toString(), out: assetAmountOut?.toString() })
   const value = await this.validateValue(true)
 
   return {
     time: time.toUTC().toISO() as Timestring,
     lines: [
       {
-        account: `${assetTypeIn}_${assetIn}` as AccountCode,
+        account: `${assetTypeIn}_${tickerIn}` as AccountCode,
         amount: dec(value).negated().toString(),
         text,
         extras: {
-          asset: assetIn,
+          asset: tickerIn,
           assetChange: dec(assetAmountOut).negated().toString(),
         },
       },
       {
-        account: `${assetTypeIn}_${assetIn}` as AccountCode,
+        account: `${assetTypeIn}_${tickerIn}` as AccountCode,
         amount: dec(value).toString(),
         text,
         extras: {
-          asset: assetIn,
+          asset: tickerIn,
           assetChange: dec(assetAmountIn).toString(),
         },
       },

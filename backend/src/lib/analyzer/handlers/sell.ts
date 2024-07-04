@@ -23,16 +23,18 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
 
   this.validateBasics()
   this.validateRequired('assetOut', 'assetAmountOut', 'assetTypeOut')
-  const value = await this.validateValueOrAsset(assetOut as Asset, dec(assetAmountOut), false)
-  const account = this.resolveAccount(`${assetTypeOut}_${assetOut}`)
-  const old = this.stock.getAsset(account, assetOut as Asset)
+  const tickerOut = this.validateTicker(assetOut as string)
+
+  const value = await this.validateValueOrAsset(tickerOut as Asset, dec(assetAmountOut), false)
+  const account = this.resolveAccount(`${assetTypeOut}_${tickerOut}`)
+  const old = this.stock.getAsset(account, tickerOut as Asset)
   const oldStockValue = old.value
 
   if (old.amount.lt(assetAmountOut as number)) {
     if (old.amount.gt(0)) {
       this.validateError('Short selling an instrument at the same time than we sell owned copies is not implemented.')
     }
-    const text = this.validateText('Sold short {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
+    const text = this.validateText('Sold short {{amount}} {{asset}}', { asset: tickerOut, amount: chg(dec(assetAmountOut).negated()) })
 
     // Ensure that it is intentional.
     const allowShortSelling = await this.getSetting('allowShortSelling')
@@ -49,11 +51,11 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
         extras: {},
       },
       {
-        account: `${assetTypeOut}_${assetOut}` as AccountCode,
+        account: `${assetTypeOut}_${tickerOut}` as AccountCode,
         amount: dec(value).negated().toString(),
         text,
         extras: {
-          asset: assetOut,
+          asset: tickerOut,
           assetChange: dec(assetAmountOut).negated().toString(),
         },
       },
@@ -77,7 +79,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
     }
   }
 
-  const text = this.validateText('Sold {{amount}} {{asset}}', { asset: assetOut, amount: chg(dec(assetAmountOut).negated()) })
+  const text = this.validateText('Sold {{amount}} {{asset}}', { asset: tickerOut, amount: chg(dec(assetAmountOut).negated()) })
   const oldValue = old.amount.eq(0) ? dec(0) : oldStockValue.div(old.amount).mul(assetAmountOut as number)
 
   const lines: TransactionLine[] = [
@@ -88,11 +90,11 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
       extras: {},
     },
     {
-      account: `${assetTypeOut}_${assetOut}` as AccountCode,
+      account: `${assetTypeOut}_${tickerOut}` as AccountCode,
       amount: dec(oldValue).negated().toString(),
       text,
       extras: {
-        asset: assetOut,
+        asset: tickerOut,
         assetChange: dec(assetAmountOut).negated().toString(),
       },
     },
@@ -101,7 +103,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   // Making profit.
   if (value.greaterThan(oldValue)) {
     lines.push({
-      account: `PROFIT_${assetOut}` as AccountCode,
+      account: `PROFIT_${tickerOut}` as AccountCode,
       amount: value.minus(oldValue).negated().toString(),
       text,
       extras: {},
@@ -111,7 +113,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   // Making losses.
   if (oldValue.greaterThan(value)) {
     lines.push({
-      account: `LOSS_${assetOut}` as AccountCode,
+      account: `LOSS_${tickerOut}` as AccountCode,
       amount: oldValue.minus(value).toString(),
       text,
       extras: {},

@@ -25,6 +25,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
 
   const { account, text, reason, reasonAsset, taxType } = input
   const value = await this.validateValue(true)
+  const reasonTicker = reasonAsset ? this.validateTicker(reasonAsset) : null
 
   if (account === undefined && reason === undefined) {
     this.validateError(`Either 'account' or 'reason' must be given to determine income.`)
@@ -33,7 +34,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
     this.validateError(`Either 'text' or 'reason' must be given to determine income.`)
   }
 
-  const resultText = text || t(this.language, `INCOME_${reason}`, { asset: reasonAsset || 'UNKNOWN' })
+  const resultText = text || t(this.language, `INCOME_${reason}`, { asset: reasonTicker || 'UNKNOWN' })
   const resultAccount = account || `INCOME_${reason}` as AccountCode
 
   let tax = new Decimal(0)
