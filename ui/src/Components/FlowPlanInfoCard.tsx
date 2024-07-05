@@ -9,6 +9,7 @@ import { signalBatchDeleted, signalBatchUpdate, signalRunUpdate } from '../Signa
 import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { AlertHandler } from './AlertHandler'
+import { sprintf } from 'sprintf-js'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -162,8 +163,9 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                   <TableRow>
                     <TableCell variant="head"><Trans>Account</Trans></TableCell>
                     <TableCell variant="head"><Trans>Asset</Trans></TableCell>
-                    <TableCell variant="head" align="right"><Trans>Amount</Trans></TableCell>
+                    <TableCell variant="head" align="right"><Trans>Units</Trans></TableCell>
                     <TableCell variant="head" align="right"><Trans>Value</Trans></TableCell>
+                    <TableCell variant="head" align="right"><Trans>Unit Value</Trans></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -182,6 +184,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                         <TableCell>{ticker}</TableCell>
                         <TableCell align="right">{stock[acc][ticker].amount}</TableCell>
                         <TableCell align="right">{stock[acc][ticker].value}</TableCell>
+                        <TableCell align="right">{stock[acc][ticker].amount ? sprintf('%.2f', stock[acc][ticker].value / stock[acc][ticker].amount) : <>&mdash;</>}</TableCell>
                       </TableRow>
                     ))
                   }
