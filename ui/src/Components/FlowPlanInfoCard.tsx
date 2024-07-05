@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { Trans } from 'react-i18next'
 import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
@@ -9,6 +9,7 @@ import { signalBatchDeleted, signalBatchUpdate, signalRunUpdate } from '../Signa
 import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { AlertHandler } from './AlertHandler'
+import { BalanceData } from '../Types/API/BalanceData'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -63,6 +64,12 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     signalBatchDeleted()
   }
 
+  // TODO: Move balance table to separate component.
+  // TODO: Move stock table to separate component.
+  // TODO: Localize number presentation.
+
+  const balance: Record<string, number> = plan.balance as Record<string, number> || {}
+
   return (
     <>
       <Card>
@@ -70,35 +77,69 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
           avatar={<Air sx={{ color: 'secondary.main', backgroundColor: 'secondary.contrastText' }}/>}
           title={<Typography variant="subtitle1"><Trans>Data Flow Plan</Trans>: {plan.title}</Typography>}
         />
-        <CardContent sx={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <Box>
-            <Button
-              sx={{ backgroundColor: 'secondary.main', color: 'secondary.contrastText' }}
-              variant="outlined"
-              onClick={onRun}
-              disabled={running}
-            >
-              {isCompleted ? <Trans>Run</Trans> : <Trans>Retry</Trans>}
-              {running ? <CircularProgress sx={{ ml: '0.2rem' }}color="primary" size={'1rem'}/> : <PlayArrow/> }
-            </Button>
+        <CardContent>
+          <Box sx={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+            <Box>
+              <Button
+                sx={{ backgroundColor: 'secondary.main', color: 'secondary.contrastText' }}
+                variant="outlined"
+                onClick={onRun}
+                disabled={running}
+              >
+                {isCompleted ? <Trans>Run</Trans> : <Trans>Retry</Trans>}
+                {running ? <CircularProgress sx={{ ml: '0.2rem' }}color="primary" size={'1rem'}/> : <PlayArrow/> }
+              </Button>
 
-            <Button
-              variant="contained"
-              disabled={isCompleted || !batchId}
-              sx={{ ml: 2, backgroundColor: 'error.dark', color: 'error.contrastText' }}
-              onClick={onAbandon}
-            >
-              <Trans>Abandon</Trans>
-            </Button>
+              <Button
+                variant="contained"
+                disabled={isCompleted || !batchId}
+                sx={{ ml: 2, backgroundColor: 'error.dark', color: 'error.contrastText' }}
+                onClick={onAbandon}
+              >
+                <Trans>Abandon</Trans>
+              </Button>
+            </Box>
+            <Box>
+              <Typography variant="subtitle1"><Trans>Project</Trans>: {project.name}</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle1"><Trans>Currency</Trans>: {project.settings?.currency}</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle1"><Trans>Language</Trans>: {project.settings?.language}</Typography>
+            </Box>
           </Box>
-          <Box>
-            <Typography variant="subtitle1"><Trans>Project</Trans>: {project.name}</Typography>
-          </Box>
-          <Box>
-            <Typography variant="subtitle1"><Trans>Currency</Trans>: {project.settings?.currency}</Typography>
-          </Box>
-          <Box>
-            <Typography variant="subtitle1"><Trans>Language</Trans>: {project.settings?.language}</Typography>
+
+          <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+            <Box sx={{ minWidth: '25rem' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell variant="head"><Trans>Account</Trans></TableCell>
+                    <TableCell variant="head" align="right"><Trans>Balance</Trans></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    Object.keys(balance || {}).map(acc =>
+                      <TableRow key={acc}>
+                        <TableCell>{acc}</TableCell>
+                        <TableCell align="right">{balance[acc]}</TableCell>
+                      </TableRow>
+                    )
+                  }
+                </TableBody>
+              </Table>
+            <pre>
+            {JSON.stringify(plan.stock, null, 2)}
+            </pre>
+            </Box>
+
+            <Box sx={{ minWidth: '25rem' }}>
+            <pre>
+            {JSON.stringify(plan.balance, null, 2)}
+            </pre>
+            </Box>
           </Box>
         </CardContent>
       </Card>
