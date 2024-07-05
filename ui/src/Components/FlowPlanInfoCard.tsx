@@ -9,7 +9,6 @@ import { signalBatchDeleted, signalBatchUpdate, signalRunUpdate } from '../Signa
 import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { AlertHandler } from './AlertHandler'
-import { BalanceData } from '../Types/API/BalanceData'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -25,6 +24,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const GET = useGET()
   const DELETE = useDELETE()
   const [alert, setAlert] = useState<UIAlert|null>(null)
+  const [details, setDetails] = useState(false)
 
   const onCancel = () => {
     signalBatchUpdate()
@@ -111,7 +111,21 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
             </Box>
           </Box>
 
-          <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+          {!details &&
+            <Box sx={{ mt: 3, color: 'primary.main', cursor: 'pointer', textDecoration: 'underline' }}
+              onClick={() => setDetails(true)}>
+                <Trans>Show details</Trans>
+            </Box>
+          }
+
+          {details &&
+            <Box sx={{ mt: 3, color: 'primary.main', cursor: 'pointer', textDecoration: 'underline' }}
+              onClick={() => setDetails(false)}>
+                <Trans>Hide details</Trans>
+            </Box>
+          }
+
+          {details && <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
             <Box sx={{ minWidth: '25rem' }}>
               <Table size="small">
                 <TableHead>
@@ -122,7 +136,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                 </TableHead>
                 <TableBody>
                   {
-                    Object.keys(balance).length == 0 &&
+                    Object.keys(balance).length === 0 &&
                     <TableRow>
                       <TableCell colSpan={3}>
                         <Trans>No transactions</Trans>
@@ -154,7 +168,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                 </TableHead>
                 <TableBody>
                   {
-                    Object.keys(stock).length == 0 &&
+                    Object.keys(stock).length === 0 &&
                     <TableRow>
                       <TableCell colSpan={3}>
                         <Trans>No assets</Trans>
@@ -175,7 +189,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
               </Table>
               <Box sx={{ mt: 1 }}><Trans>Current assets of all accounts according to our records.</Trans></Box>
             </Box>
-          </Box>
+          </Box>}
         </CardContent>
       </Card>
 
