@@ -69,6 +69,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   // TODO: Localize number presentation.
 
   const balance: Record<string, number> = plan.balance as Record<string, number> || {}
+  const stock: Record<string, Record<string, { value: number, amount: number }>> = plan.stock as Record<string, Record<string, { value: number, amount: number }>> || {}
 
   return (
     <>
@@ -121,7 +122,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                 </TableHead>
                 <TableBody>
                   {
-                    Object.keys(balance || {}).map(acc =>
+                    Object.keys(balance).map(acc =>
                       <TableRow key={acc}>
                         <TableCell>{acc}</TableCell>
                         <TableCell align="right">{balance[acc]}</TableCell>
@@ -130,15 +131,33 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                   }
                 </TableBody>
               </Table>
-            <pre>
-            {JSON.stringify(plan.stock, null, 2)}
-            </pre>
+              <Box sx={{ mt: 1 }}><Trans>Current balance of all accounts according to our records.</Trans></Box>
             </Box>
 
             <Box sx={{ minWidth: '25rem' }}>
-            <pre>
-            {JSON.stringify(plan.balance, null, 2)}
-            </pre>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell variant="head"><Trans>Account</Trans></TableCell>
+                    <TableCell variant="head"><Trans>Asset</Trans></TableCell>
+                    <TableCell variant="head" align="right"><Trans>Amount</Trans></TableCell>
+                    <TableCell variant="head" align="right"><Trans>Value</Trans></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    Object.keys(stock).map(acc => Object.keys(stock[acc]).map(ticker =>
+                      <TableRow key={acc}>
+                        <TableCell>{acc}</TableCell>
+                        <TableCell>{ticker}</TableCell>
+                        <TableCell align="right">{stock[acc][ticker].amount}</TableCell>
+                        <TableCell align="right">{stock[acc][ticker].value}</TableCell>
+                      </TableRow>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+              <Box sx={{ mt: 1 }}><Trans>Current assets of all accounts according to our records.</Trans></Box>
             </Box>
           </Box>
         </CardContent>
