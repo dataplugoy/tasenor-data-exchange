@@ -152,7 +152,7 @@ export class AnswersRequired extends AlertException<Question[]> {
   static forTicker(url: string, language: Language, userId: number, ticker: string) {
     const question = {
       type: 'TICKER' as QuestionType,
-      help: t(language, 'We have found a ticker "{{ticker}}" which does not sound correct? Do you want to replace it with something else?', { ticker }),
+      help: t(language, 'We have found a ticker "{{ticker}}" which does not sound proper ticker name? Do you want to replace it with something else?', { ticker }),
       label: t(language, 'Replacement ticker'),
       args: { ticker },
       variable: 'tickers'
