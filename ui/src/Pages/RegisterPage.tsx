@@ -20,6 +20,7 @@ export const RegisterPage = (): React.JSX.Element => {
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
   const [spam, setSpam] = useState(false)
+  const language = localStorage.getItem('language') ? localStorage.getItem('language') : (navigator.language ? navigator.language.substring(0, 2) : 'en')
   const POST = usePOST<AuthResponse>()
   const GET = useGET<ProjectResponse>()
   const app = useApp()
@@ -40,7 +41,7 @@ export const RegisterPage = (): React.JSX.Element => {
       return
     }
 
-    POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project'), allowProductAnnouncement: spam }).then(async (res) => {
+    POST('/auth/register', { email, password, name, address, zip, city, country, projectName: t('Default project'), allowProductAnnouncement: spam, language }).then(async (res) => {
       if (res) {
         app.setAuth(res)
         GET(`/projects/${res.user.settings.projectId}?token=${res.token}`).then(res => {

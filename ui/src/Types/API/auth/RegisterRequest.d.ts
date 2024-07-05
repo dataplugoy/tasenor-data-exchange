@@ -13,6 +13,7 @@ export interface RegisterRequest {
   zip?: string;
   city?: string;
   country?: string;
+  language?: string;
   projectName?: string;
   allowProductAnnouncement?: boolean;
 }
