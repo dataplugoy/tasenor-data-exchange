@@ -141,7 +141,7 @@ export class TasenorDriver extends OutputDriver {
             change: {
               [`${extras.asset}`]: {
                 amount: dec(extras.assetChange).toNumber(),
-                value: dec(line.amount).toNumber(),
+                value: dec(line.amount).toNumber() * 100,
               }
             }
           }
