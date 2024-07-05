@@ -122,6 +122,14 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                 </TableHead>
                 <TableBody>
                   {
+                    Object.keys(balance).length == 0 &&
+                    <TableRow>
+                      <TableCell colSpan={3}>
+                        <Trans>No transactions</Trans>
+                      </TableCell>
+                    </TableRow>
+                  }
+                  {
                     Object.keys(balance).map(acc =>
                       <TableRow key={acc}>
                         <TableCell>{acc}</TableCell>
@@ -145,6 +153,14 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
+                  {
+                    Object.keys(stock).length == 0 &&
+                    <TableRow>
+                      <TableCell colSpan={3}>
+                        <Trans>No assets</Trans>
+                      </TableCell>
+                    </TableRow>
+                  }
                   {
                     Object.keys(stock).map(acc => Object.keys(stock[acc]).map(ticker =>
                       <TableRow key={acc}>
