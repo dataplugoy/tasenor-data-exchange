@@ -48,11 +48,17 @@ export class Stock {
    * Get the record for an asset. Create if needed.
    * @param asset
    */
-  getAsset(account: AccountCode, asset: Asset): AssetRecord {
+  getAsset(account: AccountCode, asset: Asset, createMissing: boolean = false): AssetRecord {
     if (!(account in this.stock)) {
       this.stock[account] = {}
     }
     if (!(asset in this.stock[account])) {
+      if (!createMissing) {
+        return {
+          amount: new Decimal(0),
+          value: new Decimal(0),
+        }
+      }
       this.stock[account][asset] = {
         amount: new Decimal(0),
         value: new Decimal(0),
@@ -68,7 +74,7 @@ export class Stock {
    * @param value
    */
   addAsset(account: AccountCode, asset: Asset, amount: Decimal, value: Decimal): void {
-    const record = this.getAsset(account, asset)
+    const record = this.getAsset(account, asset, true)
 
     record.amount = record.amount.plus(amount)
     record.value = record.value.plus(value)
