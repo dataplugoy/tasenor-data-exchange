@@ -10,14 +10,15 @@ interface TagChipProps {
 export const TagChip = (props: TagChipProps): React.JSX.Element => {
   const { tag, title } = props
   return <Chip
-    sx={{ ml: 1 }}
+    sx={{ ml: 1, px: 1 }}
     title={title}
     icon={<LabelTwoTone/>}
     label={tag}
     size="medium"
     style={{
       color: 'white',
-      backgroundColor: 'rgba(0,0,0,0.5)'
+      backgroundColor: 'transparent',
+      border: '1px solid rgba(255,255,255,0.5)',
     }}
   />
 }
