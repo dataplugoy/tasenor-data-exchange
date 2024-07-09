@@ -212,6 +212,9 @@ export class Analyzer {
             text: line.text,
             extras: {},
           }
+          if (line.extras.tags) {
+            debtLine.extras.tags = clone(line.extras.tags)
+          }
         }
 
         // Pay back if we have existing debt.
@@ -224,6 +227,9 @@ export class Analyzer {
               amount: oldDebt.toString(),
               text: line.text,
               extras: {},
+            }
+            if (line.extras.tags) {
+              debtLine.extras.tags = clone(line.extras.tags)
             }
           } else {
             line.account = `DEBT_${line.account}`
