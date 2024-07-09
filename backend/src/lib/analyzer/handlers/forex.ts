@@ -4,6 +4,7 @@ import { dec } from '../../utils'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction } from '../../../types/API/Transaction'
+import { sprintf } from 'sprintf-js'
 
 /**
  * Buy an asset and add it to the stock.
@@ -23,7 +24,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
     this.validateRequired('assetOut', 'assetAmountOut')
 
     const { assetOut, assetAmountOut, valueAsset } = input
-    const text = this.validateText('Sold {{amount}} {{out}} in exhcange to {{in}}', { amount: `${assetAmountOut}`, out: assetOut, in: valueAsset })
+    const text = this.validateText('Sold {{amount}} {{out}} in exhcange to {{in}}', { amount: `${sprintf('%.2f', assetAmountOut)}`, out: assetOut, in: valueAsset })
 
     return {
       time: time.toUTC().toISO() as Timestring,
@@ -47,7 +48,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
     this.validateRequired('assetIn', 'assetAmountIn')
 
     const { assetIn, assetAmountIn, valueAsset } = input
-    const text = this.validateText('Bought {{amount}} {{in}} in exhcange to {{out}}', { amount: `${assetAmountIn}`, in: assetIn, out: valueAsset })
+    const text = this.validateText('Bought {{amount}} {{in}} in exhcange to {{out}}', { amount: `${sprintf('%.2f', assetAmountIn)}`, in: assetIn, out: valueAsset })
 
     return {
       time: time.toUTC().toISO() as Timestring,
