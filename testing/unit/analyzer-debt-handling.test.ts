@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import { getDriver } from '../../backend/src/driver'
 import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
+import { UnifiedItemData } from '../../backend/src/types/API/UnifiedItemData'
 
 describe('Analyzer', () => {
 
@@ -16,13 +17,16 @@ describe('Analyzer', () => {
     expect(items.length).toBe(1)
 
     const unifieds = await unifyItems(driver, items)
-    expect(unifieds.length).toBe(1)
+    expect(unifieds.length).toBe(1);
+
+    const data: UnifiedItemData = unifieds[0].data.data as unknown as UnifiedItemData
+    data.tags = ['TAGG'] // Check that tags are copied to debt.
 
     const txs = await analyzeItems(unifieds, projectSettings, {
       settings: {
         debtAccounts: {
           EUR: '999'
-        }
+        },
       }
     })
 
@@ -34,13 +38,13 @@ describe('Analyzer', () => {
             account: 'DEBT_CURRENCY_EUR',
             amount: '-140.73',
             text: 'Bought +38 RIZF',
-            extras: {}
+            extras: { tags: ['TAGG'] }
           },
           {
             account: 'STOCK_RIZF',
             amount: '140.73',
             text: 'Bought +38 RIZF',
-            extras: { asset: 'RIZF', assetChange: '38' }
+            extras: { asset: 'RIZF', assetChange: '38', tags: ['TAGG'] }
           }
         ]
       }
