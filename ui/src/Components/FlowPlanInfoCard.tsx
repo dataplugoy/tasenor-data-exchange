@@ -172,7 +172,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                   {
                     Object.keys(stock).length === 0 &&
                     <TableRow>
-                      <TableCell colSpan={3}>
+                      <TableCell colSpan={5}>
                         <Trans>No assets</Trans>
                       </TableCell>
                     </TableRow>
