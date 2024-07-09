@@ -178,8 +178,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
                     </TableRow>
                   }
                   {
-                    Object.keys(stock).map(acc => Object.keys(stock[acc]).map(ticker =>
-                      <TableRow key={acc}>
+                    Object.keys(stock).map((acc, idx) => Object.keys(stock[acc]).map(ticker =>
+                      <TableRow key={`${acc}+${ticker}`}>
                         <TableCell>{acc}</TableCell>
                         <TableCell>{ticker}</TableCell>
                         <TableCell align="right">{stock[acc][ticker].amount}</TableCell>
