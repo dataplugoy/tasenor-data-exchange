@@ -56,7 +56,7 @@ export const App = (): React.JSX.Element => {
         </Box>
 
         <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1 }}
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1000 }}
           open={app.dimming}
         >
           <CircularProgress color="inherit" />

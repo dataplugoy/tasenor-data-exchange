@@ -21,6 +21,7 @@ interface QuestionsPanelProps {
  */
 export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element => {
   const { questions } = props
+  const [done, setDone] = useState(false)
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
   const [remotes, setRemotes] = useState<Record<AccountNumber, RemoteAccount>>({})
   const GET = useGET<RemoteAccount[]>()
@@ -44,6 +45,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   }
 
   const onContinue = () => {
+    setDone(true)
     props.onSave(answers)
   }
 
@@ -52,7 +54,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   }
 
   return (
-    <Dialog open={questions.length > 0} fullWidth>
+    <Dialog open={!done && questions.length > 0} fullWidth>
       <DialogTitle><Trans>We Need More Information</Trans></DialogTitle>
 
       <DialogContent>
