@@ -17,7 +17,7 @@ describe('Analyzer', () => {
     expect(items.length).toBe(1)
 
     const unifieds = await unifyItems(driver, items)
-    expect(unifieds.length).toBe(1);
+    expect(unifieds.length).toBe(1)
 
     const data: UnifiedItemData = unifieds[0].data.data as unknown as UnifiedItemData
     data.tags = ['TAGG'] // Check that tags are copied to debt.
