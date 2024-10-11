@@ -2,7 +2,10 @@
 
 ## UI Testing
 
-To develop UI tests, you can run
+To develop UI tests, you can either need docker system running or launch `pnpm dev` in 3
+directories: `database`, `backend` and `ui`.
+
+To launch development
 ```
 pnpm dev-ui
 ```
