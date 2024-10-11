@@ -12,8 +12,8 @@ importers:
         specifier: ^5.15.0
         version: 5.15.0
       '@tasenor/common':
-        specifier: ^1.13.20
-        version: 1.13.20
+        specifier: ^1.13.21
+        version: 1.13.22
       chardet:
         specifier: ^2.0.0
         version: 2.0.0
@@ -352,8 +352,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@tasenor/common@1.13.20':
-    resolution: {integrity: sha512-wViZeAczo8eckosSIrUaq/PLkMPBFemloYWaS0PSEUMpBADyMSQ5aVJdWeVS9WvMvWo6gL03Fz+ry6v4Htu8Lw==}
+  '@tasenor/common@1.13.22':
+    resolution: {integrity: sha512-mp5ffivuyM9LhJ9VMonSwTcs/p3NAgEEnOo23qzslsrZRttwM6fGGjtFbtONj8kqrweUOTtnaDUmbNMQwpRfsA==}
 
   '@tasenor/config@1.13.20':
     resolution: {integrity: sha512-knmXmLAl41h3T+vZpEJCqNQZXX2NTNimTdB3LsaiTfXDj5DdWihYVGtVQu+bYXGeGMfBRx9IEjXlfuVSyh3vFQ==}
@@ -2304,7 +2304,7 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@tasenor/common@1.13.20':
+  '@tasenor/common@1.13.22':
     dependencies:
       axios: 1.7.2
       buffer: 6.0.3
