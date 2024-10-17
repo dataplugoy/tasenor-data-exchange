@@ -72,7 +72,11 @@ export interface Settings {
   };
 }
 export interface StockData {
-  [k: string]: unknown;
+  /**
+   * This interface was referenced by `StockData`'s JSON-Schema definition
+   * via the `patternProperty` "^.*$".
+   */
+  [k: string]: {};
 }
 export interface BalanceData {
   /**

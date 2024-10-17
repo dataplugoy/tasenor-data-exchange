@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
@@ -9,9 +9,10 @@ import { signalBatchDeleted, signalBatchUpdate, signalRunUpdate } from '../Signa
 import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { AlertHandler } from './AlertHandler'
-import { sprintf } from 'sprintf-js'
 import { BalanceData } from '../Types/API/BalanceData'
 import { BalanceTable } from './BalanceTable'
+import { StockData } from '../Types/API/StockData'
+import { StockTable } from './StockTable'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -68,11 +69,10 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     signalBatchDeleted()
   }
 
-  // TODO: Move stock table to separate component.
   // TODO: Localize number presentation.
 
   const balance: BalanceData = plan.balance || {}
-  const stock: Record<string, Record<string, { value: number, amount: number }>> = plan.stock as Record<string, Record<string, { value: number, amount: number }>> || {}
+  const stock: StockData = plan.stock || {}
 
   return (
     <>
@@ -131,42 +131,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
           {details && <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
 
             <BalanceTable balance={balance} footer={t('Current balance of all accounts according to our records.')}/>
-
-            <Box sx={{ minWidth: '25rem' }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell variant="head"><Trans>Account</Trans></TableCell>
-                    <TableCell variant="head"><Trans>Asset</Trans></TableCell>
-                    <TableCell variant="head" align="right"><Trans>Units</Trans></TableCell>
-                    <TableCell variant="head" align="right"><Trans>Value</Trans></TableCell>
-                    <TableCell variant="head" align="right"><Trans>Unit Value</Trans></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    Object.keys(stock).length === 0 &&
-                    <TableRow>
-                      <TableCell colSpan={5}>
-                        <Trans>No assets</Trans>
-                      </TableCell>
-                    </TableRow>
-                  }
-                  {
-                    Object.keys(stock).map((acc, idx) => Object.keys(stock[acc]).map(ticker =>
-                      <TableRow key={`${acc}+${ticker}`}>
-                        <TableCell>{acc}</TableCell>
-                        <TableCell>{ticker}</TableCell>
-                        <TableCell align="right">{stock[acc][ticker].amount}</TableCell>
-                        <TableCell align="right">{stock[acc][ticker].value}</TableCell>
-                        <TableCell align="right">{stock[acc][ticker].amount ? sprintf('%.2f', stock[acc][ticker].value / stock[acc][ticker].amount) : <>&mdash;</>}</TableCell>
-                      </TableRow>
-                    ))
-                  }
-                </TableBody>
-              </Table>
-              <Box sx={{ mt: 1 }}><Trans>Current assets of all accounts according to our records.</Trans></Box>
-            </Box>
+            <StockTable stock={stock} footer={t('Current assets of all accounts according to our records.')}/>
           </Box>}
         </CardContent>
       </Card>

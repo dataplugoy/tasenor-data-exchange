@@ -1,5 +1,18 @@
 {
   "$id": "StockData.json",
   "title": "StockData",
-  "type": "object"
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "type": "object",
+      "value": {
+        "type": "number"
+      },
+      "amount": {
+        "type": "number"
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
 }
