@@ -85,7 +85,7 @@ export const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          'textDecoration': 'none',
+          textDecoration: 'none',
           '&.unified.time': {
             fontSize: '1.1rem',
             color: 'white'
