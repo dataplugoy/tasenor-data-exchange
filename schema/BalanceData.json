@@ -1,5 +1,11 @@
 {
   "$id": "BalanceData.json",
   "title": "BalanceData",
-  "type": "object"
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false
 }

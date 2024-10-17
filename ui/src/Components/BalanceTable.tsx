@@ -34,7 +34,7 @@ export const BalanceTable = (props: BalanceTableProps): React.JSX.Element => {
             Object.keys(balance).map(acc =>
               <TableRow key={acc}>
                 <TableCell>{acc}</TableCell>
-                <TableCell align="right">{balance[acc] as number}</TableCell>
+                <TableCell align="right">{balance[acc]}</TableCell>
               </TableRow>
             )
           }

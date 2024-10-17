@@ -59,5 +59,9 @@ export interface StockData {
   [k: string]: unknown;
 }
 export interface BalanceData {
-  [k: string]: unknown;
+  /**
+   * This interface was referenced by `BalanceData`'s JSON-Schema definition
+   * via the `patternProperty` "^.*$".
+   */
+  [k: string]: number;
 }
