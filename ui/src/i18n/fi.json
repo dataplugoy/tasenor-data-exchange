@@ -223,7 +223,7 @@
   "CURRENCY_ACCOUNT": "Tili valuutalle {{currency}}",
   "NORDNET_ACCOUNT": "Pankkitili, josta/jonne siirretään Nordnettiin/Nordnetistä",
   "All Success": "Kaikki onnistui",
-  "Partly Skipped Success": "Osa jätetty väliin",
+  "Partly Skipped": "Osa jätetty väliin",
   "All Skipped": "Käikki jätetty väliin",
   "Partly Fail": "Osa epäonnistui",
   "All Failed": "Kaikki epäonnistui",

@@ -75,6 +75,7 @@
   "Bought {{amount}} {{asset}}": "Ostettu {{amount}} {{asset}}",
   "Bought {{amount}} {{in}} in exhcange to {{out}}": "Vaihdettu {{amount}} valuuttaa {{in}} valuuttaan {{out}}",
   "Cancel": "Peru",
+  "Check also our bookkeeping app of the choice!": "Vilkaise myös meidän kirjanpitosovellusta!",
   "Check out the documentation": "Vilkaise dokumentaatiota",
   "City": "Kaupunki",
   "Closing short position by buying {{amount}} {{asset}}": "Suljettu lyhyt positio ostamalla {{amount}} {{asset}}",
@@ -223,8 +224,8 @@
   "CURRENCY_ACCOUNT": "Tili valuutalle {{currency}}",
   "NORDNET_ACCOUNT": "Pankkitili, josta/jonne siirretään Nordnettiin/Nordnetistä",
   "All Success": "Kaikki onnistui",
-  "Partly Skipped Success": "Osa jätetty väliin",
-  "All Skipped": "Käikki jätetty väliin",
+  "Partly Skipped": "Osa jätetty väliin",
+  "All Skipped": "Kaikki jätetty väliin",
   "Partly Fail": "Osa epäonnistui",
   "All Failed": "Kaikki epäonnistui",
   "No Progress": "Ei edistystä"

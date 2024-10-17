@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
 import { useNavigate, Link, useParams } from 'react-router-dom'
@@ -67,8 +67,11 @@ export const LoginPage = (): React.JSX.Element => {
       <Box sx={{ mt: 2 }}>
         <Button onClick={onRegister}><Trans>Register</Trans></Button>
       </Box>
-      <Box sx={{ mt: 2, color: 'secondary.dark', userSelect: 'none', cursor: 'pointer' }}>
-        <Link to={docs}><Trans>Check out the documentation</Trans></Link>
+      <Box sx={{ mt: 2, userSelect: 'none', cursor: 'pointer' }}>
+        <Link to={docs}><Typography><Trans>Check out the documentation</Trans></Typography></Link>
+      </Box>
+      <Box sx={{ mt: 3, userSelect: 'none', cursor: 'pointer' }}>
+        <Link to="https://www.tasenor.com/" target="_blank"><Typography><Trans>Check also our bookkeeping app of the choice!</Trans></Typography></Link>
       </Box>
     </Box>
   </Box>

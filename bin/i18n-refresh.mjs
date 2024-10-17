@@ -32,7 +32,7 @@ const FIXED_ENTRIES = new Set([
   'Bought {{amount}} {{asset}}',
   'Sold {{amount}} {{asset}}',
   'All Success',
-  'Partly Skipped Success',
+  'Partly Skipped',
   'All Skipped',
   'Partly Fail',
   'All Failed',
