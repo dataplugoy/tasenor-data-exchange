@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
@@ -10,6 +10,8 @@ import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
 import { AlertHandler } from './AlertHandler'
 import { sprintf } from 'sprintf-js'
+import { BalanceData } from '../Types/API/BalanceData'
+import { BalanceTable } from './BalanceTable'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -26,6 +28,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const DELETE = useDELETE()
   const [alert, setAlert] = useState<UIAlert|null>(null)
   const [details, setDetails] = useState(false)
+  const { t } = useTranslation()
 
   const onCancel = () => {
     signalBatchUpdate()
@@ -65,11 +68,10 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     signalBatchDeleted()
   }
 
-  // TODO: Move balance table to separate component.
   // TODO: Move stock table to separate component.
   // TODO: Localize number presentation.
 
-  const balance: Record<string, number> = plan.balance as Record<string, number> || {}
+  const balance: BalanceData = plan.balance || {}
   const stock: Record<string, Record<string, { value: number, amount: number }>> = plan.stock as Record<string, Record<string, { value: number, amount: number }>> || {}
 
   return (
@@ -127,35 +129,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
           }
 
           {details && <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-            <Box sx={{ minWidth: '25rem' }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell variant="head"><Trans>Account</Trans></TableCell>
-                    <TableCell variant="head" align="right"><Trans>Balance</Trans></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    Object.keys(balance).length === 0 &&
-                    <TableRow>
-                      <TableCell colSpan={3}>
-                        <Trans>No transactions</Trans>
-                      </TableCell>
-                    </TableRow>
-                  }
-                  {
-                    Object.keys(balance).map(acc =>
-                      <TableRow key={acc}>
-                        <TableCell>{acc}</TableCell>
-                        <TableCell align="right">{balance[acc]}</TableCell>
-                      </TableRow>
-                    )
-                  }
-                </TableBody>
-              </Table>
-              <Box sx={{ mt: 1 }}><Trans>Current balance of all accounts according to our records.</Trans></Box>
-            </Box>
+
+            <BalanceTable balance={balance} footer={t('Current balance of all accounts according to our records.')}/>
 
             <Box sx={{ minWidth: '25rem' }}>
               <Table size="small">
