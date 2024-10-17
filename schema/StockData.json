@@ -5,11 +5,13 @@
   "patternProperties": {
     "^.*$": {
       "type": "object",
-      "value": {
-        "type": "number"
-      },
-      "amount": {
-        "type": "number"
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "amount": {
+          "type": "number"
+        }
       },
       "additionalProperties": false
     }
