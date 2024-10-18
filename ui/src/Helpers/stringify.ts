@@ -62,18 +62,58 @@ export function subtracted2str(num: number | string | undefined, asset: string, 
 }
 
 /**
+ * Localize numeric value.
+ * @param num
+ * @param language
+ */
+export function num2str(num: number | string, _language: Language): string {
+  const numeric = typeof num === 'string' ? parseFloat(num) : num
+  return numeric + ''
+}
+
+/**
  * Convert money amount to string.
  * @param amount
  * @param type
  * @returns
  */
-export function money(amount: number | string, type: 'debit' | 'credit'): string {
+export function money(amount: number | string): string {
   if (amount === '') {
     return ''
   }
   const numeric = typeof amount === 'string' ? parseFloat(amount) : amount
-  if (type === 'debit') {
-    return numeric >= 0 ? `${sprintf('%.2f', numeric)}` : ''
+  return `${sprintf('%.2f', numeric)}`
+}
+
+/**
+ * Convert money amount to string if it is positive or zero.
+ * @param amount
+ * @param type
+ * @returns
+ */
+export function debit(amount: number | string): string {
+  const numeric = typeof amount === 'string' ? parseFloat(amount) : amount
+  if (numeric >= 0) {
+    return money(amount)
   }
-  return numeric < 0 ? `${sprintf('%.2f', Math.abs(numeric))}` : ''
+  return ''
+}
+
+/**
+ * Convert money amount to string if it is negative.
+ * @param amount
+ * @param type
+ * @returns
+ */
+export function credit(amount: number | string): string {
+  if (typeof amount === 'string') {
+    if (amount.trim().substring(0, 1) === '-') {
+      return money(amount.replace(/^\s*-/, ''))
+    }
+    return ''
+  }
+  if (amount < 0) {
+    return money(-amount)
+  }
+  return ''
 }

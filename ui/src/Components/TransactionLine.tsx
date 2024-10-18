@@ -5,7 +5,7 @@ import { TransactionExtras } from '../Types/API/Transaction'
 import { DateTime } from 'luxon'
 import { Account } from '../Types/API/Account'
 import { TransactionExtrasLine } from './TransactionExtrasLine'
-import { money } from '../Helpers/stringify'
+import { credit, debit, money } from '../Helpers/stringify'
 
 interface TransactionLineProps {
   first?: boolean
@@ -29,8 +29,8 @@ export const TransactionLine = (props: TransactionLineProps): React.JSX.Element 
         </TableCell>
         <TableCell className={className}>{account}</TableCell>
         <TableCell className={className}>{text}</TableCell>
-        <TableCell className={className + ' debit'} align="right">{money(amount, 'debit')}</TableCell>
-        <TableCell className={className + ' credit'} align="right">{money(amount, 'credit')}</TableCell>
+        <TableCell className={className + ' debit'} align="right">{debit(amount)}</TableCell>
+        <TableCell className={className + ' credit'} align="right">{credit(amount)}</TableCell>
       </TableRow>
       {Object.keys(extras).length > 0 && <TransactionExtrasLine account={account} extras={extras}/>}
     </>
