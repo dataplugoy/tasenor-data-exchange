@@ -2,15 +2,19 @@ import { Box, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/mate
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { BalanceData } from '../Types/API/BalanceData'
+import { Currency, Language } from '@tasenor/common'
+import { money } from '../Helpers/stringify'
 
 interface BalanceTableProps {
   balance: BalanceData
   footer: string
+  language: Language
+  currency: Currency
 }
 
 export const BalanceTable = (props: BalanceTableProps): React.JSX.Element => {
 
-  const { balance, footer } = props
+  const { balance, footer, language, currency } = props
 
   return (
     <Box sx={{ minWidth: '25rem' }}>
@@ -34,7 +38,7 @@ export const BalanceTable = (props: BalanceTableProps): React.JSX.Element => {
             Object.keys(balance).map(acc =>
               <TableRow key={acc}>
                 <TableCell>{acc}</TableCell>
-                <TableCell align="right">{balance[acc]}</TableCell>
+                <TableCell align="right">{money(balance[acc], currency, language)}</TableCell>
               </TableRow>
             )
           }

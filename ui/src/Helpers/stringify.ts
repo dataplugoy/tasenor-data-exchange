@@ -1,6 +1,7 @@
-import { Language, Timestring } from '@tasenor/common'
+import { Currency, Language, Timestring } from '@tasenor/common'
 import { DateTime } from 'luxon'
 import { sprintf } from 'sprintf-js'
+import getSymbolFromCurrency from 'currency-symbol-map'
 
 /**
  * Clock time to string.
@@ -66,9 +67,9 @@ export function subtracted2str(num: number | string | undefined, asset: string, 
  * @param num
  * @param language
  */
-export function num2str(num: number | string, _language: Language): string {
+export function num2str(num: number | string, decimals: number | undefined = undefined, _language: Language | undefined = undefined): string {
   const numeric = typeof num === 'string' ? parseFloat(num) : num
-  return numeric + ''
+  return decimals === undefined ? numeric + '' : sprintf(`%.${decimals}f`, numeric)
 }
 
 /**
@@ -77,12 +78,13 @@ export function num2str(num: number | string, _language: Language): string {
  * @param type
  * @returns
  */
-export function money(amount: number | string): string {
+export function money(amount: number | string, currency: Currency | undefined = undefined, language: Language | undefined = undefined): string {
   if (amount === '') {
     return ''
   }
   const numeric = typeof amount === 'string' ? parseFloat(amount) : amount
-  return `${sprintf('%.2f', numeric)}`
+  const sym = currency ? getSymbolFromCurrency(currency) || currency : ''
+  return `${num2str(numeric, 2, language)}${sym}`
 }
 
 /**

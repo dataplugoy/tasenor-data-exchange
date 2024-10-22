@@ -11,6 +11,9 @@
     "projectId": {
       "type": "integer"
     },
+    "project": {
+      "$ref": "Project.json"
+    },
     "title": {
       "type": "string"
     },

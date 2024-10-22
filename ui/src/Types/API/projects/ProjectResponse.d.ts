@@ -24,6 +24,7 @@ export interface ProjectSettings {
 export interface FlowPlan {
   id: number;
   projectId: number;
+  project?: Project;
   title: string;
   setup?: Setup;
   state: {

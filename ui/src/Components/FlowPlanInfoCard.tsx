@@ -13,6 +13,7 @@ import { BalanceData } from '../Types/API/BalanceData'
 import { BalanceTable } from './BalanceTable'
 import { StockData } from '../Types/API/StockData'
 import { StockTable } from './StockTable'
+import { Currency, Language } from '@tasenor/common'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -73,6 +74,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
   const balance: BalanceData = plan.balance || {}
   const stock: StockData = plan.stock || {}
+  const language: Language = plan.project?.settings.language as Language || 'en'
+  const currency: Currency = plan.project?.settings.currency as Currency || 'EUR'
 
   return (
     <>
@@ -130,8 +133,9 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
           {details && <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
 
-            <BalanceTable balance={balance} footer={t('Current balance of all accounts according to our records.')}/>
-            <StockTable stock={stock} footer={t('Current assets of all accounts according to our records.')}/>
+            <BalanceTable currency={currency} language={language} balance={balance} footer={t('Current balance of all accounts according to our records.')}/>
+            <StockTable currency={currency} language={language} stock={stock} footer={t('Current assets of all accounts according to our records.')}/>
+
           </Box>}
         </CardContent>
       </Card>

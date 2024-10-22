@@ -16,6 +16,7 @@ export type FlowPlanResponse = FlowPlan & {
 export interface FlowPlan {
   id: number;
   projectId: number;
+  project?: Project;
   title: string;
   setup?: Setup;
   state: {
@@ -27,6 +28,18 @@ export interface FlowPlan {
   balance?: BalanceData;
   created?: string;
   updated?: string;
+}
+export interface Project {
+  id?: number;
+  userId: number;
+  name: string;
+  settings: ProjectSettings;
+  created?: string;
+  updated?: string;
+}
+export interface ProjectSettings {
+  language: string;
+  currency: string;
 }
 /**
  * Flow plan configuration.
@@ -79,18 +92,6 @@ export interface BalanceData {
    * via the `patternProperty` "^.*$".
    */
   [k: string]: number;
-}
-export interface Project {
-  id?: number;
-  userId: number;
-  name: string;
-  settings: ProjectSettings;
-  created?: string;
-  updated?: string;
-}
-export interface ProjectSettings {
-  language: string;
-  currency: string;
 }
 export interface Batch {
   id: number;

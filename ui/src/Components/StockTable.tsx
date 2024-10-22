@@ -2,16 +2,19 @@ import { Box, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/mate
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { StockData } from '../Types/API/StockData'
-import { sprintf } from 'sprintf-js'
+import { Currency, Language } from '@tasenor/common'
+import { money } from '../Helpers/stringify'
 
 interface StockTableProps {
   stock: StockData
   footer: string
+  language: Language
+  currency: Currency
 }
 
 export const StockTable = (props: StockTableProps): React.JSX.Element => {
 
-  const { stock, footer } = props
+  const { stock, footer, language, currency } = props
 
   return (
     <Box sx={{ minWidth: '25rem' }}>
@@ -40,8 +43,8 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
               <TableCell>{acc}</TableCell>
               <TableCell>{ticker}</TableCell>
               <TableCell align="right">{stock[acc][ticker].amount}</TableCell>
-              <TableCell align="right">{stock[acc][ticker].value}</TableCell>
-              <TableCell align="right">{stock[acc][ticker].amount ? sprintf('%.2f', stock[acc][ticker].value / stock[acc][ticker].amount) : <>&mdash;</>}</TableCell>
+              <TableCell align="right">{money(stock[acc][ticker].value, currency, language)}</TableCell>
+              <TableCell align="right">{stock[acc][ticker].amount ? money(stock[acc][ticker].value / stock[acc][ticker].amount, currency, language) : <>&mdash;</>}</TableCell>
             </TableRow>
           ))
         }

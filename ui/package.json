@@ -25,6 +25,7 @@
     "axios": "^1.7.7",
     "change-case": "^5.4.4",
     "clone": "^2.1.2",
+    "currency-symbol-map": "^5.1.0",
     "dot-object": "^2.1.5",
     "i18next": "^23.10.1",
     "json-edit-react": "^1.9.3",
