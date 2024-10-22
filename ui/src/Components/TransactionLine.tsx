@@ -5,7 +5,7 @@ import { TransactionExtras } from '../Types/API/Transaction'
 import { DateTime } from 'luxon'
 import { Account } from '../Types/API/Account'
 import { TransactionExtrasLine } from './TransactionExtrasLine'
-import { credit, debit, money } from '../Helpers/stringify'
+import { credit, debit } from '../Helpers/stringify'
 
 interface TransactionLineProps {
   first?: boolean
