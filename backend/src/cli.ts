@@ -60,6 +60,20 @@ async function batch(args, options: RuntimeOptions): Promise<BatchModel> {
 }
 
 /**
+ * List plans.
+ * @param args
+ */
+async function executeLs(args) {
+  const user = await UserModel.find(args.user)
+  if (user) {
+    const plans = await FlowPlanModel.findForUser(user.id)
+    plans instanceof Array && plans.forEach(plan => {
+      console.log(`#${plan.id} ${plan.name}`)
+    })
+  }
+}
+
+/**
  * Run the plan step(s).
  * @param args
  */
@@ -377,6 +391,10 @@ export async function execute(...args: string[]): Promise<void> {
   parser.add_argument('--user', { help: 'Email of the TaDeX user.', default: 'test@localhost' })
 
   const subparser = parser.add_subparsers()
+
+  // Ls command.
+  const ls = subparser.add_parser('ls', { description: 'List flow plans.' })
+  ls.set_defaults({ func: executeLs })
 
   // Run command.
   const run = subparser.add_parser('run', { description: 'Execute one or more steps on flow plan.' })
