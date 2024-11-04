@@ -5,6 +5,7 @@ import { JsonObject } from '@prisma/client/runtime/library'
 import { SkipReason } from '../types/API/InputItem'
 import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'
+import { InputItemData } from '../types/API/InputItemData'
 
 export class InputItemModel extends BaseModel<prisma.InputItem> {
 
@@ -106,6 +107,14 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
    */
   static async getAll(filter = {}): Promise<InputItemModel[]> {
     return InputItemModel.findMany<prisma.InputItem, InputItemModel>(filter, [{ created: 'asc' }])
+  }
+
+  static async getData(id: number): Promise<InputItemData> {
+    const input = await this.findUnique<prisma.InputItem, InputItemModel>({ id })
+    if (!input) {
+      throw new Error(`Cannot find InputItemModel ${id}.`)
+    }
+    return input.data.data as unknown as InputItemData
   }
 
   /**

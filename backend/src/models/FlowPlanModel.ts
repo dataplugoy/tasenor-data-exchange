@@ -143,7 +143,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param variable
    * @returns
    */
-  async getSetting(options: RuntimeOptions, variable: string): Promise<unknown> {
+  async getSetting(options: RuntimeOptions, variable: string, input: InputItemData): Promise<unknown> {
     const settings = (this.data?.setup as Setup).settings || {}
     if (variable in settings && settings[variable] !== undefined) {
       return settings[variable]
@@ -404,7 +404,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
           // Verify duplicates first.
           if (await InputItemModel.isDuplicate(input)) {
-            const inputDuplicates = await this.getSetting(options, 'inputDuplicates')
+            const inputDuplicates = await this.getSetting(options, 'inputDuplicates', data)
             if (inputDuplicates === 'Never') {
               await input.skip('DUPLICATE')
               skipped++
@@ -420,7 +420,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           // Verify time stamps not being in the past.
           const time = new Date(data.time)
           if (this.data.lastStamp && this.data.lastStamp >= time) {
-            const allowInputFromPast = await this.getSetting(options, 'allowInputFromPast')
+            const allowInputFromPast = await this.getSetting(options, 'allowInputFromPast', data)
             if (allowInputFromPast === 'Never') {
               await input.skip('IN_THE_PAST')
               skipped++
@@ -589,7 +589,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           if (await OutputItemModel.isDuplicate(output)) {
             let outputDuplicates
             try {
-              outputDuplicates = await this.getSetting(options, 'outputDuplicates')
+              const input = await InputItemModel.getData(unified.data.inputId)
+              outputDuplicates = await this.getSetting(options, 'outputDuplicates', input)
             } catch (err) {
               await output.destroy()
               throw err
