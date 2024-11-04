@@ -5,6 +5,7 @@ import { AccountCode } from '../types/AccountCode'
 import { Currency, Language } from '@tasenor/common'
 import { t } from '../lib/i18n/t'
 import { QuestionType } from '../types/API/QuestionType'
+import { QuestionExample } from '../types/API/QuestionExample'
 
 /**
  * Collection of variables.
@@ -78,7 +79,7 @@ export class AnswersRequired extends AlertException<Question[]> {
    * Instantiate and throw.
    * @param variable
    */
-  static throw(url: string, language: Language, userId: number, variable: string): never {
+  static throw(url: string, language: Language, userId: number, variable: string, example: null | QuestionExample = null): never {
     if (!VARIABLES[variable]) {
       throw new Error(`Bad variable name '${variable}'.`)
     }
@@ -88,6 +89,9 @@ export class AnswersRequired extends AlertException<Question[]> {
       label: t(language, VARIABLES[variable].label),
       args: VARIABLES[variable].args,
       variable: `settings.${variable}`
+    }
+    if (example) {
+      question.example = example
     }
     const alert = new AnswersRequired(url, userId, question)
     throw alert

@@ -36,6 +36,7 @@ import { Notes } from '../types/API/Notes'
 import { AnswersRequired } from '../exceptions/AnswersRequired'
 import { InputDriver } from '../driver/InputDriver'
 import { OutputDriver } from '../driver/OutputDriver'
+import { QuestionExample } from '../types/API/QuestionExample'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -152,7 +153,11 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     if (!project) {
       throw new Error('Cannot find the project.')
     }
-    AnswersRequired.throw(`/flow-plans/${this.id}/configure`, project.settings.language as Language, options.userId, variable)
+    const example: QuestionExample = {
+      line: input.line || 0,
+      text: input.original
+    }
+    AnswersRequired.throw(`/flow-plans/${this.id}/configure`, project.settings.language as Language, options.userId, variable, example)
   }
 
   /**

@@ -6,6 +6,6 @@
  */
 
 export interface QuestionExample {
-  line: string;
+  line: number;
   text: string;
 }

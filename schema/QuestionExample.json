@@ -6,7 +6,7 @@
   "required": ["line", "text"],
   "properties": {
     "line": {
-      "type": "string"
+      "type": "integer"
     },
     "text": {
       "type": "string"

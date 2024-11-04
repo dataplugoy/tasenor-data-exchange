@@ -18,6 +18,6 @@ export interface Question {
   example?: QuestionExample;
 }
 export interface QuestionExample {
-  line: string;
+  line: number;
   text: string;
 }
