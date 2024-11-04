@@ -1,4 +1,4 @@
-import React, { } from 'react'
+import React from 'react'
 import { Box, SxProps, Theme } from '@mui/material'
 import { Question } from '../Types/API/Question'
 import { QuestionBooleanPanel } from './QuestionBooleanPanel'
@@ -9,6 +9,7 @@ import { RemoteAccount } from '../Types/API/RemoteAccount'
 import { QuestionStringsPanel } from './QuestionStringsPanel'
 import { QuestionDebtAccountPanel } from './QuestionDebtAccountPanel'
 import { QuestionTickerPanel } from './QuestionTickerPanel'
+import { QuestionExamplePanel } from './QuestionExamplePanel'
 
 interface QuestionPanelProps {
   question: Question
@@ -31,26 +32,32 @@ export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
     case 'BOOLEAN':
       return <Box sx={sx}>
         <QuestionBooleanPanel question={question} value={value as undefined | boolean} onChange={onChange} noHelp={noHelp}/>
+        {question.example && <QuestionExamplePanel example={question.example}/>}
       </Box>
     case 'ENUM':
       return <Box sx={sx}>
         <QuestionEnumPanel question={question} value={value as undefined | string} onChange={onChange} noHelp={noHelp}/>
+        {question.example && <QuestionExamplePanel example={question.example}/>}
       </Box>
     case 'ACCOUNT':
       return <Box sx={sx}>
         <QuestionAccountPanel question={question} value={value as undefined | AccountNumber} onChange={onChange} remotes={remotes}/>
+        {question.example && <QuestionExamplePanel example={question.example}/>}
       </Box>
     case 'STRINGS':
       return <Box sx={sx}>
         <QuestionStringsPanel question={question} value={value as undefined | string[]} onChange={onChange}/>
+        {question.example && <QuestionExamplePanel example={question.example}/>}
       </Box>
     case 'TICKER':
       return <Box sx={sx}>
         <QuestionTickerPanel question={question} value={value as undefined | Record<string, string>} onChange={onChange}/>
+        {question.example && <QuestionExamplePanel example={question.example}/>}
       </Box>
     case 'DEBT_ACCOUNT':
       return <Box sx={sx}>
         <QuestionDebtAccountPanel question={question} value={value as undefined | Record<AccountNumber, AccountNumber | null>} onChange={onChange} remotes={remotes}/>
+        {question.example && <QuestionExamplePanel example={question.example}/>}
       </Box>
   }
 
