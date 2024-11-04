@@ -1,0 +1,15 @@
+{
+  "$id": "QuestionExample.json",
+  "title": "QuestionExample",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["line", "text"],
+  "properties": {
+    "line": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    }
+  }
+}

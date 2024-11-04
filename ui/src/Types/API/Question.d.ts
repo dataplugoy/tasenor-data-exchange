@@ -15,4 +15,9 @@ export interface Question {
   help: string;
   label: string;
   variable: string;
+  example?: QuestionExample;
+}
+export interface QuestionExample {
+  line: string;
+  text: string;
 }
