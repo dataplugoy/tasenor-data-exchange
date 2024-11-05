@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { continueAnalyzer, runAnalyzer } from '../lib/unit-testing'
 import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
-import { DateTime } from 'luxon'
 import { Setup } from '../../backend/src/types/API/Setup'
 
 describe('Analyzer', () => {
