@@ -51,6 +51,12 @@
     "eslint": "^8.57.0",
     "eslint-config-semistandard": "^17.0.0",
     "eslint-plugin-node": "^11.1.0",
-    "vite": "^5.4.8"
+    "vite": "^5.4.10"
+  },
+  "pnpm": {
+    "overrides": {
+      "braces@<3.0.3": ">=3.0.3",
+      "micromatch@<4.0.8": ">=4.0.8"
+    }
   }
 }
