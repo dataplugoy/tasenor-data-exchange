@@ -565,7 +565,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
         try {
           // Analyze unprocessed.
-          const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+          const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified)
           analyzer.apply(tx)
 
           // Update stock change.

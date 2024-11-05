@@ -230,7 +230,7 @@ export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSet
   const txs: Transaction[] = []
 
   for (const unified of items) {
-    const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified.input)
+    const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified)
     analyzer.apply(tx)
     txs.push(tx)
   }
@@ -241,4 +241,8 @@ export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSet
 export async function runAnalyzer(projectSettings: ProjectSettings, time: Timestring, stockData: InitialStockData, input: UnifiedItemData, runtimeOptions: RuntimeOptions = { userId: 0 }, setup: Setup | null = null, services: undefined | Service[] = []): Promise<Analyzer> {
   setup = setup || defaultSetup()
   return await Analyzer.run(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stockData, input, runtimeOptions, setup, services)
+}
+
+export async function continueAnalyzer(analyzer: Analyzer, time: string, data: UnifiedItemData) {
+  return analyzer.analyze(DateTime.fromISO(time), Analyzer.data2model(time as Timestring, data))
 }

@@ -31,6 +31,7 @@ import { AnswersRequired } from '../../exceptions/AnswersRequired'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { DbException } from '../../exceptions/DbException'
 import { TransactionLine } from '../../types/API/TransactionLine'
+import { UnifiedItemModel } from '../../models/UnifiedItemModel'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -161,8 +162,9 @@ export class Analyzer {
    * @param input
    * @returns
    */
-  async analyze(time: DateTime, input: UnifiedItemData): Promise<Transaction> {
+  async analyze(time: DateTime, model: UnifiedItemModel): Promise<Transaction> {
     await initI18N()
+    const input = model.input
     this.lastInput = input
     this.lastTime = time.toISO() as Timestring
     if (!this[`${input.type}Handler`]) {
@@ -387,6 +389,29 @@ export class Analyzer {
   }
 
   /**
+   * Helper for testing to convert unified item data to filled in model instance.
+   * @param input
+   */
+  static data2model(time: Timestring, input: UnifiedItemData): UnifiedItemModel {
+    return new UnifiedItemModel({
+      id: 0,
+      created: new Date(),
+      updated: new Date(),
+      flowPlanId: 0,
+      inputId: 0,
+      batchId: 0,
+      runId: 0,
+      skipped: false,
+      processed: false,
+      skipReason: null,
+      stockChange: {},
+      time: new Date(time),
+      data: input as unknown as JsonValue
+    })
+
+  }
+
+  /**
    * Create analyzer and execute one analysis (for easier unit testing).
    * @param stockData
    * @param input
@@ -400,7 +425,7 @@ export class Analyzer {
       analyzer.setServices(services)
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO(time), input)
+    const tx = await analyzer.analyze(DateTime.fromISO(time), Analyzer.data2model(time, input))
     analyzer.apply(tx)
 
     return analyzer

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { runAnalyzer } from '../lib/unit-testing'
+import { continueAnalyzer, runAnalyzer } from '../lib/unit-testing'
 import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 import { DateTime } from 'luxon'
@@ -131,7 +131,7 @@ describe('Analyzer', () => {
       assetAmountIn: 20,
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', input2)
     analyzer.apply(tx)
 
     expect(analyzer.toJSON()).toStrictEqual({
@@ -180,7 +180,7 @@ describe('Analyzer', () => {
       assetAmountIn: 20,
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', input2)
     analyzer.apply(tx)
 
     expect(analyzer.toJSON()).toStrictEqual({
@@ -235,7 +235,7 @@ describe('Analyzer', () => {
       assetAmountIn: 20,
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', input2)
     analyzer.apply(tx)
 
     expect(analyzer.toJSON()).toStrictEqual({
@@ -292,7 +292,7 @@ describe('Analyzer', () => {
       fee: 2.5,
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', input2)
     analyzer.apply(tx)
 
     expect(analyzer.toJSON()).toStrictEqual({
@@ -348,7 +348,7 @@ describe('Analyzer', () => {
       fee: 5,
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', input2)
     analyzer.apply(tx)
 
     expect(analyzer.toJSON()).toStrictEqual({
@@ -410,7 +410,7 @@ describe('Analyzer', () => {
       fee: 5,
     }
 
-    const tx = await analyzer.analyze(DateTime.fromISO('2000-01-02T00:00:00Z'), input2)
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', input2)
     analyzer.apply(tx)
 
     expect(analyzer.toJSON()).toStrictEqual({
