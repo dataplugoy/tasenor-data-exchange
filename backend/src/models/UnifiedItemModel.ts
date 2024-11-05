@@ -6,6 +6,7 @@ import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'
 import { OutputItemModel } from './OutputItemModel'
 import { UnifiedItemType } from '../types/API/UnifiedItemType'
+import { InputItemModel } from './InputItemModel'
 
 export class UnifiedItemModel extends BaseModel<prisma.UnifiedItem> {
 

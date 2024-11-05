@@ -32,6 +32,8 @@ import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { DbException } from '../../exceptions/DbException'
 import { TransactionLine } from '../../types/API/TransactionLine'
 import { UnifiedItemModel } from '../../models/UnifiedItemModel'
+import { QuestionExample } from '../../types/API/Question'
+import { InputItemModel } from '../../models/InputItemModel'
 
 /**
  * Core engine for tracking and calculating transactions from unified items.
@@ -43,12 +45,12 @@ export class Analyzer {
   protected stock: Stock
   protected balance: Balance
   protected clock: Timestring
-  protected lastInput: UnifiedItemData | null
   protected lastTime: Timestring
   protected lastResult: Transaction | null
   protected readonly config: ProjectSettings
   protected readonly setup: Setup
   protected readonly runtimeOptions: RuntimeOptions
+  private lastModel: UnifiedItemModel | null
 
   // Bind handlers.
   public buyHandler = buy.bind(this)
@@ -91,7 +93,7 @@ export class Analyzer {
     this.stock = stock
     this.balance = balances instanceof Balance ? balances : new Balance(balances)
     this.clock = '0000-00-00T00:00:00Z' as Timestring
-    this.lastInput = null
+    this.lastModel = null
     this.lastTime = '0000-00-00T00:00:00Z' as Timestring
     this.lastResult = null
     this.setup = setup
@@ -112,6 +114,13 @@ export class Analyzer {
     return this.config.language as Language
   }
 
+  get lastInput(): UnifiedItemData | null {
+    if (this.lastModel) {
+      return this.lastModel.data.data as unknown as UnifiedItemData
+    }
+    return null
+  }
+
   /**
    * Check if the variable is set and return it. If not, throw a answer request.
    * @param variable
@@ -123,7 +132,15 @@ export class Analyzer {
       return settings[variable]
     }
 
-    AnswersRequired.throw(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, variable)
+    let example: QuestionExample | null = null
+    if (this.lastModel && this.lastModel.data.id) {
+      const input = await InputItemModel.findForUnified(this.lastModel)
+      example = {
+        line: input.line || 0,
+        text: input.original as string
+      }
+    }
+    AnswersRequired.throw(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, variable, example)
   }
 
   /**
@@ -165,7 +182,7 @@ export class Analyzer {
   async analyze(time: DateTime, model: UnifiedItemModel): Promise<Transaction> {
     await initI18N()
     const input = model.input
-    this.lastInput = input
+    this.lastModel = model
     this.lastTime = time.toISO() as Timestring
     if (!this[`${input.type}Handler`]) {
       throw new Error(`Analyzer does not yet implement input type '${input.type}'.`)

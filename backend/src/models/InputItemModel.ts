@@ -6,6 +6,7 @@ import { SkipReason } from '../types/API/InputItem'
 import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'
 import { InputItemData } from '../types/API/InputItemData'
+import { UnifiedItemModel } from './UnifiedItemModel'
 
 export class InputItemModel extends BaseModel<prisma.InputItem> {
 
@@ -115,6 +116,16 @@ export class InputItemModel extends BaseModel<prisma.InputItem> {
       throw new Error(`Cannot find InputItemModel ${id}.`)
     }
     return input.data.data as unknown as InputItemData
+  }
+
+  /**
+   * Get the input model for unified.
+   * @param run
+   * @returns
+   */
+  static async findForUnified(item: UnifiedItemModel): Promise<InputItemModel> {
+    const ret = await this.findById<prisma.InputItem, InputItemModel>(item.data.inputId)
+    return ret
   }
 
   /**
