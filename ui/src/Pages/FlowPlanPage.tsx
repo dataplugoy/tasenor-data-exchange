@@ -15,6 +15,7 @@ import { whenBatchDeleted, whenBatchUpdates } from '../Signals/updates'
 import { useApp } from '../Hooks/useApp'
 import { datetime2str } from '../Helpers/stringify'
 import { Language, Timestring } from '@tasenor/common'
+import { Confirm } from '../Components/Confirm'
 
 type BatchWithOutput = Batch & {
   outputDeliveredCount: number
@@ -26,10 +27,12 @@ export const FlowPlanPage = (): React.JSX.Element => {
   const [project, setProject] = useState<Project | null>(null)
   const [flowPlan, setFlowPlan] = useState<FlowPlan | null>(null)
   const [batches, setBatches] = useState<BatchWithOutput[]>([])
+  const [rollingBack, setRollingBack] = useState(false)
   const isCompleted = !batches.length || !!batches[0].completed
   const navigate = useNavigate()
   const app = useApp()
   const { language } = app.project.settings
+  const { t } = useTranslation()
 
   const updateFlowPlan = async () => {
     await GET(`/flow-plans/${id}`).then(res => {
@@ -37,6 +40,10 @@ export const FlowPlanPage = (): React.JSX.Element => {
       res && setFlowPlan(res)
       res && res.batches && setBatches(res.batches)
     })
+  }
+
+  const onRollBack = async () => {
+    console.log(batches[0].id);
   }
 
   useEffect(() => {
@@ -74,11 +81,16 @@ export const FlowPlanPage = (): React.JSX.Element => {
             </AccordionSummary>
             <AccordionDetails>
               <RunList batch={batch}/>
-              <Button sx={{ mt: 2 }} disabled={idx > 0} variant="outlined" color="error"><Trans>Rollback</Trans></Button>
+              <Button sx={{ mt: 2 }} disabled={idx > 0} variant="outlined" color="error" onClick={() => setRollingBack(true)}><Trans>Rollback</Trans></Button>
             </AccordionDetails>
           </Accordion>))
         }
       </Box>
+
+      <Confirm open={rollingBack} areYouSure title={t('Removing a Batch')} okText={t('Delete')} onClose={() => setRollingBack(false)} onSubmit={onRollBack}>
+        <Trans>This will remove all data retrieved during the processing.</Trans>
+        <> </><Trans>Also all transactions created will be removed.</Trans>
+      </Confirm>
     </Box>
   )
 }
