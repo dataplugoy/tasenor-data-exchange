@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
@@ -14,6 +14,7 @@ import { BalanceTable } from './BalanceTable'
 import { StockData } from '../Types/API/StockData'
 import { StockTable } from './StockTable'
 import { Currency, Language } from '@tasenor/common'
+import { Confirm } from './Confirm'
 
 interface FlowPlanInfoProps {
   plan: FlowPlan
@@ -65,7 +66,6 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   }
 
   const onDelete = async () => {
-    setAbandoning(false)
     await DELETE(`/batches/${batchId}`)
     signalBatchDeleted()
   }
@@ -142,24 +142,9 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
       {alert && <AlertHandler alert={alert} onCancel={onCancel} onSuccess={onSuccess}/>}
 
-      <Dialog open={abandoning} fullWidth>
-        <DialogTitle><Trans>Abandon the Latest Batch</Trans></DialogTitle>
-
-        <DialogContent>
-          <DialogContentText sx={{ mb: 2 }}>
-            <Trans>This will remove all data retrieved during the processing.</Trans><> </>
-            <Box component="span" sx={{ fontWeight: 'bold' }}>
-              <Trans sx={{}}>Are You sure?</Trans>
-            </Box>
-          </DialogContentText>
-        </DialogContent>
-
-        <DialogActions>
-          <Button data-cy="DialogButton-Cancel" variant="outlined" onClick={() => setAbandoning(false)}><Trans>Cancel</Trans></Button>
-          <Button data-cy="DialogButton-Abandon" onClick={onDelete}><Trans>Delete</Trans></Button>
-        </DialogActions>
-      </Dialog>
-
+      <Confirm open={abandoning} areYouSure title={t('Abandon the Latest Batch')} okText={t('Delete')} onClose={() => setAbandoning(false)} onSubmit={onDelete}>
+        <Trans>This will remove all data retrieved during the processing.</Trans>
+      </Confirm>
     </>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography } from '@mui/material'
-import { Trans } from 'react-i18next'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, IconButton, Typography } from '@mui/material'
+import { Trans, useTranslation } from 'react-i18next'
 import { useGET } from '../Hooks/useNet'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FlowPlanResponse } from '../Types/API/flow-plans/FlowPlanResponse'
@@ -74,6 +74,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
             </AccordionSummary>
             <AccordionDetails>
               <RunList batch={batch}/>
+              <Button sx={{ mt: 2 }} disabled={idx > 0} variant="outlined" color="error"><Trans>Rollback</Trans></Button>
             </AccordionDetails>
           </Accordion>))
         }
