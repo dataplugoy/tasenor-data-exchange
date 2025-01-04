@@ -43,7 +43,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
   }
 
   const onRollBack = async () => {
-    console.log(batches[0].id);
+    console.log(batches[0].id)
   }
 
   useEffect(() => {

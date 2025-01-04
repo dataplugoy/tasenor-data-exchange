@@ -21,7 +21,7 @@ interface ConfirmProps {
 export const Confirm = (props: ConfirmProps): React.JSX.Element => {
   const { children, title, open, areYouSure, onClose, onSubmit } = props
   const { t } = useTranslation()
-  const [disabled, setDisabled] = useState(false)
+  const [disabled,] = useState(false)
 
   const cancelText = props.cancelText || t('Cancel')
   const okText = props.okText || t('OK')
@@ -30,7 +30,7 @@ export const Confirm = (props: ConfirmProps): React.JSX.Element => {
     try {
       await onSubmit()
       onClose()
-    } catch(err) {
+    } catch (err) {
       onClose()
       throw err
     }
