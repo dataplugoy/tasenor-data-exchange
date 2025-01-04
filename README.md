@@ -43,21 +43,18 @@ bin/tadex.mjs run 'Unit Testing'
 ```
 
 
-## Building a Release
+## Building a Staging Release
 
 You need to set DOCKER_USER and DOCKER_PASSWORD first.
 
 * Edit version number on the top level `package.json`.
-* Run
+* Build
   ```
   pnpm build-version
   bin/docker-publish latest
   ```
-
-
-## Updating Staging
-
-* Run
+* TODO: Tag and push.
+* Release
   ```
   bin/update-staging
   ```
@@ -65,7 +62,11 @@ You need to set DOCKER_USER and DOCKER_PASSWORD first.
 
 ## Updating Production
 
-* Run
+* Build
+  ```
+  bin/docker-publish prod
+  ```
+* Release
   ```
   bin/update-production
   ```
