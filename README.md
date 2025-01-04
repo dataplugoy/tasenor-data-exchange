@@ -41,3 +41,31 @@ To run test batch
 ```
 bin/tadex.mjs run 'Unit Testing'
 ```
+
+
+## Building a Release
+
+You need to set DOCKER_USER and DOCKER_PASSWORD first.
+
+* Edit version number on the top level `package.json`.
+* Run
+  ```
+  pnpm build-version
+  bin/docker-publish latest
+  ```
+
+
+## Updating Staging
+
+* Run
+  ```
+  bin/update-staging
+  ```
+
+
+## Updating Production
+
+* Run
+  ```
+  bin/update-production
+  ```
