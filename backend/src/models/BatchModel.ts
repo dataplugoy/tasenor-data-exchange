@@ -59,13 +59,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     if (!plan) {
       throw new Error(`Cannot find flow plan for ${this}.`)
     }
-    const output = await OutputItemModel.findForBatch(this.data.id, true)
-    for (const item of output) {
-      if (item.data.delivered) {
-        await plan.rollback(userId, item)
-      }
-    }
-    await this.destroy()
+    await plan.rollback(userId, this)
   }
 
   /**

@@ -131,15 +131,29 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * Use driver to remove transactions created by the output item.
    * @param item
    */
-  async rollback(userId: number, item: OutputItemModel): Promise<void> {
-    if (item.data.delivered) {
-      const driver = await this.getOutputDriver({
-        userId,
-        flowPlanId: this.id
-      })
-      log(`Rolling back output item ${item} with ID ${JSON.stringify(item.data.remoteId)}.`)
-      await driver.rollbackOuput(item)
+  async rollback(userId: number, batch: BatchModel): Promise<void> {
+    // Ask driver to remove if delivered.
+    const driver = await this.getOutputDriver({
+      userId,
+      flowPlanId: this.id
+    })
+    const output = await OutputItemModel.findForBatch(batch.id, true)
+    for (const item of output) {
+      if (item.data.delivered) {
+        log(`Rolling back output item ${item} with ID ${JSON.stringify(item.data.remoteId)} by user #${userId}.`)
+        await driver.rollbackOuput(item)
+      }
     }
+
+    // Delete batch data.
+    await batch.destroy()
+
+    // Copy stamps and data from the previous batch.
+    const latest = await BatchModel.getLatest(this)
+    const lastStamp = latest ? latest.data.lastStamp : null
+    const balance = latest ? latest.data.endBalance : {}
+    const stock = latest ? latest.data.endStock : {}
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { lastStamp, stock, balance })
   }
 
   /**
