@@ -65,6 +65,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
         await plan.rollback(userId, item)
       }
     }
+    await this.destroy()
   }
 
   /**
