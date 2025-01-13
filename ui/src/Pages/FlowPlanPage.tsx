@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, IconButton, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
-import { useGET } from '../Hooks/useNet'
+import { useGET, usePUT } from '../Hooks/useNet'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FlowPlanResponse } from '../Types/API/flow-plans/FlowPlanResponse'
 import { Project } from '../Types/API/Project'
@@ -23,6 +23,7 @@ type BatchWithOutput = Batch & {
 
 export const FlowPlanPage = (): React.JSX.Element => {
   const GET = useGET<FlowPlanResponse>()
+  const PUT = usePUT()
   const { id } = useParams()
   const [project, setProject] = useState<Project | null>(null)
   const [flowPlan, setFlowPlan] = useState<FlowPlan | null>(null)
@@ -43,7 +44,7 @@ export const FlowPlanPage = (): React.JSX.Element => {
   }
 
   const onRollBack = async () => {
-    console.log(batches[0].id)
+    await PUT(`/batches/${batches[0].id}/rollback`, {})
   }
 
   useEffect(() => {

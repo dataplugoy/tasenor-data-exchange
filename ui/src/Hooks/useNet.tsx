@@ -71,6 +71,17 @@ export function usePATCH<T>() {
 }
 
 /**
+ * Execute PATCH request and handle errors.
+ * @returns
+ */
+export function usePUT<T>() {
+  const { t } = useTranslation()
+  const app = useApp()
+
+  return (url: string, data: unknown[] | Record<string, unknown>): Promise<T | null> => request<T | null>(t, app, 'PUT', url, data)
+}
+
+/**
  * Execute POST request and handle errors.
  * @returns
  */

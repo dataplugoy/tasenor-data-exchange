@@ -56,4 +56,12 @@ export class OutputDriver extends Driver {
   async deliverOutput(output: OutputItemModel, unified: UnifiedItemModel): Promise<RemoteId> {
     throw new Error(`Output destination ${this.type} does not implement deliverOutput().`)
   }
+
+  /**
+   * Remove delivered transaction from the remote.
+   * @param output
+   */
+  async rollbackOuput(output: OutputItemModel): Promise<void> {
+    throw new Error(`Output destination ${this.type} does not implement rollbackOuput().`)
+  }
 }

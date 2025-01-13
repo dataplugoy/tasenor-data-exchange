@@ -8,6 +8,7 @@ import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
 import { parseCsv, parseEncoding } from '../lib/utils'
 import { log } from '@tasenor/common'
+import { OutputItemModel } from './OutputItemModel'
 
 export type CsvOptions = Options & {
   regexMatch?: RegExp
@@ -48,6 +49,22 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       await run.destroy()
     }
     await BatchModel.delete(this.id)
+  }
+
+  /**
+   * Undo all transactions created by this batch.
+   */
+  async rollback(userId: number): Promise<void> {
+    const plan = await FlowPlanModel.get(this.data.flowPlanId)
+    if (!plan) {
+      throw new Error(`Cannot find flow plan for ${this}.`)
+    }
+    const output = await OutputItemModel.findForBatch(this.data.id, true)
+    for (const item of output) {
+      if (item.data.delivered) {
+        await plan.rollback(userId, item)
+      }
+    }
   }
 
   /**

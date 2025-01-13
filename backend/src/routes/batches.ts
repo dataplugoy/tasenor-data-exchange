@@ -6,6 +6,7 @@ import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { OutputItemModel } from '../models/OutputItemModel'
 import { param } from '../lib/param'
 import { ItemErrorModel } from '../models/ItemErrorModel'
+import { error } from '@tasenor/common'
 
 const router = express.Router()
 
@@ -32,6 +33,20 @@ router.delete('/:id',
   async (_req, res) => {
     await res.locals.batch.destroy()
     res.sendStatus(204)
+  }
+)
+
+router.put('/:id/rollback',
+  authorize(),
+  param('batchId'),
+  async (_req, res) => {
+    if (res.locals.batch.state !== 'OUTPUT_DELIVERED') {
+      error(`Cannot rollback ${res.locals.batch} which has wrong state ${res.locals.batch.state}.`)
+      res.sendStatus(400)
+    } else {
+      await res.locals.batch.rollback(res.locals.userId)
+      res.sendStatus(204)
+    }
   }
 )
 

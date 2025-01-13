@@ -35,4 +35,7 @@ export class NoActionDriver extends OutputDriver {
   needConfiguredAccounts(): boolean {
     return false
   }
+
+  async rollbackOuput(output: OutputItemModel): Promise<void> {
+  }
 }

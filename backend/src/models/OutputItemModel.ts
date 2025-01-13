@@ -44,6 +44,13 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
+   * Undo transaction created from this item.
+   */
+  async rollback(): Promise<void> {
+    console.log(this.id)
+  }
+
+  /**
    * Save item to the DB.
    * @param data
    * @returns

@@ -128,6 +128,21 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Use driver to remove transactions created by the output item.
+   * @param item
+   */
+  async rollback(userId: number, item: OutputItemModel): Promise<void> {
+    if (item.data.delivered) {
+      const driver = await this.getOutputDriver({
+        userId,
+        flowPlanId: this.id
+      })
+      log(`Rolling back output item ${item} with ID ${JSON.stringify(item.data.remoteId)}.`)
+      await driver.rollbackOuput(item)
+    }
+  }
+
+  /**
    * Update the setup fields.
    * @param state
    */
