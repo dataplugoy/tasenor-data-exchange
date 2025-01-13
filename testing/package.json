@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
-    "@tasenor/common": "^1.13.21",
+    "@tasenor/common": "^1.13.26",
     "chardet": "^2.0.0",
     "luxon": "^3.4.4"
   },

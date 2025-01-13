@@ -23,8 +23,8 @@ importers:
         specifier: ^5.11.0
         version: 5.11.0(prisma@5.11.0)
       '@tasenor/common':
-        specifier: ^1.13.21
-        version: 1.13.22
+        specifier: ^1.13.26
+        version: 1.13.26
       '@tasenor/config':
         specifier: ^1.13.0
         version: 1.13.0
@@ -361,8 +361,8 @@ packages:
   '@prisma/get-platform@5.11.0':
     resolution: {integrity: sha512-rxtHpMLxNTHxqWuGOLzR2QOyQi79rK1u1XYAVLZxDGTLz/A+uoDnjz9veBFlicrpWjwuieM4N6jcnjj/DDoidw==}
 
-  '@tasenor/common@1.13.22':
-    resolution: {integrity: sha512-mp5ffivuyM9LhJ9VMonSwTcs/p3NAgEEnOo23qzslsrZRttwM6fGGjtFbtONj8kqrweUOTtnaDUmbNMQwpRfsA==}
+  '@tasenor/common@1.13.26':
+    resolution: {integrity: sha512-9ggskVdfJpsP0QO/3j+79tTcv+7qadrrrMbdI3gX7XB8aaEb0ADHDmpt8KGQQ8nY6MPm+Ys72lmg417vD36vqQ==}
 
   '@tasenor/config@1.13.0':
     resolution: {integrity: sha512-Y2N0uzIPb9kqd/MxA1hnz6WqvEXLikTqyA2uxFe/MW8JegqlcT4QgVBg3E3MIvrEShOH+ChAosrxOz7gEI/cFQ==}
@@ -2011,7 +2011,7 @@ snapshots:
     dependencies:
       '@prisma/debug': 5.11.0
 
-  '@tasenor/common@1.13.22':
+  '@tasenor/common@1.13.26':
     dependencies:
       axios: 1.7.7
       buffer: 6.0.3
