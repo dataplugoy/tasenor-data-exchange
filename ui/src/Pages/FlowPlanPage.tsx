@@ -44,8 +44,10 @@ export const FlowPlanPage = (): React.JSX.Element => {
   }
 
   const onRollBack = async () => {
+    app.setDimming(true)
     await PUT(`/batches/${batches[0].id}/rollback`, {})
     await updateFlowPlan()
+    app.setDimming(false)
   }
 
   useEffect(() => {

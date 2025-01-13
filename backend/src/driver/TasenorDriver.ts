@@ -266,4 +266,18 @@ export class TasenorDriver extends OutputDriver {
   needConfiguredAccounts(): boolean {
     return true
   }
+
+  async rollbackOuput(output: OutputItemModel): Promise<void> {
+    const { db, doc, entries } = output.data.remoteId as {
+      db: string
+      doc: number
+      period: number
+      entries: number[]
+    }
+
+    for (const id of entries) {
+      await this.DELETE(`/db/${db}/entry/${id}`)
+    }
+    await this.DELETE(`/db/${db}/document/${doc}`)
+  }
 }
