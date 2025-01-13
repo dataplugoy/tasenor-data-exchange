@@ -8,7 +8,6 @@ import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
 import { parseCsv, parseEncoding } from '../lib/utils'
 import { log } from '@tasenor/common'
-import { OutputItemModel } from './OutputItemModel'
 
 export type CsvOptions = Options & {
   regexMatch?: RegExp
