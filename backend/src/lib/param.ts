@@ -3,12 +3,13 @@ import { FlowPlanModel } from '../models/FlowPlanModel'
 import { ProjectModel } from '../models/ProjectModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { BatchModel } from '../models/BatchModel'
+import { RunModel } from '../models/RunModel'
 
 /**
  * A middleware checking for proper id parameter.
  * @returns ID checker middleware function.
  */
-export const param = (what: 'batchId' | 'flowPlanId' | 'projectId' | 'outputDestinationId') => {
+export const param = (what: 'runId' | 'batchId' | 'flowPlanId' | 'projectId' | 'outputDestinationId') => {
   return async (req, res, next) => {
     const id = `${req.params.id}`
 
@@ -19,6 +20,16 @@ export const param = (what: 'batchId' | 'flowPlanId' | 'projectId' | 'outputDest
     res.locals.id = parseInt(id)
 
     switch (what) {
+      case 'runId':
+        res.locals.run = await RunModel.get(res.locals.id)
+        res.locals.batch = res.locals.run && await BatchModel.get(res.locals.run.data.batchId)
+        res.locals.flowPlan = res.locals.batch && await FlowPlanModel.get(res.locals.batch.data.flowPlanId)
+        res.locals.project = res.locals.flowPlan && await ProjectModel.get(res.locals.flowPlan.data.projectId)
+        if (!res.locals.project || res.locals.project.data.userId !== res.locals.userId) {
+          return res.sendStatus(404)
+        }
+        return next()
+
       case 'batchId':
         res.locals.batch = await BatchModel.get(res.locals.id)
         res.locals.flowPlan = res.locals.batch && await FlowPlanModel.get(res.locals.batch.data.flowPlanId)

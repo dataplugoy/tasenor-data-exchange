@@ -5,6 +5,7 @@ import flowPlanRoute from './flow-plans'
 import batchRoute from './batches'
 import outputDestinationRoute from './output-destinations'
 import questionsRoute from './questions'
+import runRoute from './runs'
 
 const router = express.Router()
 
@@ -14,5 +15,6 @@ router.use('/flow-plans', flowPlanRoute)
 router.use('/output-destinations', outputDestinationRoute)
 router.use('/projects', projectsRoute)
 router.use('/questions', questionsRoute)
+router.use('/runs', runRoute)
 
 export default router
