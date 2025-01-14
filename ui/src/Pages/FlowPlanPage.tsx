@@ -85,7 +85,10 @@ export const FlowPlanPage = (): React.JSX.Element => {
             </AccordionSummary>
             <AccordionDetails>
               <RunList batch={batch}/>
-              <Button sx={{ mt: 2 }} disabled={idx > 0} variant="outlined" color="error" onClick={() => setRollingBack(true)}><Trans>Rollback</Trans></Button>
+              {
+                batches.length && batches[0].state === 'OUTPUT_DELIVERED' &&
+                <Button sx={{ mt: 2 }} disabled={idx > 0} variant="outlined" color="error" onClick={() => setRollingBack(true)}><Trans>Rollback</Trans></Button>
+              }
             </AccordionDetails>
           </Accordion>))
         }
