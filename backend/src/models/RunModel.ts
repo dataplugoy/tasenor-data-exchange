@@ -133,6 +133,10 @@ export class RunModel extends BaseModel<prisma.Run> {
     })
   }
 
+  static async get(id: number): Promise<RunModel | null> {
+    return this.findUnique<prisma.Run, RunModel>({ id })
+  }
+
   /**
    * Retrieve all runs.
    */

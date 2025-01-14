@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { RunStepResult, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { ViewError } from './ViewError'
@@ -10,6 +10,7 @@ import { useGET } from '../Hooks/useNet'
 import { OutputDestination } from '../Types/API/OutputDestination'
 import { ViewUnified } from './ViewUnified'
 import { ViewInput } from './ViewInput'
+import { Trans } from 'react-i18next'
 
 interface RunDetailsProps {
   batch: Batch
@@ -23,17 +24,31 @@ interface RunDetailsProps {
  */
 export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   const { batch, result } = props
-  const GET = useGET<OutputDestination>()
+  const GETOutput = useGET<OutputDestination>()
+  const GETRun = useGET<Batch>()
   const [output, setOutput] = useState<OutputDestination|null>(null)
 
   // Get output settings for the last step.
   useEffect(() => {
     if (result.step === 'SUCCESSFUL_OUTPUT_DELIVERED') {
-      GET(`/flow-plans/${batch.flowPlanId}/output`).then(res => {
+      GETOutput(`/flow-plans/${batch.flowPlanId}/output`).then(res => {
         res && setOutput(res)
       })
     }
   }, [batch.id, result.step])
+
+  const onDownload = () => {
+    const url = window.URL.createObjectURL(new Blob([batch.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute(
+      'download',
+      `TaDeX-source-data`,
+    )
+    document.body.appendChild(link)
+    link.click()
+    link.parentNode && link.parentNode.removeChild(link)
+  }
 
   const inputResults = result.items.filter(item => item.type === 'InputItem') as ResultInputItem[]
   const unifiedResults = result.items.filter(item => item.type === 'UnifiedItem') as ResultUnifiedItem[]
@@ -76,9 +91,12 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       {
         // Show initial data only for the first step.
         result.step === 'SUCCESSFUL_DATA_FETCHED' &&
-          <DisplayBlock>
-          { batch.data.split('\n').map((line, idx) => <Typography key={idx} variant="body2">{line}</Typography>) }
-          </DisplayBlock>
+          <>
+            <DisplayBlock>
+              { batch.data.split('\n').map((line, idx) => <Typography key={idx} variant="body2">{line}</Typography>) }
+            </DisplayBlock>
+            <Button onClick={onDownload}><Trans>Download</Trans></Button>
+          </>
       }
     </Box>
   )
