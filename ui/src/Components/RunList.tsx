@@ -38,7 +38,12 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
   const app = useApp()
   const { language } = app.project.settings
 
+  let deleted = false
+
   const updateRunList = async () => {
+
+    if (deleted) return
+
     GET(`/batches/${batch.id}`).then(res => {
       setRuns(res?.runs || [])
       setInputs((res?.inputs || []).reduce((prev, cur) => ({ ...prev, [cur.runId]: (prev[cur.runId] || []).concat([cur]) }), {}))
@@ -50,9 +55,13 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
 
   useEffect(() => {
     updateRunList()
-    whenBatchUpdates(updateRunList)
-    whenUploadUpdates(updateRunList)
-    whenRunUpdates(updateRunList)
+    whenBatchUpdates(() => updateRunList())
+    whenUploadUpdates(() => updateRunList())
+    whenRunUpdates(() => updateRunList())
+    return () => {
+      // This is little bit nasty hack since signal watcher function stays active.
+      deleted = true
+    }
   }, [])
 
   const onToggle = (id: number) => {
