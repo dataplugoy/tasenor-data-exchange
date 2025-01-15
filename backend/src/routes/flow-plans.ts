@@ -99,7 +99,7 @@ router.get('/:id',
         ...line,
         _count: undefined,
         outputDeliveredCount: line._count.outputItems,
-        data: line.data === null ? null : line.data.toString(line.encoding)
+        data: line.data
       })
       )
     })
@@ -198,6 +198,7 @@ router.post('/:id/upload',
     const { name, type, data } = req.body
     log(`Uploading a file '${name}' of type ${type} to ${batch}.`)
     const content = Buffer.from(data, 'hex')
+
     await batch.setData(content)
     await batch.detectEncoding()
 

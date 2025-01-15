@@ -11,7 +11,10 @@ export interface Batch {
   number: number;
   state: "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED";
   lastStamp: string | null;
-  data: string;
+  data: {
+    data: string;
+    encoding: string;
+  };
   encoding?: string;
   initialStock: StockData;
   endStock: StockData;

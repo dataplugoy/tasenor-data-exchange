@@ -11,6 +11,7 @@ import { OutputDestination } from '../Types/API/OutputDestination'
 import { ViewUnified } from './ViewUnified'
 import { ViewInput } from './ViewInput'
 import { Trans } from 'react-i18next'
+import { RawDisplay } from './RawDisplay'
 
 interface RunDetailsProps {
   batch: Batch
@@ -25,7 +26,6 @@ interface RunDetailsProps {
 export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   const { batch, result } = props
   const GETOutput = useGET<OutputDestination>()
-  const GETRun = useGET<Batch>()
   const [output, setOutput] = useState<OutputDestination|null>(null)
 
   // Get output settings for the last step.
@@ -38,7 +38,8 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   }, [batch.id, result.step])
 
   const onDownload = () => {
-    const url = window.URL.createObjectURL(new Blob([batch.data]))
+    const buf = Buffer.from(batch.data.data)
+    const url = window.URL.createObjectURL(new Blob([buf]))
     const link = document.createElement('a')
     link.href = url
     link.setAttribute(
@@ -74,6 +75,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       }
 
       <Notes notes={result.run.notes}/>
+      <Button onClick={onDownload}><Trans>Download</Trans></Button>
 
       {
         // Display input items.
@@ -93,9 +95,8 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
         result.step === 'SUCCESSFUL_DATA_FETCHED' &&
           <>
             <DisplayBlock>
-              { batch.data.split('\n').map((line, idx) => <Typography key={idx} variant="body2">{line}</Typography>) }
+              <RawDisplay data={batch.data}/>
             </DisplayBlock>
-            <Button onClick={onDownload}><Trans>Download</Trans></Button>
           </>
       }
     </Box>
