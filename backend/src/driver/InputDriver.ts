@@ -104,7 +104,7 @@ export class InputDriver extends Driver {
    * @returns
    */
   inputHash(input: InputItemData): string {
-    return hash(input, { algorithm: 'sha1' })
+    return hash(input.fields, { algorithm: 'sha1' })
   }
 
   /**
