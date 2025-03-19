@@ -71,7 +71,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   }
 
   const onSaveStock = async (stock: StockData) => {
-    console.log(stock);
+    console.log(stock)
   }
 
   // TODO: Localize number presentation.

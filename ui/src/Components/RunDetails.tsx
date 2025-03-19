@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { RunStepResult, ResultInputItem, ResultUnifiedItem, ResultOutputItem } from '../Helpers/sorter'
 import { Batch } from '../Types/API/Batch'
 import { ViewError } from './ViewError'
@@ -44,7 +44,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
     link.href = url
     link.setAttribute(
       'download',
-      `TaDeX-source-data`,
+      'TaDeX-source-data',
     )
     document.body.appendChild(link)
     link.click()

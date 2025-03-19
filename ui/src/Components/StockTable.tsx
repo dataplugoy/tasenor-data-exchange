@@ -60,10 +60,10 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
                 }
                 {editing &&
                   <TableCell>
-                    <TextField size="small" sx={{ width: "5rem"}}
+                    <TextField size="small" sx={{ width: '5rem' }}
                       value={stock[acc][ticker].amount}
                       onChange={e => {
-                        stock[acc][ticker].amount=e.target.value
+                        stock[acc][ticker].amount = e.target.value
                         setRefresh(refresh + 1)
                       }}
                       onBlur={() => {
@@ -84,10 +84,10 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
                 {
                   editing &&
                     <TableCell>
-                      <TextField size="small" sx={{ width: "8rem"}}
+                      <TextField size="small" sx={{ width: '8rem' }}
                         value={stock[acc][ticker].value}
                         onChange={e => {
-                          stock[acc][ticker].value=e.target.value
+                          stock[acc][ticker].value = e.target.value
                           setRefresh(refresh + 1)
                         }}
                         onBlur={() => {
