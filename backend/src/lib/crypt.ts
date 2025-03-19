@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { TokenAudience, TokenPayload } from '../types/TokenPayload'
 import { Token, error } from '@tasenor/common'
 import jwt from 'jsonwebtoken'
