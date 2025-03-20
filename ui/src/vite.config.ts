@@ -14,6 +14,7 @@ export default defineConfig(({ command, mode }) => {
       global: 'globalThis',
     },
     server: {
+      allowedHosts: true,
       proxy: {
         '/api': {
           target: process.env.API_URL || 'http://localhost:7302',
