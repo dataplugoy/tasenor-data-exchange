@@ -1,4 +1,5 @@
 import dot from 'dot-object'
+import clone from 'clone'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { BatchModel } from './BatchModel'
@@ -37,6 +38,7 @@ import { AnswersRequired } from '../exceptions/AnswersRequired'
 import { InputDriver } from '../driver/InputDriver'
 import { OutputDriver } from '../driver/OutputDriver'
 import { QuestionExample } from '../types/API/QuestionExample'
+import { StockData } from '../types/API/StockData'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -166,6 +168,15 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     Object.assign(fullSetup, dot.dot(patch))
     this.data.setup = dot.object(fullSetup)
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
+  }
+
+  /**
+   * Update the stock field.
+   * @param stock
+   */
+  async updateStock(stock: StockData): Promise<void> {
+    this.data.stock = clone(stock)
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { stock: this.data.stock })
   }
 
   /**

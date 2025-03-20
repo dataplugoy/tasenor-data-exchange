@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Air, PlayArrow } from '@mui/icons-material'
 import { FlowPlan } from '../Types/API/FlowPlan'
 import { Project } from '../Types/API/Project'
-import { useDELETE, useGET } from '../Hooks/useNet'
+import { useDELETE, useGET, usePATCH } from '../Hooks/useNet'
 import { signalBatchDeleted, signalBatchUpdate, signalRunUpdate } from '../Signals/updates'
 import { getAlert, isAlert } from '../Types/alerts'
 import { UIAlert } from '../Types/Classes/UIAlert'
@@ -29,6 +29,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const [abandoning, setAbandoning] = useState(false)
   const GET = useGET()
   const DELETE = useDELETE()
+  const PATCH = usePATCH()
   const [alert, setAlert] = useState<UIAlert|null>(null)
   const [details, setDetails] = useState(false)
   const { t } = useTranslation()
@@ -71,7 +72,8 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   }
 
   const onSaveStock = async (stock: StockData) => {
-    console.log(stock)
+    // TODO: We could clean up empty entries before sending.
+    await PATCH(`/flow-plans/${plan.id}/stock`, stock)
   }
 
   // TODO: Localize number presentation.

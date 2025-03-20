@@ -110,7 +110,11 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
 
       <Box sx={{ mt: 1 }}>
         {!editing && footer}
-        {editing && onSave && <Button variant="outlined" onClick={() => onSave(stock)}><Trans>Save</Trans></Button>}
+        {editing && onSave &&
+          <Button variant="outlined" onClick={() => { onSave(stock).then(() => setEditing(false))}}>
+            <Trans>Save</Trans>
+          </Button>
+        }
       </Box>
     </Box>
   )

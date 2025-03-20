@@ -236,6 +236,16 @@ router.patch('/:id/setup',
   }
 )
 
+router.patch('/:id/stock',
+  authorize(),
+  param('flowPlanId'),
+  // validate(UpdateSetupRequest),
+  async (req, res) => {
+    await res.locals.flowPlan.updateStock(req.body)
+    res.send(res.locals.flowPlan.data.stock)
+  }
+)
+
 router.delete('/:id',
   authorize(),
   param('flowPlanId'),
