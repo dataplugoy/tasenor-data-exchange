@@ -8,7 +8,7 @@
 export interface StockData {
   /**
    * This interface was referenced by `StockData`'s JSON-Schema definition
-   * via the `patternProperty` "^.*$".
+   * via the `patternProperty` "^.+$".
    */
   [k: string]: {
     value?: number;

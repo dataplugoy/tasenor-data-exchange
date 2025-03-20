@@ -1,0 +1,9 @@
+{
+  "title": "UpdateStockRequest",
+  "type": "object",
+  "patternProperties": {
+    "^.+$": {
+      "$ref": "StockData.json"
+    }
+  }
+}

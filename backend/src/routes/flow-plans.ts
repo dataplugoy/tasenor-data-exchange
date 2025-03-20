@@ -9,6 +9,7 @@ import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlan
 import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
 import ConfigureFlowPlanRequest from '../../src/types/API/flow-plans/ConfigureFlowPlanRequest.json'
 import UpdateSetupRequest from '../../src/types/API/flow-plans/UpdateSetupRequest.json'
+import UpdateStockRequest from '../../src/types/API/flow-plans/UpdateStockRequest.json'
 import UpdateRulesRequest from '../../src/types/API/flow-plans/UpdateRulesRequest.json'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
@@ -239,7 +240,7 @@ router.patch('/:id/setup',
 router.patch('/:id/stock',
   authorize(),
   param('flowPlanId'),
-  // validate(UpdateSetupRequest),
+  validate(UpdateStockRequest),
   async (req, res) => {
     await res.locals.flowPlan.updateStock(req.body)
     res.send(res.locals.flowPlan.data.stock)

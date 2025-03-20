@@ -3,7 +3,7 @@
   "title": "StockData",
   "type": "object",
   "patternProperties": {
-    "^.*$": {
+    "^.+$": {
       "type": "object",
       "properties": {
         "value": {
