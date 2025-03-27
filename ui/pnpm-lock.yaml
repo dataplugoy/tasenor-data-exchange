@@ -36,11 +36,11 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3(preact@10.20.2)
       '@tasenor/common':
-        specifier: ^1.13.26
-        version: 1.14.3
+        specifier: ^1.14.4
+        version: 1.14.4
       '@tasenor/config':
-        specifier: ^1.13.0
-        version: 1.13.0
+        specifier: ^1.14.4
+        version: 1.14.4
       '@types/luxon':
         specifier: ^3.4.2
         version: 3.4.2
@@ -780,11 +780,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tasenor/common@1.14.3':
-    resolution: {integrity: sha512-VIg6HOp5Hn1xML8O2njqqfDL/+MOjLrq3Q2+ccB0n4PknNM932YT7SecYMVsRbD/2LfWXOYszFEH50QFILDgxA==}
+  '@tasenor/common@1.14.4':
+    resolution: {integrity: sha512-g3j06xEFwRqf5U33EL1jAK59stFqhP7f7j5gmsGozjBWdT+wyd6jRop2biNio7DmRCfhcj0SpsvmzhbQvHEsAg==}
 
-  '@tasenor/config@1.13.0':
-    resolution: {integrity: sha512-Y2N0uzIPb9kqd/MxA1hnz6WqvEXLikTqyA2uxFe/MW8JegqlcT4QgVBg3E3MIvrEShOH+ChAosrxOz7gEI/cFQ==}
+  '@tasenor/config@1.14.4':
+    resolution: {integrity: sha512-i7mWMNCqHTtsHfFoO0JXLuUU0NHkgCO45ETpodhkBzu6BBogcgCPrAhCs3U7Jt1CRte+Y061n3mZzJEc0X5Quw==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2878,7 +2878,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.24.0':
     optional: true
 
-  '@tasenor/common@1.14.3':
+  '@tasenor/common@1.14.4':
     dependencies:
       axios: 1.8.3
       buffer: 6.0.3
@@ -2892,7 +2892,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@tasenor/config@1.13.0': {}
+  '@tasenor/config@1.14.4': {}
 
   '@types/babel__core@7.20.5':
     dependencies:

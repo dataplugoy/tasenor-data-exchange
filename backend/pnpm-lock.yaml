@@ -28,11 +28,11 @@ importers:
         specifier: ^5.11.0
         version: 5.11.0(prisma@5.11.0)
       '@tasenor/common':
-        specifier: ^1.13.26
-        version: 1.13.26
+        specifier: ^1.14.4
+        version: 1.14.4
       '@tasenor/config':
-        specifier: ^1.13.0
-        version: 1.13.0
+        specifier: ^1.14.4
+        version: 1.14.4
       ajv:
         specifier: ^8.12.0
         version: 8.12.0
@@ -374,11 +374,11 @@ packages:
   '@prisma/get-platform@5.11.0':
     resolution: {integrity: sha512-rxtHpMLxNTHxqWuGOLzR2QOyQi79rK1u1XYAVLZxDGTLz/A+uoDnjz9veBFlicrpWjwuieM4N6jcnjj/DDoidw==}
 
-  '@tasenor/common@1.13.26':
-    resolution: {integrity: sha512-9ggskVdfJpsP0QO/3j+79tTcv+7qadrrrMbdI3gX7XB8aaEb0ADHDmpt8KGQQ8nY6MPm+Ys72lmg417vD36vqQ==}
+  '@tasenor/common@1.14.4':
+    resolution: {integrity: sha512-g3j06xEFwRqf5U33EL1jAK59stFqhP7f7j5gmsGozjBWdT+wyd6jRop2biNio7DmRCfhcj0SpsvmzhbQvHEsAg==}
 
-  '@tasenor/config@1.13.0':
-    resolution: {integrity: sha512-Y2N0uzIPb9kqd/MxA1hnz6WqvEXLikTqyA2uxFe/MW8JegqlcT4QgVBg3E3MIvrEShOH+ChAosrxOz7gEI/cFQ==}
+  '@tasenor/config@1.14.4':
+    resolution: {integrity: sha512-i7mWMNCqHTtsHfFoO0JXLuUU0NHkgCO45ETpodhkBzu6BBogcgCPrAhCs3U7Jt1CRte+Y061n3mZzJEc0X5Quw==}
 
   '@types/bcrypt@5.0.2':
     resolution: {integrity: sha512-6atioO8Y75fNcbmj0G7UjI9lXN2pQ/IGJ2FWT4a/btd0Lk9lQalHLKhkgKVZ3r+spnmWUKfbMi1GEe9wyHQfNQ==}
@@ -2026,7 +2026,7 @@ snapshots:
     dependencies:
       '@prisma/debug': 5.11.0
 
-  '@tasenor/common@1.13.26':
+  '@tasenor/common@1.14.4':
     dependencies:
       axios: 1.8.3
       buffer: 6.0.3
@@ -2040,7 +2040,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@tasenor/config@1.13.0': {}
+  '@tasenor/config@1.14.4': {}
 
   '@types/bcrypt@5.0.2':
     dependencies:

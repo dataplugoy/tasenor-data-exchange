@@ -15,7 +15,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@tasenor/config": "^1.13.20",
+    "@tasenor/config": "^1.14.4",
     "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
-    "@tasenor/common": "^1.13.26",
+    "@tasenor/common": "^1.14.4",
     "chardet": "^2.0.0",
     "luxon": "^3.4.4"
   },
