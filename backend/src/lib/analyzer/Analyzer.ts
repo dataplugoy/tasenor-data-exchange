@@ -350,7 +350,7 @@ export class Analyzer {
    * Check if we have a debt account for a currency.
    * @param currency
    */
-  hasDebtAccount(currency: Currency): boolean  {
+  hasDebtAccount(currency: Currency): boolean {
     const settings = this.setup.settings || {}
     if (settings.debtAccounts !== null && settings.debtAccounts instanceof Object) {
       if (currency in settings.debtAccounts) {
@@ -378,7 +378,7 @@ export class Analyzer {
     let plan
     try {
       plan = await FlowPlanModel.get(this.runtimeOptions.flowPlanId as number)
-    } catch(err) {
+    } catch (err) {
       if (err instanceof DbException) {
         throw new Error(`Error with DB. If you are runnig a test, please define setup variable 'debtAccounts' for '${currency}'.`)
       }

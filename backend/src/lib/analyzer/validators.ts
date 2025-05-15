@@ -136,10 +136,10 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
  */
 export async function validateAsset(this: Analyzer, asset: Asset | undefined, amount: number | Decimal | undefined, canUseService: boolean = false): Promise<Decimal> {
   if (asset === undefined) {
-    this.validateError(`Cannot figure out value without asset`)
+    this.validateError('Cannot figure out value without asset')
   }
   if (amount === undefined) {
-    this.validateError(`Cannot figure out value without amount of the asset`)
+    this.validateError('Cannot figure out value without amount of the asset')
   }
 
   const rate = await this.validateRate(asset, canUseService)
@@ -169,7 +169,7 @@ export async function validateValue(this: Analyzer, canUseService: boolean = fal
     }
     return dec(input.value)
   }
-  this.validateError(`Value is missing`)
+  this.validateError('Value is missing')
 }
 
 /**
@@ -211,7 +211,7 @@ export function validateValueAccount(this: Analyzer, withService: boolean): Acco
 export function validateAssetOutAccount(this: Analyzer, withService: boolean): AccountCode {
   const input = this.validateInput()
   if (!input.assetOut) {
-    this.validateError(`Cannot figure asset out account without 'assetOut'`)
+    this.validateError("Cannot figure asset out account without 'assetOut'")
   }
   if (isCurrency(input.assetOut)) {
     return `CURRENCY_${input.assetOut}` as AccountCode
@@ -225,7 +225,7 @@ export function validateAssetOutAccount(this: Analyzer, withService: boolean): A
 export function validateAssetInAccount(this: Analyzer, withService: boolean): AccountCode {
   const input = this.validateInput()
   if (!input.assetIn) {
-    this.validateError(`Cannot figure asset out account without 'assetIn'`)
+    this.validateError("Cannot figure asset out account without 'assetIn'")
   }
   if (isCurrency(input.assetIn)) {
     return `CURRENCY_${input.assetIn}` as AccountCode

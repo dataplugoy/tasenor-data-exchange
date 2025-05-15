@@ -339,7 +339,7 @@ async function executeInitStock(args) {
   const content = fs.readFileSync(args.path).toString('utf-8')
   const data = await parseCsv(content)
   const acc = args.account as AccountCode
-  const stock: Record<AccountCode, StockData> = {[acc]: {}}
+  const stock: Record<AccountCode, StockData> = { [acc]: {} }
 
   data.forEach(line => {
     const [ticker, amount, value] = line

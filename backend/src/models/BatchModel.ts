@@ -101,7 +101,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     if (this.data.data === null) {
       return
     }
-    const encoding = chardet.detect(this.data.data)
+    const encoding = chardet.detect(this.data.data as any)
     if (!encoding) {
       throw new Error(`Unable to detect encodin for data in ${this}.`)
     }
