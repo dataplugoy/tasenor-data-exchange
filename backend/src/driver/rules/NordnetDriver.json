@@ -176,7 +176,7 @@
       "multipart": "Vahvistusnumero",
       "assetIn": "Valuutta",
       "assetAmountIn": "Summa",
-      "rates": "rates($('Kokonaiskulut Valuutta'), $('Kokonaiskulut Valuutta') == currency ? 1.0 : Vaihtokurssi)"
+      "rates": "rates($('Valuutta'), $('Valuutta') == currency ? 1.0 : Vaihtokurssi)"
     }
   },
   {
