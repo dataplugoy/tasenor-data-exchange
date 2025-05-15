@@ -1,8 +1,8 @@
-import { ServiceType } from "@prisma/client"
-import { ServiceSettings } from "../../types/ServiceSettings"
-import { HttpMethod, error, CryptoCurrency, Currency, Timestring, log } from "@tasenor/common"
-import Decimal from "decimal.js"
-import path from "path"
+import { ServiceType } from '@prisma/client'
+import { ServiceSettings } from '../../types/ServiceSettings'
+import { HttpMethod, error, CryptoCurrency, Currency, Timestring, log } from '@tasenor/common'
+import Decimal from 'decimal.js'
+import path from 'path'
 import axios, { AxiosRequestConfig } from 'axios'
 
 /**

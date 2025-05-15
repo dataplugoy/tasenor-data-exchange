@@ -26,7 +26,7 @@ export class TasenorService extends Service {
 
   async queryCryptoRates(query: CryptoQuery): Promise<CryptoAnswer> {
 
-    const data ={ from: query.asset, to: query.valueCurrency, date: query.time.substring(0, 10) }
+    const data = { from: query.asset, to: query.valueCurrency, date: query.time.substring(0, 10) }
 
     const res = await this.callService<{ rate: number }>('historical-crypto-rate', data)
     return {
@@ -36,7 +36,7 @@ export class TasenorService extends Service {
 
   async queryCurrencyRates(query: CurrencyQuery): Promise<CurrencyAnswer | null> {
 
-    const data ={ from: query.currency, to: query.valueCurrency, date: query.time.substring(0, 10) }
+    const data = { from: query.currency, to: query.valueCurrency, date: query.time.substring(0, 10) }
 
     const res = await this.callService<{ rate: number }>('historical-currency-rate', data)
     return {
