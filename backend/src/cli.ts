@@ -421,7 +421,7 @@ async function executeService(args) {
     for (const type of types) {
       switch (type) {
         case 'CURRENCY_RATES':
-          console.log('Arguments for CURRENCY_RATES: time="2000-01-01" currency="EUR" valueCurrency="USD"')
+          console.log('Arguments for CURRENCY_RATES: time="2024-01-01" currency="EUR" valueCurrency="USD"')
           console.log()
           break
         default:
