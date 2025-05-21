@@ -23,6 +23,7 @@ import { StockData } from './types/API/StockData'
 import prisma from '@prisma/client'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { ServiceModel } from './models/ServiceModel'
+import { ServiceQuery } from './lib/services/Service'
 
 Decimal.set({ precision: 50 })
 
@@ -405,11 +406,46 @@ async function executeInitBalance(args) {
  * @param args
  */
 async function executeService(args) {
-  const services = await ServiceModel.findAllFree()
-  console.log(sprintf('%-20s %-15s %4s  %s', 'Name', 'Type', 'Free', 'Settings'))
-  services.forEach((service) => {
-    console.log(sprintf('%-20s %-15s %4s  %s', service.data.name, service.data.type, service.data.free ? 'FREE' : 'COMM', JSON.stringify(service.data.settings)))
-  })
+
+  if (!args.type) {
+
+    const services = await ServiceModel.findAllFree()
+    console.log(sprintf('%-20s %-15s %4s  %s', 'Name', 'Type', 'Free', 'Settings'))
+    const types = new Set<string>()
+    services.forEach((service) => {
+      console.log(sprintf('%-20s %-15s %4s  %s', service.data.name, service.data.type, service.data.free ? 'FREE' : 'COMM', JSON.stringify(service.data.settings)))
+      types.add(service.data.type)
+    })
+    console.log()
+    for (const type of types) {
+      switch (type) {
+        case 'CURRENCY_RATES':
+          console.log('Arguments for CURRENCY_RATES: time="2000-01-01" currency="EUR" valueCurrency="USD"')
+          console.log()
+          break
+        default:
+          throw new Error(`Arguments for type ${type} not yet specified.`)
+      }
+    }
+
+  } else {
+
+    const query = {
+      query: args.type,
+    }
+    args.args.forEach(arg => {
+      const match = /^(.+?)=(.*)/.exec(arg)
+      if (!match) {
+        throw new Error(`Invalid argument ${JSON.stringify(arg)}`)
+      }
+      query[match[1]] = match[2]
+    })
+
+    console.log(`Running query ${JSON.stringify(query)}`)
+    const analyzer = await getAnalyzer(args)
+    const res = await analyzer.askService(query as ServiceQuery)
+    console.log(res)
+  }
 }
 
 export async function execute(...args: string[]): Promise<void> {
@@ -476,6 +512,8 @@ export async function execute(...args: string[]): Promise<void> {
 
   // Service command.
   const service = subparser.add_parser('service', { description: 'Run service queries.' })
+  service.add_argument('type', { nargs: '?', help: 'Type of the service to call if any.' })
+  service.add_argument('args', { nargs: '*', help: 'Arguments as a space separated key=value pairs.' })
   service.set_defaults({ func: executeService })
 
   // Prepare and execute.
