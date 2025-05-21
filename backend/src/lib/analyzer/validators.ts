@@ -98,15 +98,17 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
     return dec(input.rates[asset] as string | number | Decimal)
   }
 
+  const [prefix, body] = asset.split(':')
+  const queryAsset = (body === undefined ? asset : body) as Asset
+
+  if (this.currency === queryAsset) {
+    return new Decimal(1.0)
+  }
+
   if (canUseService) {
     let rate
-    const [prefix, body] = asset.split(':')
-    const queryAsset = (body === undefined ? asset : body) as Asset
 
     if (isCurrency(asset) || prefix === 'CURRENCY') {
-      if (this.currency === queryAsset) {
-        return new Decimal(1.0)
-      }
       rate = await this.askService({
         query: 'CURRENCY_RATES',
         time: this.lastTime,
@@ -123,7 +125,7 @@ export async function validateRate(this: Analyzer, asset: Asset, canUseService: 
       })
     }
 
-    if (rate) {
+    if (rate !== undefined) {
       return rate.value
     }
   }
