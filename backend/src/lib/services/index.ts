@@ -10,10 +10,10 @@ const services: Record<prisma.ServiceDriver, Constructor<Service>> = {
   TASENOR: TasenorService
 }
 
-export function getService(type: prisma.ServiceDriver, settings: ServiceSettings): Service {
-  const DriverConstructor = services[type]
+export function getService(driver: prisma.ServiceDriver, settings: ServiceSettings): Service {
+  const DriverConstructor = services[driver]
   if (!DriverConstructor) {
-    throw new Error(`Cannot find service driver for '${type}'.`)
+    throw new Error(`Cannot find service driver for '${driver}'.`)
   }
   return new DriverConstructor(settings)
 }

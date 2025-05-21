@@ -163,6 +163,10 @@ export class Analyzer {
    * @param query
    */
   async askService(query: ServiceQuery): Promise<ServiceAnswer> {
+    if (this.services[query.query].length === 0) {
+      throw new Error(`There are no services set to handle query ${JSON.stringify(query)}`)
+    }
+
     for (const service of this.services[query.query]) {
       const result = await service.query(query)
       if (result !== null) {
@@ -170,7 +174,7 @@ export class Analyzer {
       }
       warning(`A service ${service.constructor.name} was not able to handle query ${JSON.stringify(query)}`)
     }
-    throw new Error(`There is no service available to handle query ${JSON.stringify(query)}`)
+    throw new Error(`There is no service to handle query ${JSON.stringify(query)}`)
   }
 
   /**

@@ -407,9 +407,10 @@ async function executeInitBalance(args) {
  */
 async function executeService(args) {
 
+  const services = await ServiceModel.findAllFree()
+
   if (!args.type) {
 
-    const services = await ServiceModel.findAllFree()
     console.log(sprintf('%-20s %-15s %4s  %s', 'Name', 'Type', 'Free', 'Settings'))
     const types = new Set<string>()
     services.forEach((service) => {
@@ -443,7 +444,11 @@ async function executeService(args) {
 
     console.log(`Running query ${JSON.stringify(query)}`)
     const analyzer = await getAnalyzer(args)
+    analyzer.setServices(services.map(s => s.getService()))
     const res = await analyzer.askService(query as ServiceQuery)
+    console.log()
+    console.log('=>')
+    console.log()
     console.log(res)
   }
 }

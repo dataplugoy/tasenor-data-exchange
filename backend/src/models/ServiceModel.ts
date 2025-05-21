@@ -1,3 +1,6 @@
+import { getService } from '../lib/services'
+import { Service } from '../lib/services/Service'
+import { ServiceSettings } from '../types/ServiceSettings'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 
@@ -5,6 +8,10 @@ export class ServiceModel extends BaseModel<prisma.Service> {
 
   static table = 'service'
   static construct = ServiceModel
+
+  getService(): Service {
+    return getService(this.data.driver, this.data.settings as ServiceSettings)
+  }
 
   /**
    * Get a list of all services the user has.
