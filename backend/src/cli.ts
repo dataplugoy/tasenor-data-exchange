@@ -22,6 +22,7 @@ import { initI18N } from './lib/i18n/t'
 import { StockData } from './types/API/StockData'
 import prisma from '@prisma/client'
 import { JsonValue } from '@prisma/client/runtime/library'
+import { ServiceModel } from './models/ServiceModel'
 
 Decimal.set({ precision: 50 })
 
@@ -74,17 +75,24 @@ async function executeLs(args) {
 }
 
 /**
+ * Construct run-time options.
+ * @param args
+ */
+function getOptions(args): RuntimeOptions {
+  return {
+    userId: 0,
+    tracking: args.track || null,
+    auth: args.auth || null,
+    repeat: args.count === 'all' ? 'MAX' : parseInt(args.count),
+  }
+}
+
+/**
  * Run the plan step(s).
  * @param args
  */
 async function executeRun(args) {
-  const options: RuntimeOptions = {
-    userId: 0,
-    tracking: args.track || null,
-    auth: args.auth || null,
-    repeat: args.count === 'all' ? 'MAX' : parseInt(args.count)
-  }
-
+  const options = getOptions(args)
   const plan = await flowPlan(args, options)
   const res = await plan.run(options)
 
@@ -116,23 +124,35 @@ function renderExtras(extras: TransactionExtras): string {
 }
 
 /**
+ * Fetch and instantiate flowplan.
+ * @param args
+ */
+async function getFlowPlan(args): Promise<FlowPlanModel> {
+  const options = getOptions(args)
+  const plan = await flowPlan(args, options)
+  return plan
+}
+
+async function getAnalyzer(args, setup: Setup = {}, stock = new Stock({})): Promise<Analyzer> {
+  const options = getOptions(args)
+  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {}, setup, options)
+
+  return analyzer
+}
+
+/**
  * Collect data for report.
  * @param args
  * @returns
  */
 async function getData(args): Promise<[Stock, Transaction[]]> {
-  const stock = new Stock({})
 
-  const options: RuntimeOptions = {
-    userId: 0,
-    tracking: args.track || null,
-    auth: args.auth || null,
-  }
-  const plan = await flowPlan(args, options)
+  const stock = new Stock({})
+  const plan = await getFlowPlan(args)
   const outputItems = await OutputItemModel.findForFlowPlan(plan.id)
   const setup = plan.data.setup as Setup
 
-  const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, stock, {}, setup, options)
+  const analyzer = await getAnalyzer(args, setup, stock)
 
   // Sort the transactions by their accounts.
   const txs: Transaction[] = OutputItemModel.transactions(outputItems)
@@ -380,6 +400,15 @@ async function executeInitBalance(args) {
   await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(flow, { balance: total as JsonValue })
 }
 
+/**
+ * List or query services.
+ * @param args
+ */
+async function executeService(args) {
+  const services = await ServiceModel.findAllFree()
+  console.log(services)
+}
+
 export async function execute(...args: string[]): Promise<void> {
   const parser: ArgumentParser = new ArgumentParser({
     description: 'Tasenor Data Exchange command line tool'
@@ -417,7 +446,7 @@ export async function execute(...args: string[]): Promise<void> {
   journal.add_argument('--stock', { help: 'Show stock changes.', required: false, action: 'store_true' })
   journal.set_defaults({ func: executeJournal })
 
-  // Upload command.
+  // Setup command.
   const setup = subparser.add_parser('setup', { description: 'Change the plan setup.' })
   setup.add_argument('flow', { help: 'Name of the flow.' })
   setup.add_argument('json', { help: 'Update to the setup in JSON format.' })
@@ -441,6 +470,10 @@ export async function execute(...args: string[]): Promise<void> {
   initBalance.add_argument('flow', { help: 'Name of the flow.' })
   initBalance.add_argument('path', { help: 'A path to the file to upload.' })
   initBalance.set_defaults({ func: executeInitBalance })
+
+  // Service command.
+  const service = subparser.add_parser('service', { description: 'Run service queries.' })
+  service.set_defaults({ func: executeService })
 
   // Prepare and execute.
   const commandArgs = parser.parse_args(args.length ? args : ['-h'])
