@@ -406,7 +406,10 @@ async function executeInitBalance(args) {
  */
 async function executeService(args) {
   const services = await ServiceModel.findAllFree()
-  console.log(services)
+  console.log(sprintf('%-20s %-15s %4s  %s', 'Name', 'Type', 'Free', 'Settings'))
+  services.forEach((service) => {
+    console.log(sprintf('%-20s %-15s %4s  %s', service.data.name, service.data.type, service.data.free ? 'FREE' : 'COMM', JSON.stringify(service.data.settings)))
+  })
 }
 
 export async function execute(...args: string[]): Promise<void> {
