@@ -88,7 +88,8 @@ export class Analyzer {
   constructor(config: ProjectSettings, stock: Stock, balances: Balance | {}, setup: Setup = {}, runtimeOptions: RuntimeOptions = { userId: 0 }) {
     this.services = {
       CRYPTO_RATES: [],
-      CURRENCY_RATES: []
+      CURRENCY_RATES: [],
+      TICKERS: [],
     }
     this.stock = stock
     this.balance = balances instanceof Balance ? balances : new Balance(balances)
@@ -163,8 +164,11 @@ export class Analyzer {
    * @param query
    */
   async askService(query: ServiceQuery): Promise<ServiceAnswer> {
+    if (this.services[query.query] === undefined) {
+      throw new Error(`There is no such services as ${JSON.stringify(query.query)}.`)
+    }
     if (this.services[query.query].length === 0) {
-      throw new Error(`There are no services set to handle query ${JSON.stringify(query)}`)
+      throw new Error(`There are no services set to handle query ${JSON.stringify(query)}.`)
     }
 
     for (const service of this.services[query.query]) {

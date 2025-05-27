@@ -424,6 +424,10 @@ async function executeService(args) {
           console.log('Arguments for CURRENCY_RATES: time="2024-01-01" currency="EUR" valueCurrency="USD"')
           console.log()
           break
+        case 'TICKERS':
+          console.log('Arguments for TICKERS: isin="US0846707026"')
+          console.log()
+          break
         default:
           throw new Error(`Arguments for type ${type} not yet specified.`)
       }

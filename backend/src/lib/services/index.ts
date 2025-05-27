@@ -4,10 +4,12 @@ import { Service } from './Service'
 import { ServiceSettings } from '../../types/ServiceSettings'
 import { TasenorService } from './TasenorService'
 import { JsonFileService } from './JsonFileService'
+import { OpenFigiService } from './OpenFigiService'
 
 const services: Record<prisma.ServiceDriver, Constructor<Service>> = {
   JSON_FILE: JsonFileService,
-  TASENOR: TasenorService
+  TASENOR: TasenorService,
+  OPEN_FIGI: OpenFigiService,
 }
 
 export function getService(driver: prisma.ServiceDriver, settings: ServiceSettings): Service {

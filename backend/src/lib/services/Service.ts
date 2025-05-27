@@ -4,6 +4,7 @@ import { HttpMethod, error, CryptoCurrency, Currency, Timestring, log } from '@t
 import Decimal from 'decimal.js'
 import path from 'path'
 import axios, { AxiosRequestConfig } from 'axios'
+import { OpenFigiItem } from './OpenFigiService'
 
 /**
  * Asking valuation in the given currency of the value in other currency.
@@ -33,8 +34,20 @@ export type CryptoAnswer = {
   value: Decimal
 }
 
-export type ServiceQuery = CryptoQuery | CurrencyQuery
-export type ServiceAnswer = CryptoAnswer | CurrencyAnswer
+/**
+ * Find information about a ticker by its ISIN code.
+ */
+export type TickerQuery = {
+  query: 'TICKERS'
+  isin: string
+}
+
+export type TickerAnswer = {
+  value: OpenFigiItem[]
+}
+
+export type ServiceQuery = CryptoQuery | CurrencyQuery | TickerQuery
+export type ServiceAnswer = CryptoAnswer | CurrencyAnswer | TickerAnswer
 
 /**
  * Services that can be configured and subscribed.
@@ -142,6 +155,8 @@ export class Service {
         return this.queryCryptoRates(query)
       case 'CURRENCY_RATES':
         return this.queryCurrencyRates(query)
+      case 'TICKERS':
+        return this.queryTickers(query)
       default:
         throw new Error(`Invalid or unimplemented query ${JSON.stringify(query)}`)
     }
@@ -153,5 +168,9 @@ export class Service {
 
   async queryCurrencyRates(query: CurrencyQuery): Promise<CurrencyAnswer | null> {
     throw new Error(`Service '${this.constructor.name}' does not implement queryCurrencyRates().`)
+  }
+
+  async queryTickers(query: TickerQuery): Promise<TickerAnswer | null> {
+    throw new Error(`Service '${this.constructor.name}' does not implement queryTickers().`)
   }
 }

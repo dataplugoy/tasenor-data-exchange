@@ -48,11 +48,13 @@ model User {
 enum ServiceType {
   CURRENCY_RATES
   CRYPTO_RATES
+  TICKERS
 }
 
 enum ServiceDriver {
   JSON_FILE
   TASENOR
+  OPEN_FIGI
 }
 
 model Service {
