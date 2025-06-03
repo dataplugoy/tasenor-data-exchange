@@ -32,7 +32,23 @@ export class OpenFigiService extends Service {
 
   async queryTickers(query: TickerQuery): Promise<TickerAnswer | null> {
     const res = await this.POST<OpenFigiResponse>('/v3/mapping', [{ idType: 'ID_ISIN', idValue: query.isin }])
-    const items = res.map(r => r.data).reduce((prev, cur) => cur.concat(prev), [])
+    let items = res.map(r => r.data).reduce((prev, cur) => cur.concat(prev), [])
+
+    if (query.exchange) {
+      switch (query.exchange) {
+        case 'FRA':
+          items = items.filter(item => ['GR', 'NF'].includes(item.exchCode))
+          break
+        case 'HEL':
+          items = items.filter(item => ['FH'].includes(item.exchCode))
+          break
+        case 'NYSE':
+          items = items.filter(item => ['UA', 'UC', 'UM', 'UP'].includes(item.exchCode))
+          break
+        default:
+          throw new Error(`An exchange code ${query.exchange} not supported.`)
+      }
+    }
 
     return { value: items }
   }

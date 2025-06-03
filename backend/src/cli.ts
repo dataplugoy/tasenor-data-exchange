@@ -425,7 +425,7 @@ async function executeService(args) {
           console.log()
           break
         case 'TICKERS':
-          console.log('Arguments for TICKERS: isin="US0846707026"')
+          console.log('Arguments for TICKERS: isin="US0846707026" [exchange="HEL"]')
           console.log()
           break
         default:

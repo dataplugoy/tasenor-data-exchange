@@ -37,9 +37,12 @@ export type CryptoAnswer = {
 /**
  * Find information about a ticker by its ISIN code.
  */
+export type StockExchage = 'NYSE' | 'NASDAQ' | 'HEL' | 'FRA'
+
 export type TickerQuery = {
   query: 'TICKERS'
   isin: string
+  exchange?: StockExchage
 }
 
 export type TickerAnswer = {
