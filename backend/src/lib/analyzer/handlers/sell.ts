@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
-import { Asset, Timestring, isCurrency, warning } from '@tasenor/common'
+import { Asset, Timestring, isCurrency } from '@tasenor/common'
 import { AccountCode } from '../../../types/AccountCode'
 import { TransactionLine } from '../../../types/API/TransactionLine'
 import { Transaction } from '../../../types/API/Transaction'
@@ -32,7 +32,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
 
   if (old.amount.lt(assetAmountOut as number)) {
     if (old.amount.gt(0)) {
-      this.validateError('Short selling an instrument at the same time than we sell owned copies is not implemented.')
+      this.validateError(`Short selling ${assetAmountOut} instrument ${tickerOut} at the same time than we sell ${old.amount} owned copies is not implemented.`)
     }
     const text = this.validateText('Sold short {{amount}} {{asset}}', { asset: tickerOut, amount: chg(dec(assetAmountOut).negated()) })
 
