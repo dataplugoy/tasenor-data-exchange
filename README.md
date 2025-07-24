@@ -68,5 +68,5 @@ You need to set DOCKER_USER and DOCKER_PASSWORD first.
   ```
 * Release
   ```
-  bin/update-prods
+  bin/update-prod
   ```
