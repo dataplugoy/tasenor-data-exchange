@@ -1,0 +1,9 @@
+{
+  "title": "UpdateStockRequest",
+  "type": "object",
+  "patternProperties": {
+    "^(ACCOUNT|STOCK|CRYPTO|CURRENCY|DEBT_CURRENCY|CRYPTOFEE|FEE|PROFIT|LOSS|EXPENSE|INCOME|DIVIDEND|EXTERNAL|TAX)_[-:A-Z._0-9]+$": {
+      "type": "number"
+    }
+  }
+}

@@ -180,6 +180,15 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   }
 
   /**
+   * Update the balance field.
+   * @param balance
+   */
+  async updateBalance(balance: BalanceData): Promise<void> {
+    this.data.balance = clone(balance)
+    await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { balance: this.data.balance })
+  }
+
+  /**
    * Check if the variable is found from the flow plan setup. If not, throw an alert.
    * @param variable
    * @returns

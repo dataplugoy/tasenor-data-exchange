@@ -76,6 +76,10 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
     await PATCH(`/flow-plans/${plan.id}/stock`, stock)
   }
 
+  const onSaveBalance = async (balance: BalanceData) => {
+    await PATCH(`/flow-plans/${plan.id}/balance`, balance)
+  }
+
   // TODO: Localize number presentation.
 
   const balance: BalanceData = plan.balance || {}
@@ -139,7 +143,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
 
           {details && <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
 
-            <BalanceTable currency={currency} language={language} balance={balance} footer={t('Current balance of all accounts according to our records.')}/>
+            <BalanceTable currency={currency} language={language} balance={balance} footer={t('Current balance of all accounts according to our records.')} onSave={onSaveBalance}/>
             <StockTable currency={currency} language={language} stock={stock} footer={t('Current assets of all accounts according to our records.')} onSave={onSaveStock}/>
 
           </Box>}

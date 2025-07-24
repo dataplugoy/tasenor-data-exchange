@@ -8,6 +8,7 @@ import { param } from '../lib/param'
 import CreateFlowPlanRequest from '../../src/types/API/flow-plans/CreateFlowPlanRequest.json'
 import ContinueFlowPlanRequest from '../../src/types/API/flow-plans/ContinueFlowPlanRequest.json'
 import ConfigureFlowPlanRequest from '../../src/types/API/flow-plans/ConfigureFlowPlanRequest.json'
+import UpdateBalanceRequest from '../../src/types/API/flow-plans/UpdateBalanceRequest.json'
 import UpdateSetupRequest from '../../src/types/API/flow-plans/UpdateSetupRequest.json'
 import UpdateStockRequest from '../../src/types/API/flow-plans/UpdateStockRequest.json'
 import UpdateRulesRequest from '../../src/types/API/flow-plans/UpdateRulesRequest.json'
@@ -244,6 +245,16 @@ router.patch('/:id/stock',
   async (req, res) => {
     await res.locals.flowPlan.updateStock(req.body)
     res.send(res.locals.flowPlan.data.stock)
+  }
+)
+
+router.patch('/:id/balance',
+  authorize(),
+  param('flowPlanId'),
+  validate(UpdateBalanceRequest),
+  async (req, res) => {
+    await res.locals.flowPlan.updateBalance(req.body)
+    res.send(res.locals.flowPlan.data.balance)
   }
 )
 
