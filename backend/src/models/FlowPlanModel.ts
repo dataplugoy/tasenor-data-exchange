@@ -163,10 +163,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    * @param state
    */
   async updateSetup(patch: Partial<Setup>): Promise<void> {
-    const setup = (this.data?.setup as Setup) || {}
-    const fullSetup = dot.dot(setup)
-    Object.assign(fullSetup, dot.dot(patch))
-    this.data.setup = dot.object(fullSetup)
+    // eslint-disable-next-line new-cap
+    const setupDot = new dot('∰∰∰')
+    const fullSetup = setupDot.dot((this.data?.setup as Setup) || {})
+    Object.assign(fullSetup, setupDot.dot(patch))
+
+    this.data.setup = setupDot.object(fullSetup)
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
   }
 
