@@ -72,7 +72,17 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   }
 
   const onSaveStock = async (stock: StockData) => {
-    // TODO: We could clean up empty entries before sending.
+    // Clean up empty entries.
+    Object.keys(stock).forEach(acc => {
+      const newKeys = Object.keys(stock[acc]).filter(key => stock[acc][key].amount !== 0)
+      const newStock = newKeys.reduce((prev, cur) => ({ ...prev, [cur]: stock[acc][cur] }), {})
+      if (Object.keys(newStock).length === 0) {
+        delete stock[acc]
+      } else {
+        stock[acc] = newStock
+      }
+    })
+
     await PATCH(`/flow-plans/${plan.id}/stock`, stock)
   }
 
