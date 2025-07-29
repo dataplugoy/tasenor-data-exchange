@@ -18,6 +18,9 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
 
   const [editing, setEditing] = useState(false)
   const [refresh, setRefresh] = useState(0)
+  const [name, setName] = useState('')
+  const [index, setIndex] = useState('')
+
   const { stock, footer, language, currency, onSave } = props
 
   return (
@@ -49,10 +52,30 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
             </TableRow>
           }
           {
-            Object.keys(stock).map((acc, idx) => Object.keys(stock[acc]).map(ticker =>
+            Object.keys(stock).map(acc => Object.keys(stock[acc]).toSorted().map(ticker =>
               <TableRow key={`${acc}+${ticker}`}>
                 <TableCell>{acc}</TableCell>
-                <TableCell>{ticker}</TableCell>
+                {!editing && <TableCell>{ticker}</TableCell>}
+                {editing &&
+                  <TableCell>
+                    <TextField size="small" sx={{ width: '5rem' }}
+                      value={`${acc}+${ticker}` === index ? name : ticker}
+                      onFocus={() => {
+                        setName(ticker)
+                        setIndex(`${acc}+${ticker}`)
+                      }}
+                      onChange={e => {
+                        setName(e.target.value)
+                      }}
+                      onBlur={() => {
+                        stock[acc][name] = stock[acc][ticker]
+                        delete stock[acc][ticker]
+                        setName('')
+                        setIndex('')
+                      }}
+                    />
+                  </TableCell>
+                }
                 {!editing &&
                   <TableCell align="right">
                     {stock[acc][ticker].amount}
