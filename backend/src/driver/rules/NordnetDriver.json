@@ -268,5 +268,12 @@
       "assetAmountOut": "Määrä",
       "assetTypeOut": "'STOCK'"
     }
+  },
+  {
+    "name": "Skipped",
+    "filter": "Tapahtumatyyppi == 'JÄTTÖ SIIRTO' or Tapahtumatyyppi == 'AP OTTO'",
+    "result": {
+      "type": "'skip'"
+    }
   }
 ]

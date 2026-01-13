@@ -5,7 +5,6 @@ import { Asset, Timestring, isCurrency } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
 import { AccountCode } from '../../../types/AccountCode'
-import Decimal from 'decimal.js'
 
 /**
  * Buy an asset and add it to the stock.
@@ -105,7 +104,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       extras: {},
     },
     {
-      account: account,
+      account,
       amount: dec(value).minus(fee).toString(),
       text,
       extras: {

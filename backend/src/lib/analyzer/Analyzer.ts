@@ -21,6 +21,7 @@ import { forex } from './handlers/forex'
 import { income } from './handlers/income'
 import { rename } from './handlers/rename'
 import { sell } from './handlers/sell'
+import { skip } from './handlers/skip'
 import { split } from './handlers/split'
 import { withdrawal } from './handlers/withdrawal'
 import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validateBasics, validateError, validateFee, validateInput, validateNotEmpty, validateRate, validateRequired, validateRequiredField, validateText, validateTicker, validateValue, validateValueAccount, validateValueOrAsset } from './validators'
@@ -62,6 +63,7 @@ export class Analyzer {
   public forexHandler = forex.bind(this)
   public renameHandler = rename.bind(this)
   public splitHandler = split.bind(this)
+  public skipHandler = skip.bind(this)
 
   // Bind validators.
   public validateError: (msg: string) => never = validateError.bind(this)
@@ -192,6 +194,7 @@ export class Analyzer {
     const input = model.input
     this.lastModel = model
     this.lastTime = time.toISO() as Timestring
+
     if (!this[`${input.type}Handler`]) {
       throw new Error(`Analyzer does not yet implement input type '${input.type}'.`)
     }

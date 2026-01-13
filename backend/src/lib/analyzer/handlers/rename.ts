@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
-import { Asset, Timestring, isCurrency } from '@tasenor/common'
+import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
-import { Transaction, TransactionLine } from '../../../types/API/Transaction'
+import { Transaction } from '../../../types/API/Transaction'
 import { AccountCode } from '../../../types/AccountCode'
 
 /**
