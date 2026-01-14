@@ -46,6 +46,7 @@
   "RESULT_PARTLY_FAIL": "Osittain epäonnistui",
   "RESULT_PARTLY_SKIPPED_SUCCESS": "Joitakin jätetty väliin",
   "RESULT_WAITING": "Odottaa",
+  "SKIP": "Jätetty väliin",
   "SELL": "Myyty",
   "TOGGLE_SINGLE_CRYPTO_ACCOUNT": "Käytä samaa tiliä kaikille kryptovaluutoille",
   "TOGGLE_SINGLE_DIVIDEND_ACCOUNT": "Käytä samaa tiliä kaikille osingoille",

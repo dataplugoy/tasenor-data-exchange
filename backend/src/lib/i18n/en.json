@@ -47,6 +47,7 @@
   "RESULT_PARTLY_SKIPPED_SUCCESS": "Skipped Some",
   "RESULT_WAITING": "Waiting",
   "SELL": "Sell",
+  "SKIP": "Skip",
   "TOGGLE_SINGLE_CRYPTO_ACCOUNT": "Use the same account for all crypto currencies",
   "TOGGLE_SINGLE_DIVIDEND_ACCOUNT": "Use the same account for all dividends",
   "TOGGLE_SINGLE_EXPENSE_ACCOUNT": "Use the same account for any expense",

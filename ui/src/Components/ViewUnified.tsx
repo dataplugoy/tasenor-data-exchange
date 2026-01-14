@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArticleTwoTone, AttachMoneyTwoTone, Balance, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
+import { ArticleTwoTone, AttachMoneyTwoTone, Balance, CoffeeTwoTone, ContentCutTwoTone, CurrencyBitcoin, CurrencyExchangeTwoTone, DisplaySettings, FormatColorTextTwoTone, ListAltTwoTone, MonetizationOnTwoTone, PaymentTwoTone, QuestionMark, RedoTwoTone, SavingsTwoTone, SellTwoTone, ShoppingCartTwoTone } from '@mui/icons-material'
 import { Chip, Box, Typography, SxProps, Theme } from '@mui/material'
 import React from 'react'
 import { green, red, blue, grey, cyan, teal, brown, blueGrey } from '@mui/material/colors'
@@ -33,6 +33,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     rename: cyan[600],
     trade: cyan[600],
     sell: grey[200],
+    skip: grey[900],
     split: brown[800],
     unknown: grey[900],
     withdrawal: blue[600]
@@ -48,6 +49,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     rename: grey[900],
     trade: grey[900],
     sell: grey[600],
+    skip: grey[100],
     split: grey[50],
     unknown: grey[700],
     withdrawal: red[50]
@@ -62,6 +64,7 @@ export const UnifiedTypeChip = (props: UnifiedTypeChipProps): React.JSX.Element 
     rename: FormatColorTextTwoTone,
     trade: DisplaySettings,
     sell: SellTwoTone,
+    skip: RedoTwoTone,
     split: ContentCutTwoTone,
     unknown: QuestionMark,
     withdrawal: PaymentTwoTone,
