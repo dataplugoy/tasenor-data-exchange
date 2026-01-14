@@ -46,7 +46,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
         case 'TICKER':
           answers.tickers = answers.tickers || {}
           ticker = question.args?.ticker || ''
-          Object.assign(answers.tickers as Object, {[ticker]: ticker})
+          Object.assign(answers.tickers as Object, { [ticker]: ticker })
       }
     }
   }, [questions])
