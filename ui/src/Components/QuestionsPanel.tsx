@@ -27,6 +27,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   const app = useApp()
 
   useEffect(() => {
+    // Sort out accounts.
     const accountQuestion = questions.find(question => question.type === 'ACCOUNT' || question.type === 'DEBT_ACCOUNT')
     if (accountQuestion) {
       // TODO: For debt account we need different hints.
@@ -36,6 +37,17 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
       })
     } else {
       app.setDimming(false)
+    }
+
+    // Fill in defaults.
+    for (const question of questions) {
+      let ticker
+      switch (question.type) {
+        case 'TICKER':
+          answers.tickers = answers.tickers || {}
+          ticker = question.args?.ticker || ''
+          Object.assign(answers.tickers as Object, {[ticker]: ticker})
+      }
     }
   }, [questions])
 
