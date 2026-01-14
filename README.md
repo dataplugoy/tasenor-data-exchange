@@ -54,7 +54,7 @@ You need to set DOCKER_USER and DOCKER_PASSWORD first.
   bin/docker-publish latest
   ```
 * TODO: Tag and push.
-* Release
+* Release (we have only prod currently)
   ```
   bin/update-staging
   ```
