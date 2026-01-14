@@ -55,7 +55,6 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   }
 
   const onEditSave = (answers: Record<string, unknown>) => {
-console.log(answers);
     // Merge dotted notations to structure first.
     Object.keys(answers).filter(k => k.indexOf('.') > 0).forEach(k => {
       const newValues = answers[k]
