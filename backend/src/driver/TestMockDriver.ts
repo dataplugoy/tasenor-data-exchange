@@ -1,4 +1,5 @@
 import fs from 'fs'
+import hash from 'object-hash'
 import path from 'path'
 import { TestMockDriverSettings } from '../types/DriverSettings'
 import { TestMockFlowState } from '../types/FlowState'
@@ -128,11 +129,11 @@ export class TestMockDriver extends InputDriver {
   }
 
   /**
-   * An example to ignore line number from the hash.
+   * Hash everything but the line number, since mock data has only the first word in `fields`.
    * @param input
    * @returns
    */
   inputHash(input: InputItemData): string {
-    return super.inputHash({ ...input, line: 0 })
+    return hash({ ...input, line: 0 }, { algorithm: 'sha1' })
   }
 }
