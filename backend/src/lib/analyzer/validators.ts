@@ -154,7 +154,8 @@ export async function validateAsset(this: Analyzer, asset: Asset | undefined, am
 export async function validateValueOrAsset(this: Analyzer, asset: Asset | undefined = undefined, amount: number | Decimal | undefined = undefined, canUseService: boolean = false): Promise<Decimal> {
   const input = this.validateInput()
   if (input.value !== undefined && input.value !== null) {
-    return dec(input.value)
+    // Currency rate from the input is preferred, but external rate is always allowed as a fallback.
+    return this.validateValue(true)
   }
   return this.validateAsset(asset, amount, canUseService)
 }

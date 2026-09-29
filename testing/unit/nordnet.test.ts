@@ -587,19 +587,19 @@ describe('Nordnet', () => {
         lines: [
           {
             account: 'CURRENCY_SEK',
-            amount: '124.614',
+            amount: '105.92236',
             text: 'Dividend for TELIA1',
             extras: {}
           },
           {
             account: 'INCOME_DIVIDEND',
-            amount: '-105.92236',
+            amount: '-124.614',
             text: 'Dividend for TELIA1',
             extras: {}
           },
           {
             account: 'TAX_WITHHOLDING',
-            amount: '-18.69164',
+            amount: '18.69164',
             text: 'Dividend for TELIA1',
             extras: {}
           }

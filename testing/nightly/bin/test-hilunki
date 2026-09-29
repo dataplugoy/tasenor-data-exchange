@@ -14,7 +14,7 @@ set -e
 
 cd "$ROOT"
 pnpm load
-bin/tadex.mjs setup 'Nightly Testing' '{"tickers": {"NORDNET SUOMI INDEKSI": "NORDNET SUOMI INDEKSI"}, "settings": {"debtAccounts": {"EUR": "1001", "USD": "1002"}}}'
+bin/tadex.mjs setup 'Nightly Testing' '{"tickers": {"NORDNET SUOMI INDEKSI": "NORDNET SUOMI INDEKSI"}, "settings": {"debtAccounts": {"EUR": "1001", "USD": "1002", "SEK": null}}}'
 bin/tadex.mjs run 'Nightly Testing'
 bin/tadex.mjs upload 'Nightly Testing' testing/nightly/data/Hilunki.csv
 bin/tadex.mjs run 'Nightly Testing' all

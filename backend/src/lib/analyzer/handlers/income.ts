@@ -50,16 +50,19 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
     tax = await this.validateAsset(taxAsset as Asset, dec(taxAmount), true)
   }
 
+  // Withholding tax is deducted from the gross value before payment, while other taxes (VAT) are included in the value received.
+  const withholding = taxType === 'withholding'
+
   const lines: TransactionLine[] = [
     {
       account: this.validateValueAccount(false),
-      amount: dec(value).toString(),
+      amount: withholding ? dec(value).minus(tax).toString() : dec(value).toString(),
       text: resultText,
       extras: {},
     },
     {
       account: resultAccount,
-      amount: dec(value).minus(tax).negated().toString(),
+      amount: withholding ? dec(value).negated().toString() : dec(value).minus(tax).negated().toString(),
       text: resultText,
       extras: {},
     },
@@ -68,7 +71,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
   if (!tax.eq(0)) {
     lines.push({
       account: `TAX_${(taxType as string).toUpperCase()}`,
-      amount: tax.negated().toString(),
+      amount: withholding ? tax.toString() : tax.negated().toString(),
       text: resultText,
       extras: {},
     })

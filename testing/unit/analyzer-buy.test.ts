@@ -319,4 +319,51 @@ describe('Analyzer', () => {
     }
     )
   })
+
+  it('buying with value and fee in foreign currency', async () => {
+
+    const stock = {}
+    const input = {
+      type: 'buy' as UnifiedItemType,
+      value: 2028.39,
+      valueAsset: 'USD' as Asset,
+      fee: 15.33,
+      feeAsset: 'USD' as Asset,
+      rates: { USD: 0.98 },
+      assetIn: 'BIP' as Asset,
+      assetTypeIn: 'STOCK',
+      assetAmountIn: 50,
+    }
+
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+
+    expect(analyzer.toJSON()).toStrictEqual({
+      tx: {
+        time: '2000-01-01T00:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_USD',
+            amount: '-1987.8222',
+            text: 'Bought +50 BIP',
+            extras: {}
+          },
+          {
+            account: 'STOCK_BIP',
+            amount: '1972.7988',
+            text: 'Bought +50 BIP',
+            extras: { asset: 'BIP', assetChange: '50' }
+          },
+          {
+            account: 'FEE_USD',
+            amount: '15.0234',
+            text: 'Bought +50 BIP',
+            extras: {}
+          }
+        ]
+      },
+      balances: { CURRENCY_USD: -1987.8222, STOCK_BIP: 1972.7988, FEE_USD: 15.0234 },
+      stock: { STOCK_BIP: { BIP: { amount: 50, value: 1972.7988 } } }
+    }
+    )
+  })
 })

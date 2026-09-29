@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
+import { JsonFileService } from '../../backend/src/lib/services/JsonFileService'
 import { runAnalyzer } from '../lib/unit-testing'
 
 describe('Analyzer', () => {
@@ -347,4 +348,125 @@ describe('Analyzer', () => {
   })
 
   // TODO: Test for various other fee cases: different currency, some asset.
+
+  it('sell for loss in foreign currency', async () => {
+
+    const stock = {
+      STOCK_BIP: { BIP: { value: 1972.7988, amount: 50 } }
+    }
+    const input = {
+      type: 'sell' as UnifiedItemType,
+      value: 1813.5,
+      valueAsset: 'USD' as Asset,
+      rates: { USD: 0.96 },
+      assetOut: 'BIP' as Asset,
+      assetTypeOut: 'STOCK',
+      assetAmountOut: 50,
+    }
+
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    expect(analyzer.toJSON()).toStrictEqual({
+      balances: {
+        CURRENCY_USD: 1740.96,
+        LOSS_BIP: 231.8388,
+        STOCK_BIP: -1972.7988,
+      },
+      stock: {
+        STOCK_BIP: {
+          BIP: {
+            amount: 0,
+            value: 0,
+          },
+        },
+      },
+      tx: {
+        lines: [
+          {
+            account: 'CURRENCY_USD',
+            amount: '1740.96',
+            extras: {},
+            text: 'Sold -50 BIP',
+          },
+          {
+            account: 'STOCK_BIP',
+            amount: '-1972.7988',
+            extras: {
+              asset: 'BIP',
+              assetChange: '-50',
+            },
+            text: 'Sold -50 BIP',
+          },
+          {
+            account: 'LOSS_BIP',
+            amount: '231.8388',
+            extras: {},
+            text: 'Sold -50 BIP',
+          },
+        ],
+        time: '2000-01-01T00:00:00.000Z',
+      },
+    })
+  })
+
+  it('sell in foreign currency using rates from the service', async () => {
+
+    const stock = {
+      STOCK_BIP: { BIP: { value: 1972.7988, amount: 50 } }
+    }
+    const input = {
+      type: 'sell' as UnifiedItemType,
+      value: 1813.5,
+      valueAsset: 'USD' as Asset,
+      assetOut: 'BIP' as Asset,
+      assetTypeOut: 'STOCK',
+      assetAmountOut: 50,
+    }
+
+    const services = [
+      new JsonFileService({ url: 'file:///rates.json' })
+    ]
+
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, null, services)
+    expect(analyzer.toJSON()).toStrictEqual({
+      balances: {
+        CURRENCY_USD: 1632.15,
+        LOSS_BIP: 340.6488,
+        STOCK_BIP: -1972.7988,
+      },
+      stock: {
+        STOCK_BIP: {
+          BIP: {
+            amount: 0,
+            value: 0,
+          },
+        },
+      },
+      tx: {
+        lines: [
+          {
+            account: 'CURRENCY_USD',
+            amount: '1632.15',
+            extras: {},
+            text: 'Sold -50 BIP',
+          },
+          {
+            account: 'STOCK_BIP',
+            amount: '-1972.7988',
+            extras: {
+              asset: 'BIP',
+              assetChange: '-50',
+            },
+            text: 'Sold -50 BIP',
+          },
+          {
+            account: 'LOSS_BIP',
+            amount: '340.6488',
+            extras: {},
+            text: 'Sold -50 BIP',
+          },
+        ],
+        time: '2000-01-01T00:00:00.000Z',
+      },
+    })
+  })
 })
