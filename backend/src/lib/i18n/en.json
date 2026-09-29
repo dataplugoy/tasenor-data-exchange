@@ -56,6 +56,8 @@
   "ACCOUNT_TAX_CORPORATE_TAX": "Corporate income tax",
   "ACCOUNT_TAX_PENALTY_OF_DELAY": "Late payment penalty",
   "ACCOUNT_TAX_TAX_AT_SOURCE": "Tax at source",
+  "ACCOUNT_TAX_VAT_FROM_PURCHASES": "VAT from purchases",
+  "ACCOUNT_TAX_VAT_FROM_SALES": "VAT from sales",
   "ACCOUNT_TAX_VAT_PAYABLE": "VAT payable",
   "ACCOUNT_TAX_VAT_RECEIVABLE": "VAT receivable",
   "ACCOUNT_TAX_WITHHOLDING_TAX": "Withholding tax",

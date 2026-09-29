@@ -117,7 +117,7 @@ describe('Mapping rule compiler', () => {
     } as never)
     const rules = {
       '': [
-        rule('Card', [{ field: 'Saaja/Maksaja', operator: 'equals', value: 'ovhcloud' }], { action: 'expense', account: 'EXPENSE_SOFTWARE', text: '{Saaja/Maksaja} {Viesti}' }),
+        rule('Card', [{ field: 'Saaja/Maksaja', operator: 'equals', value: 'ovhcloud' }], { action: 'expense', account: 'EXPENSE_SOFTWARE', text: '{Saaja/Maksaja} {Viesti}', vat: { mode: 'rate', rate: 25.5 } }),
         rule('Nordnet', [{ field: 'Saaja/Maksaja', operator: 'contains', value: 'NORDNET' }, { field: '', operator: 'negative' }], { action: 'transfer', service: 'Nordnet', text: 'To Nordnet' }),
         rule('Fees', [{ field: 'Seliteteksti', operator: 'equals', value: 'Palvelumaksu' }], { action: 'expense', account: 'EXPENSE_BANKING_FEE', text: 'Bank fees' }),
         rule('Rest', [], { action: 'skip' }),
@@ -138,7 +138,7 @@ describe('Mapping rule compiler', () => {
     const models = await unifyItems(driver, [items[3], items[4]], rules)
     const txs = await analyzeItems(models, { currency: 'EUR', language: 'en' })
     expect(txs.map(tx => tx.lines.map(l => [l.account, l.amount]))).toStrictEqual([
-      [['BANK_FI001234560000', '-100.8'], ['EXPENSE_SOFTWARE', '100.8']],
+      [['BANK_FI001234560000', '-100.8'], ['EXPENSE_SOFTWARE', '80.32'], ['TAX_VAT_FROM_PURCHASES', '20.48']],
       [['BANK_FI001234560000', '-19.65'], ['EXPENSE_BANKING_FEE', '19.65']],
     ])
   })

@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
 import { dec } from '../../utils'
-import { Asset, Timestring } from '@tasenor/common'
+import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
 import { AccountCode } from '../../../types/AccountCode'
 import { t } from '../../i18n/t'
-import Decimal from 'decimal.js'
+import { resolveTax } from './tax'
 
 /**
  * Buy an asset and add it to the stock.
@@ -37,18 +37,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
   const resultText = text || t(this.language, `INCOME_${reason}`, { asset: reasonTicker || 'UNKNOWN' })
   const resultAccount = account || `INCOME_${reason}` as AccountCode
 
-  let tax = new Decimal(0)
-  if (taxType) {
-    this.validateRequired('taxAsset')
-    const { taxAmount, taxPercentage, taxAsset } = input
-    if (taxAmount === undefined && taxPercentage === undefined) {
-      this.validateError('Either taxAmount or taxPercentage is required.')
-    }
-    if (!taxAmount) {
-      this.validateError('Tax percentage not yet implemented.')
-    }
-    tax = await this.validateAsset(taxAsset as Asset, dec(taxAmount), true)
-  }
+  const { tax, account: taxAccount } = await resolveTax(this, input, dec(value), resultAccount as AccountCode)
 
   // Withholding tax is deducted from the gross value before payment, while other taxes (VAT) are included in the value received.
   const withholding = taxType === 'withholding'
@@ -70,7 +59,7 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
 
   if (!tax.eq(0)) {
     lines.push({
-      account: `TAX_${(taxType as string).toUpperCase()}`,
+      account: taxAccount as AccountCode,
       amount: withholding ? tax.toString() : tax.negated().toString(),
       text: resultText,
       extras: {},
