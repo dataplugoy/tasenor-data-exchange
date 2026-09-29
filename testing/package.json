@@ -3,14 +3,15 @@
   "name": "@tasenor/tadex-testing",
   "scripts": {
     "test": "pnpm prepare && pnpm test-unit && pnpm test-ui",
-    "fix": "eslint --fix unit/**/*.ts lib/**/*.ts",
-    "lint": "eslint unit/**/*.ts lib/**/*.ts",
+    "fix": "eslint --fix unit/**/*.ts lib/**/*.ts parity/**/*.ts",
+    "lint": "eslint unit/**/*.ts lib/**/*.ts parity/**/*.ts",
     "load": "cd .. && pnpm load",
     "dev-unit": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex vitest",
     "dev-ui": "CYPRESS_URL=http://localhost:7301 cypress open --browser chrome --e2e",
     "test-unit": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex vitest --run",
     "test-ui": "CYPRESS_URL=http://localhost:7301 cypress run --browser chrome --e2e",
     "test-nightly": "nightly/bin/test-all",
+    "test-parity": "parity/test-all",
     "prepare": "npx cypress install"
   },
   "keywords": [],

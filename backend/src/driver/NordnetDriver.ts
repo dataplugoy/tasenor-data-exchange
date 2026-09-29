@@ -31,6 +31,8 @@ export class NordnetDriver extends ManualUploadDriver {
       /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s+Viitevaluuttakurssi\s*$/,
       /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+Instrumenttityyppi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s*$/,
       /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Valuutta\s+Tulos\s+Valuutta\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Valuutta\s+Viitevaluuttakurssi\s+Alkuperäinen korko\s*$/,
+      // Older variant of version 2 (used until 2021) without currencies for acquisition value and result.
+      /^\s*Id\s+Kirjauspäivä\s+Kauppapäivä\s+Maksupäivä\s+Salkku\s+Tapahtumatyyppi\s+Arvopaperi\s+Instrumenttityyppi\s+ISIN\s+Määrä\s+Kurssi\s+Korko\s+Kokonaiskulut\s+Kokonaiskulut Valuutta\s+Summa\s+Valuutta\s+Hankinta-arvo\s+Tulos\s+Kokonaismäärä\s+Saldo\s+Vaihtokurssi\s+Tapahtumateksti\s+Mitätöintipäivä\s+Laskelma\s+Vahvistusnumero\s+Välityspalkkio\s+Välityspalkkio Valuutta\s*$/,
     ])
 
     if (version === null) {
@@ -40,6 +42,11 @@ export class NordnetDriver extends ManualUploadDriver {
     this.version = version
     if (version === 3) {
       return await this.itemizeInputVersion3(batch)
+    }
+    if (version === 4) {
+      // Same content as version 2 and handled by the same rules.
+      this.version = 2
+      return await this.itemizeInputVersion2(batch, ['Hankinta-arvo Valuutta', 'Tulos Valuutta'])
     }
     return version === 2 ? await this.itemizeInputVersion2(batch) : await this.itemizeInputVersion1(batch)
   }
@@ -104,7 +111,7 @@ export class NordnetDriver extends ManualUploadDriver {
     }))
   }
 
-  async itemizeInputVersion2(batch: BatchModel): Promise<InputItemData[]> {
+  async itemizeInputVersion2(batch: BatchModel, missingColumns: string[] = []): Promise<InputItemData[]> {
 
     const csv = await batch.parseCsvColumns({
       delimiter: '\t',
@@ -140,7 +147,7 @@ export class NordnetDriver extends ManualUploadDriver {
         'Vahvistusnumero',
         'Välityspalkkio',
         'Välityspalkkio Valuutta',
-      ]
+      ].filter(column => !missingColumns.includes(column))
     })
 
     this.preProcess(csv, {

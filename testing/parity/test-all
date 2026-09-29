@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Compare TaDeX against all Nordnet import tests of Tasenor Bookkeeper.
+#
+# Test data is private and lives in tasenor-qa repository. Its import test directory
+# can be given with QA_IMPORT_DIR (default: tasenor-qa checked out next to this repository).
+#
+# NOTE: This resets the development database.
+#
+
+DIR=`dirname "${BASH_SOURCE[0]}"`
+ROOT=`readlink -f "$DIR/../.."`
+QA_IMPORT_DIR=${QA_IMPORT_DIR:-$ROOT/../tasenor-qa/tests/import}
+
+if [ ! -d "$QA_IMPORT_DIR" ]; then
+  echo "Cannot find bookkeeper import tests in '$QA_IMPORT_DIR'. Set QA_IMPORT_DIR."
+  exit 1
+fi
+
+FAILED=0
+for TEST in "$QA_IMPORT_DIR"/*-Nordnet*/; do
+  echo
+  npx tsx "$ROOT/testing/parity/compare-bookkeeper.ts" "$TEST" || FAILED=1
+done
+
+exit $FAILED

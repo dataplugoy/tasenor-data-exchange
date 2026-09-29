@@ -641,4 +641,46 @@ describe('Nordnet', () => {
       }
     ])
   })
+
+  test('older version 2 format without acquisition value and result currencies', async () => {
+
+    const driver = getDriver('NORDNET', {}, projectSettings, {}) as InputDriver
+    const batch = createBatchFrom('Nordnet-version-4.csv')
+
+    const items = await driver.itemizeInput(batch)
+    expect(items.length).toBe(1)
+    expect(items[0].version).toBe(2)
+    expect(items[0].fields['Hankinta-arvo']).toBe(6165.15)
+
+    const unifieds = await unifyItems(driver, items)
+    expect(unifieds.length).toBe(1)
+
+    const txs = await analyzeItems(unifieds, projectSettings)
+
+    expect(txs).toStrictEqual([
+      {
+        time: '2021-12-01T12:00:00.000Z',
+        lines: [
+          {
+            account: 'CURRENCY_EUR',
+            amount: '-1037.32',
+            text: 'Bought +24 NESTE',
+            extras: {}
+          },
+          {
+            account: 'STOCK_NESTE',
+            amount: '1030.32',
+            text: 'Bought +24 NESTE',
+            extras: { asset: 'NESTE', assetChange: '24' }
+          },
+          {
+            account: 'FEE_EUR',
+            amount: '7',
+            text: 'Bought +24 NESTE',
+            extras: {}
+          }
+        ]
+      }
+    ])
+  })
 })
