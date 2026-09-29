@@ -73,10 +73,12 @@ describe('TITO converter', () => {
       questions: [{ name: 'Funds', chooseTag: ['MEG'] }],
       answers: {
         2301030001: { fund: 'MEG', 'account.transfer.external.Nordnet': '305120' },
-        2301030002: { transfers: [
-          { reason: 'income', type: 'account', asset: '3020', amount: 234.65 },
-          { reason: 'income', type: 'account', asset: '9950', amount: -234.65, data: { text: '[TR][Nordea] Tax refund' } },
-        ] },
+        2301030002: {
+          transfers: [
+            { reason: 'income', type: 'account', asset: '3020', amount: 234.65 },
+            { reason: 'income', type: 'account', asset: '9950', amount: -234.65, data: { text: '[TR][Nordea] Tax refund' } },
+          ]
+        },
         2301200006: { skip: true },
       },
       settings,

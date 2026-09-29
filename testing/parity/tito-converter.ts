@@ -467,4 +467,3 @@ function firstMatching(rules: BookkeeperRule[], item: InputItemData): Bookkeeper
     }
   })
 }
-
