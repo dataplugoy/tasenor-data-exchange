@@ -1,13 +1,1 @@
-{
-  "Dataplug-2021-Nordnet-Hilunki": {
-    "921659847": "Bookkeeper bug: withholding tax row (ENNAKKOPIDÄTYS) not deducted from cash and dividend booked as net + tax. TaDeX is correct.",
-    "930808085": "Bookkeeper bug: withholding tax row (ENNAKKOPIDÄTYS) not deducted from cash and dividend booked as net + tax. TaDeX is correct."
-  },
-  "Dataplug-2022-Nordnet-Hilunki": {
-    "1827819445": "Bookkeeper bug: withholding tax row (ENNAKKOPIDÄTYS) not deducted from cash and dividend booked as net + tax. TaDeX is correct."
-  },
-  "Dataplug-2023-Nordnet-Hilunki": {
-    "1846008741": "Bookkeeper bug: withholding tax row (ENNAKKOPIDÄTYS) not deducted from cash and dividend booked as net + tax. TaDeX is correct.",
-    "1846346273": "Bookkeeper bug: withholding tax row (ENNAKKOPIDÄTYS) not deducted from cash and dividend booked as net + tax. TaDeX is correct."
-  }
-}
+{}
