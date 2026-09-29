@@ -32,6 +32,11 @@ services:
       POSTGRES_PASSWORD: 02u3QD2e3wxssfdr3sxds
       POSTGRES_DB: tadex
     command: -p ${DB_PORT:-7300}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -p ${DB_PORT:-7300} -U dev -d tadex"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
 
   tadex:
     container_name: tadex
@@ -59,6 +64,9 @@ services:
       DATABASE_URL: postgres://dev:02u3QD2e3wxssfdr3sxds@tadex-db:7300/tadex
       VIRTUAL_HOST: tadex-api.localhost
       VIRTUAL_PORT: 7302
+    depends_on:
+      tadex-db:
+        condition: service_healthy
     command: pnpm run docker
 
   tadex-web:
