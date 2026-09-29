@@ -333,7 +333,9 @@ async function main(testDir: string): Promise<number> {
   }
 
   // Compare final stock amounts.
-  const ledger = JSON.parse(tadex('ledger', FLOW, '--stock', '--json').replace(/^[^{]*/s, ''))
+  // Output may contain log lines and warnings around the JSON object.
+  const ledgerOut = tadex('ledger', FLOW, '--stock', '--json')
+  const ledger = JSON.parse(ledgerOut.substring(ledgerOut.indexOf('{'), ledgerOut.lastIndexOf('}') + 1))
   const finalStock = endStock[Object.keys(endStock)[0]] || {}
   const allTickers = new Set<string>([
     ...Object.keys(finalStock),

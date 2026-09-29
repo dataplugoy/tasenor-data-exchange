@@ -6,9 +6,10 @@ import { RuleModel } from '../models/RuleModel'
  * @param variables
  * @param rules
  * @param key
+ * @param onMatch Called with the rule that matched.
  * @returns
  */
-export function applyRules<T>(variables: Record<string, unknown>, rules: Record<string, RuleModel[]>, key: string | null): T {
+export function applyRules<T>(variables: Record<string, unknown>, rules: Record<string, RuleModel[]>, key: string | null, onMatch: ((rule: RuleModel) => void) | null = null): T {
   const engine = new RulesEngine(variables as RuleVariables)
   const unusedKeys = new Set(Object.keys(rules))
 
@@ -38,7 +39,11 @@ export function applyRules<T>(variables: Record<string, unknown>, rules: Record<
     unusedKeys.delete(key)
     for (const rule of rules[key] || []) {
       if (evaluate(rule.filter)) {
-        return evaluate(rule.result)
+        const result = evaluate(rule.result)
+        if (onMatch) {
+          onMatch(rule)
+        }
+        return result
       }
     }
   }

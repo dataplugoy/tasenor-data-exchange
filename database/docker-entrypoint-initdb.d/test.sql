@@ -112,6 +112,8 @@ DROP TYPE IF EXISTS public."SkipReason";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
 DROP TYPE IF EXISTS public."RunResult";
+DROP TYPE IF EXISTS public."RuleOrigin";
+DROP TYPE IF EXISTS public."RuleKind";
 DROP TYPE IF EXISTS public."DriverType";
 DROP TYPE IF EXISTS public."BatchState";
 DROP TYPE IF EXISTS public."AlertType";
@@ -175,6 +177,30 @@ CREATE TYPE public."DriverType" AS ENUM (
 ALTER TYPE public."DriverType" OWNER TO dev;
 
 --
+-- Name: RuleKind; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."RuleKind" AS ENUM (
+    'MAPPING',
+    'ADVANCED'
+);
+
+
+ALTER TYPE public."RuleKind" OWNER TO dev;
+
+--
+-- Name: RuleOrigin; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."RuleOrigin" AS ENUM (
+    'DRIVER',
+    'USER'
+);
+
+
+ALTER TYPE public."RuleOrigin" OWNER TO dev;
+
+--
 -- Name: RunResult; Type: TYPE; Schema: public; Owner: dev
 --
 
@@ -197,7 +223,8 @@ ALTER TYPE public."RunResult" OWNER TO dev;
 
 CREATE TYPE public."ServiceDriver" AS ENUM (
     'TASENOR',
-    'JSON_FILE'
+    'JSON_FILE',
+    'OPEN_FIGI'
 );
 
 
@@ -209,7 +236,8 @@ ALTER TYPE public."ServiceDriver" OWNER TO dev;
 
 CREATE TYPE public."ServiceType" AS ENUM (
     'CURRENCY_RATES',
-    'CRYPTO_RATES'
+    'CRYPTO_RATES',
+    'TICKERS'
 );
 
 
@@ -334,7 +362,8 @@ CREATE TABLE public.flow_plans (
     stock jsonb DEFAULT '{}'::jsonb NOT NULL,
     balance jsonb DEFAULT '{}'::jsonb NOT NULL,
     setup jsonb DEFAULT '{}'::jsonb NOT NULL,
-    "firstDate" timestamp(3) without time zone NOT NULL
+    "firstDate" timestamp(3) without time zone NOT NULL,
+    "ruleSourceHash" text
 );
 
 
@@ -616,7 +645,13 @@ CREATE TABLE public.rules (
     result jsonb NOT NULL,
     "filterView" jsonb NOT NULL,
     "resultView" jsonb NOT NULL,
-    "flowPlanId" integer NOT NULL
+    "flowPlanId" integer NOT NULL,
+    enabled boolean DEFAULT true NOT NULL,
+    kind public."RuleKind" DEFAULT 'ADVANCED'::public."RuleKind" NOT NULL,
+    "lastMatched" timestamp(3) without time zone,
+    "matchCount" integer DEFAULT 0 NOT NULL,
+    notes text DEFAULT ''::text NOT NULL,
+    origin public."RuleOrigin" DEFAULT 'DRIVER'::public."RuleOrigin" NOT NULL
 );
 
 
@@ -983,14 +1018,14 @@ COPY public.batches (id, created, updated, completed, number, state, "lastStamp"
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock, balance, setup, "firstDate") FROM stdin;
-1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00
-3	2024-05-02 08:46:22.081	2024-05-09 07:50:14.182	Nordnet	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00
-4	2024-05-08 11:08:59.91	2024-05-13 13:35:02.12	Tasenor	{}	1	\N	{}	{}	{"accounts": {"FEE": "5325", "LOSS": "5335", "STOCK": "1100", "INCOME": "9290", "PROFIT": "5050", "EXPENSE": "9690", "CURRENCY_EUR": "3050", "CURRENCY_USD": "30505", "EXTERNAL_NORDNET_EUR": "3010"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00
-6	2024-05-21 16:10:11.082	2024-05-21 16:10:11.082	S-Pankki Demo	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00
-7	2024-05-31 10:39:01.974	2024-05-31 10:39:01.974	Unit Testing with Duplicates	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00
-5	2024-05-09 08:52:41.007	2024-06-14 14:25:19.836	Nightly Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Always", "skipWithdrawals": false, "outputDuplicates": "Always", "allowShortSelling": true, "allowInputFromPast": "Always"}}	1900-01-01 00:00:00
-8	2024-06-16 09:35:30.012	2024-06-16 09:35:30.012	Nordnet to Procountor	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00
+COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock, balance, setup, "firstDate", "ruleSourceHash") FROM stdin;
+1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
+3	2024-05-02 08:46:22.081	2024-05-09 07:50:14.182	Nordnet	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00	\N
+4	2024-05-08 11:08:59.91	2024-05-13 13:35:02.12	Tasenor	{}	1	\N	{}	{}	{"accounts": {"FEE": "5325", "LOSS": "5335", "STOCK": "1100", "INCOME": "9290", "PROFIT": "5050", "EXPENSE": "9690", "CURRENCY_EUR": "3050", "CURRENCY_USD": "30505", "EXTERNAL_NORDNET_EUR": "3010"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00	\N
+6	2024-05-21 16:10:11.082	2024-05-21 16:10:11.082	S-Pankki Demo	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
+7	2024-05-31 10:39:01.974	2024-05-31 10:39:01.974	Unit Testing with Duplicates	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
+5	2024-05-09 08:52:41.007	2024-06-14 14:25:19.836	Nightly Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Always", "skipWithdrawals": false, "outputDuplicates": "Always", "allowShortSelling": true, "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N
+8	2024-06-16 09:35:30.012	2024-06-16 09:35:30.012	Nordnet to Procountor	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
 \.
 
 
@@ -1061,7 +1096,7 @@ COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin
 -- Data for Name: rules; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.rules (id, created, updated, name, key, priority, filter, result, "filterView", "resultView", "flowPlanId") FROM stdin;
+COPY public.rules (id, created, updated, name, key, priority, filter, result, "filterView", "resultView", "flowPlanId", enabled, kind, "lastMatched", "matchCount", notes, origin) FROM stdin;
 \.
 
 

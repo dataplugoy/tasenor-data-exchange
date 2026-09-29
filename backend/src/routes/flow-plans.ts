@@ -288,13 +288,24 @@ router.patch('/:id/rules',
 
     for (const rule of req.body) {
       if (oldRules.has(rule.name)) {
-        log(`Updating old rule ${rules[rule.name]}`)
+        const old = rules[rule.name]
         const { filter, key, result } = rule
-        rules[rule.name].data.flowPlanId = res.locals.id
-        rules[rule.name].data.filter = filter
-        rules[rule.name].data.key = key || null
-        rules[rule.name].data.result = result
-        await RuleModel.save(rules[rule.name])
+        const changed = !RuleModel.sameDefinition(old.data, { filter, key, result })
+        if (changed) {
+          log(`Updating old rule ${old}`)
+          old.data.filter = filter
+          old.data.key = key || null
+          old.data.result = result
+          // Once edited, a rule belongs to the user and driver updates no longer touch it.
+          old.data.origin = 'USER'
+        }
+        old.data.flowPlanId = res.locals.id
+        for (const field of ['enabled', 'notes', 'kind', 'filterView', 'resultView']) {
+          if (rule[field] !== undefined) {
+            old.data[field] = rule[field]
+          }
+        }
+        await RuleModel.save(old)
         oldRules.delete(rule.name)
       } else {
         log(`Creating new rule ${JSON.stringify(rule)}.`)
@@ -305,8 +316,12 @@ router.patch('/:id/rules',
           priority: 50,
           filter: rule.filter,
           result: rule.result,
-          filterView: {},
-          resultView: {},
+          filterView: rule.filterView || {},
+          resultView: rule.resultView || {},
+          origin: 'USER',
+          kind: rule.kind || 'ADVANCED',
+          enabled: rule.enabled ?? true,
+          notes: rule.notes || '',
         })
       }
     }

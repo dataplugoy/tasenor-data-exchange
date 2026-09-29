@@ -32,6 +32,30 @@
     "resultView": {
       "type": "object"
     },
+    "origin": {
+      "description": "DRIVER rules come from the driver defaults and are updated with them. USER rules are never changed automatically.",
+      "type": "string",
+      "enum": ["DRIVER", "USER"]
+    },
+    "kind": {
+      "description": "MAPPING rules are edited with forms (filterView and resultView), ADVANCED rules as expressions.",
+      "type": "string",
+      "enum": ["MAPPING", "ADVANCED"]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "matchCount": {
+      "description": "Number of input items matched by this rule.",
+      "type": "integer"
+    },
+    "lastMatched": {
+      "type": ["null", "string"],
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
     "created": {
       "type": "string",
       "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"

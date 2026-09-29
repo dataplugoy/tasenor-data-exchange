@@ -61,7 +61,11 @@ export class InputDriver extends Driver {
       ...input.fields
     }
 
-    const data: UnifiedItemData = applyRules(variables, rules, ruleKey)
+    let matched: RuleModel | null = null
+    const data: UnifiedItemData = applyRules(variables, rules, ruleKey, rule => { matched = rule })
+    if (matched && (matched as RuleModel).id) {
+      await RuleModel.recordMatch((matched as RuleModel).id)
+    }
 
     // Add common tags from setup.
     if (this.setup.settings?.tags) {

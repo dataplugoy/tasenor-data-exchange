@@ -35,6 +35,9 @@
     "assetTypeOut": {
       "type": "string"
     },
+    "balance": {
+      "type": "string"
+    },
     "fee": {
       "type": "string"
     },

@@ -16,6 +16,7 @@ export interface UnifiedItemRule {
   assetAmountOut?: string;
   assetValueOut?: string;
   assetTypeOut?: string;
+  balance?: string;
   fee?: string;
   feeAsset?: string;
   multipart?: string;

@@ -21,6 +21,21 @@ export interface Rule {
   resultView?: {
     [k: string]: unknown;
   };
+  /**
+   * DRIVER rules come from the driver defaults and are updated with them. USER rules are never changed automatically.
+   */
+  origin?: "DRIVER" | "USER";
+  /**
+   * MAPPING rules are edited with forms (filterView and resultView), ADVANCED rules as expressions.
+   */
+  kind?: "MAPPING" | "ADVANCED";
+  enabled?: boolean;
+  notes?: string;
+  /**
+   * Number of input items matched by this rule.
+   */
+  matchCount?: number;
+  lastMatched?: null | string;
   created?: string;
   updated?: string;
 }
@@ -35,6 +50,7 @@ export interface UnifiedItemRule {
   assetAmountOut?: string;
   assetValueOut?: string;
   assetTypeOut?: string;
+  balance?: string;
   fee?: string;
   feeAsset?: string;
   multipart?: string;
