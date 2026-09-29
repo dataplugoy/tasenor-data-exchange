@@ -12,6 +12,10 @@ import UpdateBalanceRequest from '../../src/types/API/flow-plans/UpdateBalanceRe
 import UpdateSetupRequest from '../../src/types/API/flow-plans/UpdateSetupRequest.json'
 import UpdateStockRequest from '../../src/types/API/flow-plans/UpdateStockRequest.json'
 import UpdateRulesRequest from '../../src/types/API/flow-plans/UpdateRulesRequest.json'
+import SaveRuleRequest from '../../src/types/API/flow-plans/SaveRuleRequest.json'
+import OrderRulesRequest from '../../src/types/API/flow-plans/OrderRulesRequest.json'
+import { MappingError } from '../lib/mapping'
+import prisma from '@prisma/client'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { AlertException } from '../exceptions/AlertException'
@@ -331,6 +335,100 @@ router.patch('/:id/rules',
       await rules[name].destroy()
     }
 
+    res.sendStatus(204)
+  }
+)
+
+/**
+ * Helper to find a rule of the flow plan.
+ */
+async function findRule(flowPlanId: number, ruleId: string): Promise<RuleModel | null> {
+  const id = parseInt(ruleId)
+  if (isNaN(id)) {
+    return null
+  }
+  const rule = await RuleModel.findUnique<prisma.Rule, RuleModel>({ id })
+  return rule && rule.data.flowPlanId === flowPlanId ? rule : null
+}
+
+/**
+ * Helper to respond to errors in rule data.
+ */
+function ruleError(res, err): void {
+  if (err instanceof MappingError) {
+    res.status(400).send({ message: err.message })
+    return
+  }
+  if (err?.code === 'P2002') {
+    res.status(400).send({ message: 'A rule with the same name already exists.' })
+    return
+  }
+  throw err
+}
+
+router.post('/:id/rules',
+  authorize(),
+  param('flowPlanId'),
+  validate(SaveRuleRequest),
+  async (req, res) => {
+    try {
+      const data = RuleModel.fromRequest(req.body)
+      const name = await res.locals.flowPlan.getInputDriverName()
+      const rules = await RuleModel.findForFlow(res.locals.id, `${name}.json`)
+      // New rule goes last.
+      const priority = rules.length ? Math.min(...rules.map(rule => rule.data.priority)) : 50
+      const rule = await RuleModel.save({ ...data, priority, flowPlanId: res.locals.id })
+      log(`Created ${rule} '${rule.name}' for flow plan #${res.locals.id}.`)
+      res.send(rule.data)
+    } catch (err) {
+      ruleError(res, err)
+    }
+  }
+)
+
+router.put('/:id/rules/order',
+  authorize(),
+  param('flowPlanId'),
+  validate(OrderRulesRequest),
+  async (req, res) => {
+    try {
+      await RuleModel.setOrder(res.locals.id, req.body.ids)
+      res.sendStatus(204)
+    } catch (err) {
+      ruleError(res, err)
+    }
+  }
+)
+
+router.put('/:id/rules/:ruleId',
+  authorize(),
+  param('flowPlanId'),
+  validate(SaveRuleRequest),
+  async (req, res) => {
+    const rule = await findRule(res.locals.id, req.params.ruleId)
+    if (!rule) {
+      return res.sendStatus(404)
+    }
+    try {
+      await RuleModel.update<prisma.Rule, RuleModel>(rule, RuleModel.fromRequest(req.body))
+      log(`Updated ${rule} '${rule.name}' for flow plan #${res.locals.id}.`)
+      res.send(rule.data)
+    } catch (err) {
+      ruleError(res, err)
+    }
+  }
+)
+
+router.delete('/:id/rules/:ruleId',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    const rule = await findRule(res.locals.id, req.params.ruleId)
+    if (!rule) {
+      return res.sendStatus(404)
+    }
+    await rule.destroy()
+    log(`Deleted ${rule} '${rule.name}' from flow plan #${res.locals.id}.`)
     res.sendStatus(204)
   }
 )

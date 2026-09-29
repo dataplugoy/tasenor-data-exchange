@@ -1,5 +1,6 @@
 import { RuleVariables, RulesEngine, debug, error } from '@tasenor/common'
 import { RuleModel } from '../models/RuleModel'
+import { RULE_HELPERS } from './mapping'
 
 /**
  * An error thrown when none of the rules match.
@@ -20,7 +21,7 @@ export class NoMatchingRuleError extends Error {
  * @returns
  */
 export function applyRules<T>(variables: Record<string, unknown>, rules: Record<string, RuleModel[]>, key: string | null, onMatch: ((rule: RuleModel) => void) | null = null): T {
-  const engine = new RulesEngine(variables as RuleVariables)
+  const engine = new RulesEngine({ ...RULE_HELPERS, ...variables } as unknown as RuleVariables)
   const unusedKeys = new Set(Object.keys(rules))
 
   function evaluate(expr): unknown {

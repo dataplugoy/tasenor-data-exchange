@@ -1,6 +1,8 @@
 import path from 'path'
 import fs from 'fs'
 import crypto from 'crypto'
+import { MappingError, compileFilter, compileResult } from '../lib/mapping'
+import { SaveRuleRequest } from '../types/API/flow-plans/SaveRuleRequest'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { log } from '@tasenor/common'
@@ -124,6 +126,55 @@ export class RuleModel extends BaseModel<prisma.Rule> {
     return JSON.stringify(rule.filter) === JSON.stringify(def.filter) &&
       (rule.key || '') === (def.key || '') &&
       JSON.stringify(rule.result) === JSON.stringify(def.result)
+  }
+
+  /**
+   * Convert a rule saving request to rule data. Mapping rules are compiled from their views.
+   * @throws MappingError if the mapping rule is invalid.
+   */
+  static fromRequest(body: SaveRuleRequest): Partial<prisma.Rule> {
+    const data: Partial<prisma.Rule> = {
+      name: body.name,
+      kind: body.kind,
+      origin: 'USER',
+    }
+    if (body.enabled !== undefined) data.enabled = body.enabled
+    if (body.notes !== undefined) data.notes = body.notes
+
+    if (body.kind === 'MAPPING') {
+      if (!body.filterView || !body.resultView) {
+        throw new MappingError('Mapping rule needs conditions and an action.')
+      }
+      data.filterView = body.filterView as unknown as prisma.Prisma.JsonObject
+      data.resultView = body.resultView as unknown as prisma.Prisma.JsonObject
+      data.filter = compileFilter(body.filterView)
+      data.result = compileResult(body.resultView) as prisma.Prisma.JsonObject
+      data.key = ''
+    } else {
+      if (body.filter === undefined || body.result === undefined) {
+        throw new MappingError('Advanced rule needs filter and result expressions.')
+      }
+      data.filter = body.filter
+      data.result = body.result as prisma.Prisma.JsonObject
+      data.key = body.key || ''
+      data.filterView = {}
+      data.resultView = {}
+    }
+    return data
+  }
+
+  /**
+   * Set the order of evaluation of all rules of the flow plan.
+   */
+  static async setOrder(flowPlanId: number, ids: number[]): Promise<void> {
+    const rules = await this.findMany<prisma.Rule, RuleModel>({ flowPlanId })
+    const existing = new Set(rules.map(rule => rule.id))
+    if (ids.length !== existing.size || !ids.every(id => existing.has(id)) || new Set(ids).size !== ids.length) {
+      throw new MappingError('The order must list every rule of the flow plan exactly once.')
+    }
+    for (let i = 0; i < ids.length; i++) {
+      await RuleModel.db.update({ where: { id: ids[i] }, data: { priority: ids.length - i } })
+    }
   }
 
   /**

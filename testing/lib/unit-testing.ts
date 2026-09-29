@@ -96,7 +96,7 @@ export function createRulesFrom(filePath: string): Record<string, RuleModel[]> {
 /**
  * Generate arguments for driver's unifyItem() function from input data.
  */
-export function unifyArgsFrom(items: InputItemData[], ruleJson: string = 'NordnetDriver.json'): [FlowPlanModel, RunModel, InputItemModel[], Record<string, RuleModel[]>] {
+export function unifyArgsFrom(items: InputItemData[], ruleJson: string | Record<string, RuleModel[]> = 'NordnetDriver.json'): [FlowPlanModel, RunModel, InputItemModel[], Record<string, RuleModel[]>] {
 
   const flowPlan = new FlowPlanModel({
     id: 0,
@@ -140,7 +140,7 @@ export function unifyArgsFrom(items: InputItemData[], ruleJson: string = 'Nordne
     notes: {},
   })
 
-  const rules = createRulesFrom(ruleJson)
+  const rules = typeof ruleJson === 'string' ? createRulesFrom(ruleJson) : ruleJson
 
   return [flowPlan, run, inputItems, rules]
 }
@@ -149,7 +149,7 @@ export function unifyArgsFrom(items: InputItemData[], ruleJson: string = 'Nordne
  * Run unifying test using the driver.
  * @param items
  */
-export async function unifyItems(driver: InputDriver, items: InputItemData[], ruleJson: string = 'NordnetDriver.json'): Promise<UnifiedItemModel[]> {
+export async function unifyItems(driver: InputDriver, items: InputItemData[], ruleJson: string | Record<string, RuleModel[]> = 'NordnetDriver.json'): Promise<UnifiedItemModel[]> {
   const unified: UnifiedItemModel[] = []
   const partial: Record<string, UnifiedItem[]> = {}
 

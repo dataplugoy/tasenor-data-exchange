@@ -1,0 +1,48 @@
+{
+  "$id": "MappingResultView.json",
+  "title": "MappingResultView",
+  "description": "Action of a mapping rule as edited in the rule editor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action"],
+  "properties": {
+    "action": {
+      "description": "Expense, income and tax book to the account, transfer to or from the external service of the user, internal transfer between own bank accounts through the clearing account, or skip the line.",
+      "type": "string",
+      "enum": ["expense", "income", "tax", "transfer", "internalTransfer", "skip"]
+    },
+    "account": {
+      "description": "Account code like EXPENSE_SOFTWARE, INCOME_NREQ, TAX_CORPORATE_TAX or ACCOUNT_1234 for a direct account number.",
+      "type": "string"
+    },
+    "service": {
+      "description": "Name of the external service for transfers, e.g. Nordnet.",
+      "type": "string"
+    },
+    "text": {
+      "description": "Text template where {Field name} is replaced with the value of the field.",
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "vat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["none", "rate"]
+        },
+        "rate": {
+          "description": "VAT percentage included in the value.",
+          "type": "number"
+        }
+      }
+    }
+  }
+}

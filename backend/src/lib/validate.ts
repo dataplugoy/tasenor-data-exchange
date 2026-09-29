@@ -14,6 +14,9 @@ import InputItem from '../../src/types/API/InputItem.json'
 import InputSource from '../../src/types/API/InputSource.json'
 import InputSourceSettings from '../../src/types/API/InputSourceSettings.json'
 import ItemError from '../../src/types/API/ItemError.json'
+import MappingCondition from '../../src/types/API/MappingCondition.json'
+import MappingFilterView from '../../src/types/API/MappingFilterView.json'
+import MappingResultView from '../../src/types/API/MappingResultView.json'
 import Notes from '../../src/types/API/Notes.json'
 import OutputDestination from '../../src/types/API/OutputDestination.json'
 import OutputDestinationSettings from '../../src/types/API/OutputDestinationSettings.json'
@@ -60,6 +63,9 @@ ajv.addSchema(InputItem)
 ajv.addSchema(InputSource)
 ajv.addSchema(InputSourceSettings)
 ajv.addSchema(ItemError)
+ajv.addSchema(MappingCondition)
+ajv.addSchema(MappingFilterView)
+ajv.addSchema(MappingResultView)
 ajv.addSchema(Notes)
 ajv.addSchema(OutputDestination)
 ajv.addSchema(OutputDestinationSettings)

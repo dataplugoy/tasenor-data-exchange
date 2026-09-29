@@ -70,6 +70,10 @@ export interface FlowPlan {
   projectId: number;
   project?: Project;
   title: string;
+  /**
+   * Hash of the driver rule file last synchronized to the rules of this flow plan.
+   */
+  ruleSourceHash?: null | string;
   setup?: Setup;
   state: {
     [k: string]: unknown;

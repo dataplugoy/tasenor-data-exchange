@@ -1,0 +1,38 @@
+{
+  "title": "SaveRuleRequest",
+  "description": "Create or update one rule. Mapping rules give the views, advanced rules the expressions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "kind"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["MAPPING", "ADVANCED"]
+    },
+    "filterView": {
+      "$ref": "MappingFilterView.json"
+    },
+    "resultView": {
+      "$ref": "MappingResultView.json"
+    },
+    "filter": {
+      "type": "string"
+    },
+    "key": {
+      "type": ["null", "string"]
+    },
+    "result": {
+      "$ref": "UnifiedItemRule.json"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

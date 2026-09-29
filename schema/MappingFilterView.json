@@ -1,0 +1,16 @@
+{
+  "$id": "MappingFilterView.json",
+  "title": "MappingFilterView",
+  "description": "Conditions of a mapping rule as edited in the rule editor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["conditions"],
+  "properties": {
+    "conditions": {
+      "type": "array",
+      "items": {
+        "$ref": "MappingCondition.json"
+      }
+    }
+  }
+}

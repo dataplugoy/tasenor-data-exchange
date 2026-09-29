@@ -17,6 +17,10 @@
     "title": {
       "type": "string"
     },
+    "ruleSourceHash": {
+      "description": "Hash of the driver rule file last synchronized to the rules of this flow plan.",
+      "type": ["null", "string"]
+    },
     "setup": {
       "$ref": "Setup.json"
     },

@@ -1,0 +1,25 @@
+{
+  "$id": "MappingCondition.json",
+  "title": "MappingCondition",
+  "description": "A condition of a mapping rule. All conditions of a rule must hold.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["field", "operator"],
+  "properties": {
+    "field": {
+      "description": "Name of the field of the input item. Not used by the amount operators.",
+      "type": "string"
+    },
+    "operator": {
+      "type": "string",
+      "enum": ["equals", "contains", "oneOf", "regex", "positive", "negative", "amountEquals", "between"]
+    },
+    "value": {
+      "description": "Text for equals, contains and regex, a list of texts for oneOf, a number for amountEquals and two numbers for between.",
+      "type": ["string", "number", "array"],
+      "items": {
+        "type": ["string", "number"]
+      }
+    }
+  }
+}

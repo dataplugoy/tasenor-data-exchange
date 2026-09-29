@@ -1,0 +1,15 @@
+{
+  "title": "OrderRulesRequest",
+  "description": "IDs of all rules of the flow plan in the order of evaluation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ids"],
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}
