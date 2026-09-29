@@ -76,6 +76,12 @@
       "esbuild@<=0.24.2": ">=0.25.0",
       "axios@<1.8.2": ">=1.8.2",
       "@babel/runtime@<7.26.10": ">=7.26.10"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma"
+    ]
   }
 }

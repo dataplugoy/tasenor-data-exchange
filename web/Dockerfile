@@ -7,10 +7,10 @@ RUN apk upgrade
 RUN apk add nano curl git openssl openssh-client bash python3 make gcc g++ libc-dev jq
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.27.0
 
-ADD package.json .
-RUN pnpm install
+ADD package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 ADD docs/ docs/
 ADD public/ public/
