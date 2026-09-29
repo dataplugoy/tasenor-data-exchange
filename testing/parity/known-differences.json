@@ -1,1 +1,5 @@
-{}
+{
+  "Devel-2025-TITO": {
+    "2512032588INVS0093": "Stale bookkeeper expectation: the answer chooses account 305120 (Megalo) and current bookkeeper books it there too, but transactions.json still has 3050."
+  }
+}
