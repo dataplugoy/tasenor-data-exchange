@@ -13,7 +13,8 @@ export type DriverType =
   | "TASENOR"
   | "TEST_MOCK"
   | "S_PANKKI"
-  | "PROCOUNTOR";
+  | "PROCOUNTOR"
+  | "NORDEA_TITO";
 
 export interface CreateFlowPlanRequest {
   title: string;

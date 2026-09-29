@@ -126,6 +126,7 @@ enum DriverType {
   TASENOR
   S_PANKKI
   PROCOUNTOR
+  NORDEA_TITO
 }
 
 model InputSource {
