@@ -5,6 +5,13 @@
   "additionalProperties": false,
   "description": "Flow plan configuration.",
   "properties": {
+    "answers": {
+      "description": "One-off answers for input items no rule matches, by the answer key of the input item.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "UnifiedItemData.json"
+      }
+    },
     "accounts": {
       "type": "object",
       "additionalProperties": true

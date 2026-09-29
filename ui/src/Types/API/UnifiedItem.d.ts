@@ -19,7 +19,8 @@ export type UnifiedItemType =
   | "dividend"
   | "forex"
   | "rename"
-  | "split";
+  | "split"
+  | "skip";
 /**
  * Account involved, if already known.
  */
@@ -94,6 +95,10 @@ export interface UnifiedItemData {
    * Type of the asset given.
    */
   assetTypeOut?: string;
+  /**
+   * Own bank account number where the value is transferred. When given, used instead of the currency account.
+   */
+  bankAccount?: string;
   /**
    * If known, this is the running balance of the transaction currency after this item applied.
    */

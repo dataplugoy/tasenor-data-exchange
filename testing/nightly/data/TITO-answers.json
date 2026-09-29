@@ -1,0 +1,11 @@
+{
+  "settings": { "skipWithdrawals": false, "skipDeposits": false },
+  "answers": {
+    "2301030001": { "type": "withdrawal", "value": 100, "service": "Nordnet", "text": "Siirto Nordnetiin" },
+    "2301030002": { "type": "income", "value": 234.65, "account": "INCOME_TAX_REFUND", "text": "Veronpalautus" },
+    "2301030003": { "type": "income", "value": 100, "account": "INCOME_NREQ", "text": "SVOP" },
+    "2301150004": { "type": "expense", "value": 100.8, "account": "EXPENSE_SOFTWARE", "text": "Palvelin" },
+    "2301310005": { "type": "expense", "value": 19.65, "account": "EXPENSE_BANKING_FEE", "text": "Palvelumaksu" },
+    "2301200006": { "type": "skip" }
+  }
+}

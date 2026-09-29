@@ -8,6 +8,7 @@
     "DEBT_ACCOUNT",
     "ENUM",
     "STRINGS",
-    "TICKER"
+    "TICKER",
+    "UNMATCHED_LINE"
   ]
 }

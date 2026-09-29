@@ -8,6 +8,7 @@ import { RunModel } from '../models/RunModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { RuleModel } from '../models/RuleModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
+import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
 import { isTito, parseTitoRecords, titoItems } from '../lib/tito'
@@ -35,6 +36,16 @@ export class NordeaTitoDriver extends ManualUploadDriver {
     }
     this.version = 1
     return titoItems(parseTitoRecords(text))
+  }
+
+  answerKey(input: InputItemModel): string {
+    return input.fields.Arkistointitunnus as string
+  }
+
+  completeUnified(input: InputItemModel, data: UnifiedItemData): void {
+    if (!data.bankAccount && data.type !== 'skip') {
+      data.bankAccount = input.fields.Tilinumero as string
+    }
   }
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {

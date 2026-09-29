@@ -39,3 +39,9 @@ echo SPELÖGA
 echo =======
 bin/test-speloga
 echo
+echo
+echo ====
+echo TITO
+echo ====
+bin/test-tito
+echo

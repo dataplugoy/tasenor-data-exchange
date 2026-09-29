@@ -38,6 +38,9 @@
     "balance": {
       "type": "string"
     },
+    "bankAccount": {
+      "type": "string"
+    },
     "fee": {
       "type": "string"
     },

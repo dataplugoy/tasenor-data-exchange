@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Run TITO statement through the flow plan: no rules, so all lines are answered once.
+#
+
+FILE=`dirname "${BASH_SOURCE[0]}"`/../../..
+ROOT=`readlink -f "$FILE"`
+
+set -e
+
+cd "$ROOT"
+pnpm load
+bin/tadex.mjs run 'TITO Testing'
+bin/tadex.mjs upload 'TITO Testing' testing/unit/data/Nordea-tito.nda
+bin/tadex.mjs run 'TITO Testing' all
+bin/tadex.mjs setup 'TITO Testing' "`cat testing/nightly/data/TITO-answers.json`"
+bin/tadex.mjs run 'TITO Testing' all
+bin/tadex.mjs ledger 'TITO Testing' --test testing/nightly/data/TITO.json
+
+# To update answer file:
+#
+# bin/tadex.mjs ledger 'TITO Testing' --json > testing/nightly/data/TITO.json

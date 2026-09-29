@@ -33,11 +33,12 @@ export class SettingsModel extends BaseModel<prisma.Settings> {
     return this.getOrThrow('certificate')
   }
 
+  /**
+   * Get the system level settings of a driver type. Empty settings are created for drivers not having them yet,
+   * so that drivers without system level configuration work without manual setup. Accessing a missing value
+   * still throws an error.
+   */
   static async get(type: prisma.DriverType): Promise<SettingsModel> {
-    const settings = await this.findUnique<prisma.Settings, SettingsModel>({ type })
-    if (!settings) {
-      throw new Error(`Cannot find system level settings for ${type}.`)
-    }
-    return settings
+    return this.findOrCreate<prisma.Settings, SettingsModel>({ type })
   }
 }

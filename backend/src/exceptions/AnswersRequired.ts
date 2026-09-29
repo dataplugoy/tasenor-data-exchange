@@ -64,6 +64,18 @@ export const VARIABLES: Record<string, Question> = {
   },
 }
 
+/**
+ * Description of an input item no rule matches.
+ */
+export type UnmatchedItem = {
+  key: string
+  line: number
+  time: string
+  text: string
+  total: number
+  fields: Record<string, unknown>
+}
+
 export class AnswersRequired extends AlertException<Question[]> {
   constructor(url: string, userId: number, question: Question | Question[]) {
     super('ANSWERS_REQUIRED', url, userId, question instanceof Array ? question : [question])
@@ -141,6 +153,25 @@ export class AnswersRequired extends AlertException<Question[]> {
       label: t(language, 'Use separate debt account'),
       args,
       variable: 'settings.debtAccounts'
+    }
+    const alert = new AnswersRequired(url, userId, question)
+    throw alert
+  }
+
+  /**
+   * Ask how to handle input items that no rule matches.
+   * @param url
+   * @param language
+   * @param userId
+   * @param items Unmatched items with the key to use for one-off answers.
+   */
+  static forUnmatched(url: string, language: Language, userId: number, items: UnmatchedItem[]): never {
+    const question = {
+      type: 'UNMATCHED_LINE' as QuestionType,
+      help: t(language, 'No rule matches {{count}} lines. Create a rule for them, or tell how to handle each line once.', { count: items.length }),
+      label: t(language, 'Unmatched lines'),
+      args: { items },
+      variable: 'answers'
     }
     const alert = new AnswersRequired(url, userId, question)
     throw alert

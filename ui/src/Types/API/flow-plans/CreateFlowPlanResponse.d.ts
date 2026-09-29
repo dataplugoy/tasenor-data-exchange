@@ -6,6 +6,50 @@
  */
 
 export type CreateFlowPlanResponse = FlowPlan;
+/**
+ * Main category of the transaction.
+ */
+export type UnifiedItemType =
+  | "buy"
+  | "sell"
+  | "trade"
+  | "income"
+  | "expense"
+  | "withdrawal"
+  | "deposit"
+  | "dividend"
+  | "forex"
+  | "rename"
+  | "split"
+  | "skip";
+/**
+ * Account involved, if already known.
+ */
+export type Account = string;
+/**
+ * In case of buying some asset, this is the asset received.
+ */
+export type Asset = string;
+/**
+ * In case of selling some asset, this is the asset traded out.
+ */
+export type Asset1 = string;
+/**
+ * Ticker of the fee charged as a currency or other asset ticker.
+ */
+export type Asset2 = string;
+/**
+ * An asset triggering the income or expense.
+ */
+export type Asset3 = string;
+/**
+ * If tax must be calculated, this is the asset used (defaults to `valueAsset`)
+ */
+export type Asset4 = string;
+/**
+ * Asset used to determine the total value of the transaction.
+ */
+export type Asset5 = string;
 
 export interface FlowPlan {
   id: number;
@@ -39,6 +83,12 @@ export interface ProjectSettings {
  * Flow plan configuration.
  */
 export interface Setup {
+  /**
+   * One-off answers for input items no rule matches, by the answer key of the input item.
+   */
+  answers?: {
+    [k: string]: UnifiedItemData;
+  };
   accounts?: {
     [k: string]: unknown;
   };
@@ -57,6 +107,95 @@ export interface Setup {
     singleTaxAccount?: boolean;
   };
   settings?: Settings;
+}
+export interface UnifiedItemData {
+  type: UnifiedItemType;
+  account?: Account;
+  assetIn?: Asset;
+  /**
+   * In case of buying some asset, this is the number of assets received.
+   */
+  assetAmountIn?: number | string;
+  /**
+   * In case of buying some asset, this is the value of assets in the default currency.
+   */
+  assetValueIn?: number | string;
+  /**
+   * Type of the asset received.
+   */
+  assetTypeIn?: string;
+  assetOut?: Asset1;
+  /**
+   * In case of selling some asset, this is the number of assets given (as positive number).
+   */
+  assetAmountOut?: number | string;
+  /**
+   * In case of selling some asset, this is the value of assets in the default currency (as positive number).
+   */
+  assetValueOut?: number | string;
+  /**
+   * Type of the asset given.
+   */
+  assetTypeOut?: string;
+  /**
+   * Own bank account number where the value is transferred. When given, used instead of the currency account.
+   */
+  bankAccount?: string;
+  /**
+   * If known, this is the running balance of the transaction currency after this item applied.
+   */
+  balance?: number | string;
+  /**
+   * Amount of fee charged as a part of the transaction.
+   */
+  fee?: number | string;
+  feeAsset?: Asset2;
+  /**
+   * If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.
+   */
+  multipart?: string;
+  rates?: Rates;
+  /**
+   * If income or expense have some specific reason, it can be determined here.
+   */
+  reason?: string;
+  reasonAsset?: Asset3;
+  /**
+   * Name of the service providing the data.
+   */
+  service?: string;
+  /**
+   * A list of non-empty strings interpreted usually as dimensions in the bookkeeping.
+   */
+  tags?: string[];
+  /**
+   * If tax must be calculated, this is the type of the tax.
+   */
+  taxType?: "vat" | "withholding";
+  /**
+   * If tax must be calculated, this is the amount of tax in tax assets.
+   */
+  taxAmount?: number | string;
+  taxAsset?: Asset4;
+  /**
+   * If tax must be calculated, alternatively it can be percentage of the total of the transaction.
+   */
+  taxPercentage?: number;
+  /**
+   * Text of the original item if known.
+   */
+  text?: string;
+  /**
+   * Total value of the transaction, if known.
+   */
+  value?: number | string;
+  valueAsset?: Asset5;
+}
+/**
+ * Conversion rates for assets involved, if known.
+ */
+export interface Rates {
+  [k: string]: unknown;
 }
 export interface Settings {
   allowShortSelling?: boolean;

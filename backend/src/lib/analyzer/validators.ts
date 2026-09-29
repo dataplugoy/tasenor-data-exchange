@@ -199,6 +199,9 @@ export function validateValueAccount(this: Analyzer, withService: boolean): Acco
   if (input.valueAsset === '') {
     throw new Error(`Invalid empty valueAsset in ${JSON.stringify(input)}.`)
   }
+  if (input.bankAccount) {
+    return `BANK_${input.bankAccount.toUpperCase().replace(/[^A-Z0-9]/g, '')}` as AccountCode
+  }
   if (input.valueAsset === undefined) {
     return `CURRENCY_${this.currency}` as AccountCode
   }

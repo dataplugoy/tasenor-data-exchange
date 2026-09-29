@@ -4,7 +4,9 @@ import path from 'path'
 import { getDriver } from '../../backend/src/driver'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
 import { parseTitoRecords, titoItems } from '../../backend/src/lib/tito'
-import { createBatchFrom } from '../lib/unit-testing'
+import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
+import { NoMatchingRuleError } from '../../backend/src/lib/rules'
+import { Setup } from '../../backend/src/types/API/Setup'
 
 const sample = fs.readFileSync(path.join(__dirname, 'data', 'Nordea-tito.nda')).toString('latin1')
 
@@ -73,5 +75,32 @@ describe('Nordea TITO', () => {
     const items = await driver.itemizeInput(batch)
     expect(items.length).toBe(6)
     expect(items[1].fields.Viesti).toBe('Oma-aloitteiset verot\npalautus 234,65 euroa')
+  })
+
+  test('one-off answers are used for lines no rule matches', async () => {
+    const items = titoItems(parseTitoRecords(sample))
+    const setup: Setup = {
+      answers: {
+        2301030002: { type: 'income', value: 234.65, account: 'INCOME_TAX_REFUND', text: 'Veronpalautus' },
+        2301150004: { type: 'expense', value: 100.8, account: 'EXPENSE_SOFTWARE', text: 'Palvelin' },
+        2301200006: { type: 'skip' },
+      }
+    }
+    const driver = getDriver('NORDEA_TITO', {}, projectSettings, setup) as InputDriver
+
+    const unified = await unifyItems(driver, [items[1], items[3], items[5]], 'NordeaTitoDriver.json')
+    expect(unified.map(u => u.data.data)).toStrictEqual([
+      { type: 'income', value: 234.65, account: 'INCOME_TAX_REFUND', text: 'Veronpalautus', bankAccount: 'FI001234560000' },
+      { type: 'expense', value: 100.8, account: 'EXPENSE_SOFTWARE', text: 'Palvelin', bankAccount: 'FI001234560000' },
+      { type: 'skip' },
+    ])
+
+    await expect(unifyItems(driver, [items[0]], 'NordeaTitoDriver.json')).rejects.toThrow(NoMatchingRuleError)
+
+    const txs = await analyzeItems(unified.slice(0, 2), projectSettings)
+    expect(txs.map(tx => tx.lines.map(l => [l.account, l.amount]))).toStrictEqual([
+      [['BANK_FI001234560000', '234.65'], ['INCOME_TAX_REFUND', '-234.65']],
+      [['BANK_FI001234560000', '-100.8'], ['EXPENSE_SOFTWARE', '100.8']],
+    ])
   })
 })

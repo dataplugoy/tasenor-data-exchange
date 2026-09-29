@@ -2,6 +2,16 @@ import { RuleVariables, RulesEngine, debug, error } from '@tasenor/common'
 import { RuleModel } from '../models/RuleModel'
 
 /**
+ * An error thrown when none of the rules match.
+ */
+export class NoMatchingRuleError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'NoMatchingRuleError'
+  }
+}
+
+/**
  * Get a set of variables and apply the first matching rule and get the result.
  * @param variables
  * @param rules
@@ -69,5 +79,5 @@ export function applyRules<T>(variables: Record<string, unknown>, rules: Record<
     }
   }
 
-  throw new Error(`No rules matching for variables ${JSON.stringify(variables)}`)
+  throw new NoMatchingRuleError(`No rules matching for variables ${JSON.stringify(variables)}`)
 }

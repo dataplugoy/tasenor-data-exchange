@@ -19,4 +19,5 @@ export type UnifiedItemType =
   | "dividend"
   | "forex"
   | "rename"
-  | "split";
+  | "split"
+  | "skip";

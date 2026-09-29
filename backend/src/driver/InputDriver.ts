@@ -4,7 +4,8 @@ import { BatchModel } from '../models/BatchModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { RuleModel } from '../models/RuleModel'
-import { applyRules } from '../lib/rules'
+import { NoMatchingRuleError, applyRules } from '../lib/rules'
+import clone from 'clone'
 import { RunModel } from '../models/RunModel'
 import { DateTime } from 'luxon'
 import { InputItemData } from '../types/API/InputItemData'
@@ -38,6 +39,19 @@ export class InputDriver extends Driver {
   }
 
   /**
+   * Get the key identifying an input item for one-off answers.
+   */
+  answerKey(input: InputItemModel): string {
+    return input.data.hash
+  }
+
+  /**
+   * Fill in driver specific defaults to the unified data, whether it came from rules or answers.
+   */
+  completeUnified(input: InputItemModel, data: UnifiedItemData): void {
+  }
+
+  /**
    * Helper to implement rule based handling for unifying input items.
    * @param flow
    * @param input
@@ -45,11 +59,8 @@ export class InputDriver extends Driver {
    */
   protected async applyUnifyRules(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>, ruleKey: string | null = null): Promise<UnifiedItem> {
 
-    if (RuleModel.count(rules) === 0) {
-      throw new Error(`There are no rules available in ${flow} for unifying input.`)
-    }
-
-    // Execute rules.
+    // One-off answer given by the user overrides the rules.
+    const answer = this.setup.answers && this.setup.answers[this.answerKey(input)]
     const variables = {
       text: input.text,
       line: input.line,
@@ -61,11 +72,20 @@ export class InputDriver extends Driver {
       ...input.fields
     }
 
-    let matched: RuleModel | null = null
-    const data: UnifiedItemData = applyRules(variables, rules, ruleKey, rule => { matched = rule })
-    if (matched && (matched as RuleModel).id) {
-      await RuleModel.recordMatch((matched as RuleModel).id)
+    let data: UnifiedItemData
+    if (answer) {
+      data = clone(answer)
+    } else {
+      if (RuleModel.count(rules) === 0) {
+        throw new NoMatchingRuleError(`There are no rules available in ${flow} for unifying input.`)
+      }
+      let matched: RuleModel | null = null
+      data = applyRules(variables, rules, ruleKey, rule => { matched = rule })
+      if (matched && (matched as RuleModel).id) {
+        await RuleModel.recordMatch((matched as RuleModel).id)
+      }
     }
+    this.completeUnified(input, data)
 
     // Add common tags from setup.
     if (this.setup.settings?.tags) {
