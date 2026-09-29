@@ -31,6 +31,12 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
     text = t('ACCOUNT_FEE', { currency: code.substring(4) })
   } else if (/^STOCK_/.test(code)) {
     text = t('ACCOUNT_STOCK', { ticker: code.substring(6) })
+  } else if (/^BANK_/.test(code)) {
+    text = t('ACCOUNT_BANK', { account: code.substring(5) })
+  } else if (code === 'TRANSFER_INTERNAL') {
+    text = t('ACCOUNT_TRANSFER_INTERNAL')
+  } else if (/^TAX_/.test(code)) {
+    text = t(`ACCOUNT_TAX_${code.substring(4)}`)
   } else if (/^INCOME_/.test(code)) {
     text = t(`ACCOUNT_INCOME_${code.substring(7)}`)
   } else if (/^EXPENSE_/.test(code)) {

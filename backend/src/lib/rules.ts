@@ -13,6 +13,26 @@ export class NoMatchingRuleError extends Error {
 }
 
 /**
+ * Evaluate one rule for the variables.
+ * @returns The result if the filter matches, otherwise undefined.
+ */
+export function evaluateRule<T>(variables: Record<string, unknown>, rule: { filter: unknown, result: unknown }): T | undefined {
+  const engine = new RulesEngine({ ...RULE_HELPERS, ...variables } as unknown as RuleVariables)
+  if (!engine.eval(rule.filter as string)) {
+    return undefined
+  }
+  return engine.eval(rule.result as string) as T
+}
+
+/**
+ * Check if the filter of a rule matches the variables.
+ */
+export function ruleMatches(variables: Record<string, unknown>, filter: unknown): boolean {
+  const engine = new RulesEngine({ ...RULE_HELPERS, ...variables } as unknown as RuleVariables)
+  return !!engine.eval(filter as string)
+}
+
+/**
  * Get a set of variables and apply the first matching rule and get the result.
  * @param variables
  * @param rules

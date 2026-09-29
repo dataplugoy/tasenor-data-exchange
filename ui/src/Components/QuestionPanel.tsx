@@ -10,6 +10,7 @@ import { QuestionStringsPanel } from './QuestionStringsPanel'
 import { QuestionDebtAccountPanel } from './QuestionDebtAccountPanel'
 import { QuestionTickerPanel } from './QuestionTickerPanel'
 import { QuestionExamplePanel } from './QuestionExamplePanel'
+import { QuestionUnmatchedPanel } from './QuestionUnmatchedPanel'
 
 interface QuestionPanelProps {
   question: Question
@@ -53,6 +54,10 @@ export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
       return <Box sx={sx}>
         <QuestionTickerPanel question={question} value={value as undefined | Record<string, string>} onChange={onChange}/>
         {question.example && <QuestionExamplePanel example={question.example}/>}
+      </Box>
+    case 'UNMATCHED_LINE':
+      return <Box sx={sx}>
+        <QuestionUnmatchedPanel question={question} onChange={onChange}/>
       </Box>
     case 'DEBT_ACCOUNT':
       return <Box sx={sx}>

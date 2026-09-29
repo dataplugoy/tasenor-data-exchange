@@ -39,6 +39,22 @@ export class InputDriver extends Driver {
   }
 
   /**
+   * Get the variables available in rule expressions for an input item.
+   */
+  ruleVariables(input: InputItemModel): Record<string, unknown> {
+    return {
+      text: input.text,
+      line: input.line,
+      time: input.time,
+      total: input.total,
+      original: input.original,
+      version: (input.data.data as unknown as InputItemData).version,
+      ...this.projectSettings,
+      ...input.fields
+    }
+  }
+
+  /**
    * Get the key identifying an input item for one-off answers.
    */
   answerKey(input: InputItemModel): string {
@@ -61,16 +77,7 @@ export class InputDriver extends Driver {
 
     // One-off answer given by the user overrides the rules.
     const answer = this.setup.answers && this.setup.answers[this.answerKey(input)]
-    const variables = {
-      text: input.text,
-      line: input.line,
-      time: input.time,
-      total: input.total,
-      original: input.original,
-      version: (input.data.data as unknown as InputItemData).version,
-      ...this.projectSettings,
-      ...input.fields
-    }
+    const variables = this.ruleVariables(input)
 
     let data: UnifiedItemData
     if (answer) {

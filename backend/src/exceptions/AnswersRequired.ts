@@ -163,14 +163,15 @@ export class AnswersRequired extends AlertException<Question[]> {
    * @param url
    * @param language
    * @param userId
+   * @param flowPlanId Flow plan, where rules can be added.
    * @param items Unmatched items with the key to use for one-off answers.
    */
-  static forUnmatched(url: string, language: Language, userId: number, items: UnmatchedItem[]): never {
+  static forUnmatched(url: string, language: Language, userId: number, flowPlanId: number, items: UnmatchedItem[]): never {
     const question = {
       type: 'UNMATCHED_LINE' as QuestionType,
       help: t(language, 'No rule matches {{count}} lines. Create a rule for them, or tell how to handle each line once.', { count: items.length }),
       label: t(language, 'Unmatched lines'),
-      args: { items },
+      args: { flowPlanId, items },
       variable: 'answers'
     }
     const alert = new AnswersRequired(url, userId, question)

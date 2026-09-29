@@ -64,7 +64,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   }
 
   return (
-    <Dialog open={questions.length > 0} fullWidth>
+    <Dialog open={questions.length > 0} fullWidth maxWidth={questions.some(q => q.type === 'UNMATCHED_LINE') ? 'lg' : 'sm'}>
       <DialogTitle><Trans>We Need More Information</Trans></DialogTitle>
 
       <DialogContent>

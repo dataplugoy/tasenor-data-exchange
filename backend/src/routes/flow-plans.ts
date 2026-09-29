@@ -15,6 +15,7 @@ import UpdateRulesRequest from '../../src/types/API/flow-plans/UpdateRulesReques
 import SaveRuleRequest from '../../src/types/API/flow-plans/SaveRuleRequest.json'
 import OrderRulesRequest from '../../src/types/API/flow-plans/OrderRulesRequest.json'
 import { MappingError } from '../lib/mapping'
+import { collectFields, previewRule, recentInputs } from '../lib/preview'
 import prisma from '@prisma/client'
 import { InputSourceModel } from '../models/InputSourceModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
@@ -380,6 +381,29 @@ router.post('/:id/rules',
       const rule = await RuleModel.save({ ...data, priority, flowPlanId: res.locals.id })
       log(`Created ${rule} '${rule.name}' for flow plan #${res.locals.id}.`)
       res.send(rule.data)
+    } catch (err) {
+      ruleError(res, err)
+    }
+  }
+)
+
+router.get('/:id/rules/fields',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    res.send(collectFields(await recentInputs(res.locals.id)))
+  }
+)
+
+router.post('/:id/rules/preview',
+  authorize(),
+  param('flowPlanId'),
+  validate(SaveRuleRequest),
+  async (req, res) => {
+    const ruleId = req.query.ruleId ? parseInt(`${req.query.ruleId}`) : null
+    try {
+      const driver = await res.locals.flowPlan.getInputDriver({ userId: res.locals.userId, flowPlanId: res.locals.id })
+      res.send(await previewRule(res.locals.flowPlan, driver, req.body, ruleId !== null && !isNaN(ruleId) ? ruleId : null))
     } catch (err) {
       ruleError(res, err)
     }

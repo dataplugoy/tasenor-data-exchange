@@ -14,6 +14,7 @@ import { SettingsPage } from './Pages/SettingsPage'
 import { EditSettingsPage } from './Pages/EditSettingsPage'
 import { RulesPage } from './Pages/RulesPage'
 import { EditRulesPage } from './Pages/EditRulesPage'
+import { AdvancedRulesPage } from './Pages/AdvancedRulesPage'
 import { FlowPlansPage } from './Pages/FlowPlansPage'
 import { useApp } from './Hooks/useApp'
 
@@ -44,6 +45,7 @@ export const App = (): React.JSX.Element => {
               <Route path="/:lang/register" element={<RegisterPage/>}/>
               <Route path="/results/:id" element={<ResultsPage/>}/>
               <Route path="/results" element={<ResultsPage/>}/>
+              <Route path="/rules/:id/advanced" element={<AdvancedRulesPage/>}/>
               <Route path="/rules/:id" element={<EditRulesPage/>}/>
               <Route path="/rules" element={<RulesPage/>}/>
               <Route path="/settings/:id" element={<EditSettingsPage/>}/>

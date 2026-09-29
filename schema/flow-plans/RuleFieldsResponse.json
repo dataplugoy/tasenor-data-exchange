@@ -1,0 +1,21 @@
+{
+  "title": "RuleFieldsResponse",
+  "description": "Fields of the recent input items of a flow plan with the most common values.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["name", "examples"],
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "examples": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

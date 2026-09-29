@@ -65,7 +65,8 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
   const collectUploadedFile = (binary: ArrayBuffer, file: File): void => {
     setUpload({
       name: file.name,
-      type: file.type,
+      // Browsers do not know the type of files like TITO statements (.nda).
+      type: file.type || 'application/octet-stream',
       data: buf2hex(binary)
     })
   }

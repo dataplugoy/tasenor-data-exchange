@@ -309,7 +309,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Create and initialize driver for receiving data.
    */
-  private async getInputDriver(options: RuntimeOptions): Promise<InputDriver> {
+  async getInputDriver(options: RuntimeOptions): Promise<InputDriver> {
     const source = await this.getSource()
     const project = await this.getProject()
     const driver = source.getDriver(project.settings, this.data.setup as Setup)
@@ -587,7 +587,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       if (unmatched.length) {
         const project = await this.getProject()
         log(`${this} has ${unmatched.length} input items not matching any rule in ${batch}.`)
-        AnswersRequired.forUnmatched(`/flow-plans/${this.id}/configure`, project?.settings.language as Language, options.userId, unmatched)
+        AnswersRequired.forUnmatched(`/flow-plans/${this.id}/configure`, project?.settings.language as Language, options.userId, this.id, unmatched)
       }
 
     } catch (err) {

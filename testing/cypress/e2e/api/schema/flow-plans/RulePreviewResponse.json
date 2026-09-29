@@ -1,0 +1,78 @@
+{
+  "title": "RulePreviewResponse",
+  "description": "Recent input items matching a rule being edited and what they would produce.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked", "count", "matches"],
+  "definitions": {
+    "RulePreviewMatch": {
+      "title": "RulePreviewMatch",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "time", "text", "total", "fields", "result", "lines", "note", "shadowedBy"],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "total": {
+          "type": ["null", "number"]
+        },
+        "fields": {
+          "type": "object"
+        },
+        "result": {
+          "anyOf": [{ "type": "null" }, { "$ref": "UnifiedItemData.json" }]
+        },
+        "lines": {
+          "type": ["null", "array"],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["account", "amount", "text"],
+            "properties": {
+              "account": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "note": {
+          "description": "Problem or question preventing the transaction.",
+          "type": ["null", "string"]
+        },
+        "shadowedBy": {
+          "description": "Name of an earlier rule matching this item first.",
+          "type": ["null", "string"]
+        }
+      }
+    }
+  },
+  "properties": {
+    "checked": {
+      "description": "Number of input items checked.",
+      "type": "integer"
+    },
+    "count": {
+      "description": "Number of matching input items.",
+      "type": "integer"
+    },
+    "matches": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RulePreviewMatch"
+      }
+    }
+  }
+}

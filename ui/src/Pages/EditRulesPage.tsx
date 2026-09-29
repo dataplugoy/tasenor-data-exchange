@@ -1,98 +1,153 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Box, Button, Chip, IconButton, Switch, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Clear } from '@mui/icons-material'
-import { RulesEditor } from '../Components/RulesEditor'
-import { useGET, usePATCH } from '../Hooks/useNet'
+import { Add, ArrowDownward, ArrowUpward, Clear, ContentCopy, Delete, Edit } from '@mui/icons-material'
+import { useDELETE, useGET, usePUT } from '../Hooks/useNet'
 import { FlowPlanRulesResponse } from '../Types/API/flow-plans/FlowPlanRulesResponse'
-import { EditableRule } from '../Types/EditableRule'
-import { useApp } from '../Hooks/useApp'
-import { FileUploadData, FileUploader } from '../Components/FileUploader'
-import { error } from '@tasenor/common'
+import { Rule } from '../Types/API/Rule'
+import { MappingFilterView } from '../Types/API/MappingFilterView'
+import { MappingResultView } from '../Types/API/MappingResultView'
+import { MappingRuleDialog } from '../Components/MappingRuleDialog'
+import { Confirm } from '../Components/Confirm'
+import { describeAction, describeConditions } from '../Helpers/rules'
 
+/**
+ * List of the rules of a flow plan in the order of evaluation.
+ */
 export const EditRulesPage = (): React.JSX.Element => {
   const params = useParams()
+  const flowPlanId = parseInt(params.id || '0')
   const navigate = useNavigate()
-  const GET = useGET<FlowPlanRulesResponse>()
-  const PATCH = usePATCH()
-  const [rules, setRules] = useState<EditableRule[]>([])
-  const [changed, setChanged] = useState(false)
-  const [upload, setUpload] = useState(false)
-  const app = useApp()
   const { t } = useTranslation()
+  const GET = useGET<FlowPlanRulesResponse>()
+  const PUT = usePUT()
+  const DELETE = useDELETE()
+  const [rules, setRules] = useState<Rule[]>([])
+  const [editing, setEditing] = useState<Rule | null>(null)
+  const [creating, setCreating] = useState<{ filter?: MappingFilterView, result?: MappingResultView } | null>(null)
+  const [deleting, setDeleting] = useState<Rule | null>(null)
 
-  useEffect(() => {
-    GET(`/flow-plans/${params.id}/rules`).then(res => {
-      if (res) {
-        setRules(res.map(rule => {
-          const { filter, name, key, result } = rule
-          return { filter, name, key, result }
-        }))
-      }
-    })
-  }, [])
-
-  const onSave = () => {
-    PATCH(`/flow-plans/${params.id}/rules`, rules).then(res => {
-      if (res) {
-        app.addInfo(t('Rules saved succssfully.'))
-        setChanged(false)
-      }
-    })
+  const load = () => {
+    GET(`/flow-plans/${flowPlanId}/rules`).then(res => res && setRules(res as Rule[]))
   }
 
-  const onUpdate = (data) => {
-    setChanged(true)
-    setRules(data)
-  }
+  useEffect(load, [flowPlanId])
 
-  const onDownload = () => {
-    const blob = new Blob([JSON.stringify(rules, null, 2)], { type: 'application/json;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', 'rules.json')
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const onUpload = async (file: FileUploadData) => {
-    setUpload(false)
-    let json
-    try {
-      json = JSON.parse(Buffer.from(file.data, 'hex').toString('utf-8'))
-      setRules(json)
-      setChanged(true)
-    } catch (err) {
-      error(err)
-      app.addError(t('Failed to parse JSON-file.'))
+  const save = async (rule: Rule, changes: Partial<Rule>) => {
+    const { name, kind, filter, key, result, filterView, resultView, enabled, notes } = { ...rule, ...changes }
+    const body = kind === 'MAPPING'
+      ? { name, kind, filterView, resultView, enabled, notes }
+      : { name, kind: 'ADVANCED', filter, key, result, enabled, notes }
+    if (await PUT(`/flow-plans/${flowPlanId}/rules/${rule.id}`, body as Record<string, unknown>)) {
+      load()
     }
+  }
+
+  const move = async (idx: number, delta: number) => {
+    const ids = rules.map(r => r.id as number)
+    const [id] = ids.splice(idx, 1)
+    ids.splice(idx + delta, 0, id)
+    if (await PUT(`/flow-plans/${flowPlanId}/rules/order`, { ids })) {
+      load()
+    }
+  }
+
+  const onDelete = async () => {
+    if (deleting && await DELETE(`/flow-plans/${flowPlanId}/rules/${deleting.id}`)) {
+      load()
+    }
+    setDeleting(null)
+  }
+
+  const onDuplicate = (rule: Rule) => {
+    setCreating({ filter: rule.filterView as unknown as MappingFilterView, result: rule.resultView as unknown as MappingResultView })
   }
 
   return <Box sx={{ pb: 8 }}>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
-      <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/rules')}><Clear/></IconButton> <Trans>Edit Rules</Trans>
-      {changed && <Box sx={{ display: 'inline-block', color: 'error.light' }}> *</Box>}
+      <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/rules')}><Clear/></IconButton> <Trans>Rules</Trans>
+    </Typography>
+    <Typography sx={{ my: 1 }} color="text.secondary">
+      <Trans>Rules are tried from top to bottom and the first matching rule is used for each line.</Trans>
     </Typography>
 
-    <Box sx={{ my: 2, p: 1, border: '1px solid rgba(255,255,255,0.5)' }}>
-      <RulesEditor rules={rules} onUpdate={onUpdate}/>
+    <Box sx={{ my: 2 }}>
+      <Button variant="contained" startIcon={<Add/>} onClick={() => setCreating({})} data-cy="NewRule"><Trans>New Rule</Trans></Button>
+      <Button sx={{ ml: 2 }} variant="outlined" onClick={() => navigate(`/rules/${flowPlanId}/advanced`)}><Trans>Advanced (JSON)</Trans></Button>
     </Box>
 
-    <Button variant="outlined" onClick={onDownload}><Trans>Download</Trans></Button>
-    <Button sx={{ ml: 2 }} variant="outlined" onClick={() => setUpload(true)}><Trans>Upload</Trans></Button>
-    <Button sx={{ ml: 4 }} variant="contained" onClick={onSave}><Trans>Save</Trans></Button>
+    <Table size="small" data-cy="RuleTable">
+      <TableHead>
+        <TableRow>
+          <TableCell width="5%"><Trans>Order</Trans></TableCell>
+          <TableCell width="5%"><Trans>In use</Trans></TableCell>
+          <TableCell><Trans>Rule</Trans></TableCell>
+          <TableCell><Trans>Action</Trans></TableCell>
+          <TableCell width="10%" align="right"><Trans>Matches</Trans></TableCell>
+          <TableCell width="12%"/>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rules.length === 0 && <TableRow>
+          <TableCell colSpan={6}><Trans>There are no rules yet. Lines are asked when they are imported, and rules can be created from them.</Trans></TableCell>
+        </TableRow>}
+        {rules.map((rule, idx) => {
+          const mapping = rule.kind === 'MAPPING'
+          const summary = mapping ? describeConditions(t, rule.filterView as unknown as MappingFilterView) : rule.filter
+          return <TableRow key={rule.id} sx={{ opacity: rule.enabled === false ? 0.5 : 1 }} data-cy={`Rule-${rule.name}`}>
+            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+              <IconButton size="small" disabled={idx === 0} onClick={() => move(idx, -1)}><ArrowUpward fontSize="small"/></IconButton>
+              <IconButton size="small" disabled={idx === rules.length - 1} onClick={() => move(idx, 1)}><ArrowDownward fontSize="small"/></IconButton>
+            </TableCell>
+            <TableCell>
+              <Switch size="small" checked={rule.enabled !== false} onChange={(e) => save(rule, { enabled: e.target.checked })}/>
+            </TableCell>
+            <TableCell>
+              <Box>
+                {rule.name}
+                {rule.origin === 'DRIVER' && <Chip size="small" label={t('Default')} sx={{ ml: 1 }}/>}
+                {!mapping && <Chip size="small" label={t('Advanced')} sx={{ ml: 1 }}/>}
+              </Box>
+              {summary !== rule.name && <Box sx={{ color: 'text.secondary', fontSize: '0.85em' }}>{summary}</Box>}
+            </TableCell>
+            <TableCell sx={{ fontSize: '0.85em' }}>
+              {mapping ? describeAction(t, rule.resultView as unknown as MappingResultView) : JSON.stringify(rule.result)}
+            </TableCell>
+            <TableCell align="right">
+              <Tooltip title={rule.lastMatched ? t('Last matched {{time}}', { time: rule.lastMatched.substring(0, 10) }) : ''}>
+                <span>{rule.matchCount || 0}</span>
+              </Tooltip>
+            </TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+              {mapping && <IconButton size="small" title={t('Edit')} onClick={() => setEditing(rule)}><Edit fontSize="small"/></IconButton>}
+              {!mapping && <IconButton size="small" title={t('Edit')} onClick={() => navigate(`/rules/${flowPlanId}/advanced`)}><Edit fontSize="small"/></IconButton>}
+              {mapping && <IconButton size="small" title={t('Duplicate')} onClick={() => onDuplicate(rule)}><ContentCopy fontSize="small"/></IconButton>}
+              <IconButton size="small" title={t('Delete')} onClick={() => setDeleting(rule)}><Delete fontSize="small"/></IconButton>
+            </TableCell>
+          </TableRow>
+        })}
+      </TableBody>
+    </Table>
 
-    <FileUploader
-      visible={upload}
-      title={t('Rules Upload')}
-      text={t('Select a JSON-file to upload')}
-      onUpload={onUpload}
-      onCancel={() => setUpload(false)}
-      onSuccess={() => null}
+    <MappingRuleDialog
+      open={editing !== null || creating !== null}
+      flowPlanId={flowPlanId}
+      rule={editing}
+      initialFilter={creating?.filter}
+      initialResult={creating?.result}
+      onClose={() => { setEditing(null); setCreating(null) }}
+      onSaved={() => { setEditing(null); setCreating(null); load() }}
     />
+
+    <Confirm
+      open={deleting !== null}
+      title={t('Delete Rule')}
+      areYouSure
+      onClose={() => setDeleting(null)}
+      onSubmit={onDelete}
+    >
+      {deleting && t('Delete the rule {{name}}?', { name: deleting.name })}
+    </Confirm>
   </Box>
 }
