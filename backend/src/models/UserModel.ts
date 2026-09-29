@@ -45,7 +45,7 @@ export class UserModel extends BaseModel<prisma.User> {
    */
   static async getServices(userId: number): Promise<Service[]> {
     const models = await ServiceModel.findForUser(userId)
-    return models.map(service => getService(service.data.driver, service.data.settings as ServiceSettings))
+    return models.map(service => getService(service.data.driver, service.data.settings as unknown as ServiceSettings))
   }
 
   /**
