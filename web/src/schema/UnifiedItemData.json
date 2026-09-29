@@ -54,6 +54,10 @@
       "type": "string",
       "pattern": "^(STOCK|CRYPTO)$"
     },
+    "bankAccount": {
+      "description": "Own bank account number where the value is transferred. When given, used instead of the currency account.",
+      "type": "string"
+    },
     "balance": {
       "description": "If known, this is the running balance of the transaction currency after this item applied.",
       "type": ["number", "string"],

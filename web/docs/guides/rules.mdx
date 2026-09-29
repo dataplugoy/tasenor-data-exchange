@@ -42,6 +42,25 @@ The rule set for an information source is an array of JSON objects, like the one
 </figure>
 
 
+
+## Mapping Rules and Advanced Rules
+
+Rules of a flow plan come in two kinds:
+
+* **Mapping rules** are edited with forms in the rule editor: a list of conditions and an action. They are
+  compiled to the `filter` and `result` expressions described above. See [Bank Statements](./bank-statements).
+* **Advanced rules** are written directly as expressions and edited as JSON.
+
+Rules coming with the driver of the information source are *default rules*. When the driver is updated, its
+default rules are updated too, but rules created or edited by the user are never changed automatically. A rule
+can also be disabled, in which case it is not used.
+
+If no rule matches an item, the user is asked how to handle it. The answer is stored as a *one-off answer* for
+that item and used instead of the rules when the item is processed again.
+
+In addition to the functions below, expressions may use `matches(regex, value)` which tests a regular expression
+ignoring case and always returns true or false.
+
 ## Functions
 
 Besides basic constants, variables, and arithmetic, the rule includes numerous functions to utilize.

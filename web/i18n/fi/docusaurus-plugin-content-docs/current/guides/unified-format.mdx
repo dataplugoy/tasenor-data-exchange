@@ -58,6 +58,12 @@ The default language of the flow plan allows for individual descriptions of many
 
 It is unnecessary to define total value in default currency. If a different currency or crypto currency is used, this field can specify it.
 
+### `bankAccount` <Type file="UnifiedItemData.json" field="bankAccount"/>
+
+For bank statements, the own bank account number the money was transferred from or to. When given, the
+transaction uses a dedicated account for that bank account instead of the general currency account. Bank
+statement drivers fill it in automatically.
+
 ### `rates` <Type file="UnifiedItemData.json" field="rates"/>
 
 If the exchange rates from other currencies to the default currency are known, they can be provided here. Alternatively, it can be resolved using different services. The field format consists of a mapping that includes the name(s) of the currency or asset and their corresponding conversion rate(s) in the default currency. The single unit of the target asset has a value of 1.0 in the default currency.
@@ -120,7 +126,7 @@ A type of the tax charged. Currently, either `vat` or `withholding` tax is appli
 
 ### `taxAmount` <Type file="UnifiedItemData.json" field="taxAmount"/>
 
-The exact tax amount, if known, is provided here.
+The exact tax amount, if known, is provided here. For `vat`, it is included in the value and for `withholding`, it has been deducted from the value before payment.
 
 ### `taxAsset` <Type file="UnifiedItemData.json" field="taxAsset"/>
 
@@ -128,7 +134,7 @@ This field specifies the tax amount, if it is given in a currency or asset other
 
 ### `taxPercentage` <Type file="UnifiedItemData.json" field="taxPercentage"/>
 
-The tax amount can be provided as a percentage of actual income or expense, instead of the exact amount.
+The tax amount can be provided as a percentage instead of the exact amount. For `vat`, it is the percentage of VAT included in the value, and the tax is rounded to cents. VAT of expense categories is booked as VAT from purchases and VAT of income categories as VAT from sales.
 
 
 ## Miscellaneous

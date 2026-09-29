@@ -1,0 +1,94 @@
+---
+sidebar_position: 60
+---
+
+# Tiliotteet
+
+Tavallisen pankkitilin riveistä näkyy harvoin, mihin raha käytettiin. 100,80 euron maksu verkkokauppaan voi
+olla ohjelmisto, laite tai lahja. Siksi tiliotteet käsitellään *kohdistussäännöillä*, jotka luot ja ylläpidät
+itse. Rivit, joihin mikään sääntö ei täsmää, näytetään sinulle, ja voit luoda niistä säännön tai kertoa kerran,
+miten rivi käsitellään.
+
+Tuetut tiliotteet:
+* **Nordea TITO** (konekielinen tiliote, tiedostot kuten `TITO-01.nda`)
+
+## Tiliotteiden lähettäminen
+
+Luo tietovirta, jonka lähteenä on *Lähetä Nordean TITO-tiliote*, ja paina **Ajo**. Valitse lähetettävä
+tiliotetiedosto.
+
+* Yhdessä tiedostossa voi olla usean tilin tiliotteita ja saman tilin useita kuukausia.
+* Jokaisella pankkitilillä on oma tilinsä kirjanpidossa. Se kysytään kerran, kun tili tulee ensimmäisen kerran
+  vastaan, ja sitä voi muuttaa myöhemmin tietovirran tiliasetuksista.
+* Tiliotteen jokaisen päivän loppusaldo tarkistetaan tapahtumia vasten. Jos ne eivät täsmää, tiedostoa ei
+  hyväksytä.
+* Pankin erittelemät palvelumaksut käsitellään yhtenä tapahtumana, ja erittely säilytetään kentässä `Erittely`.
+
+## Rivit ilman sääntöä
+
+Kun mikään sääntö ei täsmää riviin, käsittely pysähtyy ja kaikki tällaiset rivit listataan. Jokaiselle riville
+voit valita:
+
+* **Luo sääntö** avaa sääntöeditorin, jonka ehdot on otettu rivistä: maksaja tai saaja, mahdollinen viitenumero
+  ja rahan suunta. Muokkaa ehtoja niin, että ne kattavat kaikki samanlaiset rivit.
+* **Käsittele kerran** kirjaa vain tämän rivin. Valitse toiminto, tili ja teksti kuten säännössä.
+* **Ohita kerran** jättää rivin pois.
+
+Kun jatkat, uudet säännöt ja vastaukset otetaan käyttöön ja käsittely jatkuu. Vastaukset muistetaan, joten saman
+tiliotteen uudelleenkäsittely ei kysy niitä uudestaan.
+
+## Kohdistussäännöt
+
+Tietovirran säännöt löytyvät kohdasta **Säännöt**. Sääntöjä kokeillaan ylhäältä alas, ja kuhunkin riviin
+käytetään ensimmäistä täsmäävää sääntöä. Nuolilla voit muuttaa järjestystä ja kytkimellä ottaa säännön pois
+käytöstä poistamatta sitä.
+
+### Ehdot
+
+Sääntö täsmää riviin, kun kaikki sen ehdot täyttyvät. Kenttien nimet ovat tiliotteen nimiä, esimerkiksi
+`Saaja/Maksaja`, `Viite`, `Viesti`, `Seliteteksti` (tapahtuman laji) ja `Saajan tili`. Kullekin kentälle
+tarjotaan viimeisimpien rivien yleisimmät arvot.
+
+| Ehto | Täsmää, kun |
+|------|-------------|
+| on | kenttä on sama kuin arvo, kirjainkoosta välittämättä |
+| sisältää | kenttä sisältää arvon, kirjainkoosta välittämättä |
+| on jokin näistä | kenttä on jokin arvoista |
+| vastaa säännöllistä lauseketta | kenttä vastaa [säännöllistä lauseketta](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions), kirjainkoosta välittämättä |
+| rahaa lähtee / rahaa tulee | summa on negatiivinen / positiivinen |
+| summa on | summa on täsmälleen arvo |
+| summa välillä | summa on annetulla välillä |
+
+Sääntö ilman ehtoja täsmää kaikkiin riveihin, mikä on hyödyllistä viimeisenä sääntönä.
+
+### Toiminnot
+
+| Toiminto | Tulos |
+|----------|-------|
+| Kulu | Summa kirjataan valittuun luokkaan tai tilille. |
+| Tulo | Summa kirjataan valittuun luokkaan tai tilille. |
+| Veron maksu tai palautus | Summa kirjataan valitulle verotilille. |
+| Siirto omaan palveluun tai sieltä | Rahan siirto omalle tilillesi toisessa palvelussa, kuten Nordnetissä. |
+| Siirto omien pankkitilien välillä | Siirron molemmat puolet kirjataan selvittelytilin kautta, joka on nolla, kun molemmat tiliotteet on käsitelty. |
+| Ohita | Rivi jätetään pois. |
+
+Kulut, tulot ja verot seuraavat rahan suuntaa: saman kaupan hyvitys kirjataan samalla säännöllä takaisin samalle
+tilille.
+
+**Luokka** on symbolinen tili, kuten *Ohjelmistot* tai *Pankkikulut*. Jokainen luokka yhdistetään kerran
+kirjanpitosi tiliin tietovirran tiliasetuksissa. Vaihtoehtoisesti voit kirjoittaa tilinumeron, jolloin kirjaus
+tehdään suoraan sille tilille.
+
+**Tekstissä** voi yhdistellä rivin kenttiä, esimerkiksi `{Saaja/Maksaja}: {Viesti}`. **Tagit** lisätään
+tapahtumaan. **ALV %** on summaan sisältyvän arvonlisäveron prosentti. Se kirjataan kululuokille ostojen
+arvonlisäverotilille ja tululuokille myynnin arvonlisäverotilille.
+
+### Esikatselu
+
+Editori näyttää viimeisimmät säännön täsmäävät rivit ja kirjauksen, jonka kukin rivi tuottaisi. Rivi, jonka
+aiempi sääntö käsittelee ensin, näytetään himmennettynä, koska tätä sääntöä ei käytetä siihen.
+
+### Edistyneet säännöt
+
+Sääntöjä voi muokata myös JSON-muodossa kohdasta **Edistynyt (JSON)**. Lausekkeina kirjoitetut säännöt näkyvät
+listassa, mutta niitä muokataan vain siellä. Sääntökielestä kerrotaan kohdassa [Säännöt](./rules).

@@ -1,0 +1,95 @@
+---
+sidebar_position: 60
+---
+
+# Bank Statements
+
+Lines of an ordinary bank account rarely tell what the money was for. A payment of 100.80 € to a web shop may
+be software, hardware or a gift. That is why bank statements are handled with *mapping rules* that you create
+and maintain yourself. A line no rule covers is shown to you, and you can create a rule from it or tell once how
+to handle it.
+
+Currently supported statements:
+* **Nordea TITO** (*konekielinen tiliote*, files like `TITO-01.nda`)
+
+## Uploading Statements
+
+Create a flow plan with the source *Upload Nordea TITO Statement* and press **Run**. Select the statement file
+to upload.
+
+* One file may contain statements of several accounts, and several months of the same account.
+* Each bank account gets its own account in the bookkeeping. It is asked once, the first time the account is
+  seen, and it can be changed later in the account settings of the flow plan.
+* The closing balance of each day in the statement is checked against the transactions. If they do not match,
+  the file is rejected.
+* Service fees itemized by the bank (*Palvelumaksu*) are handled as one transaction, and the itemization is
+  kept in the field `Erittely`.
+
+## Lines Without a Rule
+
+When no rule matches a line, processing stops and all such lines are listed. For each line you can:
+
+* **Create rule** opens the rule editor with conditions taken from the line: the counterparty, the reference
+  number if any and the direction of the money. Adjust the conditions to cover all similar lines.
+* **Handle once** books only this line. Choose the action, the account and the text as in a rule.
+* **Skip once** leaves this line out.
+
+When you continue, new rules and the answers are applied and the processing goes on. The answers are
+remembered, so reprocessing the same statement does not ask again.
+
+## Mapping Rules
+
+The rules of a flow plan are listed under **Rules**. Rules are tried from top to bottom, and the first matching
+rule is used for each line. Use the arrows to change the order and the switch to take a rule out of use without
+deleting it.
+
+### Conditions
+
+A rule matches a line when all of its conditions hold. The field names are the names used in the statement,
+for example `Saaja/Maksaja` (counterparty), `Viite` (reference number), `Viesti` (message), `Seliteteksti`
+(type of the transaction) and `Saajan tili` (counterparty account). The most common values of the recent lines
+are offered for each field.
+
+| Condition | Matches when |
+|-----------|--------------|
+| is | the field equals the value, ignoring case |
+| contains | the field contains the value, ignoring case |
+| is one of | the field equals one of the values |
+| matches regular expression | the field matches a [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions), ignoring case |
+| money out / money in | the amount is negative / positive |
+| amount is | the amount is exactly the value |
+| amount between | the amount is within the range |
+
+A rule without conditions matches all lines, which is useful as the last rule.
+
+### Actions
+
+| Action | Result |
+|--------|--------|
+| Expense | The amount is booked to the chosen category or account. |
+| Income | The amount is booked to the chosen category or account. |
+| Tax payment or refund | The amount is booked to the chosen tax account. |
+| Transfer to or from own service | Money moved to or from your own account in another service, like Nordnet. |
+| Transfer between own bank accounts | Both sides of a transfer are booked through a clearing account, which is zero when both statements have been processed. |
+| Skip | The line is left out. |
+
+Expenses, income and taxes follow the direction of the money: a refund from the same shop is booked back to the
+same account by the same rule.
+
+The **category** is a symbolic account like *Software* or *Banking fees*. Each category is mapped once to an
+account of your bookkeeping in the account settings of the flow plan. Alternatively, type an account number to
+book directly to that account.
+
+The **text** can combine fields of the line, for example `{Saaja/Maksaja}: {Viesti}`. **Tags** are added to the
+transaction. **VAT %** is the percentage of VAT included in the amount. It is booked to the VAT account of
+purchases for expense categories and to the VAT account of sales for income categories.
+
+### Preview
+
+The editor shows the recent lines matching the rule and the transaction each line would produce. A line taken by
+an earlier rule is shown faded, since this rule is not used for it.
+
+### Advanced Rules
+
+Rules can also be edited as JSON with **Advanced (JSON)**. Rules written as expressions are shown in the list, but
+edited only there. See [Rules](./rules) for the rule language.
