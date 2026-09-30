@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { ShortDate, Timestring } from '@tasenor/common'
-import { JsonObject } from '@prisma/client/runtime/library'
+import { JsonObject } from '@prisma/client/runtime/client'
 import { SkipReason } from '../types/API/InputItem'
 import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'

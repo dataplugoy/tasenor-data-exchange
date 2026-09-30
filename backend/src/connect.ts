@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 const QUERY_LOGGING = false
 
@@ -17,6 +18,7 @@ export async function connect(db: string | undefined = undefined): Promise<Prism
   }
 
   const prisma = new PrismaClient({
+    adapter: new PrismaPg({ connectionString: db }),
     log: [{ level: 'query', emit: 'event' }],
   })
 

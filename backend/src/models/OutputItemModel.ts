@@ -1,4 +1,4 @@
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import { Transaction } from '../types/API/Transaction'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'

@@ -8,7 +8,7 @@ import { UnifiedItemModel } from './UnifiedItemModel'
 import { ItemErrorModel } from './ItemErrorModel'
 import { OutputItemModel } from './OutputItemModel'
 import { Notes } from '../types/API/Notes'
-import { JsonObject } from '@prisma/client/runtime/library'
+import { JsonObject } from '@prisma/client/runtime/client'
 
 export class RunModel extends BaseModel<prisma.Run> {
 

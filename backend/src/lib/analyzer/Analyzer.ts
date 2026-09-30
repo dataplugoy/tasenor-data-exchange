@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import prisma from '@prisma/client'
 import clone from 'clone'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import { Asset, Currency, Language, Timestring, warning } from '@tasenor/common'
 import Decimal from 'decimal.js'
 import { DateTime } from 'luxon'

@@ -37,7 +37,7 @@ export class ManualUploadDriver extends InputDriver {
   async fetchData(flowPlan: FlowPlanModel): Promise<Buffer> {
     const batch = await BatchModel.getLatest(flowPlan)
     if (batch && batch.data.data !== null) {
-      return batch.data.data
+      return Buffer.from(batch.data.data)
     }
     throw new UploadRequired(
       `/api/v1/flow-plans/${flowPlan.id}/upload`,

@@ -1,4 +1,4 @@
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import chardet from 'chardet'
 import { Options } from 'csv-parse'
 import { BaseModel } from './BaseModel'
@@ -23,7 +23,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   }
 
   async setData(data: string | Buffer): Promise<void> {
-    this.data.data = typeof data === 'string' ? Buffer.from(data) : data
+    this.data.data = new Uint8Array(typeof data === 'string' ? Buffer.from(data) : data)
     await BatchModel.update<prisma.Batch, BatchModel>(this, { data: this.data.data })
   }
 
@@ -81,7 +81,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     }
 
     // eslint-disable-next-line
-    let data = this.data.data.toString(this.data.encoding as BufferEncoding)
+    let data = Buffer.from(this.data.data).toString(this.data.encoding as BufferEncoding)
     if (!fullText) {
       data = data.split('\n')[0]
     }
@@ -123,7 +123,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     }
 
     // eslint-disable-next-line
-    const data = this.data.data.toString(this.data.encoding as BufferEncoding)
+    const data = Buffer.from(this.data.data).toString(this.data.encoding as BufferEncoding)
     if (options.regexMatch) {
       if (!options.regexMatch.test(data)) {
         // TODO: It might be good idea to transfer this error in visible manner to UI.

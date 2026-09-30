@@ -1,5 +1,5 @@
 import { Options, parse } from 'csv-parse'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import Decimal from 'decimal.js'
 
 /**

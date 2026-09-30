@@ -29,7 +29,7 @@
     "vitest": "^5.0.3"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",
+    "@prisma/client": "^7.10.0",
     "@tasenor/common": "^1.17.20",
     "chardet": "^2.2.0",
     "luxon": "^3.7.2"

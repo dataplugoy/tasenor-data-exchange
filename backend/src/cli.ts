@@ -21,7 +21,7 @@ import { Setup } from './types/API/Setup'
 import { initI18N } from './lib/i18n/t'
 import { StockData } from './types/API/StockData'
 import prisma from '@prisma/client'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import { ServiceModel } from './models/ServiceModel'
 import { ServiceQuery } from './lib/services/Service'
 
