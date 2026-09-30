@@ -64,7 +64,7 @@ Cypress.Commands.add('login', () => {
  */
 let token: string | undefined
 Cypress.Commands.add('apiCall', (method: string, url: string, body: Record<string, any> = {}) => {
-  const baseUrl = new URL(Cypress.env('CYPRESS_URL'))
+  const baseUrl = new URL(Cypress.config('baseUrl') as string)
   const apiUrl = `${baseUrl.protocol}//${baseUrl.hostname}:${parseInt(baseUrl.port) + 1}/api/v1`
   const headers: Record<string, string> = {}
   if (token) {
