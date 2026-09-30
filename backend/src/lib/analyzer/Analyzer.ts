@@ -176,14 +176,22 @@ export class Analyzer {
       throw new Error(`There are no services set to handle query ${JSON.stringify(query)}.`)
     }
 
+    // A failing service does not stop trying the others.
+    const failures: string[] = []
     for (const service of this.services[query.query]) {
-      const result = await service.query(query)
-      if (result !== null) {
-        return result
+      try {
+        const result = await service.query(query)
+        if (result !== null) {
+          return result
+        }
+        warning(`A service ${service.constructor.name} was not able to handle query ${JSON.stringify(query)}`)
+      } catch (err) {
+        const message = err instanceof Error ? err.message : `${err}`
+        warning(`A service ${service.constructor.name} failed to handle query ${JSON.stringify(query)}: ${message}`)
+        failures.push(`${service.constructor.name}: ${message}`)
       }
-      warning(`A service ${service.constructor.name} was not able to handle query ${JSON.stringify(query)}`)
     }
-    throw new Error(`There is no service to handle query ${JSON.stringify(query)}`)
+    throw new Error(`There is no service to handle query ${JSON.stringify(query)}${failures.length ? ` (${failures.join('; ')})` : ''}`)
   }
 
   /**

@@ -5,11 +5,13 @@ import { ServiceSettings } from '../../types/ServiceSettings'
 import { TasenorService } from './TasenorService'
 import { JsonFileService } from './JsonFileService'
 import { OpenFigiService } from './OpenFigiService'
+import { CoinbasePricesService } from './CoinbasePricesService'
 
 const services: Record<prisma.ServiceDriver, Constructor<Service>> = {
   JSON_FILE: JsonFileService,
   TASENOR: TasenorService,
   OPEN_FIGI: OpenFigiService,
+  COINBASE_PRICES: CoinbasePricesService,
 }
 
 export function getService(driver: prisma.ServiceDriver, settings: ServiceSettings): Service {

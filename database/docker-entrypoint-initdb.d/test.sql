@@ -227,7 +227,8 @@ ALTER TYPE public."RunResult" OWNER TO dev;
 CREATE TYPE public."ServiceDriver" AS ENUM (
     'TASENOR',
     'JSON_FILE',
-    'OPEN_FIGI'
+    'OPEN_FIGI',
+    'COINBASE_PRICES'
 );
 
 

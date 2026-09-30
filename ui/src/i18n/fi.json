@@ -384,6 +384,7 @@
   "SERVICE_DRIVER_TASENOR": "Tasenor-kirjanpito",
   "SERVICE_DRIVER_OPEN_FIGI": "OpenFIGI",
   "SERVICE_DRIVER_JSON_FILE": "JSON-tiedostot (testaus)",
+  "SERVICE_DRIVER_COINBASE_PRICES": "Coinbase Exchangen hinnat",
   "SERVICE_TYPE_CURRENCY_RATES": "Valuuttakurssit",
   "SERVICE_TYPE_CRYPTO_RATES": "Kryptovaluuttojen kurssit",
   "SERVICE_TYPE_TICKERS": "Arvopaperien tunnukset"
