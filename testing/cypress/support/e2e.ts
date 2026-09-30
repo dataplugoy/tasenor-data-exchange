@@ -14,3 +14,8 @@
 // ***********************************************************
 
 import './commands'
+
+// Every spec starts from the test database snapshot, so that specs do not depend on each other or their order.
+before(() => {
+  cy.task('loadDatabase', null, { timeout: 120000 })
+})
