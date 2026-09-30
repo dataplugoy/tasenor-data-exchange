@@ -1,9 +1,49 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Autocomplete, Box, MenuItem, TextField } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { MappingResultView } from '../Types/API/MappingResultView'
 import { ACTIONS, DEFAULT_TEXT, accountLabel, actionLabel } from '../Helpers/rules'
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, TAX_CATEGORIES } from '../Helpers/categories'
+
+interface VatFieldProps {
+  rate: number | null
+  onChange: (rate: number | null) => void
+}
+
+/**
+ * VAT percentage input keeping the text as typed, so that decimals like 25,5 can be entered.
+ */
+const VatField = (props: VatFieldProps): React.JSX.Element => {
+  const { rate, onChange } = props
+  const { t } = useTranslation()
+  const [text, setText] = useState(rate ? `${rate}` : '')
+
+  const parse = (s: string): number | null => {
+    const n = parseFloat(s.replace(',', '.'))
+    return isNaN(n) || n === 0 ? null : n
+  }
+
+  // Follow changes from outside, like opening another rule.
+  useEffect(() => {
+    if (parse(text) !== rate) {
+      setText(rate ? `${rate}` : '')
+    }
+  }, [rate])
+
+  return <TextField
+    size="small"
+    label={t('VAT %')}
+    value={text}
+    inputProps={{ inputMode: 'decimal' }}
+    onChange={(e) => {
+      const s = e.target.value.replace(/[^0-9.,]/g, '')
+      setText(s)
+      onChange(parse(s))
+    }}
+    sx={{ flex: 0.5 }}
+    data-cy="VatRate"
+  />
+}
 
 interface RuleActionEditorProps {
   value: MappingResultView
@@ -103,15 +143,9 @@ export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Elemen
           renderInput={(params) => <TextField {...params} size="small" label={t('Tags')}/>}
           sx={{ flex: 2 }}
         />
-        {(action === 'expense' || action === 'income') && <TextField
-          size="small"
-          label={t('VAT %')}
-          value={value.vat && value.vat.mode === 'rate' ? value.vat.rate : ''}
-          onChange={(e) => {
-            const rate = parseFloat(e.target.value.replace(',', '.'))
-            onChange({ ...value, vat: isNaN(rate) || rate === 0 ? { mode: 'none' } : { mode: 'rate', rate } })
-          }}
-          sx={{ flex: 0.5 }}
+        {(action === 'expense' || action === 'income') && <VatField
+          rate={value.vat && value.vat.mode === 'rate' && value.vat.rate ? value.vat.rate : null}
+          onChange={(rate) => onChange({ ...value, vat: rate === null ? { mode: 'none' } : { mode: 'rate', rate } })}
         />}
       </Box>
     </>}

@@ -17,6 +17,11 @@ describe('TITO import with mapping rules', () => {
     cy.get('[data-cy="RuleName"] input').should('have.value', 'Saaja/Maksaja is "OVHcloud", money out')
     cy.get('label').contains('Category or account number').parent().find('input').type('Software{downArrow}{enter}')
     cy.get('body').should('contain', '1 of 6 recent lines match.')
+    // Decimal VAT with a comma is kept as typed and 100.80 includes 20.48 VAT.
+    cy.get('[data-cy="VatRate"] input').type('25,5')
+    cy.get('[data-cy="VatRate"] input').should('have.value', '25,5')
+    cy.get('body').should('contain', 'VAT from purchases')
+    cy.get('body').should('contain', '20.48')
     cy.get('[data-cy="SaveRule"]').click()
     cy.get('[data-cy="Unmatched-2301150004"]').should('contain', 'Rule created')
 
@@ -48,7 +53,7 @@ describe('TITO import with mapping rules', () => {
       cy.visit(`/app/rules/${id}`)
     })
     cy.get('[data-cy="RuleTable"]').should('contain', 'Saaja/Maksaja is "OVHcloud", money out')
-    cy.get('[data-cy="RuleTable"]').should('contain', 'Expense, Software')
+    cy.get('[data-cy="RuleTable"]').should('contain', 'Expense, Software, VAT 25.5%')
     cy.get('[data-cy="Rule-Saaja/Maksaja is \\"OVHcloud\\", money out"] td').eq(4).should('have.text', '1')
   })
 })
