@@ -20,4 +20,5 @@ export type UnifiedItemType =
   | "forex"
   | "rename"
   | "split"
+  | "transfer"
   | "skip";

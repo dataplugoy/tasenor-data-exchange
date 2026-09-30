@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemData, UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
-import { runAnalyzer } from '../lib/unit-testing'
+import { continueAnalyzer, runAnalyzer } from '../lib/unit-testing'
 import { InitialStockData } from '../../backend/src/lib/Stock'
 
 describe('Analyzer', () => {
@@ -110,5 +110,94 @@ describe('Analyzer', () => {
     expect(result.lines).toStrictEqual([
       'STOCK_STHO 0 (87.975)',
     ])
+  })
+
+  it('trade with fee included in the given amount', async () => {
+    const result = await run({ CRYPTO_BTC: { BTC: { value: 1000, amount: 0.02 } } }, {
+      type: 'trade' as UnifiedItemType,
+      value: 1800,
+      fee: 14.4,
+      assetOut: 'BTC',
+      assetAmountOut: 0.0181,
+      assetTypeOut: 'CRYPTO',
+      assetIn: 'ETH',
+      assetAmountIn: 0.5,
+      assetTypeIn: 'CRYPTO',
+      text: 'Advanced trade',
+    })
+    // Cost 1000 * 0.0181 / 0.02 = 905, market value of BTC given 1800 + 14.4.
+    expect(result.lines).toStrictEqual([
+      'CRYPTO_BTC -905 (-0.0181)',
+      'CRYPTO_ETH 1800 (0.5)',
+      'FEE_EUR 14.4',
+      'PROFIT_BTC -909.4',
+    ])
+  })
+
+  it('trade with fee in received crypto valued by rates', async () => {
+    const result = await run({ CRYPTO_ETH: { ETH: { value: 500, amount: 2 } } }, {
+      type: 'trade' as UnifiedItemType,
+      fee: 0.0001,
+      feeAsset: 'BTC',
+      rates: { BTC: 10000 },
+      assetOut: 'ETH',
+      assetAmountOut: 2,
+      assetTypeOut: 'CRYPTO',
+      assetIn: 'BTC',
+      assetAmountIn: 0.0299,
+      assetTypeIn: 'CRYPTO',
+      text: 'v1 trade',
+    })
+    expect(result.lines).toStrictEqual([
+      'CRYPTO_ETH -500 (-2)',
+      'CRYPTO_BTC 299 (0.0299)',
+      'FEE_BTC 1',
+      'LOSS_ETH 200',
+    ])
+  })
+
+  it('transfer to own wallet and back at average cost', async () => {
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, { CRYPTO_BSV: { BSV: { value: 30, amount: 1 } } }, {
+      type: 'transfer' as UnifiedItemType,
+      assetOut: 'BSV',
+      assetAmountOut: 0.5,
+      assetTypeOut: 'CRYPTO',
+    })
+    expect(analyzer.toJSON().stock).toStrictEqual({
+      CRYPTO_BSV: { BSV: { amount: 0.5, value: 15 } },
+      WALLET_BSV: { BSV: { amount: 0.5, value: 15 } },
+    })
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', {
+      type: 'transfer' as UnifiedItemType,
+      value: 999,
+      assetIn: 'BSV',
+      assetAmountIn: 0.5,
+      assetTypeIn: 'CRYPTO',
+    })
+    expect(tx.lines.map(l => `${l.account} ${l.amount}`)).toStrictEqual(['WALLET_BSV -15', 'CRYPTO_BSV 15'])
+    expect(tx.lines[0].text).toBe('Received +0.5 BSV from own wallet')
+  })
+
+  it('receiving from unknown wallet uses the value', async () => {
+    const result = await run({}, {
+      type: 'transfer' as UnifiedItemType,
+      value: 22.84,
+      assetIn: 'USDC',
+      assetAmountIn: 24.844545,
+      assetTypeIn: 'CRYPTO',
+    })
+    expect(result.lines).toStrictEqual([
+      'WALLET_USDC -22.84 (-24.844545)',
+      'CRYPTO_USDC 22.84 (24.844545)',
+    ])
+  })
+
+  it('sending more than owned is an error', async () => {
+    await expect(run({}, {
+      type: 'transfer' as UnifiedItemType,
+      assetOut: 'BSV',
+      assetAmountOut: 0.5,
+      assetTypeOut: 'CRYPTO',
+    })).rejects.toThrow('Cannot send 0.5 BSV when having only 0')
   })
 })

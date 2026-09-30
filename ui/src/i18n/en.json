@@ -69,6 +69,7 @@
   "ACCOUNT_TAX_WITHHOLDING": "Withholding tax",
   "ACCOUNT_TAX_WITHHOLDING_TAX": "Withholding tax",
   "ACCOUNT_TRANSFER_INTERNAL": "Clearing account for transfers between own bank accounts",
+  "ACCOUNT_WALLET": "Own wallet for {{asset}} outside the service",
   "BATCH_CREATED - BATCH_CREATED": "Processing started but unable to fetch data",
   "BATCH_CREATED - DATA_FETCHED": "Processing started and data fetched",
   "BUY": "Buy",
