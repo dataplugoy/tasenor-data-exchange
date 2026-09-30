@@ -1031,6 +1031,7 @@ COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastSt
 8	2024-06-16 09:35:30.012	2024-06-16 09:35:30.012	Nordnet to Procountor	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
 9	2026-09-29 11:26:53.25	2026-09-29 11:26:53.25	TITO Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
 10	2026-09-30 11:34:06.682	2026-09-30 11:34:06.682	Lynx Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Never", "skipWithdrawals": false, "outputDuplicates": "Always", "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N
+11	2026-09-30 12:22:18.137	2026-09-30 12:22:18.137	Coinbase Testing	{}	1	\N	{}	{}	{"settings": {"inputDuplicates": "Never", "outputDuplicates": "Always", "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N
 \.
 
 
@@ -1056,6 +1057,7 @@ COPY public.input_sources (id, created, updated, type, settings, "flowPlanId") F
 8	2024-06-16 09:35:30.025	2024-06-16 09:35:30.025	NORDNET	{}	8
 9	2026-09-29 11:26:53.25	2026-09-29 11:26:53.25	NORDEA_TITO	{}	9
 10	2026-09-30 11:34:06.682	2026-09-30 11:34:06.682	LYNX	{}	10
+11	2026-09-30 12:22:18.137	2026-09-30 12:22:18.137	COINBASE	{}	11
 \.
 
 
@@ -1081,6 +1083,7 @@ COPY public.output_destinations (id, created, updated, type, settings, "flowPlan
 8	2024-06-16 09:35:30.029	2024-06-16 09:35:30.029	PROCOUNTOR	{"apiKey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyODIyNCIsImF1ZCI6IlRhc2Vub3JUZXN0Q2xpZW50IiwiaXNzIjoiaHR0cHM6Ly9wdHMtcHJvY291bnRvci5wdWJkZXYuYXp1cmUucHJvY291bnRvci5jb20iLCJpYXQiOjE3MTgxOTc1OTYsImp0aSI6ImI3NzExOWNiLWU5ZDYtNGEyMi04OWU1LTkwMzZjN2I1YmM5NSIsImNpZCI6MTU0ODh9.ahhjtEmertCRKG4bUVbSkrDwAnku7YNjfpBaMfJOtMU"}	8
 9	2026-09-29 11:26:53.25	2026-09-29 11:26:53.25	NO_ACTION	{}	9
 10	2026-09-30 11:34:06.682	2026-09-30 11:34:06.682	NO_ACTION	{}	10
+11	2026-09-30 12:22:18.137	2026-09-30 12:22:18.137	NO_ACTION	{}	11
 \.
 
 
@@ -1176,7 +1179,7 @@ SELECT pg_catalog.setval('public.batches_id_seq', 6, true);
 -- Name: flow_plans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.flow_plans_id_seq', 10, true);
+SELECT pg_catalog.setval('public.flow_plans_id_seq', 11, true);
 
 
 --
@@ -1190,7 +1193,7 @@ SELECT pg_catalog.setval('public.input_items_id_seq', 12, true);
 -- Name: input_sources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.input_sources_id_seq', 10, true);
+SELECT pg_catalog.setval('public.input_sources_id_seq', 11, true);
 
 
 --
@@ -1204,7 +1207,7 @@ SELECT pg_catalog.setval('public.item_errors_id_seq', 1, false);
 -- Name: output_destinations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.output_destinations_id_seq', 10, true);
+SELECT pg_catalog.setval('public.output_destinations_id_seq', 11, true);
 
 
 --

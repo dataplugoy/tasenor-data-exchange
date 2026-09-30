@@ -40,5 +40,71 @@
   },
   "Dataplug-2025-Lynx": {
     "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period."
+  },
+  "Dataplug-2019-Coinbase": {
+    "8151393": "Bookkeeper values the received BTC including the BTC fee and books the fee also as an expense, so the fee is counted twice. TaDeX receives the BTC net of the fee."
+  },
+  "Dataplug-2020-Coinbase": {
+    "stock:BTC": "Bookkeeper takes the fee BTC out of stock differently and ends with zero BTC; TaDeX leaves 4.9e-7 BTC.",
+    "8874937": "Bookkeeper books the value of the BTC fee but takes the fee BTC out of stock without its cost. TaDeX gives the fee BTC at average cost as part of the trade."
+  },
+  "Dataplug-2023-Coinbase": {
+    "057cb5b8fa2d63b1ccebe54e73f0b8c05d0ac0ba": "Bookkeeper books learning rewards as income valued at the unit price. TaDeX receives rewards at zero cost; the profit is realized when sold.",
+    "0ed26fc14862e084e639c7b205ecb2e9c65cded7": "Bookkeeper books learning rewards as income valued at the unit price. TaDeX receives rewards at zero cost; the profit is realized when sold.",
+    "d9465327a41499a28e8270faa3f50816f6cf7004": "Bookkeeper books learning rewards as income valued at the unit price. TaDeX receives rewards at zero cost; the profit is realized when sold.",
+    "e320e133300941a90a4eb94fc9d0cb4bc0f38b35": "Bookkeeper books learning rewards as income valued at the unit price. TaDeX receives rewards at zero cost; the profit is realized when sold."
+  },
+  "Dataplug-2024-Coinbase": {
+    "d3a877b3279ab985f6fad314f3fca4a1ff5599ae": "Bookkeeper books sends and receives for manual inspection. TaDeX moves them to or from an own wallet at average cost.",
+    "06babf45ccefcfe908bf671303dfd82061522e37": "Bookkeeper gives BTC in the conversion at market value, realizing no profit. TaDeX gives it at average cost and realizes the profit.",
+    "e5f6bdc77a8c022cf80667bb4dc0ddcf16e63432": "Bookkeeper gives BTC in the conversion at market value, realizing no profit. TaDeX gives it at average cost and realizes the profit.",
+    "66876b2aaf983f7b498c3911c21300465fc62006": "Bookkeeper books sends and receives for manual inspection. TaDeX moves them to or from an own wallet at average cost.",
+    "5c2c6f26569a96580fe31a573ff296188f299e50": "Bookkeeper books sends and receives for manual inspection. TaDeX moves them to or from an own wallet at average cost.",
+    "1ec401874382927676bf9309492b785e9711a0f0": "Bookkeeper books learning rewards as income. TaDeX receives rewards at zero cost; the profit is realized when sold.",
+    "194f1782f1e9f9b6e56e9a36116e84512f84583d": "Bookkeeper books learning rewards as income. TaDeX receives rewards at zero cost; the profit is realized when sold.",
+    "25034906033bf1cded30d5129d7856883a7c36ef": "Bookkeeper books learning rewards as income. TaDeX receives rewards at zero cost; the profit is realized when sold.",
+    "a8e977312bfbdde01dd6e6155fa0d8e503aa6ff6": "Average cost of ETH differs after the conversion, and bookkeeper books the fee both ways so that no fee expense remains.",
+    "76f56024578cf894e7c0e51cf871437151eef06b": "Average cost of ETH differs after the conversion, and bookkeeper books the fee both ways so that no fee expense remains.",
+    "3068000c0c31e2e1ba665b33edc510934138b0c8": "Average cost of ETH differs after the conversion, and bookkeeper books the fee both ways so that no fee expense remains.",
+    "a41771401b9986efb06e19f712954ec6f87b9819": "Bookkeeper books sends and receives for manual inspection. TaDeX moves them to or from an own wallet at average cost.",
+    "ff0da9ac7abd3c18b71b621de74f4bbcaab6b627": "Bookkeeper books sends and receives for manual inspection. TaDeX moves them to or from an own wallet at average cost.",
+    "415a73741249420b55fc057153d006f2cb487b42": "Bookkeeper sells USDC short since the receives were not added to the stock. TaDeX sells the received USDC.",
+    "15b8d37c9342199ebefdb78310fb68f7445d4c59": "Bookkeeper sells USDC short since the receives were not added to the stock. TaDeX sells the received USDC.",
+    "stock:BSV": "Bookkeeper sends BSV not in its stock and ends negative; TaDeX has the correction of stock-corrections.json.",
+    "stock:USDC": "Bookkeeper sells USDC short since the receives were not added to the stock."
+  },
+  "Dataplug-2025-Coinbase": {
+    "212b1b2f9a413a8cb9e531cd11897d96da8d2a32": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "0ba34ff5b69b9504d21c7a5e04632320fc81f042": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "1517f03d5ef0d98b25fd0991c7a2795992e01227": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "b7fa5d690c04e28b87c6f175428d95ebd61f7893": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "ede717767c2b06c88f65e0790bc3890807076b6c": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "687e53e2c28680c4cd37124c": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "687e53e2ab95b3ddb4c3e748": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "687e53e29631757baf175ce1": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "687e53e17a664a956a78d6f9": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "687e53e2c156765459420329": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "95ff260e722d4371b432448bdb52e5b4652a30ec": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "f61246430eed7b5a762b45ec9d319c10af36134f": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "0a28ddc7f8625b2a49e100b6f0395ecfc177fa72": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "69b49b2b974ee3f7d7475a38a40a6f30a6565913": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "c4c739982f48a84bff779048a190925363c51191": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "688ce60b75834100c764ce9a": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "688ce60cf436011aab3238f0": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "688ce60c01978dc604287fea": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "688ce60b9f675cc5b0e9a936": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "688ce60ccc09624350ce461d": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "9bfe8cd9a5c5770601c44e1ff0f4a62f92d7dada": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "2e447e9896e01110c15085e29f2b6c1cd1a2b0c0": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "c6868b678b9fc851c0413c23ff996b776d5d8e1d": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "4015fc3b270285ea222720cf1d324f5e1fd771eb": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "2cf56798d58b3b575341675e77dac21c3d78e1fb": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "adb39ae999003f4afbe295c32f56634fc67a44ad": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "68a6175fc26dec0f1d54f241": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "68a6175f496d3e9c2dc507f0": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "68a61760cef6af2b3009967e": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "68a6176075e813795317f007": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "68a617605c60e28e30f37419": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost.",
+    "68a6175f35554f4d786f3b6f": "Bookkeeper books the fee of advanced trades with a wrong sign. TaDeX expenses the fee and realizes the result of the given asset against its average cost."
   }
 }
