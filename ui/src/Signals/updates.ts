@@ -1,4 +1,4 @@
-import { Signal, effect, signal } from '@preact/signals'
+import { Signal, effect, signal } from '@preact/signals-core'
 
 const batchUpdates: Signal<number> = signal<number>(0)
 const batchDeleted: Signal<number> = signal<number>(0)

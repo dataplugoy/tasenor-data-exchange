@@ -116,7 +116,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
   return (
     <Box>
-      <Typography variant="h1" textAlign="center">
+      <Typography variant="h1" sx={{ textAlign: 'center' }}>
         <Trans>Create Flow Plan</Trans>
       </Typography>
 
