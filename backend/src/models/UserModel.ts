@@ -4,8 +4,6 @@ import { ProjectModel } from './ProjectModel'
 import { FlowPlanModel } from './FlowPlanModel'
 import { ServiceModel } from './ServiceModel'
 import { Service } from '../lib/services/Service'
-import { getService } from '../lib/services'
-import { ServiceSettings } from '../types/ServiceSettings'
 
 export class UserModel extends BaseModel<prisma.User> {
 
@@ -45,7 +43,7 @@ export class UserModel extends BaseModel<prisma.User> {
    */
   static async getServices(userId: number): Promise<Service[]> {
     const models = await ServiceModel.findForUser(userId)
-    return models.map(service => getService(service.data.driver, service.data.settings as unknown as ServiceSettings))
+    return models.map(service => service.getService())
   }
 
   /**

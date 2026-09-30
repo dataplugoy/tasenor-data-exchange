@@ -4,6 +4,7 @@ import { ServiceSettings } from '../types/ServiceSettings'
 import { Service as ServiceData } from '../types/API/Service'
 import { SaveServiceRequest } from '../types/API/services/SaveServiceRequest'
 import { BaseModel } from './BaseModel'
+import { decryptSecrets, encryptSecret, encryptSecrets, hasPlainSecrets } from '../lib/secrets'
 import prisma from '@prisma/client'
 
 export class ServiceModel extends BaseModel<prisma.Service> {
@@ -12,7 +13,7 @@ export class ServiceModel extends BaseModel<prisma.Service> {
   static construct = ServiceModel
 
   getService(): Service {
-    return getService(this.data.driver, this.data.settings as unknown as ServiceSettings)
+    return getService(this.data.driver, decryptSecrets(this.data.settings as unknown as ServiceSettings))
   }
 
   /**
@@ -48,7 +49,7 @@ export class ServiceModel extends BaseModel<prisma.Service> {
     for (const secret of ['password', 'key'] as const) {
       const value = request[secret] === undefined ? old?.[secret] : request[secret]
       if (value) {
-        settings[secret] = `${value}`
+        settings[secret] = encryptSecret(`${value}`)
       }
     }
     const available = getService(request.driver, settings).getCababilities()
@@ -72,6 +73,22 @@ export class ServiceModel extends BaseModel<prisma.Service> {
       type: capabilities[0],
       settings: settings as unknown as prisma.Prisma.JsonObject,
     }
+  }
+
+  /**
+   * Encrypt secrets saved before encryption was used.
+   * @returns Number of services updated.
+   */
+  static async encryptStoredSecrets(): Promise<number> {
+    let count = 0
+    for (const service of await this.findMany<prisma.Service, ServiceModel>({})) {
+      if (hasPlainSecrets(service.data.settings)) {
+        service.data.settings = encryptSecrets(service.data.settings as object) as prisma.Prisma.JsonObject
+        await ServiceModel.update<prisma.Service, ServiceModel>(service, { settings: service.data.settings })
+        count++
+      }
+    }
+    return count
   }
 
   static async get(id: number): Promise<ServiceModel | null> {

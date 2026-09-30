@@ -5,6 +5,7 @@ import { getDriver } from '../driver'
 import { DriverSettings } from '../types/DriverSettings'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
+import { decryptSecrets, encryptSecrets, hasPlainSecrets } from '../lib/secrets'
 
 export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> {
 
@@ -19,7 +20,7 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
    * Get the driver for this input source.
    */
   getDriver(settings: ProjectSettings, setup: Setup): Driver {
-    return getDriver(this.type, this.data.settings as DriverSettings, settings, setup)
+    return getDriver(this.type, decryptSecrets(this.data.settings as DriverSettings), settings, setup)
   }
 
   /**
@@ -34,7 +35,7 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
    * @param patch
    */
   async updateSettings(patch: Record<string, unknown>): Promise<void> {
-    Object.assign(this.data.settings as object, patch)
+    Object.assign(this.data.settings as object, encryptSecrets(patch))
     await OutputDestinationModel.update<prisma.OutputDestination, OutputDestinationModel>(this, { settings: this.data.settings })
   }
 
@@ -52,10 +53,26 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
     if (data.id) {
       throw new Error('A function save() cannot be used to existing object.')
     }
-    return OutputDestinationModel.create<prisma.OutputDestination, OutputDestinationModel>(data)
+    return OutputDestinationModel.create<prisma.OutputDestination, OutputDestinationModel>({ ...data, settings: encryptSecrets(data.settings || {}) })
   }
 
   static async get(id: number): Promise<OutputDestinationModel | null> {
     return this.findUnique<prisma.OutputDestination, OutputDestinationModel>({ id })
+  }
+
+  /**
+   * Encrypt secrets saved before encryption was used.
+   * @returns Number of destinations updated.
+   */
+  static async encryptStoredSecrets(): Promise<number> {
+    let count = 0
+    for (const dest of await this.findMany<prisma.OutputDestination, OutputDestinationModel>({})) {
+      if (hasPlainSecrets(dest.data.settings)) {
+        dest.data.settings = encryptSecrets(dest.data.settings as object) as prisma.Prisma.JsonObject
+        await OutputDestinationModel.update<prisma.OutputDestination, OutputDestinationModel>(dest, { settings: dest.data.settings })
+        count++
+      }
+    }
+    return count
   }
 }
