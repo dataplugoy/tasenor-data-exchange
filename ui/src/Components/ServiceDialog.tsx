@@ -6,13 +6,14 @@ import { ServiceDriver } from '../Types/API/ServiceDriver'
 import { SaveServiceRequest } from '../Types/API/services/SaveServiceRequest'
 import { usePATCH, usePOST } from '../Hooks/useNet'
 
-export const SERVICE_DRIVERS: ServiceDriver[] = ['TASENOR', 'OPEN_FIGI', 'JSON_FILE']
+export const SERVICE_DRIVERS: ServiceDriver[] = ['TASENOR', 'COINBASE_PRICES', 'OPEN_FIGI', 'JSON_FILE']
 
 // Default URLs for the drivers.
 const DEFAULT_URL: Record<ServiceDriver, string> = {
   TASENOR: 'https://bookkeeper-api.tasenor.com',
   OPEN_FIGI: 'https://api.openfigi.com',
   JSON_FILE: 'file:///rates.json',
+  COINBASE_PRICES: 'https://api.exchange.coinbase.com',
 }
 
 interface ServiceDialogProps {

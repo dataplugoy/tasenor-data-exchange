@@ -54,6 +54,7 @@ enum ServiceDriver {
   JSON_FILE
   TASENOR
   OPEN_FIGI
+  COINBASE_PRICES
 }
 
 model Service {

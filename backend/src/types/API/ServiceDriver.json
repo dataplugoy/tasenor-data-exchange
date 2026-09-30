@@ -3,5 +3,5 @@
   "title": "ServiceDriver",
   "description": "Implementation of an external service.",
   "type": "string",
-  "enum": ["JSON_FILE", "TASENOR", "OPEN_FIGI"]
+  "enum": ["JSON_FILE", "TASENOR", "OPEN_FIGI", "COINBASE_PRICES"]
 }

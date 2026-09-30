@@ -8,7 +8,7 @@
 /**
  * Implementation of an external service.
  */
-export type ServiceDriver = "JSON_FILE" | "TASENOR" | "OPEN_FIGI";
+export type ServiceDriver = "JSON_FILE" | "TASENOR" | "OPEN_FIGI" | "COINBASE_PRICES";
 /**
  * Kind of queries a service answers.
  */
