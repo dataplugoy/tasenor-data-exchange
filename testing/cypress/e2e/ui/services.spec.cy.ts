@@ -1,6 +1,8 @@
 describe('Services', () => {
   it('Services can be added, tested, edited and deleted', () => {
     cy.login()
+    // Wait for the login to land on the dashboard before navigating.
+    cy.get('[data-cy="FlowPlan-TITO Testing"]').should('exist')
     cy.get('[data-cy="Menu-Services"]').click()
     cy.get('[data-cy="Service-Test Files"]').should('exist')
 
