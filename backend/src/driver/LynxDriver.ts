@@ -1,3 +1,4 @@
+import hash from 'object-hash'
 import { BatchModel } from '../models/BatchModel'
 import { InputItemData } from '../types/API/InputItem'
 import { LynxDriverSettings } from '../types/DriverSettings'
@@ -34,6 +35,14 @@ export class LynxDriver extends ManualUploadDriver {
     }
     this.version = 1
     return lynxItems(parseLynxRows(text), lynxPeriod(text)?.start || null)
+  }
+
+  /**
+   * Statements are cumulative: the same event appears in all later statements of the year. Its key identifies it,
+   * so that also statements read with a newer version of the parser (having more fields) are recognized.
+   */
+  inputHash(input: InputItemData): string {
+    return hash({ Key: input.fields.Key }, { algorithm: 'sha1' })
   }
 
   answerKey(input: InputItemModel): string {

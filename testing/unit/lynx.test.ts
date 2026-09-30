@@ -100,6 +100,10 @@ describe('Lynx', () => {
     const batch = createBatchFrom('Lynx-statement.csv')
     const items = await driver.itemizeInput(batch)
     expect(items.length).toBe(21)
+    // Duplicates are recognized by the key only.
+    const hashes = items.map(i => driver.inputHash(i))
+    expect(new Set(hashes).size).toBe(21)
+    expect(driver.inputHash({ ...items[3], fields: { ...items[3].fields, Extra: 1 } })).toBe(hashes[3])
   })
 
   test('default rules', async () => {
