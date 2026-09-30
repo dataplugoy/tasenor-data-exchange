@@ -4,6 +4,7 @@ import { Setup } from '../Types/API/Setup'
 import { Trans, useTranslation } from 'react-i18next'
 import { Output } from '@mui/icons-material'
 import { OutputDestination } from '../Types/API/OutputDestination'
+import { ProcountorOutputSettings, TasenorOutputSettings } from '../Types/API/OutputDestinationSettings'
 import { useApp } from '../Hooks/useApp'
 import { usePATCH } from '../Hooks/useNet'
 
@@ -18,7 +19,7 @@ type TasenorOutputSettingsCardProps = OutputSettingsCardProps & {
 
 const TasenorOutputSettingsCard = (props: TasenorOutputSettingsCardProps): React.JSX.Element => {
   const { t } = useTranslation()
-  const settings = props.output.settings || {}
+  const settings = (props.output.settings || {}) as Partial<TasenorOutputSettings>
   const [host, setHost] = useState(settings.host || '')
   const [user, setUser] = useState(settings.user || '')
   const [password, setPassword] = useState(settings.password || '')
@@ -48,7 +49,7 @@ type ProcountorOutputSettingsCardProps = OutputSettingsCardProps & {
 
 const ProcountorOutputSettingsCard = (props: ProcountorOutputSettingsCardProps): React.JSX.Element => {
   const { t } = useTranslation()
-  const settings = props.output.settings || {}
+  const settings = (props.output.settings || {}) as Partial<ProcountorOutputSettings>
   const [apiKey, setApiKey] = useState(settings.apiKey || '')
   const [autoApprove, setAutoApprove] = useState(!!settings.autoApprove)
   const app = useApp()

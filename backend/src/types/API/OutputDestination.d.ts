@@ -5,17 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type OutputDestinationSettings =
-  | {}
-  | {
-      host: string;
-      user: string;
-      database: string;
-      password: string;
-    }
-  | {
-      apiKey: string;
-    };
+export type OutputDestinationSettings = NoOutputSettings | TasenorOutputSettings | ProcountorOutputSettings;
 
 export interface OutputDestination {
   id?: number;
@@ -24,4 +14,15 @@ export interface OutputDestination {
   settings: OutputDestinationSettings;
   created?: string;
   updated?: string;
+}
+export interface NoOutputSettings {}
+export interface TasenorOutputSettings {
+  host: string;
+  user: string;
+  database: string;
+  password: string;
+}
+export interface ProcountorOutputSettings {
+  apiKey: string;
+  autoApprove?: boolean;
 }
