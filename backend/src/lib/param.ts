@@ -4,12 +4,13 @@ import { ProjectModel } from '../models/ProjectModel'
 import { OutputDestinationModel } from '../models/OutputDestinationModel'
 import { BatchModel } from '../models/BatchModel'
 import { RunModel } from '../models/RunModel'
+import { ServiceModel } from '../models/ServiceModel'
 
 /**
  * A middleware checking for proper id parameter.
  * @returns ID checker middleware function.
  */
-export const param = (what: 'runId' | 'batchId' | 'flowPlanId' | 'projectId' | 'outputDestinationId') => {
+export const param = (what: 'runId' | 'batchId' | 'flowPlanId' | 'projectId' | 'outputDestinationId' | 'serviceId') => {
   return async (req, res, next) => {
     const id = `${req.params.id}`
 
@@ -50,6 +51,13 @@ export const param = (what: 'runId' | 'batchId' | 'flowPlanId' | 'projectId' | '
       case 'projectId':
         res.locals.project = await ProjectModel.get(res.locals.id)
         if (!res.locals.project || res.locals.project.data.userId !== res.locals.userId) {
+          return res.sendStatus(404)
+        }
+        return next()
+
+      case 'serviceId':
+        res.locals.service = await ServiceModel.get(res.locals.id)
+        if (!res.locals.service || res.locals.service.data.userId !== res.locals.userId) {
           return res.sendStatus(404)
         }
         return next()

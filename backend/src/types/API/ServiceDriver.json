@@ -1,0 +1,7 @@
+{
+  "$id": "ServiceDriver.json",
+  "title": "ServiceDriver",
+  "description": "Implementation of an external service.",
+  "type": "string",
+  "enum": ["JSON_FILE", "TASENOR", "OPEN_FIGI"]
+}

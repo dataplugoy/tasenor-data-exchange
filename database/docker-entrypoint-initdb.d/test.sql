@@ -1242,7 +1242,7 @@ SELECT pg_catalog.setval('public.runs_id_seq', 52, true);
 -- Name: services_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.services_id_seq', 1, false);
+SELECT pg_catalog.setval('public.services_id_seq', 1, true);
 
 
 --

@@ -32,6 +32,9 @@ import RemoteId from '../../src/types/API/RemoteId.json'
 import Rule from '../../src/types/API/Rule.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
+import Service from '../../src/types/API/Service.json'
+import ServiceDriver from '../../src/types/API/ServiceDriver.json'
+import ServiceType from '../../src/types/API/ServiceType.json'
 import Settings from '../../src/types/API/Settings.json'
 import Setup from '../../src/types/API/Setup.json'
 import SkipReason from '../../src/types/API/SkipReason.json'
@@ -81,6 +84,9 @@ ajv.addSchema(RemoteId)
 ajv.addSchema(Rule)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
+ajv.addSchema(Service)
+ajv.addSchema(ServiceDriver)
+ajv.addSchema(ServiceType)
 ajv.addSchema(Settings)
 ajv.addSchema(Setup)
 ajv.addSchema(SkipReason)

@@ -1,0 +1,27 @@
+{
+  "title": "TestServiceResponse",
+  "description": "Result of a sample query to each capability of a service.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["capability", "query", "success"],
+    "properties": {
+      "capability": {
+        "$ref": "ServiceType.json"
+      },
+      "query": {
+        "type": "string"
+      },
+      "success": {
+        "type": "boolean"
+      },
+      "result": {
+        "type": "string"
+      },
+      "error": {
+        "type": "string"
+      }
+    }
+  }
+}

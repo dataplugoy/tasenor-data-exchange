@@ -1,0 +1,41 @@
+{
+  "$id": "Service.json",
+  "title": "Service",
+  "description": "An external service of the user. Secrets are never returned, only whether they are set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "driver", "capabilities", "free", "url", "user", "hasPassword", "hasKey"],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "driver": {
+      "$ref": "ServiceDriver.json"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "ServiceType.json"
+      }
+    },
+    "free": {
+      "description": "Free services are also used by the command line tool for all users.",
+      "type": "boolean"
+    },
+    "url": {
+      "type": "string"
+    },
+    "user": {
+      "type": "string"
+    },
+    "hasPassword": {
+      "type": "boolean"
+    },
+    "hasKey": {
+      "type": "boolean"
+    }
+  }
+}
