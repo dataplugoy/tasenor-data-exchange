@@ -78,6 +78,14 @@ export class Service {
   }
 
   /**
+   * Capabilities in use: the ones selected in the settings or all implemented.
+   */
+  getEnabledCapabilities(): ServiceType[] {
+    const all = this.getCababilities()
+    return this.settings.capabilities ? all.filter(c => this.settings.capabilities?.includes(c)) : all
+  }
+
+  /**
    * Construct standard default headers for requests.
    */
   protected headers(): Record<string, string> {

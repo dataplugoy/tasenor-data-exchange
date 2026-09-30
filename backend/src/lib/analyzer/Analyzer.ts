@@ -158,7 +158,7 @@ export class Analyzer {
       this.services[cabapility] = []
     })
     services.forEach(service => {
-      service.getCababilities().forEach(cabapility => {
+      service.getEnabledCapabilities().forEach(cabapility => {
         this.services[cabapility].push(service)
       })
     })

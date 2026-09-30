@@ -21,6 +21,13 @@ export interface Service {
   id: number;
   name: string;
   driver: ServiceDriver;
+  /**
+   * Capabilities the driver provides.
+   */
+  available: ServiceType[];
+  /**
+   * Capabilities in use.
+   */
   capabilities: ServiceType[];
   /**
    * Free services are also used by the command line tool for all users.

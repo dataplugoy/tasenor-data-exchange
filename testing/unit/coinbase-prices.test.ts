@@ -75,4 +75,13 @@ describe('Coinbase prices', () => {
     analyzer.setServices([new Failing({ url: '' })])
     await expect(analyzer.askService(query('BTC'))).rejects.toThrow('Failing: Request failed with status code 403')
   })
+
+  test('analyzer uses only the capabilities in use', async () => {
+    const prices = new StubPrices(['BTC-EUR'], { 'BTC-EUR:60': [[T - 30, 0, 0, 0, 60000, 1]] })
+    const limited = new StubPrices(['BTC-EUR'], { 'BTC-EUR:60': [[T - 30, 0, 0, 0, 1, 1]] })
+    ;(limited as unknown as { settings: { capabilities: string[] } }).settings.capabilities = []
+    const analyzer = new Analyzer({ currency: 'EUR', language: 'en' }, new Stock({}), {})
+    analyzer.setServices([limited, prices])
+    expect((await analyzer.askService(query('BTC'))).value.toString()).toBe('60000')
+  })
 })
