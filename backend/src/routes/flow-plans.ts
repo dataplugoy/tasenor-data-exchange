@@ -27,7 +27,7 @@ import { RuleModel } from '../models/RuleModel'
 import { Notes } from '../types/API/Notes'
 import { t } from '../lib/i18n/t'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 router.post('/',
   authorize(),

@@ -2,7 +2,7 @@ import express from 'express'
 import { authorize } from '../lib/authorize'
 import { param } from '../lib/param'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 router.get('/:id',
   authorize(),

@@ -7,7 +7,7 @@ import outputDestinationRoute from './output-destinations'
 import questionsRoute from './questions'
 import runRoute from './runs'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 router.use('/auth', authRoute)
 router.use('/batches', batchRoute)

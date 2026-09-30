@@ -5,7 +5,7 @@ import { error } from '@tasenor/common'
 import OutputDestinationSettingsRequest from '../../src/types/API/output-destinations/OutputDestinationSettingsRequest.json'
 import { validate } from '../lib/validate'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 router.get('/:id/accounts',
   authorize(),

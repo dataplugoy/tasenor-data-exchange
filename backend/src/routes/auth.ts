@@ -7,7 +7,7 @@ import { ProjectModel } from '../models/ProjectModel'
 import prisma from '@prisma/client'
 import { validate } from '../lib/validate'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 /**
  * Login attempt returns token if successful.
