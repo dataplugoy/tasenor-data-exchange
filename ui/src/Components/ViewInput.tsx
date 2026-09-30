@@ -13,13 +13,13 @@ export const ViewInput = (props: ViewInputProps): React.JSX.Element => {
   const data: InputItemData = clone(props.item.data)
 
   return <Box sx={{ py: 1 }}>
-      <Box>
-        <><Trans>Line #</Trans>{data.line}: {data.time} {data.text}  {data.total}</>
-      </Box>
-      <Box>
-        <pre>
-          {JSON.stringify(data.fields, null, 2)}
-        </pre>
-      </Box>
+    <Box>
+      <><Trans>Line #</Trans>{data.line}: {data.time} {data.text}  {data.total}</>
     </Box>
+    <Box>
+      <pre>
+        {JSON.stringify(data.fields, null, 2)}
+      </pre>
+    </Box>
+  </Box>
 }

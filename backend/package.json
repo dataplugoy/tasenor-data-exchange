@@ -7,8 +7,8 @@
     "dev": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run migrate && DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex NODE_ENV=dev pnpm run api",
     "api": "while true; do npx tsx --watch src/Server.ts; done",
     "docker": "bin/wait-for-db.sh && pnpm run migrate && pnpm run api",
-    "fix": "eslint --fix src/**/*.ts",
-    "lint": "eslint src/**/*.ts",
+    "fix": "eslint --fix 'src/**/*.ts'",
+    "lint": "eslint 'src/**/*.ts'",
     "prisma-client": "prisma generate",
     "migrate": "prisma db push --accept-data-loss"
   },
@@ -46,6 +46,8 @@
     "tsx": "^4.23.15"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/argparse": "^2.0.17",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
@@ -55,13 +57,11 @@
     "@types/jwa": "^2.0.3",
     "@types/luxon": "^3.7.6",
     "@types/node": "^24.19.0",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "eslint": "^8.57.1",
-    "eslint-config-semistandard": "^17.0.0",
-    "eslint-plugin-node": "^11.1.0",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
     "prisma": "^7.10.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

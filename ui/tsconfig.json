@@ -2,6 +2,7 @@
     "extends": "@tasenor/config/tsx",
     "compilerOptions": {
       "outDir": "dist",
+      "strict": false,
     },
     "include": [
       "./src/**/*",

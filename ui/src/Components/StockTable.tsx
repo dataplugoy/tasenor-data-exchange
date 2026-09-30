@@ -106,22 +106,22 @@ export const StockTable = (props: StockTableProps): React.JSX.Element => {
                 }
                 {
                   editing &&
-                    <TableCell>
-                      <TextField size="small" sx={{ width: '8rem' }}
-                        value={stock[acc][ticker].value}
-                        onChange={e => {
-                          stock[acc][ticker].value = e.target.value
-                          setRefresh(refresh + 1)
-                        }}
-                        onBlur={() => {
-                          stock[acc][ticker].value = parseFloat(stock[acc][ticker].value)
-                          if (isNaN(stock[acc][ticker].value)) {
-                            stock[acc][ticker].value = 0
-                          }
-                          setRefresh(refresh + 1)
-                        }}
-                      />
-                    </TableCell>
+                  <TableCell>
+                    <TextField size="small" sx={{ width: '8rem' }}
+                      value={stock[acc][ticker].value}
+                      onChange={e => {
+                        stock[acc][ticker].value = e.target.value
+                        setRefresh(refresh + 1)
+                      }}
+                      onBlur={() => {
+                        stock[acc][ticker].value = parseFloat(stock[acc][ticker].value)
+                        if (isNaN(stock[acc][ticker].value)) {
+                          stock[acc][ticker].value = 0
+                        }
+                        setRefresh(refresh + 1)
+                      }}
+                    />
+                  </TableCell>
                 }
 
                 <TableCell align="right">{stock[acc][ticker].amount ? money(stock[acc][ticker].value / stock[acc][ticker].amount, currency, language) : <>&mdash;</>}</TableCell>

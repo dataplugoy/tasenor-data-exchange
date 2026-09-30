@@ -77,7 +77,7 @@ function compileCondition(condition: MappingCondition): string {
     case 'regex': {
       const re = string(condition, value)
       try {
-        // eslint-disable-next-line no-new
+
         new RegExp(re)
       } catch (err) {
         throw new MappingError(`Invalid regular expression ${JSON.stringify(re)} for field '${field}'.`)

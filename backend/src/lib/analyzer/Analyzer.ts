@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import prisma from '@prisma/client'
 import clone from 'clone'
 import { JsonValue } from '@prisma/client/runtime/client'
@@ -395,7 +394,7 @@ export class Analyzer {
       plan = await FlowPlanModel.get(this.runtimeOptions.flowPlanId as number)
     } catch (err) {
       if (err instanceof DbException) {
-        throw new Error(`Error with DB. If you are runnig a test, please define setup variable 'debtAccounts' for '${currency}'.`)
+        throw new Error(`Error with DB. If you are runnig a test, please define setup variable 'debtAccounts' for '${currency}'.`, { cause: err })
       }
       throw err
     }

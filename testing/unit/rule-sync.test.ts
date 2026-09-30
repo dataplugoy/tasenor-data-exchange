@@ -12,7 +12,7 @@ const FILE = 'NordnetDriver.json'
 const driverRules = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'backend', 'src', 'driver', 'rules', FILE)).toString('utf-8'))
 
 async function markDriverFileChanged() {
-  // eslint-disable-next-line dot-notation
+
   await BaseModel['prismaClient'].flowPlan.update({ where: { id: FLOW }, data: { ruleSourceHash: 'changed' } })
 }
 

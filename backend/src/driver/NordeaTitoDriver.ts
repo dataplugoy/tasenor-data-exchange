@@ -29,7 +29,7 @@ export class NordeaTitoDriver extends ManualUploadDriver {
     if (!batch.data.data) {
       throw new Error(`There is no data in ${batch}.`)
     }
-    // eslint-disable-next-line
+
     const text = Buffer.from(batch.data.data).toString((batch.data.encoding || 'latin1') as BufferEncoding)
     if (!isTito(text)) {
       throw new Error('The file is not a TITO statement.')

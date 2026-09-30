@@ -34,10 +34,10 @@ export const TransactionTable = (props: TransactionTableProps): React.JSX.Elemen
         }
         {
           txs.length === 0 &&
-            <TableRow>
-              <TableCell className="tx"/>
-              <TableCell className="tx" colSpan={TRANSACTION_COLUMNS - 2}><Trans>No transactions</Trans></TableCell>
-            </TableRow>
+          <TableRow>
+            <TableCell className="tx"/>
+            <TableCell className="tx" colSpan={TRANSACTION_COLUMNS - 2}><Trans>No transactions</Trans></TableCell>
+          </TableRow>
         }
       </TableBody>
     </Table>

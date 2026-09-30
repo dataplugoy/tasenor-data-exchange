@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { spawnSync } from 'child_process'
 import { BaseModel } from '../../backend/src/models/BaseModel'
 import { connect } from '../../backend/src/connect'
 import { cwd } from 'process'
@@ -31,7 +32,6 @@ import { Service } from '../../backend/src/lib/services/Service'
  */
 export async function beforeModelTesting(): Promise<void> {
 
-  const { spawnSync } = require('child_process')
   const databaseDir = path.join(cwd(), '..', 'database')
   const run = spawnSync('pnpm', ['-C', databaseDir, 'load'])
   if (run.stderr.toString().trim() !== '') {

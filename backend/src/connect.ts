@@ -13,7 +13,7 @@ export async function connect(db: string | undefined = undefined): Promise<Prism
     throw new Error('DATABASE_URL not set.')
   }
   const url = new URL(db)
-  if (url.protocol !== 'postgresql:'  && url.protocol !== 'postgres:') {
+  if (url.protocol !== 'postgresql:' && url.protocol !== 'postgres:') {
     throw new Error(`Cannot handle database URL protocol ${url.protocol}.`)
   }
 

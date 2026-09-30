@@ -35,13 +35,13 @@ export const FlowPlansCard = (props: FlowPlansCardProps): React.JSX.Element => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {
-            plans.map(plan =>
-              <TableRow data-cy={`FlowPlan-${plan.title}`} key={plan.id} hover onClick={() => onClickRow(plan.id)}>
-                <TableCell>{plan.title}</TableCell>
-              </TableRow>
-            )
-          }
+            {
+              plans.map(plan =>
+                <TableRow data-cy={`FlowPlan-${plan.title}`} key={plan.id} hover onClick={() => onClickRow(plan.id)}>
+                  <TableCell>{plan.title}</TableCell>
+                </TableRow>
+              )
+            }
           </TableBody>
         </Table>
       </CardContent>

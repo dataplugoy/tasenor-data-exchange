@@ -34,11 +34,11 @@ const TasenorOutputSettingsCard = (props: TasenorOutputSettingsCardProps): React
   }
 
   return <Box>
-      <TextField sx={{ my: 0.7 }} required onChange={e => setHost(e.target.value)} fullWidth value={host} name="host" label={t('Tasenor API hostname')}/>
-      <TextField sx={{ my: 0.7 }} required onChange={e => setUser(e.target.value)} fullWidth value={user} name="email" label={t('Tasenor User Email')}/>
-      <TextField sx={{ my: 0.7 }} required onChange={e => setPassword(e.target.value)} fullWidth value={password} name="password" label={t('Tasenor User Password')} type={'password'}/>
-      <TextField sx={{ my: 0.7 }} required onChange={e => setDatabase(e.target.value)} fullWidth value={database} name="database" label={t('Tasenor Database')}/>
-      <Button onClick={onSave}><Trans>Save</Trans></Button>
+    <TextField sx={{ my: 0.7 }} required onChange={e => setHost(e.target.value)} fullWidth value={host} name="host" label={t('Tasenor API hostname')}/>
+    <TextField sx={{ my: 0.7 }} required onChange={e => setUser(e.target.value)} fullWidth value={user} name="email" label={t('Tasenor User Email')}/>
+    <TextField sx={{ my: 0.7 }} required onChange={e => setPassword(e.target.value)} fullWidth value={password} name="password" label={t('Tasenor User Password')} type={'password'}/>
+    <TextField sx={{ my: 0.7 }} required onChange={e => setDatabase(e.target.value)} fullWidth value={database} name="database" label={t('Tasenor Database')}/>
+    <Button onClick={onSave}><Trans>Save</Trans></Button>
   </Box>
 }
 

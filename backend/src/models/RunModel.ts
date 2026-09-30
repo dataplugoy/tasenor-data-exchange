@@ -67,7 +67,7 @@ export class RunModel extends BaseModel<prisma.Run> {
    * Run interrupted by alert.
    * @param err
    */
-  // eslint-disable-next-line
+
   async alert(err: AlertException): Promise<void> {
     this.data.result = 'WAITING'
     const notes = err.notes() as JsonObject

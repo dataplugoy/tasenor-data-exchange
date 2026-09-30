@@ -37,5 +37,5 @@ export function resolveAccount(setup: Setup, code: AccountCode): AccountCode {
 export function splitAccount(code: AccountCode): [AccountCode, string | null] {
 
   const match = /^([A-Z]+)_(.*)/.exec(code)
-  return match === null  ? [code, null] : [match[1] as AccountCode, match[2]]
+  return match === null ? [code, null] : [match[1] as AccountCode, match[2]]
 }

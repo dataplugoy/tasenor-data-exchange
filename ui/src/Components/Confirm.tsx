@@ -21,7 +21,7 @@ interface ConfirmProps {
 export const Confirm = (props: ConfirmProps): React.JSX.Element => {
   const { children, title, open, areYouSure, onClose, onSubmit } = props
   const { t } = useTranslation()
-  const [disabled,] = useState(false)
+  const [disabled] = useState(false)
 
   const cancelText = props.cancelText || t('Cancel')
   const okText = props.okText || t('OK')
@@ -45,16 +45,16 @@ export const Confirm = (props: ConfirmProps): React.JSX.Element => {
         <DialogContentText sx={{ mb: 2 }}>
           {children}
           {areYouSure && <Box component="span" sx={{ display: 'block', fontWeight: 'bold', fontSize: '110%' }}>
-              <Trans>Are You sure?</Trans>
-            </Box>
+            <Trans>Are You sure?</Trans>
+          </Box>
           }
         </DialogContentText>
       </DialogContent>
 
       <DialogActions>
-          <Button disabled={disabled} data-cy="DialogButton-Cancel" variant="outlined" onClick={() => onClose()}>{cancelText}</Button>
-          <Button disabled={disabled} data-cy="DialogButton-OK" onClick={onOk}>{okText}</Button>
-        </DialogActions>
+        <Button disabled={disabled} data-cy="DialogButton-Cancel" variant="outlined" onClick={() => onClose()}>{cancelText}</Button>
+        <Button disabled={disabled} data-cy="DialogButton-OK" onClick={onOk}>{okText}</Button>
+      </DialogActions>
     </Dialog>
   )
 }

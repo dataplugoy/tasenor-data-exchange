@@ -80,7 +80,6 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       throw new Error(`Cannot parse CSV, since there is no encoding detected in ${this}.`)
     }
 
-    // eslint-disable-next-line
     let data = Buffer.from(this.data.data).toString(this.data.encoding as BufferEncoding)
     if (!fullText) {
       data = data.split('\n')[0]
@@ -113,7 +112,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
   /**
    * Get the CSV presentation of the data.
    */
-  async parseCsv(options: CsvOptions = {}): Promise<string[][] | Record<string, string>[] | { raw: string, record: Record<string, string>}[]> {
+  async parseCsv(options: CsvOptions = {}): Promise<string[][] | Record<string, string>[] | { raw: string, record: Record<string, string> }[]> {
 
     if (this.data.data === null) {
       throw new Error(`Cannot parse CSV, since there is no data in ${this}.`)
@@ -122,7 +121,6 @@ export class BatchModel extends BaseModel<prisma.Batch> {
       throw new Error(`Cannot parse CSV, since there is no encoding detected in ${this}.`)
     }
 
-    // eslint-disable-next-line
     const data = Buffer.from(this.data.data).toString(this.data.encoding as BufferEncoding)
     if (options.regexMatch) {
       if (!options.regexMatch.test(data)) {
@@ -142,8 +140,8 @@ export class BatchModel extends BaseModel<prisma.Batch> {
    * Similar to parseCsv(), but columnwise result.
    * @param options
    */
-  async parseCsvColumns(options: CsvOptions = {}): Promise<{ raw: string, record: Record<string, string>}[]> {
-    return this.parseCsv({ columns: true, raw: true, ...options }) as unknown as { raw: string, record: Record<string, string>}[]
+  async parseCsvColumns(options: CsvOptions = {}): Promise<{ raw: string, record: Record<string, string> }[]> {
+    return this.parseCsv({ columns: true, raw: true, ...options }) as unknown as { raw: string, record: Record<string, string> }[]
   }
 
   /**

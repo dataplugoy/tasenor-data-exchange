@@ -35,19 +35,19 @@ export const QuestionEnumPanel = (props: QuestionEnumPanelProps): React.JSX.Elem
         {!noHelp && <FormHelperText>{help}</FormHelperText>}
         <FormLabel id={`label-${variable}`}>{label}</FormLabel>
         <RadioGroup aria-labelledby={`label-${variable}`}>
-        {
-          options.map(option =>
-            <FormControlLabel
-              key={option}
-              value={option}
-              checked={selected !== undefined && selected === option}
-              data-cy={`Option-${variable}-${option}`}
-              control={<Radio />}
-              label={t(`Option-${variable}-${option}`) === `Option-${variable}-${option}` ? t(`Option-${option}`) : t(`Option-${variable}-${option}`)}
-              onChange={onChange}
-            />
-          )
-        }
+          {
+            options.map(option =>
+              <FormControlLabel
+                key={option}
+                value={option}
+                checked={selected !== undefined && selected === option}
+                data-cy={`Option-${variable}-${option}`}
+                control={<Radio />}
+                label={t(`Option-${variable}-${option}`) === `Option-${variable}-${option}` ? t(`Option-${option}`) : t(`Option-${variable}-${option}`)}
+                onChange={onChange}
+              />
+            )
+          }
         </RadioGroup>
       </FormControl>
     </FormGroup>

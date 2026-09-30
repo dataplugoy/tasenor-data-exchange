@@ -61,7 +61,7 @@ export const AccountGroupingCard = (props: AccountGroupingCardProps): React.JSX.
       <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleProfitAccount"/>
       <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleExpenseAccount"/>
       <AccountGroupingToggle onChange={onChange} setup={setup} variable="singleDividendAccount"/>
-     <Button onClick={onSave}><Trans>Save</Trans></Button>
+      <Button onClick={onSave}><Trans>Save</Trans></Button>
     </CardContent>
   </Card>
 }

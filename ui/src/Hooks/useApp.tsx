@@ -34,7 +34,7 @@ export type MessageType = 'error' | 'warning' | 'info'
  * Content of the message.
  */
 export type Message = {
-  type: MessageType,
+  type: MessageType
   text: string
 }
 
@@ -83,7 +83,7 @@ export const useApp = () => useContext(AppContext)
  */
 export const AppProvider = (props: { children: ReactNode }): React.JSX.Element => {
   const [messages, setMessages] = useState<Message[]>([])
-  const [timer, setTimer] = useState<null|NodeJS.Timeout>(null)
+  const [timer, setTimer] = useState<null | NodeJS.Timeout>(null)
   const [dimming, setDimming] = useState(false)
   const [project, setProject] = useLocalStorage<ProjectResponse>('project', DEFAULT_PROJECT)
   const [auth, setAuth] = useLocalStorage<AuthResponse>('auth', DEFAULT_AUTH)

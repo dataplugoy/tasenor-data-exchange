@@ -51,7 +51,7 @@ export class ManualUploadDriver extends InputDriver {
    * @param csv
    * @param options
    */
-  preProcess(csv: { raw: string, record: Record<string, string | number | null>}[], options: PreProcessOptions): void {
+  preProcess(csv: { raw: string, record: Record<string, string | number | null> }[], options: PreProcessOptions): void {
     // Fill in defaults.
     options.defaults && Object.keys(options.defaults).forEach(field => {
       csv.forEach(line => {

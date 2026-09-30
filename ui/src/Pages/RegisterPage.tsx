@@ -67,8 +67,8 @@ export const RegisterPage = (): React.JSX.Element => {
       <TextField fullWidth onChange={e => setCountry(e.target.value)} value={country} name="country" label={t('Country')}/>
 
       <FormControlLabel control={
-          <Switch checked={spam} onChange={() => setSpam(!spam)} />
-        } label={<FormLabel><Trans>Receive product update information via email (no marketing)?</Trans></FormLabel>} />
+        <Switch checked={spam} onChange={() => setSpam(!spam)} />
+      } label={<FormLabel><Trans>Receive product update information via email (no marketing)?</Trans></FormLabel>} />
 
       <Button sx={{ mt: 2 }} onClick={onRegister} variant="outlined"><Trans>Register</Trans></Button>
     </Box>
