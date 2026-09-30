@@ -5,5 +5,12 @@
       "value": 0,
       "reason": "Statement shows 114 shares transferred in, but 230 held from June (dividend accruals) and given in the merger. The acquisition of 116 shares is missing from the statement."
     }
+  },
+  "Dataplug-2024-Coinbase": {
+    "BSV": {
+      "amount": 0.33363887,
+      "value": 0,
+      "reason": "BSV is sent from Coinbase but it is not in the initial stock (bookkeeper ends with -0.33363887 BSV)."
+    }
   }
 }

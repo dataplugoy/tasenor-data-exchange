@@ -3,7 +3,9 @@
  */
 import { execFileSync, spawnSync } from 'child_process'
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
+import { isCurrency } from '@tasenor/common'
 
 export const ROOT = path.resolve(__dirname, '..', '..')
 export const DB = 'postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex'
@@ -113,7 +115,7 @@ export function bookkeeperCategories(settings: Record<string, unknown>, statemen
     let m
     if (/^account\.fee\./.test(key)) continue
     if ((m = /^account\.\w+\.currency\.([A-Z]{3})$/.exec(key))) set(account, `CASH_${m[1]}`)
-    else if (/^account\.\w+\.(stock|short)\./.test(key)) set(account, 'STOCK')
+    else if (/^account\.\w+\.(stock|short|crypto)\./.test(key)) set(account, 'STOCK')
     else if (/^account\.\w+\.external\./.test(key)) set(account, 'EXTERNAL')
     else if ((m = /^account\.\w+\.statement\.(\w+)$/.exec(key))) set(account, statements[m[1]] || m[1])
   }
@@ -345,19 +347,19 @@ export function reportPairs(pairs: Pair[], known: Record<string, string>): [numb
  * Compare final stock amounts.
  * @returns Number of differences.
  */
-export function compareStock(flow: string, initStock: Record<string, { amount: number }>, finalStock: Record<string, { amount: number }>, renames: Record<string, string>, known: Record<string, string> = {}): number {
+export function compareStock(flow: string, initStock: Record<string, { amount: number }>, finalStock: Record<string, { amount: number }>, renames: Record<string, string>, known: Record<string, string> = {}, account = 'STOCK'): number {
   // Output may contain log lines and warnings around the JSON object.
   const ledgerOut = tadex('ledger', flow, '--stock', '--json')
   const ledger = JSON.parse(ledgerOut.substring(ledgerOut.indexOf('{'), ledgerOut.lastIndexOf('}') + 1))
   const allTickers = new Set<string>([
     ...Object.keys(finalStock),
     ...Object.keys(initStock).map(t => renames[t] || t),
-    ...Object.keys(ledger).filter(k => k.startsWith('STOCK: ')).map(k => k.substring(7)),
+    ...Object.keys(ledger).filter(k => k.startsWith(`${account}: `)).map(k => k.substring(account.length + 2)),
   ])
   let failed = 0
   for (const ticker of allTickers) {
     const initial = Object.entries(initStock).filter(([t]) => (renames[t] || t) === ticker).reduce((sum, [, s]) => sum + s.amount, 0)
-    const change = parseFloat((ledger[`STOCK: ${ticker}`] || '0 x 0').split(' x ')[0])
+    const change = parseFloat((ledger[`${account}: ${ticker}`] || '0 x 0').split(' x ')[0])
     const want = finalStock[ticker]?.amount || 0
     if (Math.abs(initial + change - want) > 1e-9) {
       const reason = known[`stock:${ticker}`]
@@ -367,4 +369,109 @@ export function compareStock(flow: string, initStock: Record<string, { amount: n
     }
   }
   return failed
+}
+
+/**
+ * Write bookkeeper rates `{ date: { asset: rate } }` for the JSON file rate service as `<name>-EUR.json`. Days
+ * without a rate use the latest earlier rate.
+ * @returns Currencies and crypto assets found.
+ */
+export function writeRates(name: string, rates: Record<string, Record<string, string | number>>): { currencies: string[], crypto: string[] } {
+  const byAsset: Record<string, Record<string, string>> = {}
+  for (const [date, values] of Object.entries(rates)) {
+    for (const [asset, rate] of Object.entries(values)) {
+      byAsset[asset] = byAsset[asset] || {}
+      byAsset[asset][date] = `${rate}`
+    }
+  }
+  for (const [asset, known] of Object.entries(byAsset)) {
+    const dates = Object.keys(known).sort()
+    const filled: Record<string, string> = {}
+    let latest = known[dates[0]]
+    const end = Date.parse(`${dates[dates.length - 1].substring(0, 4)}-12-31T00:00:00Z`)
+    for (let day = Date.parse(`${dates[0].substring(0, 4)}-01-01T00:00:00Z`); day <= end; day += 24 * 60 * 60 * 1000) {
+      const date = new Date(day).toISOString().substring(0, 10)
+      latest = known[date] || latest
+      filled[date] = latest
+    }
+    byAsset[asset] = filled
+  }
+  const currencies = Object.keys(byAsset).filter(a => isCurrency(a))
+  const crypto = Object.keys(byAsset).filter(a => !isCurrency(a))
+  fs.writeFileSync(path.join(ROOT, 'backend', 'samples', `${name}-EUR.json`), JSON.stringify({
+    crypto: Object.fromEntries(crypto.map(a => [a, byAsset[a]])),
+    currency: Object.fromEntries(currencies.map(a => [a, byAsset[a]])),
+  }, null, 2))
+  return { currencies, crypto }
+}
+
+/**
+ * Options for comparing an import of one file against a bookkeeper import test.
+ */
+export interface ImportComparison {
+  flow: string
+  // The file to upload.
+  input: string
+  // Instrument names to use as they are.
+  tickers: string[]
+  // Account code for the initial stock.
+  stockAccount: string
+  // Categories of bookkeeper statement accounts and TaDeX accounts.
+  statements: Record<string, Category>
+  tadexCategories: Record<string, Category>
+  // Key of the TaDeX segment from the input fields.
+  segmentKey: (fields: Record<string, string>) => string
+  // Additional settings for the flow.
+  settings?: Record<string, unknown>
+  // Additional account grouping for the flow.
+  grouping?: Record<string, boolean>
+}
+
+/**
+ * Run the import in TaDeX with the initial state and rates of the bookkeeper test and compare the results.
+ * @returns Exit code.
+ */
+export function compareImport(test: BookkeeperTest, opts: ImportComparison): number {
+  const RATES = 'parity-rates'
+  const categories = bookkeeperCategories(test.settings, opts.statements)
+  const category = (account: string): Category => categories[account] || `BK_${account}`
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'tadex-parity-'))
+
+  // Corrections of the initial stock for events missing from the source.
+  const initStock = combinedStock(test.stock)
+  const corrections = readJson<Record<string, Record<string, { amount: number, value: number, reason: string }>>>(__dirname, 'stock-corrections.json', {})[test.name] || {}
+  for (const [ticker, fix] of Object.entries(corrections)) {
+    console.log(`CORRECTION stock ${ticker} ${fix.amount > 0 ? '+' : ''}${fix.amount}: ${fix.reason}`)
+    initStock[ticker] = { amount: (initStock[ticker]?.amount || 0) + fix.amount, value: (initStock[ticker]?.value || 0) + fix.value }
+  }
+  writeStock(path.join(work, 'stock.csv'), initStock, {})
+  const rates = writeRates(RATES, readJson(test.dir, 'rates.json', {}))
+  const debts = debtAccounts(test.settings, ['EUR', ...rates.currencies])
+  writeBalances(path.join(work, 'balance.csv'), test, category, debts)
+
+  // Run TaDeX.
+  console.log(`Running ${test.name} (work dir ${work}).`)
+  loadDatabase()
+  sql(`update services set settings = '{"url": "file:///${RATES}.json"}' where driver = 'JSON_FILE'`)
+  tadex('setup', opts.flow, JSON.stringify({
+    accountGrouping: { singleStockAccount: true, singleFeeAccount: true, singleProfitAccount: true, singleLossAccount: true, singleDividendAccount: true, singleTaxAccount: true, ...opts.grouping },
+    tickers: Object.fromEntries(opts.tickers.map(t => [t, t])),
+    settings: { debtAccounts: debts, allowShortSelling: !!test.settings.allowShortSelling, ...opts.settings }
+  }))
+  tadex('init-stock', opts.flow, opts.stockAccount, path.join(work, 'stock.csv'))
+  tadex('init-balance', opts.flow, path.join(work, 'balance.csv'))
+  tadex('run', opts.flow)
+  tadex('upload', opts.flow, opts.input)
+  if (runFlow(opts.flow, work) === null) {
+    console.log(`FAILED: TaDeX run did not complete for ${test.name}.`)
+    return 1
+  }
+
+  const bk = bookkeeperSegments(test.expected, category)
+  const td = tadexSegments(collectItems(opts.flow), opts.segmentKey, account => tadexCategory(account, opts.tadexCategories))
+  const [matched, knownCount, failed] = reportPairs(matchSegments(bk, td), test.known)
+  const stockFailed = compareStock(opts.flow, initStock, combinedStock(test.endStock), {}, test.known, opts.stockAccount)
+
+  console.log(`${test.name}: ${matched} transactions match, ${knownCount} known differences, ${failed + stockFailed} unexplained differences.`)
+  return failed + stockFailed ? 1 : 0
 }

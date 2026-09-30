@@ -15,8 +15,10 @@ import { AccountCode } from '../../../types/AccountCode'
  * @param time
  * @param input
  *
- * Requires fields `assetOut`, `assetAmountOut`, `assetTypeOut`, `assetIn`, `assetAmountIn`, `assetTypeIn` and
- * `value` (with `valueAsset`) for the value of the received asset.
+ * Requires fields `assetOut`, `assetAmountOut`, `assetTypeOut`, `assetIn`, `assetAmountIn`, `assetTypeIn`.
+ * The value of the received amount is `value` (with `valueAsset`) or, if not given, from the rate of the received asset.
+ * Optional `fee` with `feeAsset` for the fee of the trade. The given amount or the received amount is expected to
+ * reflect the fee already, i.e. the fee is part of the exchange and the result is `value + fee - cost`.
  */
 export async function trade(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
@@ -26,7 +28,8 @@ export async function trade(this: Analyzer, time: DateTime, input: UnifiedItemDa
   const { assetOut, assetAmountOut, assetTypeOut, assetIn, assetAmountIn, assetTypeIn } = input
   const tickerOut = this.validateTicker(assetOut as string)
   const tickerIn = this.validateTicker(assetIn as string)
-  const value = await this.validateValue(true)
+  const value = await this.validateValueOrAsset(tickerIn, dec(assetAmountIn), true)
+  const [fee, feeAsset] = await this.validateFee(true)
 
   const accountOut = this.resolveAccount(`${assetTypeOut}_${tickerOut}`)
   const old = this.stock.getAsset(accountOut, tickerOut)
@@ -63,19 +66,30 @@ export async function trade(this: Analyzer, time: DateTime, input: UnifiedItemDa
     },
   ]
 
-  if (value.gt(cost)) {
+  if (!fee.isZero()) {
     lines.push({
-      account: `PROFIT_${tickerOut}` as AccountCode,
-      amount: value.minus(cost).negated().toString(),
+      account: `FEE_${feeAsset || this.currency}` as AccountCode,
+      amount: fee.toString(),
       text,
       extras: {},
     })
   }
 
-  if (cost.gt(value)) {
+  // Market value of the given asset.
+  const price = value.plus(fee)
+  if (price.gt(cost)) {
+    lines.push({
+      account: `PROFIT_${tickerOut}` as AccountCode,
+      amount: price.minus(cost).negated().toString(),
+      text,
+      extras: {},
+    })
+  }
+
+  if (cost.gt(price)) {
     lines.push({
       account: `LOSS_${tickerOut}` as AccountCode,
-      amount: cost.minus(value).toString(),
+      amount: cost.minus(price).toString(),
       text,
       extras: {},
     })

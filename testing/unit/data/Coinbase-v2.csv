@@ -1,0 +1,11 @@
+"You can use this transaction report to inform your likely tax obligations. For US customers, Sells, Converts, Rewards Income, Learning Rewards, and Donations are taxable events. For final tax obligations, please consult your tax advisor."
+
+
+
+Transactions
+User,test@example.com,000000000000000000000000
+
+Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price Currency,Spot Price at Transaction,Subtotal,Total (inclusive of fees and/or spread),Fees and/or Spread,Notes
+2023-12-30T10:00:46Z,Buy,BTC,0.05,EUR,40000.00,2000.00,2030.00,30.00,"Bought 0.05 BTC for €2,030.00 EUR"
+2023-10-26T18:13:17Z,Learning Reward,GRT,10.5,EUR,0.100000,1.050000,1.050000,0.00,Received 10.5 GRT from Coinbase as a learning reward
+2023-12-13T09:27:21Z,Sell,ADA,1000.5,EUR,0.500000,500.25,492.75,7.50,"Sold 1,000.5000 ADA for €492.75 EUR"

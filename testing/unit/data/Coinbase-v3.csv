@@ -1,0 +1,12 @@
+
+Transactions
+User,Test User,00000000-0000-0000-0000-000000000000
+Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price Currency,Spot Price at Transaction,Subtotal,Total (inclusive of fees and/or spread),Fees and/or Spread,Notes
+2024-03-07 19:36:34 UTC,Sell,ETH,0.25,EUR,4000.00,1000.00,985.00,-15,Sold 0.25 ETH for 985 EUR
+2024-03-07 19:36:34 UTC,Sell,EUR,985,EUR,1.00,1000.00,985.00,-15,Sold 985 EUR for 985 EUR
+2024-03-08 07:51:03 UTC,Receive,USDC,20.5,EUR,0.90,18.45,18.45,0,Received 20.5 USDC from 
+2024-01-11 15:00:16 UTC,Convert,BTC,0.1,EUR,40000.00,3900.00,4000.00,100.00,Converted 0.1 BTC to 2.5 ETH
+2024-01-01 10:00:00 UTC,Buy,BTC,0.1,EUR,35000.00,3500.00,3550.00,50.00,Bought 0.1 BTC for 3550 EUR
+2024-01-01 10:05:00 UTC,Buy,BSV,1,EUR,60.00,60.00,61.00,1.00,Bought 1 BSV for 61 EUR
+2024-01-11 12:15:37 UTC,Send,BSV,0.5,EUR,80.00,40.00,40.00,0,Sent 0.5 BSV to 
+2024-03-07 19:32:35 UTC,Learning Reward,NEAR,0.179420471875841,EUR,5.00,0.90,0.90,0,Received 0.179420471875841 NEAR from Coinbase as a learning reward

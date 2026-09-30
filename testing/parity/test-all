@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Compare TaDeX against the Nordnet, Lynx and TITO import tests of Tasenor Bookkeeper.
+# Compare TaDeX against the Nordnet, Lynx, Coinbase and TITO import tests of Tasenor Bookkeeper.
 #
 # Test data is private and lives in tasenor-qa repository. Its import test directory
 # can be given with QA_IMPORT_DIR (default: tasenor-qa checked out next to this repository).
@@ -27,6 +27,11 @@ for TEST in "$QA_IMPORT_DIR"/*-Lynx/; do
     echo
     npx tsx "$ROOT/testing/parity/compare-lynx.ts" "$TEST" || FAILED=1
   fi
+done
+# Devel-2024-Coinbase is left out: its expectations are from an old plugin version and cannot be recorded again.
+for TEST in "$QA_IMPORT_DIR"/Dataplug-*-Coinbase/; do
+  echo
+  npx tsx "$ROOT/testing/parity/compare-coinbase.ts" "$TEST" || FAILED=1
 done
 for TEST in "$QA_IMPORT_DIR"/*-TITO/; do
   if [ -f "$TEST/transactions.json" ]; then

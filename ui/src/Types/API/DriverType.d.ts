@@ -15,4 +15,5 @@ export type DriverType =
   | "S_PANKKI"
   | "PROCOUNTOR"
   | "NORDEA_TITO"
-  | "LYNX";
+  | "LYNX"
+  | "COINBASE";

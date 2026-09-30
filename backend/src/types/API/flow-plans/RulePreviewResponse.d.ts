@@ -20,6 +20,7 @@ export type UnifiedItemType =
   | "forex"
   | "rename"
   | "split"
+  | "transfer"
   | "skip";
 /**
  * Account involved, if already known.

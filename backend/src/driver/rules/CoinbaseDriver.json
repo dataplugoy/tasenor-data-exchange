@@ -1,0 +1,125 @@
+[
+  {
+    "name": "Deposit",
+    "key": "Deposit",
+    "filter": "Kind == 'Deposit'",
+    "result": {
+      "type": "'deposit'",
+      "value": "Quantity",
+      "valueAsset": "Asset",
+      "service": "'Coinbase'"
+    }
+  },
+  {
+    "name": "Withdrawal",
+    "key": "Withdrawal",
+    "filter": "Kind == 'Withdrawal'",
+    "result": {
+      "type": "'withdrawal'",
+      "value": "Quantity",
+      "valueAsset": "Asset",
+      "service": "'Coinbase'"
+    }
+  },
+  {
+    "name": "Buy",
+    "key": "Buy",
+    "filter": "Kind == 'Buy'",
+    "result": {
+      "type": "'buy'",
+      "value": "Total",
+      "valueAsset": "Currency",
+      "assetIn": "Asset",
+      "assetAmountIn": "Quantity",
+      "assetTypeIn": "'CRYPTO'",
+      "fee": "Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Sell",
+    "key": "Sell",
+    "filter": "Kind == 'Sell'",
+    "result": {
+      "type": "'sell'",
+      "value": "Value",
+      "valueAsset": "Currency",
+      "assetOut": "Asset",
+      "assetAmountOut": "Quantity",
+      "assetTypeOut": "'CRYPTO'",
+      "fee": "Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Trade (v1)",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and version == 1",
+    "result": {
+      "type": "'trade'",
+      "assetOut": "GiveAsset",
+      "assetAmountOut": "FeeAsset == GiveAsset ? GiveQuantity + Fee : GiveQuantity",
+      "assetTypeOut": "'CRYPTO'",
+      "assetIn": "GetAsset",
+      "assetAmountIn": "FeeAsset == GetAsset ? GetQuantity - Fee : GetQuantity",
+      "assetTypeIn": "'CRYPTO'",
+      "fee": "Fee",
+      "feeAsset": "FeeAsset"
+    }
+  },
+  {
+    "name": "Trade",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and version > 1",
+    "result": {
+      "type": "'trade'",
+      "value": "GetValue",
+      "valueAsset": "Currency",
+      "assetOut": "GiveAsset",
+      "assetAmountOut": "GiveQuantity",
+      "assetTypeOut": "'CRYPTO'",
+      "assetIn": "GetAsset",
+      "assetAmountIn": "GetQuantity",
+      "assetTypeIn": "'CRYPTO'",
+      "fee": "Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Reward",
+    "key": "Reward",
+    "filter": "Kind == 'Reward'",
+    "result": {
+      "type": "'buy'",
+      "value": "0",
+      "assetIn": "Asset",
+      "assetAmountIn": "Quantity",
+      "assetTypeIn": "'CRYPTO'",
+      "text": "text"
+    }
+  },
+  {
+    "name": "Send to Own Wallet",
+    "key": "Send",
+    "filter": "Kind == 'Send'",
+    "result": {
+      "type": "'transfer'",
+      "assetOut": "Asset",
+      "assetAmountOut": "Quantity",
+      "assetTypeOut": "'CRYPTO'"
+    }
+  },
+  {
+    "name": "Receive from Own Wallet",
+    "key": "Receive",
+    "filter": "Kind == 'Receive'",
+    "result": {
+      "type": "'transfer'",
+      "value": "Value",
+      "valueAsset": "Currency",
+      "assetIn": "Asset",
+      "assetAmountIn": "Quantity",
+      "assetTypeIn": "'CRYPTO'"
+    }
+  }
+]

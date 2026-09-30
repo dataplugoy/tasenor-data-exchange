@@ -9,7 +9,7 @@ export class TasenorService extends Service {
     return ['CURRENCY_RATES', 'CRYPTO_RATES']
   }
 
-  private async callService<T>(service: string, data: Record<string, string | number>): Promise<T> {
+  protected async callService<T>(service: string, data: Record<string, string | number>): Promise<T> {
     if (!this.settings.token) {
       const resp: { token: Token } = await this.POST('/auth', { user: this.settings.user, password: this.settings.password })
       this.settings.token = resp.token
@@ -24,9 +24,12 @@ export class TasenorService extends Service {
     return res
   }
 
+  /**
+   * Crypto rates change all the time, so the rate is asked at the time of the transaction.
+   */
   async queryCryptoRates(query: CryptoQuery): Promise<CryptoAnswer> {
 
-    const data = { from: query.asset, to: query.valueCurrency, date: query.time.substring(0, 10) }
+    const data = { from: query.asset, to: query.valueCurrency, date: new Date(query.time).toISOString() }
 
     const res = await this.callService<{ rate: number }>('historical-crypto-rate', data)
     return {
@@ -34,6 +37,9 @@ export class TasenorService extends Service {
     }
   }
 
+  /**
+   * Currency rates are daily closing rates.
+   */
   async queryCurrencyRates(query: CurrencyQuery): Promise<CurrencyAnswer | null> {
 
     const data = { from: query.currency, to: query.valueCurrency, date: query.time.substring(0, 10) }

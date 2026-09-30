@@ -110,6 +110,8 @@
   "Delivery has been skipped.": "Toimitus jätetty väliin",
   "Delivery is pending.": "Toimitus odottaa edelleen",
   "Deposit to {{service}}": "Talletus {{service}}-palveluun",
+  "Sent {{amount}} {{asset}} to own wallet": "Siirretty {{amount}} {{asset}} omaan lompakkoon",
+  "Received {{amount}} {{asset}} from own wallet": "Siirretty {{amount}} {{asset}} omasta lompakosta",
   "Exchanged {{out}} {{outAsset}} to {{in}} {{inAsset}}": "Vaihdettu {{out}} {{outAsset}} instrumenttiin {{in}} {{inAsset}}",
   "Description": "Kuvaus",
   "Download": "Nouda",
@@ -235,6 +237,7 @@
   "All Failed": "Kaikki epäonnistui",
   "No Progress": "Ei edistystä",
   "ACCOUNT_BANK": "Pankkitili {{account}}",
+  "ACCOUNT_WALLET": "Oma lompakko palvelun ulkopuolella kohteelle {{asset}}",
   "ACCOUNT_TRANSFER_INTERNAL": "Selvittelytili omien pankkitilien välisille siirroille",
   "ACCOUNT_EXPENSE_BANKING_FEE": "Pankkikulut",
   "ACCOUNT_EXPENSE_SOFTWARE": "Ohjelmistot",
@@ -360,5 +363,6 @@
   "{{count}} of {{checked}} recent lines match.": "{{count}} / {{checked}} viimeisimmästä rivistä täsmää.",
   "ACCOUNT_TAX_VAT_FROM_PURCHASES": "Ostojen arvonlisävero",
   "ACCOUNT_TAX_VAT_FROM_SALES": "Myynnin arvonlisävero",
-  "Upload Lynx Activity Statement": "Lähetä Lynxin tiliote"
+  "Upload Lynx Activity Statement": "Lähetä Lynxin tiliote",
+  "Upload Coinbase Transaction Report": "Lähetä Coinbasen tapahtumaraportti"
 }
