@@ -3,14 +3,14 @@
   "name": "@tasenor/tadex-backend",
   "description": "TaDeX backend",
   "scripts": {
-    "build": "npx tsc --noEmit",
+    "build": "prisma generate && npx tsc --noEmit",
     "dev": "DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex pnpm run migrate && DATABASE_URL=postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex NODE_ENV=dev pnpm run api",
     "api": "while true; do npx tsx --watch src/Server.ts; done",
     "docker": "bin/wait-for-db.sh && pnpm run migrate && pnpm run api",
     "fix": "eslint --fix 'src/**/*.ts'",
     "lint": "eslint 'src/**/*.ts'",
     "prisma-client": "prisma generate",
-    "migrate": "prisma db push --accept-data-loss"
+    "migrate": "prisma db push --accept-data-loss && prisma generate"
   },
   "keywords": [],
   "author": "Dataplug Oy",
