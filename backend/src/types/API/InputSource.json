@@ -20,7 +20,8 @@
         "NORDNET",
         "S_PANKKI",
         "NORDEA_TITO",
-        "LYNX"
+        "LYNX",
+        "COINBASE"
       ]
     },
     "settings": {

@@ -8,7 +8,7 @@
 export interface InputSource {
   id?: number;
   flowPlanId: number;
-  type: "TEST_MOCK" | "ENABLE_BANKING" | "MANUAL_UPLOAD" | "NORDNET" | "S_PANKKI" | "NORDEA_TITO" | "LYNX";
+  type: "TEST_MOCK" | "ENABLE_BANKING" | "MANUAL_UPLOAD" | "NORDNET" | "S_PANKKI" | "NORDEA_TITO" | "LYNX" | "COINBASE";
   settings: {
     [k: string]: unknown;
   };

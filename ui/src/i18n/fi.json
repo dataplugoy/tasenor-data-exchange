@@ -360,5 +360,6 @@
   "{{count}} of {{checked}} recent lines match.": "{{count}} / {{checked}} viimeisimmästä rivistä täsmää.",
   "ACCOUNT_TAX_VAT_FROM_PURCHASES": "Ostojen arvonlisävero",
   "ACCOUNT_TAX_VAT_FROM_SALES": "Myynnin arvonlisävero",
-  "Upload Lynx Activity Statement": "Lähetä Lynxin tiliote"
+  "Upload Lynx Activity Statement": "Lähetä Lynxin tiliote",
+  "Upload Coinbase Transaction Report": "Lähetä Coinbasen tapahtumaraportti"
 }

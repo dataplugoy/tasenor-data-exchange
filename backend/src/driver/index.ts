@@ -14,6 +14,7 @@ import { SPankkiDriver } from './SPankkiDriver'
 import { ProcountorDriver } from './ProcountorDriver'
 import { NordeaTitoDriver } from './NordeaTitoDriver'
 import { LynxDriver } from './LynxDriver'
+import { CoinbaseDriver } from './CoinbaseDriver'
 
 /**
  * Drivers implemented.
@@ -29,6 +30,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   PROCOUNTOR: ProcountorDriver,
   NORDEA_TITO: NordeaTitoDriver,
   LYNX: LynxDriver,
+  COINBASE: CoinbaseDriver,
 }
 
 /**

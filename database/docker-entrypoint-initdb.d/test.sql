@@ -172,7 +172,8 @@ CREATE TYPE public."DriverType" AS ENUM (
     'S_PANKKI',
     'PROCOUNTOR',
     'NORDEA_TITO',
-    'LYNX'
+    'LYNX',
+    'COINBASE'
 );
 
 

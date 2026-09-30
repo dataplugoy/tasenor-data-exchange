@@ -128,6 +128,7 @@ enum DriverType {
   PROCOUNTOR
   NORDEA_TITO
   LYNX
+  COINBASE
 }
 
 model InputSource {
