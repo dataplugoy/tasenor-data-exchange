@@ -5,6 +5,8 @@ import config, { Config } from './config'
 import { connect } from './connect'
 import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
+import { ServiceModel } from './models/ServiceModel'
+import { OutputDestinationModel } from './models/OutputDestinationModel'
 import { error, log } from '@tasenor/common'
 import routes from './routes'
 import Decimal from 'decimal.js'
@@ -30,6 +32,13 @@ class TasenorDataExchangeServer {
     await initI18N()
 
     BaseModel.setDb(await connect())
+
+    // Secrets saved before encryption was used.
+    const services = await ServiceModel.encryptStoredSecrets()
+    const destinations = await OutputDestinationModel.encryptStoredSecrets()
+    if (services || destinations) {
+      log(`Encrypted secrets of ${services} services and ${destinations} output destinations.`)
+    }
 
     // Log requests.
     this.app.use((req, res, next) => {
