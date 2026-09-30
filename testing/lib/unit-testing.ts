@@ -217,7 +217,7 @@ function defaultSetup(): Setup {
   }
 }
 
-export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings, setup: Setup | null = null): Promise<Transaction[]> {
+export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSettings, setup: Setup | null = null, services: Service[] = []): Promise<Transaction[]> {
   const stock = new Stock({})
   const analyzer = new Analyzer(
     config,
@@ -226,6 +226,9 @@ export async function analyzeItems(items: UnifiedItemModel[], config: ProjectSet
     setup || defaultSetup(),
     { userId: 0, flowPlanId: 0 }
   )
+  if (services.length) {
+    analyzer.setServices(services)
+  }
 
   const txs: Transaction[] = []
 

@@ -3,7 +3,8 @@ import { Analyzer } from '../Analyzer'
 import { dec } from '../../utils'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
-import { Transaction } from '../../../types/API/Transaction'
+import { Transaction, TransactionLine } from '../../../types/API/Transaction'
+import { AccountCode } from '../../../types/AccountCode'
 import { sprintf } from 'sprintf-js'
 
 /**
@@ -13,12 +14,30 @@ import { sprintf } from 'sprintf-js'
  * @param input
  *
  * Requires fields (`assetOut` and `assetAmountOut`) or (`assetIn` and `assetAmountIn`).
+ * Optional fields `fee` and `feeAsset` for a fee paid from the currency account of the fee asset.
  */
 export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
   this.validateBasics()
 
   const value = await this.validateValue(true)
+  const [fee, feeAsset] = await this.validateFee(true)
+  const feeLines = (text: string): TransactionLine[] => fee.eq(0)
+    ? []
+    : [
+        {
+          account: `CURRENCY_${feeAsset || this.currency}` as AccountCode,
+          amount: fee.negated().toString(),
+          text,
+          extras: {},
+        },
+        {
+          account: `FEE_${feeAsset || this.currency}` as AccountCode,
+          amount: fee.toString(),
+          text,
+          extras: {},
+        },
+      ]
 
   if (input.assetOut) {
     this.validateRequired('assetOut', 'assetAmountOut')
@@ -41,6 +60,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
           text,
           extras: {},
         },
+        ...feeLines(text),
       ]
     }
 
@@ -65,6 +85,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
           text,
           extras: {},
         },
+        ...feeLines(text),
       ]
     }
   }

@@ -1,1 +1,181 @@
-[]
+[
+  {
+    "name": "Deposit",
+    "key": "Deposit",
+    "filter": "Kind == 'Deposit'",
+    "result": {
+      "type": "'deposit'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "service": "'Lynx'"
+    }
+  },
+  {
+    "name": "Withdrawal",
+    "key": "Withdrawal",
+    "filter": "Kind == 'Withdrawal'",
+    "result": {
+      "type": "'withdrawal'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "service": "'Lynx'"
+    }
+  },
+  {
+    "name": "Deposit Correction",
+    "key": "TransferAdjustment",
+    "filter": "Kind == 'TransferAdjustment' and Amount >= 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "reason": "'CORRECTION_DEPOSIT'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Withdrawal Correction",
+    "key": "TransferAdjustment",
+    "filter": "Kind == 'TransferAdjustment' and Amount < 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "reason": "'CORRECTION_WITHDRAWAL'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Cancelled Trade",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and matches('(^|;)Ca(;|$)', Code)",
+    "result": {
+      "type": "'skip'"
+    }
+  },
+  {
+    "name": "Stock Buy",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and AssetCategory == 'Stocks' and Quantity > 0",
+    "result": {
+      "type": "'buy'",
+      "value": "-Proceeds - Fee",
+      "valueAsset": "Currency",
+      "assetIn": "Symbol",
+      "assetAmountIn": "Quantity",
+      "assetTypeIn": "'STOCK'",
+      "fee": "-Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Stock Sell",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and AssetCategory == 'Stocks' and Quantity < 0",
+    "result": {
+      "type": "'sell'",
+      "value": "Proceeds",
+      "valueAsset": "Currency",
+      "assetOut": "Symbol",
+      "assetAmountOut": "-Quantity",
+      "assetTypeOut": "'STOCK'",
+      "fee": "-Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Forex Buy (Foreign to Local)",
+    "key": "Forex",
+    "filter": "Kind == 'Forex' and Base == currency and Quantity > 0",
+    "result": {
+      "type": "'forex'",
+      "value": "-Proceeds",
+      "valueAsset": "Quote",
+      "assetIn": "Base",
+      "assetAmountIn": "Quantity",
+      "fee": "-Fee",
+      "feeAsset": "FeeCurrency",
+      "rates": "rates(Quote, 1 / Price)"
+    }
+  },
+  {
+    "name": "Forex Sell (Local to Foreign)",
+    "key": "Forex",
+    "filter": "Kind == 'Forex' and Base == currency and Quantity < 0",
+    "result": {
+      "type": "'forex'",
+      "value": "Proceeds",
+      "valueAsset": "Quote",
+      "assetOut": "Base",
+      "assetAmountOut": "-Quantity",
+      "fee": "-Fee",
+      "feeAsset": "FeeCurrency",
+      "rates": "rates(Quote, 1 / Price)"
+    }
+  },
+  {
+    "name": "Dividend",
+    "key": "Dividend",
+    "filter": "Kind == 'Dividend'",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "reason": "'DIVIDEND'",
+      "reasonAsset": "Symbol",
+      "taxType": "'withholding'",
+      "taxAmount": "-Tax",
+      "taxAsset": "Currency"
+    }
+  },
+  {
+    "name": "Interest Expense",
+    "key": "Interest",
+    "filter": "Kind == 'Interest' and Amount <= 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_INTEREST'",
+      "reason": "'INTEREST'"
+    }
+  },
+  {
+    "name": "Credit Interest",
+    "key": "Interest",
+    "filter": "Kind == 'Interest' and Amount > 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_INTEREST'",
+      "reason": "'INTEREST_REFUND'"
+    }
+  },
+  {
+    "name": "Broker Fee",
+    "key": "Fee",
+    "filter": "Kind == 'Fee' and Amount <= 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_BROKER_FEE'",
+      "reason": "'BROKER_FEE'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Broker Fee Refund",
+    "key": "Fee",
+    "filter": "Kind == 'Fee' and Amount > 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_BROKER_FEE'",
+      "reason": "'BROKER_FEE_REFUND'",
+      "text": "Description"
+    }
+  }
+]

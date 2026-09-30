@@ -4,7 +4,8 @@ import path from 'path'
 import { getDriver } from '../../backend/src/driver'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
 import { isLynx, lynxItems, lynxNumber, lynxTime, parseLynxRows } from '../../backend/src/lib/lynx'
-import { createBatchFrom } from '../lib/unit-testing'
+import { JsonFileService } from '../../backend/src/lib/services/JsonFileService'
+import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
 
 const sample = fs.readFileSync(path.join(__dirname, 'data', 'Lynx-statement.csv')).toString('utf-8')
 
@@ -85,5 +86,32 @@ describe('Lynx', () => {
     const batch = createBatchFrom('Lynx-statement.csv')
     const items = await driver.itemizeInput(batch)
     expect(items.length).toBe(19)
+  })
+
+  test('default rules', async () => {
+    const settings = { currency: 'EUR', language: 'en' }
+    const driver = getDriver('LYNX', {}, settings, {}) as InputDriver
+    // Tax adjustments and corporate actions have no default rules yet.
+    const items = (await driver.itemizeInput(createBatchFrom('Lynx-statement.csv')))
+      .filter(i => !['TaxAdjustment', 'CorporateAction'].includes(i.fields.Kind as string))
+    const unifieds = await unifyItems(driver, items, 'LynxDriver.json')
+    const txs = await analyzeItems(unifieds, settings, null, [new JsonFileService({ url: 'file:///lynx-rates.json' })])
+    const summary = txs.map(tx => [tx.time.substring(0, 10), tx.lines[0].text, tx.lines.map(l => `${l.account} ${l.amount}${l.extras.assetChange ? ` (${l.extras.assetChange})` : ''}`)])
+    expect(summary).toStrictEqual([
+      ['2023-01-10', 'Deposit to Lynx', ['CURRENCY_EUR 15000', 'EXTERNAL_LYNX_EUR -15000']],
+      ['2023-01-15', 'Bought 10000.00 EUR in exhcange to USD', ['CURRENCY_USD -9999.99999999999864', 'CURRENCY_EUR 9999.99999999999864', 'CURRENCY_EUR -2', 'FEE_EUR 2']],
+      ['2023-02-01', 'Bought +1000 AAA', ['CURRENCY_USD -9454.5', 'STOCK_AAA 9450 (1000)', 'FEE_USD 4.5']],
+      ['2023-02-03', 'Interest expense', ['CURRENCY_EUR -9.49', 'EXPENSE_INTEREST 9.49']],
+      ['2023-03-01', 'Sold -400 AAA', ['CURRENCY_USD 4315.5', 'STOCK_AAA -3780 (-400)', 'PROFIT_AAA -540', 'FEE_USD 4.5']],
+      ['2023-03-02', 'Sold short -10 BBB', ['CURRENCY_USD 179.1', 'STOCK_BBB -180 (-10)', 'FEE_USD 0.9']],
+      ['2023-03-03', 'Sold short -0.5 CCC', ['CURRENCY_USD 13.5', 'STOCK_CCC -13.5 (-0.5)']],
+      ['2023-03-03', 'Sold short -0.5 CCC', ['CURRENCY_USD 13.5', 'STOCK_CCC -13.5 (-0.5)']],
+      ['2023-04-01', 'Adjustment: Cash Receipt/Disbursement/Transfer (Transfer to U0000000)', ['CURRENCY_USD 0.558', 'INCOME_CORRECTION_DEPOSIT -0.558']],
+      ['2023-05-03', 'LYNX MONTHLY MINIMUM ACTIVITY FEE FOR APR 2023', ['CURRENCY_EUR -5.05', 'EXPENSE_BROKER_FEE 5.05']],
+      ['2023-06-15', 'Dividend for AAA', ['CURRENCY_USD 122.4', 'INCOME_DIVIDEND -144', 'TAX_WITHHOLDING 21.6']],
+      ['2023-07-01', 'Dividend for DDD1V', ['CURRENCY_EUR 37.5', 'INCOME_DIVIDEND -50', 'TAX_WITHHOLDING 12.5']],
+      ['2023-10-03', 'Interest expense refund', ['CURRENCY_USD 1.98', 'EXPENSE_INTEREST -1.98']],
+      ['2023-12-20', 'Withdrawal from Lynx', ['CURRENCY_EUR -1000', 'EXTERNAL_LYNX_EUR 1000']],
+    ])
   })
 })
