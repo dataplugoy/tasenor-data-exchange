@@ -30,7 +30,7 @@ describe('Analyzer', () => {
       'CURRENCY_EUR 999',
       'CURRENCY_EUR -2',
       'FEE_EUR 2',
-      'PROFIT_FOREX -1.5',
+      'FOREX_PROFIT -1.5',
     ])
   })
 
@@ -47,7 +47,7 @@ describe('Analyzer', () => {
     expect(result).toStrictEqual([
       'CURRENCY_USD 499.1',
       'CURRENCY_EUR -499.5',
-      'LOSS_FOREX 0.4',
+      'FOREX_LOSS 0.4',
     ])
   })
 

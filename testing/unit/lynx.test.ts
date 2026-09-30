@@ -116,7 +116,7 @@ describe('Lynx', () => {
     expect(summary).toStrictEqual([
       ['2023-01-01', 'Withholding tax correction for EEE', ['CURRENCY_USD 1.35', 'TAX_WITHHOLDING -1.35']],
       ['2023-01-10', 'Deposit to Lynx', ['CURRENCY_EUR 15000', 'EXTERNAL_LYNX_EUR -15000']],
-      ['2023-01-15', 'Bought 10000.00 EUR in exhcange to USD', ['CURRENCY_USD -9994.99999999999864', 'CURRENCY_EUR 9999.99999999999864', 'CURRENCY_EUR -2', 'FEE_EUR 2', 'PROFIT_FOREX -5']],
+      ['2023-01-15', 'Bought 10000.00 EUR in exhcange to USD', ['CURRENCY_USD -9994.99999999999864', 'CURRENCY_EUR 9999.99999999999864', 'CURRENCY_EUR -2', 'FEE_EUR 2', 'FOREX_PROFIT -5']],
       ['2023-02-01', 'Bought +1000 AAA', ['CURRENCY_USD -9454.5', 'STOCK_AAA 9450 (1000)', 'FEE_USD 4.5']],
       ['2023-02-03', 'Interest expense', ['CURRENCY_EUR -9.49', 'EXPENSE_INTEREST 9.49']],
       ['2023-03-01', 'Sold -400 AAA', ['CURRENCY_USD 4315.5', 'STOCK_AAA -3780 (-400)', 'PROFIT_AAA -540', 'FEE_USD 4.5']],

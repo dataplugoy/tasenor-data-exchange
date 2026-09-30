@@ -16,8 +16,8 @@ import Decimal from 'decimal.js'
  *
  * Requires fields (`assetOut` and `assetAmountOut`) or (`assetIn` and `assetAmountIn`).
  * Optional fields `fee` and `feeAsset` for a fee paid from the currency account of the fee asset.
- * Optional field `profit` for the realized profit or loss given by the source. It is booked to `PROFIT_FOREX` or
- * `LOSS_FOREX` and the value account side is adjusted by it.
+ * Optional field `profit` for the realized profit or loss given by the source. It is booked to `FOREX_PROFIT` or
+ * `FOREX_LOSS` and the value account side is adjusted by it.
  */
 export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
@@ -46,7 +46,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
     ? []
     : [
         {
-          account: (profit.gt(0) ? 'PROFIT_FOREX' : 'LOSS_FOREX') as AccountCode,
+          account: (profit.gt(0) ? 'FOREX_PROFIT' : 'FOREX_LOSS') as AccountCode,
           amount: profit.negated().toString(),
           text,
           extras: {},

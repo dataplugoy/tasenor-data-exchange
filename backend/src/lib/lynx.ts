@@ -359,7 +359,9 @@ export function lynxItems(rows: LynxRow[], periodStart: string | null = null): I
     }
   }
 
-  return items.sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : (a.line || 0) - (b.line || 0))
+  // Corporate actions come first at the same time, since trades of fractional shares follow them.
+  const order = (i: InputItemData) => i.fields.Kind === 'CorporateAction' ? 0 : 1
+  return items.sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : (order(a) - order(b)) || (a.line || 0) - (b.line || 0))
 }
 
 function round(n: number): number {

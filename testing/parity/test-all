@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Compare TaDeX against the Nordnet and TITO import tests of Tasenor Bookkeeper.
+# Compare TaDeX against the Nordnet, Lynx and TITO import tests of Tasenor Bookkeeper.
 #
 # Test data is private and lives in tasenor-qa repository. Its import test directory
 # can be given with QA_IMPORT_DIR (default: tasenor-qa checked out next to this repository).
@@ -21,6 +21,12 @@ FAILED=0
 for TEST in "$QA_IMPORT_DIR"/*-Nordnet*/; do
   echo
   npx tsx "$ROOT/testing/parity/compare-bookkeeper.ts" "$TEST" || FAILED=1
+done
+for TEST in "$QA_IMPORT_DIR"/*-Lynx/; do
+  if [ -f "$TEST/transactions.json" ]; then
+    echo
+    npx tsx "$ROOT/testing/parity/compare-lynx.ts" "$TEST" || FAILED=1
+  fi
 done
 for TEST in "$QA_IMPORT_DIR"/*-TITO/; do
   if [ -f "$TEST/transactions.json" ]; then

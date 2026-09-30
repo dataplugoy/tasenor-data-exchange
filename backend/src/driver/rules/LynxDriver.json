@@ -46,14 +46,6 @@
     }
   },
   {
-    "name": "Cancelled Trade",
-    "key": "Trade",
-    "filter": "Kind == 'Trade' and matches('(^|;)Ca(;|$)', Code)",
-    "result": {
-      "type": "'skip'"
-    }
-  },
-  {
     "name": "Stock Buy",
     "key": "Trade",
     "filter": "Kind == 'Trade' and AssetCategory == 'Stocks' and Quantity > 0",

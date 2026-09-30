@@ -1,0 +1,9 @@
+{
+  "Dataplug-2021-Lynx": {
+    "FPI PRB": {
+      "amount": 116,
+      "value": 0,
+      "reason": "Statement shows 114 shares transferred in, but 230 held from June (dividend accruals) and given in the merger. The acquisition of 116 shares is missing from the statement."
+    }
+  }
+}
