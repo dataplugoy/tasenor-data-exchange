@@ -10,7 +10,7 @@ import { RuleModel } from '../models/RuleModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
-import { isLynx, lynxItems, parseLynxRows } from '../lib/lynx'
+import { isLynx, lynxItems, lynxPeriod, parseLynxRows } from '../lib/lynx'
 
 /**
  * A driver to upload Lynx (Interactive Brokers) Activity Statements.
@@ -33,7 +33,7 @@ export class LynxDriver extends ManualUploadDriver {
       throw new Error('The file is not a Lynx Activity Statement.')
     }
     this.version = 1
-    return lynxItems(parseLynxRows(text))
+    return lynxItems(parseLynxRows(text), lynxPeriod(text)?.start || null)
   }
 
   answerKey(input: InputItemModel): string {

@@ -54,6 +54,25 @@ export function lynxTime(s: string): string {
   return m[2] ? `${m[1]}T${m[2]}.000Z` : `${m[1]}T12:00:00.000Z`
 }
 
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+/**
+ * Find the period `January 1, 2022 - December 31, 2022` of the statement as ISO dates.
+ */
+export function lynxPeriod(text: string): { start: string, end: string } | null {
+  const m = /^Statement,Data,Period,"?([^"\r\n]*)"?\r?$/m.exec(text.replace(/^\uFEFF/, ''))
+  if (!m) return null
+  const dates = m[1].split(' - ').map(d => {
+    const parts = /^([A-Za-z]+) (\d{1,2}), (\d{4})$/.exec(d.trim())
+    const month = parts ? MONTHS.indexOf(parts[1]) + 1 : 0
+    if (!parts || !month) {
+      throw new Error(`Invalid statement period ${JSON.stringify(m[1])} in Lynx statement.`)
+    }
+    return `${parts[3]}-${String(month).padStart(2, '0')}-${parts[2].padStart(2, '0')}`
+  })
+  return { start: dates[0], end: dates[dates.length - 1] }
+}
+
 /**
  * Split the statement to data rows of the used sections with their fields named by the section headers.
  */
@@ -161,11 +180,13 @@ function item(key: string, rows: LynxRow[], time: string, text: string, total: n
  * - Dividends: all dividend rows (incl. payments in lieu of dividend) and withholding tax rows of the same date and
  *   instrument are summed to one item.
  * - Withholding tax rows without a dividend on the same date are summed per date and instrument to adjustment items.
+ *   Adjustments are dated to the dividend. When that is before the statement period, they are booked on the first
+ *   day of the period, since that is the closest known date of the actual cash movement.
  * - Corporate actions: legs with the same time, instrument and action are combined.
  *
  * Each item has a `Key` identifying the event, which stays the same in other statements covering it.
  */
-export function lynxItems(rows: LynxRow[]): InputItemData[] {
+export function lynxItems(rows: LynxRow[], periodStart: string | null = null): InputItemData[] {
   const items: InputItemData[] = []
 
   // Dividends and taxes.
@@ -206,7 +227,8 @@ export function lynxItems(rows: LynxRow[]): InputItemData[] {
   for (const [key, list] of Object.entries(taxes)) {
     const sec = security(list[0].fields.Description) as { symbol: string, isin: string }
     const amount = list.reduce((sum, r) => sum + lynxNumber(r.fields.Amount), 0)
-    items.push(item(`TaxAdjustment:${key}`, list, lynxTime(list[0].fields.Date), list[0].fields.Description, round(amount), {
+    const date = periodStart && list[0].fields.Date < periodStart ? periodStart : list[0].fields.Date
+    items.push(item(`TaxAdjustment:${key}`, list, lynxTime(date), list[0].fields.Description, round(amount), {
       Kind: 'TaxAdjustment',
       Currency: list[0].fields.Currency,
       Date: list[0].fields.Date,
@@ -267,6 +289,8 @@ export function lynxItems(rows: LynxRow[]): InputItemData[] {
             Proceeds: lynxNumber(f.Proceeds),
             Fee: lynxNumber(f['Comm/Fee']),
             FeeCurrency: base,
+            // Result of the exchange in the base currency compared to the closing rate of the day.
+            Profit: lynxNumber(f['MTM in EUR']),
             Code: f.Code || '',
           }))
         } else {

@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { getDriver } from '../../backend/src/driver'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
-import { isLynx, lynxItems, lynxNumber, lynxTime, parseLynxRows } from '../../backend/src/lib/lynx'
+import { isLynx, lynxItems, lynxNumber, lynxPeriod, lynxTime, parseLynxRows } from '../../backend/src/lib/lynx'
 import { JsonFileService } from '../../backend/src/lib/services/JsonFileService'
 import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
 
@@ -20,6 +20,18 @@ describe('Lynx', () => {
     expect(() => lynxNumber('abc')).toThrow()
     expect(lynxTime('2023-02-01, 10:00:00')).toBe('2023-02-01T10:00:00.000Z')
     expect(lynxTime('2023-02-01')).toBe('2023-02-01T12:00:00.000Z')
+    expect(lynxPeriod(sample)).toStrictEqual({ start: '2023-01-01', end: '2023-12-31' })
+    expect(lynxPeriod('Statement,Data,Period,"March 5, 2024"')).toStrictEqual({ start: '2024-03-05', end: '2024-03-05' })
+    expect(lynxPeriod('Id\tKirjauspäivä')).toBe(null)
+  })
+
+  test('tax adjustments of earlier periods are booked on the first day of the period', () => {
+    const items = lynxItems(parseLynxRows(sample), '2023-01-01')
+    const adjustment = items.find(i => i.fields.Kind === 'TaxAdjustment')
+    expect(adjustment?.time).toBe('2023-01-01T12:00:00.000Z')
+    expect(adjustment?.fields.Date).toBe('2022-11-15')
+    expect(adjustment?.fields.Key).toBe('TaxAdjustment:2022-11-15:US0000000003')
+    expect(items.indexOf(adjustment!)).toBe(0)
   })
 
   test('rows of used sections', () => {
@@ -49,7 +61,7 @@ describe('Lynx', () => {
     expect(summary).toStrictEqual([
       ['2022-11-15T12:00', 1.5, { Kind: 'TaxAdjustment', Currency: 'USD', Date: '2022-11-15', Symbol: 'EEE', ISIN: 'US0000000003', Amount: 1.5 }],
       ['2023-01-10T12:00', 15000, { Kind: 'Deposit', Currency: 'EUR', Amount: 15000 }],
-      ['2023-01-15T09:00', -10800, { Kind: 'Forex', Base: 'EUR', Quote: 'USD', Quantity: 10000, Price: 1.08, Proceeds: -10800, Fee: -2, FeeCurrency: 'EUR', Code: '' }],
+      ['2023-01-15T09:00', -10800, { Kind: 'Forex', Base: 'EUR', Quote: 'USD', Quantity: 10000, Price: 1.08, Proceeds: -10800, Fee: -2, FeeCurrency: 'EUR', Profit: 5, Code: '' }],
       ['2023-02-01T10:00', -10500, { Kind: 'Trade', AssetCategory: 'Stocks', Currency: 'USD', Symbol: 'AAA', Quantity: 1000, Price: 10.5, Proceeds: -10500, Fee: -5, RealizedPL: 0, Code: 'O' }],
       ['2023-02-03T12:00', -9.49, { Kind: 'Interest', Currency: 'EUR', Amount: -9.49, Month: 'Jan-2023' }],
       ['2023-03-01T11:00', 4800, { Kind: 'Trade', AssetCategory: 'Stocks', Currency: 'USD', Symbol: 'AAA', Quantity: -400, Price: 12, Proceeds: 4800, Fee: -5, RealizedPL: 593, Code: 'C' }],
@@ -91,15 +103,16 @@ describe('Lynx', () => {
   test('default rules', async () => {
     const settings = { currency: 'EUR', language: 'en' }
     const driver = getDriver('LYNX', {}, settings, {}) as InputDriver
-    // Tax adjustments and corporate actions have no default rules yet.
+    // Corporate actions have no default rules yet.
     const items = (await driver.itemizeInput(createBatchFrom('Lynx-statement.csv')))
-      .filter(i => !['TaxAdjustment', 'CorporateAction'].includes(i.fields.Kind as string))
+      .filter(i => i.fields.Kind !== 'CorporateAction')
     const unifieds = await unifyItems(driver, items, 'LynxDriver.json')
     const txs = await analyzeItems(unifieds, settings, null, [new JsonFileService({ url: 'file:///lynx-rates.json' })])
     const summary = txs.map(tx => [tx.time.substring(0, 10), tx.lines[0].text, tx.lines.map(l => `${l.account} ${l.amount}${l.extras.assetChange ? ` (${l.extras.assetChange})` : ''}`)])
     expect(summary).toStrictEqual([
+      ['2023-01-01', 'Withholding tax correction for EEE', ['CURRENCY_USD 1.35', 'TAX_WITHHOLDING -1.35']],
       ['2023-01-10', 'Deposit to Lynx', ['CURRENCY_EUR 15000', 'EXTERNAL_LYNX_EUR -15000']],
-      ['2023-01-15', 'Bought 10000.00 EUR in exhcange to USD', ['CURRENCY_USD -9999.99999999999864', 'CURRENCY_EUR 9999.99999999999864', 'CURRENCY_EUR -2', 'FEE_EUR 2']],
+      ['2023-01-15', 'Bought 10000.00 EUR in exhcange to USD', ['CURRENCY_USD -9994.99999999999864', 'CURRENCY_EUR 9999.99999999999864', 'CURRENCY_EUR -2', 'FEE_EUR 2', 'PROFIT_FOREX -5']],
       ['2023-02-01', 'Bought +1000 AAA', ['CURRENCY_USD -9454.5', 'STOCK_AAA 9450 (1000)', 'FEE_USD 4.5']],
       ['2023-02-03', 'Interest expense', ['CURRENCY_EUR -9.49', 'EXPENSE_INTEREST 9.49']],
       ['2023-03-01', 'Sold -400 AAA', ['CURRENCY_USD 4315.5', 'STOCK_AAA -3780 (-400)', 'PROFIT_AAA -540', 'FEE_USD 4.5']],

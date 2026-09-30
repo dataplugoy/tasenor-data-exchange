@@ -6,6 +6,7 @@ import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
 import { AccountCode } from '../../../types/AccountCode'
 import { sprintf } from 'sprintf-js'
+import Decimal from 'decimal.js'
 
 /**
  * Buy an asset and add it to the stock.
@@ -15,6 +16,8 @@ import { sprintf } from 'sprintf-js'
  *
  * Requires fields (`assetOut` and `assetAmountOut`) or (`assetIn` and `assetAmountIn`).
  * Optional fields `fee` and `feeAsset` for a fee paid from the currency account of the fee asset.
+ * Optional field `profit` for the realized profit or loss given by the source. It is booked to `PROFIT_FOREX` or
+ * `LOSS_FOREX` and the value account side is adjusted by it.
  */
 export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
@@ -38,6 +41,17 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
           extras: {},
         },
       ]
+  const profit = input.profit === undefined || input.profit === null ? new Decimal(0) : dec(input.profit)
+  const profitLines = (text: string): TransactionLine[] => profit.eq(0)
+    ? []
+    : [
+        {
+          account: (profit.gt(0) ? 'PROFIT_FOREX' : 'LOSS_FOREX') as AccountCode,
+          amount: profit.negated().toString(),
+          text,
+          extras: {},
+        },
+      ]
 
   if (input.assetOut) {
     this.validateRequired('assetOut', 'assetAmountOut')
@@ -50,7 +64,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
       lines: [
         {
           account: this.validateValueAccount(true),
-          amount: dec(value).toString(),
+          amount: dec(value).plus(profit).toString(),
           text,
           extras: {},
         },
@@ -61,6 +75,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
           extras: {},
         },
         ...feeLines(text),
+        ...profitLines(text),
       ]
     }
 
@@ -75,7 +90,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
       lines: [
         {
           account: this.validateValueAccount(true),
-          amount: dec(value).negated().toString(),
+          amount: dec(value).negated().plus(profit).toString(),
           text,
           extras: {},
         },
@@ -86,6 +101,7 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
           extras: {},
         },
         ...feeLines(text),
+        ...profitLines(text),
       ]
     }
   }

@@ -95,6 +95,7 @@
       "assetAmountIn": "Quantity",
       "fee": "-Fee",
       "feeAsset": "FeeCurrency",
+      "profit": "Profit",
       "rates": "rates(Quote, 1 / Price)"
     }
   },
@@ -110,6 +111,7 @@
       "assetAmountOut": "-Quantity",
       "fee": "-Fee",
       "feeAsset": "FeeCurrency",
+      "profit": "Profit",
       "rates": "rates(Quote, 1 / Price)"
     }
   },
@@ -126,6 +128,39 @@
       "taxType": "'withholding'",
       "taxAmount": "-Tax",
       "taxAsset": "Currency"
+    }
+  },
+  {
+    "name": "Withholding Tax Refund",
+    "key": "TaxAdjustment",
+    "filter": "Kind == 'TaxAdjustment' and Amount > 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "account": "'TAX_WITHHOLDING'",
+      "reason": "'WITHHOLDING_TAX_CORRECTION'",
+      "reasonAsset": "Symbol"
+    }
+  },
+  {
+    "name": "Withholding Tax Charge",
+    "key": "TaxAdjustment",
+    "filter": "Kind == 'TaxAdjustment' and Amount < 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "account": "'TAX_WITHHOLDING'",
+      "reason": "'WITHHOLDING_TAX_CORRECTION'"
+    }
+  },
+  {
+    "name": "Withholding Tax Reversed",
+    "key": "TaxAdjustment",
+    "filter": "Kind == 'TaxAdjustment' and Amount == 0",
+    "result": {
+      "type": "'skip'"
     }
   },
   {
