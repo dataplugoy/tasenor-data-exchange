@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "name": "@tasenor/tadex-db",
   "scripts": {
     "dbui": "DATABASE_URL=postgresql://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex npx prisma studio --schema ../backend/prisma/schema.prisma",
