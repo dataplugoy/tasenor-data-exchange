@@ -1,0 +1,7 @@
+{
+  "$id": "ServiceType.json",
+  "title": "ServiceType",
+  "description": "Kind of queries a service answers.",
+  "type": "string",
+  "enum": ["CURRENCY_RATES", "CRYPTO_RATES", "TICKERS"]
+}

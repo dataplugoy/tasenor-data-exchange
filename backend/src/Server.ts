@@ -5,7 +5,7 @@ import config, { Config } from './config'
 import { connect } from './connect'
 import { PrismaClient } from '@prisma/client'
 import { BaseModel } from './models/BaseModel'
-import { log } from '@tasenor/common'
+import { error, log } from '@tasenor/common'
 import routes from './routes'
 import Decimal from 'decimal.js'
 import { initI18N } from './lib/i18n/t'
@@ -54,6 +54,15 @@ class TasenorDataExchangeServer {
     this.app.use(helmet({ contentSecurityPolicy }))
 
     this.app.use('/api/v1', routes)
+
+    // Unhandled errors: log them, but do not show details (like stack traces) to the client.
+    this.app.use((err: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+      error('Unhandled error:', err)
+      if (res.headersSent) {
+        return next(err)
+      }
+      res.status(500).send({ message: 'Internal server error.' })
+    })
 
     this.app.listen(this.config.PORT, () => {
       log(`Server started on port ${this.config.PORT}.`)

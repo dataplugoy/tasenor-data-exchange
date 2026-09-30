@@ -1,0 +1,25 @@
+---
+sidebar_position: 70
+---
+
+# Services
+
+External services are used when processing the flow plans. They provide exchange rates for currencies and crypto
+currencies not given in the imported files, like in Lynx statements, and information about instruments.
+
+The services are managed on the **Services** page. They belong to the user and are used by all flow plans of the
+user.
+
+| Service | Provides | Settings |
+|---------|----------|----------|
+| Tasenor Bookkeeper | Currency and crypto rates | Address of the bookkeeper API, user and password |
+| OpenFIGI | Instruments by ISIN code | Address of the API and an optional API key |
+| JSON files | Currency and crypto rates from files | Only for testing |
+
+Passwords and keys are never shown after saving. When editing a service, leave the field empty to keep the saved
+one.
+
+**Test** makes a sample query for everything the service provides, e.g. the rate of USD in EUR yesterday, and shows
+the answer or the error for each.
+
+A service marked **free** is also used by the command line tool.

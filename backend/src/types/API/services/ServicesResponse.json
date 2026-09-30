@@ -1,0 +1,9 @@
+{
+  "title": "ServicesResponse",
+  "type": "array",
+  "items": {
+    "allOf": [
+      { "$ref": "Service.json" }
+    ]
+  }
+}

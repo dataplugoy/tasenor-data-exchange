@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Button, Box, IconButton, Menu as MuiMenu, MenuItem } from '@mui/material'
-import { AccountTree, Home, Language, Logout, /* MiscellaneousServices, */ Rule, Settings } from '@mui/icons-material'
+import { AccountTree, Home, Language, Logout, MiscellaneousServices, Rule, Settings } from '@mui/icons-material'
 import React, { useState } from 'react'
 import { Trans } from 'react-i18next'
 import { DEFAULT_PROJECT, DEFAULT_USER, useApp } from '../Hooks/useApp'
@@ -45,7 +45,7 @@ export const Menu = (): React.JSX.Element => {
         <Button data-cy="Menu-Executions" startIcon={<AccountTree />} onClick={() => navigate(`/flow-plans${add}`)}><Trans>Executions</Trans></Button>
         <Button data-cy="Menu-Rules" startIcon={<AccountTree />} onClick={() => navigate(`/rules${add}`)}><Trans>Rules</Trans></Button>
         <Button data-cy="Menu-Results" startIcon={<Rule />} onClick={() => navigate(`/results${add}`)}><Trans>Results</Trans></Button>
-        { /* <Button data-cy="Menu-Services" startIcon={<MiscellaneousServices />}><Trans>Services</Trans></Button> */ }
+        <Button data-cy="Menu-Services" startIcon={<MiscellaneousServices />} onClick={() => navigate('/services')}><Trans>Services</Trans></Button>
         <Button data-cy="Menu-Settings" startIcon={<Settings />} onClick={() => navigate(`/settings${add}`)}><Trans>Settings</Trans></Button>
         <Box sx={{ textAlign: 'right' }}>
           <Button data-cy="Menu-Logout" startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>
