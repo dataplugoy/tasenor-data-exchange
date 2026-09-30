@@ -65,7 +65,7 @@ export function sortRuns(
   // Handle in chronological order.
   for (let i = runs.length - 1; i >= 0; i--) {
     const run = runs[i]
-    let step: RunStepType = 'UNKNOWN'
+    let step: RunStepType
     let items: ResultItem[] = []
     const hasProgressed = (run.initialState !== run.finalState);
 

@@ -8,7 +8,7 @@ import { UnifiedItemModel } from './UnifiedItemModel'
 import { ItemErrorModel } from './ItemErrorModel'
 import { OutputItemModel } from './OutputItemModel'
 import { Notes } from '../types/API/Notes'
-import { JsonObject } from '@prisma/client/runtime/library'
+import { JsonObject } from '@prisma/client/runtime/client'
 
 export class RunModel extends BaseModel<prisma.Run> {
 
@@ -67,7 +67,7 @@ export class RunModel extends BaseModel<prisma.Run> {
    * Run interrupted by alert.
    * @param err
    */
-  // eslint-disable-next-line
+
   async alert(err: AlertException): Promise<void> {
     this.data.result = 'WAITING'
     const notes = err.notes() as JsonObject

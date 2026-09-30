@@ -88,26 +88,26 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
           </TableRow>
         </TableHead>
         <TableBody>
-        {
-          sorted.map(result =>
-            <React.Fragment key={result.run.id}>
-              <TableRow hover onClick={() => onToggle(result.run.id)}>
-                <TableCell>{result.run.id}</TableCell>
-                <TableCell>{time2str(result.run.updated as Timestring, language as Language)}</TableCell>
-                <TableCell><DescribeStateChange result={result}/></TableCell>
-                <TableCell><OutputSummary result={result}/></TableCell>
-                <TableCell><ResultIndicator result={result}/></TableCell>
-              </TableRow>
-              { opened.has(result.run.id) &&
-                <TableRow>
-                  <TableCell colSpan={5}>
-                    <RunDetails batch={batch} result={result}/>
-                  </TableCell>
+          {
+            sorted.map(result =>
+              <React.Fragment key={result.run.id}>
+                <TableRow hover onClick={() => onToggle(result.run.id)}>
+                  <TableCell>{result.run.id}</TableCell>
+                  <TableCell>{time2str(result.run.updated as Timestring, language as Language)}</TableCell>
+                  <TableCell><DescribeStateChange result={result}/></TableCell>
+                  <TableCell><OutputSummary result={result}/></TableCell>
+                  <TableCell><ResultIndicator result={result}/></TableCell>
                 </TableRow>
-              }
-            </React.Fragment>
-          )
-        }
+                { opened.has(result.run.id) &&
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <RunDetails batch={batch} result={result}/>
+                    </TableCell>
+                  </TableRow>
+                }
+              </React.Fragment>
+            )
+          }
         </TableBody>
       </Table>
     </Box>

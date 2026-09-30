@@ -11,8 +11,8 @@ import { FlowPlanRunResponse } from '../Types/API/flow-plans/FlowPlanRunResponse
  * Format of the returned file data from the file uploader component.
  */
 export type FileUploadData = {
-  name: string,
-  type: string,
+  name: string
+  type: string
   data: string
 }
 
@@ -139,9 +139,9 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
           </DialogContentText>
           <input id="file-uploader-input" disabled={!visible} type="file" multiple={false} hidden onChange={(e) => onFileChange(e)}/>
           <label htmlFor="file-uploader-input">
-          <Button component="span" startIcon={<UploadFile/>}>
-            <Trans>Select a File</Trans>
-          </Button>
+            <Button component="span" startIcon={<UploadFile/>}>
+              <Trans>Select a File</Trans>
+            </Button>
           </label>
           <Box sx={{ mt: 2, color: upload ? 'white' : 'rgba(0,0,0,0.5)' }}>
             <Trans>File Selected:</Trans> {upload ? upload.name : t('No file seleced.')}

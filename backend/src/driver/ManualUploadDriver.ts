@@ -37,7 +37,7 @@ export class ManualUploadDriver extends InputDriver {
   async fetchData(flowPlan: FlowPlanModel): Promise<Buffer> {
     const batch = await BatchModel.getLatest(flowPlan)
     if (batch && batch.data.data !== null) {
-      return batch.data.data
+      return Buffer.from(batch.data.data)
     }
     throw new UploadRequired(
       `/api/v1/flow-plans/${flowPlan.id}/upload`,
@@ -51,7 +51,7 @@ export class ManualUploadDriver extends InputDriver {
    * @param csv
    * @param options
    */
-  preProcess(csv: { raw: string, record: Record<string, string | number | null>}[], options: PreProcessOptions): void {
+  preProcess(csv: { raw: string, record: Record<string, string | number | null> }[], options: PreProcessOptions): void {
     // Fill in defaults.
     options.defaults && Object.keys(options.defaults).forEach(field => {
       csv.forEach(line => {

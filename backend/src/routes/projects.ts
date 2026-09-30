@@ -5,7 +5,7 @@ import { FlowPlanModel } from '../models/FlowPlanModel'
 import { param } from '../lib/param'
 import { OutputItemModel } from '../models/OutputItemModel'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 /**
  * List of all projects for user.

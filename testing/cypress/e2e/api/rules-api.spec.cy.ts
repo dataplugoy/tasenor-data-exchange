@@ -34,7 +34,7 @@ describe('Rules API', () => {
 
             // Listed in creation order.
             cy.apiCall('GET', url).then((res) => {
-              expect(res.body.map(r => r.name)).to.deep.eq(['OVH', 'Fees'])
+              expect(res.body.map((r: { name: string }) => r.name)).to.deep.eq(['OVH', 'Fees'])
             })
 
             // Invalid rules and duplicate names are rejected.
@@ -63,7 +63,7 @@ describe('Rules API', () => {
               expect(res.status).to.eq(400)
             })
             cy.apiCall('GET', url).then((res) => {
-              expect(res.body.map(r => r.name)).to.deep.eq(['Fees', 'OVH'])
+              expect(res.body.map((r: { name: string }) => r.name)).to.deep.eq(['Fees', 'OVH'])
             })
 
             // Delete.

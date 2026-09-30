@@ -100,9 +100,9 @@ export const AccountEdit = (props: AccountEditProps): React.JSX.Element => {
       <TextField
         {...params}
         label={<AccountDescription code={code}/>}
-        inputProps={{
-          ...params.inputProps,
-          autoComplete: 'off'
+        slotProps={{
+          ...params.slotProps,
+          htmlInput: { ...params.slotProps.htmlInput, autoComplete: 'off' },
         }}
       />
     )}
@@ -171,7 +171,7 @@ export const AccountEditorCard = (props: AccountEditorCardProps): React.JSX.Elem
         }
         {
           hasRemoteAccounts &&
-            <Button disabled={loading} onClick={onSave}><Trans>Save</Trans></Button>
+          <Button disabled={loading} onClick={onSave}><Trans>Save</Trans></Button>
         }
 
       </CardContent>

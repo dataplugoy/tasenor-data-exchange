@@ -44,7 +44,7 @@ export const LoginPage = (): React.JSX.Element => {
   }
 
   let docs = 'https://data-exchange.stg.tasenor.com'
-  /* eslint-disable-next-line */
+
   if (NODE_ENV === 'prod') {
     docs = 'https://data-exchange.tasenor.com'
   /* eslint-disable-next-line */

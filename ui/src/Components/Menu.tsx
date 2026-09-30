@@ -71,14 +71,14 @@ export const Menu = (): React.JSX.Element => {
           data-cy="language-selector-EN"
           onClick={() => onSelect('en')}
         >
-            EN
+          EN
         </MenuItem>
         <MenuItem
           sx={{ width: '5rem', color: '#f0f0f0' }}
           data-cy="language-selector-FI"
           onClick={() => onSelect('fi')}
         >
-            FI
+          FI
         </MenuItem>
       </MuiMenu>
 

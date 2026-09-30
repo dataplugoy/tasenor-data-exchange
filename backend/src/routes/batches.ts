@@ -8,7 +8,7 @@ import { param } from '../lib/param'
 import { ItemErrorModel } from '../models/ItemErrorModel'
 import { error } from '@tasenor/common'
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 router.get('/:id',
   authorize(),

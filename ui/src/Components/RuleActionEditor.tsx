@@ -34,7 +34,7 @@ const VatField = (props: VatFieldProps): React.JSX.Element => {
     size="small"
     label={t('VAT %')}
     value={text}
-    inputProps={{ inputMode: 'decimal' }}
+    slotProps={{ htmlInput: { inputMode: 'decimal' } }}
     onChange={(e) => {
       const s = e.target.value.replace(/[^0-9.,]/g, '')
       setText(s)

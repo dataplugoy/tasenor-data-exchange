@@ -26,7 +26,7 @@ interface RunDetailsProps {
 export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   const { batch, result } = props
   const GETOutput = useGET<OutputDestination>()
-  const [output, setOutput] = useState<OutputDestination|null>(null)
+  const [output, setOutput] = useState<OutputDestination | null>(null)
 
   // Get output settings for the last step.
   useEffect(() => {
@@ -93,11 +93,11 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
       {
         // Show initial data only for the first step.
         result.step === 'SUCCESSFUL_DATA_FETCHED' &&
-          <>
-            <DisplayBlock>
-              <RawDisplay data={batch.data}/>
-            </DisplayBlock>
-          </>
+        <>
+          <DisplayBlock>
+            <RawDisplay data={batch.data}/>
+          </DisplayBlock>
+        </>
       }
     </Box>
   )

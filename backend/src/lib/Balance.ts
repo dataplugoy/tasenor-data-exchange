@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js'
 import { AccountCode } from '../types/AccountCode'
 import { dec, toJSON } from './utils'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 
 export class Balance {
   private balance: Record<AccountCode, Decimal>

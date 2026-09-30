@@ -1,7 +1,7 @@
 import { Asset, debug } from '@tasenor/common'
 import Decimal from 'decimal.js'
 import { toJSON } from './utils'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import { AccountCode } from '../types/AccountCode'
 import { Transaction } from '../types/API/Transaction'
 

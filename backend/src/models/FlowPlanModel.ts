@@ -9,7 +9,7 @@ import { RuntimeOptions } from '../types/RuntimeOptions'
 import { FlowState } from '../types/FlowState'
 import { InputItemModel } from './InputItemModel'
 import { RunModel } from './RunModel'
-import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
+import { JsonObject, JsonValue } from '@prisma/client/runtime/client'
 import { RuleModel } from './RuleModel'
 import { UnifiedItemModel } from './UnifiedItemModel'
 import { Stock, StockDataRecord } from '../lib/Stock'
@@ -103,7 +103,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   /**
    * Find the last run if any.
    */
-  async lastRun(): Promise<RunModel|null> {
+  async lastRun(): Promise<RunModel | null> {
     const batch = await BatchModel.getLatest(this)
     if (!batch) {
       return null
@@ -169,7 +169,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const { answers: oldAnswers, ...oldSetup } = (this.data?.setup as Setup) || {}
     const { answers: newAnswers, ...setupPatch } = patch
 
-    // eslint-disable-next-line new-cap
     const setupDot = new dot('∰∰∰')
     const fullSetup = setupDot.dot(oldSetup)
     Object.assign(fullSetup, setupDot.dot(setupPatch))

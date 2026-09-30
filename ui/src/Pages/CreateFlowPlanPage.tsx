@@ -116,7 +116,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
   return (
     <Box>
-      <Typography variant="h1" textAlign="center">
+      <Typography variant="h1" sx={{ textAlign: 'center' }}>
         <Trans>Create Flow Plan</Trans>
       </Typography>
 
@@ -128,7 +128,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
           <TextField data-cy="Data Source" select label={t('Data Source')} value={input} onChange={e => setInput(e.target.value)}>
             {
-              /* eslint-disable-next-line */
+
               NODE_ENV !== 'prod' && NODE_ENV !== 'stg' && <MenuItem value="TEST_MOCK"><Trans>Fixed Test File</Trans></MenuItem>
             }
             <MenuItem value="ENABLE_BANKING"><Trans>Enable Banking Service</Trans></MenuItem>
@@ -147,7 +147,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
           <TextField select label={t('Bookkeeping Destination')} value={output} onChange={e => setOutput(e.target.value)}>
             {
-              /* eslint-disable-next-line */
+
               NODE_ENV !== 'prod' && NODE_ENV !== 'stg' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>
             }
             <MenuItem value="NO_ACTION"><Trans>Keep results in TaDeX</Trans></MenuItem>

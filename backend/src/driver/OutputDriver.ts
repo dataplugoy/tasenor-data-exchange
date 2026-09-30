@@ -19,7 +19,7 @@ export class OutputDriver extends Driver {
   /**
    * Find the number of configured account.
    */
-  configuredAccount<T=string>(code: AccountCode): T {
+  configuredAccount<T = string>(code: AccountCode): T {
     const map: Record<AccountCode, T> = this.setup.accounts as Record<AccountCode, T> || {}
     if (!map[code]) {
       if (code.startsWith('DEBT_CURRENCY_')) {

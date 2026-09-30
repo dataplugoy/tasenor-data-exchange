@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { spawnSync } from 'child_process'
 import { BaseModel } from '../../backend/src/models/BaseModel'
 import { connect } from '../../backend/src/connect'
 import { cwd } from 'process'
@@ -6,7 +7,7 @@ import path from 'path'
 import { BatchModel } from '../../backend/src/models/BatchModel'
 import { InputItemData } from '../../backend/src/types/API/InputItem'
 import { InputItemModel } from '../../backend/src/models/InputItemModel'
-import { JsonObject, JsonValue } from '@prisma/client/runtime/library'
+import { JsonObject, JsonValue } from '@prisma/client/runtime/client'
 import { RunModel } from '../../backend/src/models/RunModel'
 import { RuleModel } from '../../backend/src/models/RuleModel'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
@@ -31,7 +32,6 @@ import { Service } from '../../backend/src/lib/services/Service'
  */
 export async function beforeModelTesting(): Promise<void> {
 
-  const { spawnSync } = require('child_process')
   const databaseDir = path.join(cwd(), '..', 'database')
   const run = spawnSync('pnpm', ['-C', databaseDir, 'load'])
   if (run.stderr.toString().trim() !== '') {

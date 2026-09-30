@@ -30,7 +30,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
   const GET = useGET()
   const DELETE = useDELETE()
   const PATCH = usePATCH()
-  const [alert, setAlert] = useState<UIAlert|null>(null)
+  const [alert, setAlert] = useState<UIAlert | null>(null)
   const [details, setDetails] = useState(false)
   const { t } = useTranslation()
 
@@ -140,14 +140,14 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
           {!details &&
             <Box sx={{ mt: 3, color: 'primary.main', cursor: 'pointer', textDecoration: 'underline' }}
               onClick={() => setDetails(true)}>
-                <Trans>Show details</Trans>
+              <Trans>Show details</Trans>
             </Box>
           }
 
           {details &&
             <Box sx={{ mt: 3, color: 'primary.main', cursor: 'pointer', textDecoration: 'underline' }}
               onClick={() => setDetails(false)}>
-                <Trans>Hide details</Trans>
+              <Trans>Hide details</Trans>
             </Box>
           }
 

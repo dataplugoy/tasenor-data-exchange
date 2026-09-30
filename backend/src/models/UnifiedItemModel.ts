@@ -1,6 +1,6 @@
 import { BaseModel } from './BaseModel'
 import prisma, { SkipReason } from '@prisma/client'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { JsonValue } from '@prisma/client/runtime/client'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { RunModel } from './RunModel'
 import { ItemErrorModel } from './ItemErrorModel'

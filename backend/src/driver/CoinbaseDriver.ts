@@ -29,7 +29,7 @@ export class CoinbaseDriver extends ManualUploadDriver {
     if (!batch.data.data) {
       throw new Error(`There is no data in ${batch}.`)
     }
-    const text = batch.data.data.toString('utf-8')
+    const text = Buffer.from(batch.data.data).toString('utf-8')
     const found = coinbaseVersion(text)
     if (!found) {
       throw new Error('The file is not a Coinbase transaction export.')

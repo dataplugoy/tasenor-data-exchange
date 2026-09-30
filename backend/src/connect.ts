@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 const QUERY_LOGGING = false
 
@@ -12,11 +13,12 @@ export async function connect(db: string | undefined = undefined): Promise<Prism
     throw new Error('DATABASE_URL not set.')
   }
   const url = new URL(db)
-  if (url.protocol !== 'postgresql:'  && url.protocol !== 'postgres:') {
+  if (url.protocol !== 'postgresql:' && url.protocol !== 'postgres:') {
     throw new Error(`Cannot handle database URL protocol ${url.protocol}.`)
   }
 
   const prisma = new PrismaClient({
+    adapter: new PrismaPg({ connectionString: db }),
     log: [{ level: 'query', emit: 'event' }],
   })
 

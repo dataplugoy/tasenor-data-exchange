@@ -14,7 +14,9 @@ RUN pnpm install --frozen-lockfile
 
 ADD tsconfig.json .
 ADD src src
-ADD prisma .
+ADD prisma prisma
+ADD prisma.config.ts .
+RUN npx prisma generate
 ADD bin bin
 ADD samples samples
 

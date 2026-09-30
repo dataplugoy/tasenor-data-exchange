@@ -74,12 +74,12 @@ export const BalanceTable = (props: BalanceTableProps): React.JSX.Element => {
       </Table>
 
       <Box sx={{ mt: 1 }}>
-      {!editing && footer}
-      {editing && onSave &&
-        <Button variant="outlined" onClick={() => { onSave(balance).then(() => setEditing(false)) }}>
-          <Trans>Save</Trans>
-        </Button>
-      }
+        {!editing && footer}
+        {editing && onSave &&
+          <Button variant="outlined" onClick={() => { onSave(balance).then(() => setEditing(false)) }}>
+            <Trans>Save</Trans>
+          </Button>
+        }
       </Box>
 
     </Box>

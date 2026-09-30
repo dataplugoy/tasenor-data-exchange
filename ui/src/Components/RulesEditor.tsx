@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/material'
-import { JsonEditor, githubDarkTheme } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
+import { githubDarkTheme } from '@json-edit-react/themes'
 import { EditableRule } from '../Types/EditableRule'
 
 export interface RulesEditorProps {
@@ -15,7 +16,7 @@ export const RulesEditor = (props: RulesEditorProps): React.JSX.Element => {
       props.rules.length > 0 &&
       <JsonEditor
         data={ props.rules }
-        onUpdate={ ({ newData }) => { props.onUpdate(newData as EditableRule[]) }}
+        setData={ (data) => { props.onUpdate(data as EditableRule[]) }}
         theme={ githubDarkTheme }
         minWidth="100%"
       />
