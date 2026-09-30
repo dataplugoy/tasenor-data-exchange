@@ -6,31 +6,15 @@
  */
 
 export type RunResult =
-  | "ALL_SUCCESS"
-  | "PARTLY_SKIPPED_SUCCESS"
-  | "ALL_SKIPPED"
-  | "PARTLY_FAIL"
-  | "ALL_FAILED"
-  | "NO_PROGRESS"
-  | "WAITING";
+  "ALL_SUCCESS" | "PARTLY_SKIPPED_SUCCESS" | "ALL_SKIPPED" | "PARTLY_FAIL" | "ALL_FAILED" | "NO_PROGRESS" | "WAITING";
 
 export interface Run {
   id: number;
   batchId: number;
   initialState:
-    | "BATCH_CREATED"
-    | "DATA_FETCHED"
-    | "DATA_PARSED"
-    | "ITEMS_UNIFIED"
-    | "OUTPUT_CREATED"
-    | "OUTPUT_DELIVERED";
+    "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED";
   finalState:
-    | "BATCH_CREATED"
-    | "DATA_FETCHED"
-    | "DATA_PARSED"
-    | "ITEMS_UNIFIED"
-    | "OUTPUT_CREATED"
-    | "OUTPUT_DELIVERED";
+    "BATCH_CREATED" | "DATA_FETCHED" | "DATA_PARSED" | "ITEMS_UNIFIED" | "OUTPUT_CREATED" | "OUTPUT_DELIVERED";
   error: string | null;
   done?: number | null;
   total?: number | null;
