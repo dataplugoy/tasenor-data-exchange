@@ -212,5 +212,103 @@
       "reason": "'BROKER_FEE_REFUND'",
       "text": "Description"
     }
+  },
+  {
+    "name": "ISIN Change",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'IsinChange' and InSymbol == Symbol",
+    "result": {
+      "type": "'skip'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Ticker Change",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'IsinChange' and Legs == 2",
+    "result": {
+      "type": "'rename'",
+      "assetOut": "Symbol",
+      "assetAmountOut": "OutQuantity",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Split",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Split' and InSymbol == Symbol",
+    "result": {
+      "type": "'split'",
+      "value": "0",
+      "assetIn": "Symbol",
+      "assetAmountIn": "InQuantity",
+      "assetAmountOut": "OutQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Split to Another Instrument",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Split' and Legs == 2",
+    "result": {
+      "type": "'rename'",
+      "assetOut": "Symbol",
+      "assetAmountOut": "OutQuantity",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Spinoff",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Spinoff' and Legs == 1",
+    "result": {
+      "type": "'buy'",
+      "value": "0",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Merger",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Merger' and Legs == 2",
+    "result": {
+      "type": "'trade'",
+      "value": "InValue",
+      "valueAsset": "Currency",
+      "assetOut": "Symbol",
+      "assetAmountOut": "OutQuantity",
+      "assetTypeOut": "'STOCK'",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Stock Dividend",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'StockDividend' and Legs == 1",
+    "result": {
+      "type": "'income'",
+      "value": "InValue",
+      "valueAsset": "Currency",
+      "account": "'INCOME_STOCK_DIVIDEND'",
+      "reason": "'STOCK_DIVIDEND'",
+      "reasonAsset": "InSymbol",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
   }
 ]

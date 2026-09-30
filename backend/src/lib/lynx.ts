@@ -266,6 +266,9 @@ export function lynxItems(rows: LynxRow[], periodStart: string | null = null): I
       OutQuantity: out.length ? -out[0].quantity : null,
       InSymbol: into.length ? into[0].symbol : null,
       InQuantity: into.length ? into[0].quantity : null,
+      // Market values of the legs as positive numbers and their sum.
+      OutValue: out.length ? round(Math.abs(out[0].value)) : null,
+      InValue: into.length ? round(into[0].value) : null,
       Value: round(action.legs.reduce((sum, l) => sum + l.value, 0)),
       Legs: action.legs.length,
       Description: action.rows[0].fields.Description,

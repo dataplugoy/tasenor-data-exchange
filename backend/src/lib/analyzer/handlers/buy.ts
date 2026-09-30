@@ -93,16 +93,18 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     }
   }
 
-  // Normal buying.
+  // Normal buying. An asset received without cost (e.g. spinoff) has no money line.
   const text = this.validateText('Bought {{amount}} {{asset}}', { asset: tickerIn, amount: chg(assetAmountIn) })
 
   const lines: TransactionLine[] = [
-    {
-      account: this.validateValueAccount(false),
-      amount: dec(value).negated().toString(),
-      text,
-      extras: {},
-    },
+    ...(dec(value).isZero() && fee.isZero()
+      ? []
+      : [{
+          account: this.validateValueAccount(false),
+          amount: dec(value).negated().toString(),
+          text,
+          extras: {},
+        }]),
     {
       account,
       amount: dec(value).minus(fee).toString(),

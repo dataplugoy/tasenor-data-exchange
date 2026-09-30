@@ -110,6 +110,7 @@
   "Delivery has been skipped.": "Toimitus jätetty väliin",
   "Delivery is pending.": "Toimitus odottaa edelleen",
   "Deposit to {{service}}": "Talletus {{service}}-palveluun",
+  "Exchanged {{out}} {{outAsset}} to {{in}} {{inAsset}}": "Vaihdettu {{out}} {{outAsset}} instrumenttiin {{in}} {{inAsset}}",
   "Description": "Kuvaus",
   "Download": "Nouda",
   "Edit Rules": "Muokkaa sääntöjä",

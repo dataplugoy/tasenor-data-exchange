@@ -23,6 +23,7 @@ import { rename } from './handlers/rename'
 import { sell } from './handlers/sell'
 import { skip } from './handlers/skip'
 import { split } from './handlers/split'
+import { trade } from './handlers/trade'
 import { withdrawal } from './handlers/withdrawal'
 import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validateBasics, validateError, validateFee, validateInput, validateNotEmpty, validateRate, validateRequired, validateRequiredField, validateText, validateTicker, validateValue, validateValueAccount, validateValueOrAsset } from './validators'
 import { Setup } from '../../types/API/Setup'
@@ -63,6 +64,7 @@ export class Analyzer {
   public forexHandler = forex.bind(this)
   public renameHandler = rename.bind(this)
   public splitHandler = split.bind(this)
+  public tradeHandler = trade.bind(this)
   public skipHandler = skip.bind(this)
 
   // Bind validators.
