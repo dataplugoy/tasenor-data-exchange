@@ -24,7 +24,13 @@ router.post('/',
   authorize(),
   validate(SaveServiceRequest),
   async (req, res) => {
-    const service = await ServiceModel.create<prisma.Service, ServiceModel>({ ...ServiceModel.fromRequest(req.body), userId: res.locals.userId })
+    let data
+    try {
+      data = ServiceModel.fromRequest(req.body)
+    } catch (err) {
+      return res.status(400).send({ message: err instanceof Error ? err.message : `${err}` })
+    }
+    const service = await ServiceModel.create<prisma.Service, ServiceModel>({ ...data, userId: res.locals.userId })
     log(`Created service #${service.id} '${service.data.name}' for user #${res.locals.userId}.`)
     res.send(service.toResponse())
   }
@@ -36,7 +42,12 @@ router.patch('/:id',
   validate(SaveServiceRequest),
   async (req, res) => {
     const service: ServiceModel = res.locals.service
-    const data = ServiceModel.fromRequest(req.body, service.data.settings as unknown as ServiceSettings)
+    let data
+    try {
+      data = ServiceModel.fromRequest(req.body, service.data.settings as unknown as ServiceSettings)
+    } catch (err) {
+      return res.status(400).send({ message: err instanceof Error ? err.message : `${err}` })
+    }
     Object.assign(service.data, data)
     await ServiceModel.update<prisma.Service, ServiceModel>(service, data)
     res.send(service.toResponse())
@@ -65,7 +76,7 @@ router.post('/:id/test',
     const time = `${yesterday}T12:00:00.000Z` as Timestring
     const results: TestServiceResponse = []
 
-    for (const capability of service.getCababilities()) {
+    for (const capability of service.getEnabledCapabilities()) {
       let query: ServiceQuery
       switch (capability) {
         case 'CURRENCY_RATES':

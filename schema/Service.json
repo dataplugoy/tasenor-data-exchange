@@ -4,7 +4,7 @@
   "description": "An external service of the user. Secrets are never returned, only whether they are set.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "driver", "capabilities", "free", "url", "user", "hasPassword", "hasKey"],
+  "required": ["id", "name", "driver", "available", "capabilities", "free", "url", "user", "hasPassword", "hasKey"],
   "properties": {
     "id": {
       "type": "integer"
@@ -15,7 +15,15 @@
     "driver": {
       "$ref": "ServiceDriver.json"
     },
+    "available": {
+      "description": "Capabilities the driver provides.",
+      "type": "array",
+      "items": {
+        "$ref": "ServiceType.json"
+      }
+    },
     "capabilities": {
+      "description": "Capabilities in use.",
       "type": "array",
       "items": {
         "$ref": "ServiceType.json"

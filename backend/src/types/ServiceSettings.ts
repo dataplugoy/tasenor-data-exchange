@@ -1,3 +1,4 @@
+import { ServiceType } from '@prisma/client'
 import { Token } from '@tasenor/common'
 
 export type ServiceSettings = {
@@ -6,4 +7,6 @@ export type ServiceSettings = {
   token?: Token
   user?: string
   password?: string
+  // Capabilities in use, if not all the driver provides.
+  capabilities?: ServiceType[]
 }

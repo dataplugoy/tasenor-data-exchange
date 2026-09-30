@@ -27,6 +27,13 @@
     },
     "key": {
       "type": "string"
+    },
+    "capabilities": {
+      "description": "Capabilities in use. Missing means all the driver provides.",
+      "type": "array",
+      "items": {
+        "$ref": "ServiceType.json"
+      }
     }
   }
 }

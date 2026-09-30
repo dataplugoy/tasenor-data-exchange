@@ -1,6 +1,8 @@
 describe('Services', () => {
   it('Services can be added, tested, edited and deleted', () => {
     cy.login()
+    // Wait for the login to land on the dashboard before navigating.
+    cy.get('[data-cy="FlowPlan-TITO Testing"]').should('exist')
     cy.get('[data-cy="Menu-Services"]').click()
     cy.get('[data-cy="Service-Test Files"]').should('exist')
 
@@ -18,8 +20,10 @@ describe('Services', () => {
     cy.get('[data-cy="Service-Bookkeeper Rates"] [data-cy="EditService"]').click()
     cy.get('[data-cy="ServicePassword"] input').should('have.value', '').and('have.attr', 'placeholder', 'Saved, leave empty to keep')
     cy.get('[data-cy="ServiceName"] input').clear().type('Rates')
+    // Use only for currency rates.
+    cy.get('[data-cy="Capability-CRYPTO_RATES"] input').uncheck()
     cy.get('[data-cy="SaveService"]').click()
-    cy.get('[data-cy="Service-Rates"]').should('exist')
+    cy.get('[data-cy="Service-Rates"]').should('contain', 'Currency rates').and('not.contain', 'Crypto rates')
 
     // Test shows the result of each capability.
     cy.get('[data-cy="Service-Test Files"] [data-cy="TestService"]').click()

@@ -23,6 +23,9 @@ one.
 **Test** makes a sample query for everything the service provides, e.g. the rate of USD in EUR yesterday, and shows
 the answer or the error for each.
 
+A service providing several things can be limited with **Use for**, e.g. to use the bookkeeper only for currency
+rates when it cannot give crypto rates.
+
 When several services provide the same thing, they are asked in the order they were added until one answers. For
 example, crypto rates can come from Coinbase Exchange prices when the bookkeeper cannot provide them. Coinbase
 Exchange prices are the prices of the trading minute at the time asked. Assets without a euro market are priced

@@ -9,6 +9,10 @@
  * Implementation of an external service.
  */
 export type ServiceDriver = "JSON_FILE" | "TASENOR" | "OPEN_FIGI" | "COINBASE_PRICES";
+/**
+ * Kind of queries a service answers.
+ */
+export type ServiceType = "CURRENCY_RATES" | "CRYPTO_RATES" | "TICKERS";
 
 /**
  * Create or update a service. A missing password or key keeps the old one, an empty one removes it.
@@ -21,4 +25,8 @@ export interface SaveServiceRequest {
   user?: string;
   password?: string;
   key?: string;
+  /**
+   * Capabilities in use. Missing means all the driver provides.
+   */
+  capabilities?: ServiceType[];
 }

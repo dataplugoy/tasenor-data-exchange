@@ -32,6 +32,20 @@ describe('Services API', () => {
           })
         })
 
+        // Capabilities in use can be limited.
+        cy.apiCall('PATCH', `/services/${id}`, { name: 'Rates 2', driver: 'TASENOR', url: 'http://localhost:7205', user: 'me', capabilities: ['CURRENCY_RATES'] }).then((res) => {
+          expect(res.status).to.eq(200)
+          expect(res.body.available).to.deep.eq(['CURRENCY_RATES', 'CRYPTO_RATES'])
+          expect(res.body.capabilities).to.deep.eq(['CURRENCY_RATES'])
+        })
+        cy.apiCall('POST', `/services/${id}/test`).then((res) => {
+          expect(res.body.map((r: { capability: string }) => r.capability)).to.deep.eq(['CURRENCY_RATES'])
+        })
+        cy.apiCall('PATCH', `/services/${id}`, { name: 'Rates 2', driver: 'TASENOR', url: 'http://localhost:7205', user: 'me', capabilities: ['TICKERS'] }).then((res) => {
+          expect(res.status).to.eq(400)
+          expect(res.body.message).to.eq('Service TASENOR does not provide TICKERS.')
+        })
+
         cy.apiCall('POST', '/services', { name: '', driver: 'NONE', url: '' }).then((res) => {
           expect(res.status).to.eq(400)
         })

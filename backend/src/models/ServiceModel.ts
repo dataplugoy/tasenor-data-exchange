@@ -24,7 +24,8 @@ export class ServiceModel extends BaseModel<prisma.Service> {
       id: this.data.id,
       name: this.data.name,
       driver: this.data.driver,
-      capabilities: this.getService().getCababilities(),
+      available: this.getService().getCababilities(),
+      capabilities: this.getService().getEnabledCapabilities(),
       free: this.data.free,
       url: settings.url || '',
       user: settings.user || '',
@@ -50,7 +51,20 @@ export class ServiceModel extends BaseModel<prisma.Service> {
         settings[secret] = `${value}`
       }
     }
-    const capabilities = getService(request.driver, settings).getCababilities()
+    const available = getService(request.driver, settings).getCababilities()
+    if (request.capabilities) {
+      const unknown = request.capabilities.filter(c => !available.includes(c))
+      if (unknown.length) {
+        throw new Error(`Service ${request.driver} does not provide ${unknown.join(', ')}.`)
+      }
+      if (!request.capabilities.length) {
+        throw new Error('At least one capability must be in use.')
+      }
+      if (request.capabilities.length < available.length) {
+        settings.capabilities = available.filter(c => request.capabilities?.includes(c))
+      }
+    }
+    const capabilities = settings.capabilities || available
     return {
       name: request.name,
       driver: request.driver,

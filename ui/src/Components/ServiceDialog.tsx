@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, MenuItem, Stack, Switch, TextField } from '@mui/material'
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, FormLabel, MenuItem, Stack, Switch, TextField } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Service } from '../Types/API/Service'
 import { ServiceDriver } from '../Types/API/ServiceDriver'
+import { ServiceType } from '../Types/API/ServiceType'
 import { SaveServiceRequest } from '../Types/API/services/SaveServiceRequest'
 import { usePATCH, usePOST } from '../Hooks/useNet'
 
 export const SERVICE_DRIVERS: ServiceDriver[] = ['TASENOR', 'COINBASE_PRICES', 'OPEN_FIGI', 'JSON_FILE']
+
+// Capabilities each driver provides.
+const DRIVER_CAPABILITIES: Record<ServiceDriver, ServiceType[]> = {
+  TASENOR: ['CURRENCY_RATES', 'CRYPTO_RATES'],
+  COINBASE_PRICES: ['CRYPTO_RATES'],
+  OPEN_FIGI: ['TICKERS'],
+  JSON_FILE: ['CURRENCY_RATES', 'CRYPTO_RATES'],
+}
 
 // Default URLs for the drivers.
 const DEFAULT_URL: Record<ServiceDriver, string> = {
@@ -39,6 +48,7 @@ export const ServiceDialog = (props: ServiceDialogProps): React.JSX.Element => {
   const [password, setPassword] = useState('')
   const [key, setKey] = useState('')
   const [free, setFree] = useState(false)
+  const [capabilities, setCapabilities] = useState<ServiceType[]>(DRIVER_CAPABILITIES.TASENOR)
 
   useEffect(() => {
     if (!open) return
@@ -49,6 +59,7 @@ export const ServiceDialog = (props: ServiceDialogProps): React.JSX.Element => {
     setPassword('')
     setKey('')
     setFree(service ? service.free : false)
+    setCapabilities(service ? service.capabilities : DRIVER_CAPABILITIES.TASENOR)
   }, [open, service])
 
   const onChangeDriver = (value: ServiceDriver) => {
@@ -56,10 +67,17 @@ export const ServiceDialog = (props: ServiceDialogProps): React.JSX.Element => {
       setUrl(DEFAULT_URL[value])
     }
     setDriver(value)
+    setCapabilities(DRIVER_CAPABILITIES[value])
+  }
+
+  const available = DRIVER_CAPABILITIES[driver]
+
+  const toggleCapability = (capability: ServiceType, on: boolean) => {
+    setCapabilities(on ? available.filter(c => c === capability || capabilities.includes(c)) : capabilities.filter(c => c !== capability))
   }
 
   const onSave = async () => {
-    const request: SaveServiceRequest = { name, driver, url, free }
+    const request: SaveServiceRequest = { name, driver, url, free, capabilities }
     if (driver === 'TASENOR') {
       request.user = user
       if (password !== '') request.password = password
@@ -75,7 +93,7 @@ export const ServiceDialog = (props: ServiceDialogProps): React.JSX.Element => {
     }
   }
 
-  const complete = name.trim() !== '' && url.trim() !== '' && (driver !== 'TASENOR' || (user.trim() !== '' && (password !== '' || !!service?.hasPassword)))
+  const complete = name.trim() !== '' && url.trim() !== '' && capabilities.length > 0 && (driver !== 'TASENOR' || (user.trim() !== '' && (password !== '' || !!service?.hasPassword)))
 
   return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
     <DialogTitle>{service ? <Trans>Edit Service</Trans> : <Trans>New Service</Trans>}</DialogTitle>
@@ -108,6 +126,20 @@ export const ServiceDialog = (props: ServiceDialogProps): React.JSX.Element => {
             slotProps={{ inputLabel: { shrink: true }, htmlInput: { autoComplete: 'new-password' } }}
             data-cy="ServiceKey"
           />
+        }
+        {available.length > 1 &&
+          <Box>
+            <FormLabel><Trans>Use for</Trans></FormLabel>
+            <FormGroup row data-cy="ServiceCapabilities">
+              {available.map(c =>
+                <FormControlLabel
+                  key={c}
+                  control={<Checkbox checked={capabilities.includes(c)} onChange={e => toggleCapability(c, e.target.checked)} data-cy={`Capability-${c}`}/>}
+                  label={t(`SERVICE_TYPE_${c}`)}
+                />
+              )}
+            </FormGroup>
+          </Box>
         }
         <FormControlLabel
           control={<Switch checked={free} onChange={e => setFree(e.target.checked)}/>}
