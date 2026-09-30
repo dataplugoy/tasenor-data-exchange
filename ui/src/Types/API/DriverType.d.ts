@@ -14,4 +14,5 @@ export type DriverType =
   | "TEST_MOCK"
   | "S_PANKKI"
   | "PROCOUNTOR"
-  | "NORDEA_TITO";
+  | "NORDEA_TITO"
+  | "LYNX";

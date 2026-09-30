@@ -1,0 +1,59 @@
+﻿Statement,Header,Field Name,Field Value
+Statement,Data,Period,"January 1, 2023 - December 31, 2023"
+Account Information,Header,Field Name,Field Value
+Account Information,Data,Name,Test Company
+Collateral for Customer Borrowing,Header,Asset Category,Currency,"Securities Not Segregated: Third Party "Custody",Value
+Collateral for Customer Borrowing,Data,Stocks,USD,1,2
+Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantity,T. Price,C. Price,Proceeds,Comm/Fee,Basis,Realized P/L,MTM P/L,Code
+Trades,Data,Order,Stocks,USD,AAA,"2023-02-01, 10:00:00","1,000",10.5,10.6,-10500,-5,10505,0,100,O
+Trades,Data,Order,Stocks,USD,AAA,"2023-03-01, 11:00:00",-400,12,12.1,4800,-5,-4202,593,40,C
+Trades,Data,Order,Stocks,USD,BBB,"2023-03-02, 12:00:00",-10,20,20,200,-1,-199,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2023-03-03, 20:25:00",-0.5,30,30,15,0,-15,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2023-03-03, 20:25:00",-0.5,30,30,15,0,-15,0,0,O
+Trades,SubTotal,,Stocks,USD,AAA,,600,,,-5700,-10,6303,593,,
+Trades,Total,,Stocks,EUR,,,,,,-5000,-9,,,,
+Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantity,T. Price,,Proceeds,Comm in EUR,,,MTM in EUR,Code
+Trades,Data,Order,Forex,USD,EUR.USD,"2023-01-15, 09:00:00","10,000",1.08,,-10800,-2,,,5,
+Trades,Total,,Forex,EUR,,,,,,,-2,,,5,
+Deposits & Withdrawals,Header,Currency,Settle Date,Description,Amount
+Deposits & Withdrawals,Data,EUR,2023-01-10,Electronic Fund Transfer,15000
+Deposits & Withdrawals,Data,EUR,2023-12-20,Disbursement Initiated by Test Company,-1000
+Deposits & Withdrawals,Data,USD,2023-04-01,Adjustment: Cash Receipt/Disbursement/Transfer (Transfer to U0000000),0.62
+Deposits & Withdrawals,Data,Total,,,14000.62
+Fees,Header,Subtitle,Currency,Date,Description,Amount
+Fees,Data,Other Fees,EUR,2023-05-03,LYNX MONTHLY MINIMUM ACTIVITY FEE FOR APR 2023,-5.05
+Fees,Data,Total,,,,-5.05
+Dividends,Header,Currency,Date,Description,Amount
+Dividends,Data,USD,2023-06-15,AAA(US0000000001) Cash Dividend USD 0.25 per Share (Ordinary Dividend),150
+Dividends,Data,USD,2023-06-15,AAA(US0000000001) Payment in Lieu of Dividend (Ordinary Dividend),10
+Dividends,Data,EUR,2023-07-01,DDD1V(FI0000000002) Cash Dividend EUR 0.5 per Share (Ordinary Dividend),50
+Dividends,Data,Total,,,210
+Withholding Tax,Header,Currency,Date,Description,Amount,Code
+Withholding Tax,Data,USD,2023-06-15,AAA(US0000000001) Cash Dividend USD 0.25 per Share - US Tax,-22.5,
+Withholding Tax,Data,USD,2023-06-15,AAA(US0000000001) Payment in Lieu of Dividend - US Tax,-1.5,
+Withholding Tax,Data,EUR,2023-07-01,DDD1V(FI0000000002) Cash Dividend EUR 0.5 per Share - FI Tax,-12.5,
+Withholding Tax,Data,USD,2022-11-15,EEE(US0000000003) Cash Dividend USD 0.1 per Share - US Tax,3,
+Withholding Tax,Data,USD,2022-11-15,EEE(US0000000003) Cash Dividend USD 0.1 per Share - US Tax,-1.5,
+Withholding Tax,Data,Total,,,-35,
+Interest,Header,Currency,Date,Description,Amount
+Interest,Data,EUR,2023-02-03,EUR Debit Interest for Jan-2023,-9.49
+Interest,Data,USD,2023-10-03,USD Credit Interest for Sep-2023,2.2
+Interest,Data,Total,,,-7.29
+Corporate Actions,Header,Asset Category,Currency,Report Date,Date/Time,Description,Quantity,Proceeds,Value,Realized P/L,Code
+Corporate Actions,Data,Stocks,USD,2023-08-02,"2023-08-01, 20:25:00","AAA(US0000000001) Split 2 for 1 (AAA, AAA INC, US0000000011)",1200,0,0,0,
+Corporate Actions,Data,Stocks,USD,2023-08-02,"2023-08-01, 20:25:00","AAA(US0000000001) Split 2 for 1 (AAA.OLD, AAA INC, US0000000001)",-600,0,0,0,
+Corporate Actions,Data,Stocks,USD,2023-09-02,"2023-09-01, 20:25:00","AAA(US0000000011) Spinoff  1 for 10 (FFF, FFF HOLDINGS, US0000000004)",120,0,0,0,
+Corporate Actions,Data,Stocks,USD,2023-10-02,"2023-10-01, 20:25:00","FFF(US0000000004) Merged(Acquisition) WITH US0000000005 3 FOR 2 (GGG, GGG CORP, US0000000005)",180,0,900,0,
+Corporate Actions,Data,Stocks,USD,2023-10-02,"2023-10-01, 20:25:00","FFF(US0000000004) Merged(Acquisition) WITH US0000000005 3 FOR 2 (FFF, FFF HOLDINGS, US0000000004)",-120,0,-900,0,
+Corporate Actions,Data,Stocks,USD,2023-12-02,"2023-12-01, 20:20:00","GGG (US0000000005) Stock Dividend US0000000005 1 for 100 (GGG, GGG CORP, US0000000005)",1.8,0,9,0,
+Corporate Actions,Data,Total,,,,,,0,9,0,
+Payment In Lieu Of Dividends,Header,Currency,Date,Description,Amount,Code
+Payment In Lieu Of Dividends,Data,USD,2023-06-15,AAA(US0000000001) Payment in Lieu of Dividend (Ordinary Dividend),10,
+Other Fees,Header,Currency,Date,Description,Amount,Code
+Other Fees,Data,EUR,2023-05-03,LYNX MONTHLY MINIMUM ACTIVITY FEE FOR APR 2023,-5.05,
+Dividends,Header,Currency,Date,Description,Amount,Code
+Dividends,Data,USD,2023-06-15,AAA(US0000000001) Cash Dividend USD 0.25 per Share (Ordinary Dividend),150,
+Deposits & Withdrawals,Header,Currency,Settle Date,Description,Amount,Code
+Deposits & Withdrawals,Data,EUR,2023-01-11,Electronic Fund Transfer,15000,
+Notes/Legal Notes,Header,Type,Note
+Notes/Legal Notes,Data,Notes,"Some ""quoted"" note"

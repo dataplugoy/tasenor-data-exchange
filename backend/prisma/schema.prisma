@@ -127,6 +127,7 @@ enum DriverType {
   S_PANKKI
   PROCOUNTOR
   NORDEA_TITO
+  LYNX
 }
 
 model InputSource {

@@ -349,5 +349,6 @@
   "{{count}} of these lines are taken by earlier rules and this rule is not used for them.": "{{count}} näistä riveistä käsitellään aiemmilla säännöillä, eikä tätä sääntöä käytetä niihin.",
   "{{count}} of {{checked}} recent lines match.": "{{count}} / {{checked}} viimeisimmästä rivistä täsmää.",
   "ACCOUNT_TAX_VAT_FROM_PURCHASES": "Ostojen arvonlisävero",
-  "ACCOUNT_TAX_VAT_FROM_SALES": "Myynnin arvonlisävero"
+  "ACCOUNT_TAX_VAT_FROM_SALES": "Myynnin arvonlisävero",
+  "Upload Lynx Activity Statement": "Lähetä Lynxin tiliote"
 }

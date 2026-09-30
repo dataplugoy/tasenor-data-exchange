@@ -25,6 +25,9 @@ export type SPankkiDriverSettings = {
 export type NordeaTitoDriverSettings = {
 }
 
+export type LynxDriverSettings = {
+}
+
 export type TasenorDriverSettings = {
   host: string
   user: string
@@ -45,5 +48,6 @@ export type DriverSettings =
   | NordnetDriverSettings
   | SPankkiDriverSettings
   | NordeaTitoDriverSettings
+  | LynxDriverSettings
   | TasenorDriverSettings
   | ProcountorDriverSettings

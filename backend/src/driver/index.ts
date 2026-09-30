@@ -13,6 +13,7 @@ import { Setup } from '../types/API/Setup'
 import { SPankkiDriver } from './SPankkiDriver'
 import { ProcountorDriver } from './ProcountorDriver'
 import { NordeaTitoDriver } from './NordeaTitoDriver'
+import { LynxDriver } from './LynxDriver'
 
 /**
  * Drivers implemented.
@@ -27,6 +28,7 @@ const drivers: Record<prisma.DriverType, Constructor<Driver>> = {
   S_PANKKI: SPankkiDriver,
   PROCOUNTOR: ProcountorDriver,
   NORDEA_TITO: NordeaTitoDriver,
+  LYNX: LynxDriver,
 }
 
 /**
