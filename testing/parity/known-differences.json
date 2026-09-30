@@ -1,5 +1,44 @@
 {
   "Devel-2025-TITO": {
     "2512032588INVS0093": "Stale bookkeeper expectation: the answer chooses account 305120 (Megalo) and current bookkeeper books it there too, but transactions.json still has 3050."
+  },
+  "Dataplug-2021-Lynx": {
+    "29c892bb7da46a384348b05f3fe23c68942c33ff": "Bookkeeper sells the fractional share of the SLG split at the cost before the split. TaDeX applies the split first (37 -> 35.951) and sells from it.",
+    "24d2d2318d8af4275acda35f78525af79ca106bf": "Bookkeeper sells the fractional share of the SLG split at the cost before the split. TaDeX applies the split first (37 -> 35.951) and sells from it.",
+    "Trade:2021-01-20, 20:25:00:SLG:-0.951:63.8915:O": "Bookkeeper sells the fractional share of the SLG split at the cost before the split. TaDeX applies the split first (37 -> 35.951) and sells from it.",
+    "Trade:2021-01-20, 20:25:00:SLG:-0.951:63.02:C": "Bookkeeper sells the fractional share of the SLG split at the cost before the split. TaDeX applies the split first (37 -> 35.951) and sells from it.",
+    "cca928eccc13e19133b84fc66e85727d6ca8f12c": "Average cost of SLG differs after the fractional share sale of the split (see 2021-01-20).",
+    "Trade:2021-04-12, 10:49:50:SLG:-35:71.8227:C": "Average cost of SLG differs after the fractional share sale of the split (see 2021-01-20).",
+    "acf8d4f4f538c3a2b923556f8255eb16b30583c0": "Bookkeeper books the merger at market values of both legs. TaDeX takes FPI PRB out at average cost (incl. 116 shares missing from the statement at zero cost) and realizes the profit.",
+    "CorporateAction:2021-10-01, 20:25:00:US31154R2085:Merger": "Bookkeeper books the merger at market values of both legs. TaDeX takes FPI PRB out at average cost (incl. 116 shares missing from the statement at zero cost) and realizes the profit.",
+    "595e5355365b50eaf473cdf4412094cd3a892691": "Bookkeeper books the merger at market values of both legs. TaDeX takes CBLDQ out at average cost and realizes the loss.",
+    "CorporateAction:2021-11-01, 20:25:00:US1248306052:Merger": "Bookkeeper books the merger at market values of both legs. TaDeX takes CBLDQ out at average cost and realizes the loss.",
+    "stock:FPI PRB": "Bookkeeper ends with -116 FPI PRB since the acquisition of 116 shares is missing from the statement (see stock-corrections.json)."
+  },
+  "Dataplug-2022-Lynx": {
+    "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period.",
+    "0e250ff856924632c51b1b8917134daf0f66d627": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "537fe67fc250f25fc00b1c59479e6edd2bcc548b": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "7d61f69e902417be593d47791f037275eb55c9a7": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "6914c7ed44ea217015c22afa47bd61b9b1ffc4c7": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "c0d2029c4624b080d7caefea6743326921c68b05": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "3a9089f3680c90b9d3517c2506ac03898ae33cb7": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "0cbf59c827d2289ef0c6601b08c571abb9967eb7": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "737e303876414a1ad95ae2d0de69e5463e02369c": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column."
+  },
+  "Dataplug-2023-Lynx": {
+    "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period.",
+    "ba6b94e1737265f0f44aa9c26ad47d144601c991": "Bookkeeper books the deposit twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "stock:STAR": "Bookkeeper books the STAR 4 for 25 split into SAFE as STAR +92 -575, leaving 92 STAR and no new SAFE. TaDeX moves STAR to SAFE.",
+    "stock:SAFE": "Bookkeeper books the STAR 4 for 25 split into SAFE as STAR +92 -575, leaving 92 STAR and no new SAFE. TaDeX moves STAR to SAFE."
+  },
+  "Dataplug-2024-Lynx": {
+    "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period.",
+    "46199837a689fe701f7758228acf5984b047e2be": "Bookkeeper books 4.03 of the EPRT dividend to manual inspection and rounds the tax differently. TaDeX books the dividend with its withholding tax.",
+    "Dividend:2024-01-12:US29670E1073": "Bookkeeper books 4.03 of the EPRT dividend to manual inspection and rounds the tax differently. TaDeX books the dividend with its withholding tax.",
+    "4bbebf3c1a75cf0b6133bc3fb29f532f2bb4592c": "Bookkeeper books the deposit twice, also from the repeated Deposits & Withdrawals section with the Code column."
+  },
+  "Dataplug-2025-Lynx": {
+    "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period."
   }
 }

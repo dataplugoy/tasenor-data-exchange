@@ -135,6 +135,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
             <MenuItem value="NORDNET"><Trans>Upload Nordnet Statement</Trans></MenuItem>
             <MenuItem value="S_PANKKI"><Trans>Upload S-Pankki Statement</Trans></MenuItem>
             <MenuItem value="NORDEA_TITO"><Trans>Upload Nordea TITO Statement</Trans></MenuItem>
+            <MenuItem value="LYNX"><Trans>Upload Lynx Activity Statement</Trans></MenuItem>
           </TextField>
 
           {

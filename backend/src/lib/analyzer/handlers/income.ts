@@ -18,6 +18,8 @@ import { resolveTax } from './tax'
  * Requires alternatively fields `account` or `reason`.
  * Recommended: `reasonAsset`.
  * Optional: `taxType` with `taxAmount` or `taxPercentage` and `taxAsset`.
+ * Optional: `assetIn`, `assetAmountIn` and `assetTypeIn` when the income is received as an asset instead of money
+ * (e.g. stock dividend). The asset enters the stock at the value of the income.
  */
 export async function income(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
@@ -41,6 +43,35 @@ export async function income(this: Analyzer, time: DateTime, input: UnifiedItemD
 
   // Withholding tax is deducted from the gross value before payment, while other taxes (VAT) are included in the value received.
   const withholding = taxType === 'withholding'
+
+  // Income received as an asset.
+  if (input.assetIn) {
+    this.validateRequired('assetAmountIn', 'assetTypeIn')
+    if (!tax.eq(0)) {
+      this.validateError('Tax is not supported for income received as an asset')
+    }
+    const tickerIn = this.validateTicker(input.assetIn)
+    return {
+      time: time.toUTC().toISO() as Timestring,
+      lines: [
+        {
+          account: `${input.assetTypeIn}_${tickerIn}` as AccountCode,
+          amount: dec(value).toString(),
+          text: resultText,
+          extras: {
+            asset: tickerIn,
+            assetChange: dec(input.assetAmountIn).toString(),
+          },
+        },
+        {
+          account: resultAccount,
+          amount: dec(value).negated().toString(),
+          text: resultText,
+          extras: {},
+        },
+      ]
+    }
+  }
 
   const lines: TransactionLine[] = [
     {

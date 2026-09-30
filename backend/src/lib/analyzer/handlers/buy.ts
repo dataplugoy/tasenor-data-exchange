@@ -26,7 +26,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
   const [fee, feeAsset, feeAssetChange] = await this.validateFee(true)
   const account = `${assetTypeIn}_${tickerIn}` as AccountCode
 
-  const old = this.stock.getAsset(account, tickerIn)
+  const old = this.stock.getAsset(this.resolveAccount(account), tickerIn)
 
   if (old.amount.lt(0)) {
 
@@ -34,14 +34,16 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       this.validateError('Buying more of short-sold instrument than negative amount is not implemented.')
     }
     // Reverting short selling.
-    const oldValue = this.stock.getValue(account, tickerIn)?.mul(assetAmountIn as number)
+    const oldValue = this.stock.getValue(this.resolveAccount(account), tickerIn)?.mul(assetAmountIn as number)
 
     const text = this.validateText('Closing short position by buying {{amount}} {{asset}}', { asset: tickerIn, amount: chg(assetAmountIn) })
+    // The value includes the fee like in normal buying, but the result is from the price.
+    const price = dec(value).minus(fee)
 
     const lines: TransactionLine[] = [
       {
         account: this.validateValueAccount(false),
-        amount: dec(value).plus(fee).negated().toString(),
+        amount: dec(value).negated().toString(),
         text,
         extras: {},
       },
@@ -57,20 +59,20 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     ]
 
     // Making profit.
-    if (oldValue?.gt(value)) {
+    if (oldValue?.gt(price)) {
       lines.push({
         account: `PROFIT_${tickerIn}` as AccountCode,
-        amount: oldValue.minus(value).negated().toString(),
+        amount: oldValue.minus(price).negated().toString(),
         text,
         extras: {},
       })
     }
 
     // Making losses.
-    if (oldValue?.lt(value)) {
+    if (oldValue?.lt(price)) {
       lines.push({
         account: `LOSS_${tickerIn}` as AccountCode,
-        amount: value.minus(oldValue).toString(),
+        amount: price.minus(oldValue).toString(),
         text,
         extras: {},
       })
@@ -93,16 +95,18 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
     }
   }
 
-  // Normal buying.
+  // Normal buying. An asset received without cost (e.g. spinoff) has no money line.
   const text = this.validateText('Bought {{amount}} {{asset}}', { asset: tickerIn, amount: chg(assetAmountIn) })
 
   const lines: TransactionLine[] = [
-    {
-      account: this.validateValueAccount(false),
-      amount: dec(value).negated().toString(),
-      text,
-      extras: {},
-    },
+    ...(dec(value).isZero() && fee.isZero()
+      ? []
+      : [{
+          account: this.validateValueAccount(false),
+          amount: dec(value).negated().toString(),
+          text,
+          extras: {},
+        }]),
     {
       account,
       amount: dec(value).minus(fee).toString(),

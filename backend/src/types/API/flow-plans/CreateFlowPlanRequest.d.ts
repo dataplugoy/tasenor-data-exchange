@@ -14,7 +14,8 @@ export type DriverType =
   | "TEST_MOCK"
   | "S_PANKKI"
   | "PROCOUNTOR"
-  | "NORDEA_TITO";
+  | "NORDEA_TITO"
+  | "LYNX";
 /**
  * Main category of the transaction.
  */
@@ -153,6 +154,10 @@ export interface UnifiedItemData {
    * If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.
    */
   multipart?: string;
+  /**
+   * Realized profit (positive) or loss (negative) in the default currency, if given by the source.
+   */
+  profit?: number | string;
   rates?: Rates;
   /**
    * If income or expense have some specific reason, it can be determined here.

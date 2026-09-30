@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import Decimal from 'decimal.js'
 import { Analyzer } from '../Analyzer'
 import { chg, dec } from '../../utils'
 import { Timestring } from '@tasenor/common'
@@ -13,6 +14,8 @@ import { AccountCode } from '../../../types/AccountCode'
  * @param input
  *
  * Requires fields `assetIn`, `assetAmountIn`, `assetTypeIn`, `assetOut`.
+ * Optional `assetAmountOut` when the amount changes (default: `assetAmountIn`).
+ * Optional `value` for the cost moved. By default the average cost of the old instrument is moved.
  */
 export async function rename(this: Analyzer, time: DateTime, input: UnifiedItemData): Promise<Transaction> {
 
@@ -20,11 +23,18 @@ export async function rename(this: Analyzer, time: DateTime, input: UnifiedItemD
 
   this.validateRequired('assetIn', 'assetAmountIn', 'assetTypeIn', 'assetOut')
   const { assetOut, assetIn, assetTypeIn, assetAmountIn } = input
+  const assetAmountOut = input.assetAmountOut === undefined || input.assetAmountOut === null ? assetAmountIn : input.assetAmountOut
   const tickerIn = this.validateTicker(assetIn as string)
   const tickerOut = this.validateTicker(assetOut as string)
 
   const text = this.validateText('Renamed {{amount}} {{out}} to {{in}}', { in: tickerIn, out: tickerOut, amount: chg(assetAmountIn) })
-  const value = await this.validateValue(true)
+  let value: Decimal
+  if (input.value === undefined || input.value === null) {
+    const old = this.stock.getAsset(this.resolveAccount(`${assetTypeIn}_${tickerOut}`), tickerOut)
+    value = old.amount.isZero() ? new Decimal(0) : old.value.div(old.amount).mul(dec(assetAmountOut))
+  } else {
+    value = await this.validateValue(true)
+  }
 
   return {
     time: time.toUTC().toISO() as Timestring,
@@ -35,7 +45,7 @@ export async function rename(this: Analyzer, time: DateTime, input: UnifiedItemD
         text,
         extras: {
           asset: tickerOut,
-          assetChange: dec(assetAmountIn).negated().toString(),
+          assetChange: dec(assetAmountOut).negated().toString(),
         },
       },
       {

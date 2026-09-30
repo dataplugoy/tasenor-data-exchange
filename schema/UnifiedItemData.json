@@ -78,6 +78,11 @@
       "description": "If a transaction must be constructed from multiple parts, this is unique identifier used to combine the parts together.",
       "type": "string"
     },
+    "profit": {
+      "description": "Realized profit (positive) or loss (negative) in the default currency, if given by the source.",
+      "type": ["number", "string"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
     "rates": {
       "description": "Conversion rates for assets involved, if known.",
       "$ref": "Rates.json"

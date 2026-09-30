@@ -19,7 +19,8 @@
         "MANUAL_UPLOAD",
         "NORDNET",
         "S_PANKKI",
-        "NORDEA_TITO"
+        "NORDEA_TITO",
+        "LYNX"
       ]
     },
     "settings": {

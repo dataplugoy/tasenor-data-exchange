@@ -25,6 +25,8 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
     text = t('ACCOUNT_NORDNET', { currency: code.substring(17) })
   } else if (/^CRYPTO_/.test(code)) {
     text = t('ACCOUNT_CRYPTO', { currency: code.substring(7) })
+  } else if (code === 'FOREX_PROFIT' || code === 'FOREX_LOSS') {
+    text = t(`ACCOUNT_${code}`)
   } else if (/^PROFIT_/.test(code)) {
     text = t('ACCOUNT_PROFIT', { currency: code.substring(7) })
   } else if (/^FEE_/.test(code)) {

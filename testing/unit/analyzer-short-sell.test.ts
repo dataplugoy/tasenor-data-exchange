@@ -284,7 +284,7 @@ describe('Analyzer', () => {
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
-      value: 100,
+      value: 102.5,
       assetIn: 'GME' as Asset,
       assetTypeIn: 'STOCK',
       assetAmountIn: 20,
@@ -340,7 +340,7 @@ describe('Analyzer', () => {
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
-      value: 70,
+      value: 75,
       assetIn: 'GME' as Asset,
       assetTypeIn: 'STOCK',
       assetAmountIn: 20,
@@ -402,7 +402,7 @@ describe('Analyzer', () => {
 
     const input2 = {
       type: 'buy' as UnifiedItemType,
-      value: 110,
+      value: 115,
       assetIn: 'GME' as Asset,
       assetTypeIn: 'STOCK',
       assetAmountIn: 20,
@@ -445,5 +445,34 @@ describe('Analyzer', () => {
       balances: { CURRENCY_EUR: -15, STOCK_GME: 0, LOSS_GME: 10, FEE_EUR: 5 },
       stock: { STOCK_GME: { GME: { amount: 0, value: 0 } } }
     })
+  })
+
+  it('short-selling and buying back with a single stock account', async () => {
+
+    const grouped: Setup = { ...setup, accountGrouping: { singleStockAccount: true } }
+    const input = {
+      type: 'sell' as UnifiedItemType,
+      value: 100,
+      assetOut: 'GME' as Asset,
+      assetTypeOut: 'STOCK',
+      assetAmountOut: 20,
+    }
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, {}, input, { userId: 0 }, grouped)
+
+    const tx = await continueAnalyzer(analyzer, '2000-01-02T00:00:00Z', {
+      type: 'buy' as UnifiedItemType,
+      value: 70,
+      assetIn: 'GME' as Asset,
+      assetTypeIn: 'STOCK',
+      assetAmountIn: 20,
+    })
+    analyzer.apply(tx)
+
+    expect(tx.lines.map(l => `${l.account} ${l.amount}`)).toStrictEqual([
+      'CURRENCY_EUR -70',
+      'STOCK 100',
+      'PROFIT_GME -30',
+    ])
+    expect(analyzer.toJSON().stock).toStrictEqual({ STOCK: { GME: { amount: 0, value: 0 } } })
   })
 })

@@ -1,0 +1,306 @@
+[
+  {
+    "name": "Deposit",
+    "key": "Deposit",
+    "filter": "Kind == 'Deposit'",
+    "result": {
+      "type": "'deposit'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "service": "'Lynx'"
+    }
+  },
+  {
+    "name": "Withdrawal",
+    "key": "Withdrawal",
+    "filter": "Kind == 'Withdrawal'",
+    "result": {
+      "type": "'withdrawal'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "service": "'Lynx'"
+    }
+  },
+  {
+    "name": "Deposit Correction",
+    "key": "TransferAdjustment",
+    "filter": "Kind == 'TransferAdjustment' and Amount >= 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "reason": "'CORRECTION_DEPOSIT'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Withdrawal Correction",
+    "key": "TransferAdjustment",
+    "filter": "Kind == 'TransferAdjustment' and Amount < 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "reason": "'CORRECTION_WITHDRAWAL'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Stock Buy",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and AssetCategory == 'Stocks' and Quantity > 0",
+    "result": {
+      "type": "'buy'",
+      "value": "-Proceeds - Fee",
+      "valueAsset": "Currency",
+      "assetIn": "Symbol",
+      "assetAmountIn": "Quantity",
+      "assetTypeIn": "'STOCK'",
+      "fee": "-Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Stock Sell",
+    "key": "Trade",
+    "filter": "Kind == 'Trade' and AssetCategory == 'Stocks' and Quantity < 0",
+    "result": {
+      "type": "'sell'",
+      "value": "Proceeds",
+      "valueAsset": "Currency",
+      "assetOut": "Symbol",
+      "assetAmountOut": "-Quantity",
+      "assetTypeOut": "'STOCK'",
+      "fee": "-Fee",
+      "feeAsset": "Currency"
+    }
+  },
+  {
+    "name": "Forex Buy (Foreign to Local)",
+    "key": "Forex",
+    "filter": "Kind == 'Forex' and Base == currency and Quantity > 0",
+    "result": {
+      "type": "'forex'",
+      "value": "-Proceeds",
+      "valueAsset": "Quote",
+      "assetIn": "Base",
+      "assetAmountIn": "Quantity",
+      "fee": "-Fee",
+      "feeAsset": "FeeCurrency",
+      "profit": "Profit",
+      "rates": "rates(Quote, 1 / Price)"
+    }
+  },
+  {
+    "name": "Forex Sell (Local to Foreign)",
+    "key": "Forex",
+    "filter": "Kind == 'Forex' and Base == currency and Quantity < 0",
+    "result": {
+      "type": "'forex'",
+      "value": "Proceeds",
+      "valueAsset": "Quote",
+      "assetOut": "Base",
+      "assetAmountOut": "-Quantity",
+      "fee": "-Fee",
+      "feeAsset": "FeeCurrency",
+      "profit": "Profit",
+      "rates": "rates(Quote, 1 / Price)"
+    }
+  },
+  {
+    "name": "Dividend",
+    "key": "Dividend",
+    "filter": "Kind == 'Dividend'",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "reason": "'DIVIDEND'",
+      "reasonAsset": "Symbol",
+      "taxType": "'withholding'",
+      "taxAmount": "-Tax",
+      "taxAsset": "Currency"
+    }
+  },
+  {
+    "name": "Withholding Tax Refund",
+    "key": "TaxAdjustment",
+    "filter": "Kind == 'TaxAdjustment' and Amount > 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "account": "'TAX_WITHHOLDING'",
+      "reason": "'WITHHOLDING_TAX_CORRECTION'",
+      "reasonAsset": "Symbol"
+    }
+  },
+  {
+    "name": "Withholding Tax Charge",
+    "key": "TaxAdjustment",
+    "filter": "Kind == 'TaxAdjustment' and Amount < 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "account": "'TAX_WITHHOLDING'",
+      "reason": "'WITHHOLDING_TAX_CORRECTION'"
+    }
+  },
+  {
+    "name": "Withholding Tax Reversed",
+    "key": "TaxAdjustment",
+    "filter": "Kind == 'TaxAdjustment' and Amount == 0",
+    "result": {
+      "type": "'skip'"
+    }
+  },
+  {
+    "name": "Interest Expense",
+    "key": "Interest",
+    "filter": "Kind == 'Interest' and Amount <= 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_INTEREST'",
+      "reason": "'INTEREST'"
+    }
+  },
+  {
+    "name": "Credit Interest",
+    "key": "Interest",
+    "filter": "Kind == 'Interest' and Amount > 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_INTEREST'",
+      "reason": "'INTEREST_REFUND'"
+    }
+  },
+  {
+    "name": "Broker Fee",
+    "key": "Fee",
+    "filter": "Kind == 'Fee' and Amount <= 0",
+    "result": {
+      "type": "'expense'",
+      "value": "-Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_BROKER_FEE'",
+      "reason": "'BROKER_FEE'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Broker Fee Refund",
+    "key": "Fee",
+    "filter": "Kind == 'Fee' and Amount > 0",
+    "result": {
+      "type": "'income'",
+      "value": "Amount",
+      "valueAsset": "Currency",
+      "account": "'EXPENSE_BROKER_FEE'",
+      "reason": "'BROKER_FEE_REFUND'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "ISIN Change",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'IsinChange' and InSymbol == Symbol",
+    "result": {
+      "type": "'skip'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Ticker Change",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'IsinChange' and Legs == 2",
+    "result": {
+      "type": "'rename'",
+      "assetOut": "Symbol",
+      "assetAmountOut": "OutQuantity",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Split",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Split' and InSymbol == Symbol",
+    "result": {
+      "type": "'split'",
+      "value": "0",
+      "assetIn": "Symbol",
+      "assetAmountIn": "InQuantity",
+      "assetAmountOut": "OutQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Split to Another Instrument",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Split' and Legs == 2",
+    "result": {
+      "type": "'rename'",
+      "assetOut": "Symbol",
+      "assetAmountOut": "OutQuantity",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Spinoff",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Spinoff' and Legs == 1",
+    "result": {
+      "type": "'buy'",
+      "value": "0",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Merger",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'Merger' and Legs == 2",
+    "result": {
+      "type": "'trade'",
+      "value": "InValue",
+      "valueAsset": "Currency",
+      "assetOut": "Symbol",
+      "assetAmountOut": "OutQuantity",
+      "assetTypeOut": "'STOCK'",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  },
+  {
+    "name": "Stock Dividend",
+    "key": "CorporateAction",
+    "filter": "Kind == 'CorporateAction' and Action == 'StockDividend' and Legs == 1",
+    "result": {
+      "type": "'income'",
+      "value": "InValue",
+      "valueAsset": "Currency",
+      "account": "'INCOME_STOCK_DIVIDEND'",
+      "reason": "'STOCK_DIVIDEND'",
+      "reasonAsset": "InSymbol",
+      "assetIn": "InSymbol",
+      "assetAmountIn": "InQuantity",
+      "assetTypeIn": "'STOCK'",
+      "text": "Description"
+    }
+  }
+]
