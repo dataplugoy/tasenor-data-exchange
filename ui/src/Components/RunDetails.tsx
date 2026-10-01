@@ -12,6 +12,7 @@ import { ViewUnified } from './ViewUnified'
 import { ViewInput } from './ViewInput'
 import { Trans } from 'react-i18next'
 import { RawDisplay } from './RawDisplay'
+import { toBuffer } from '../Helpers/buffer'
 
 interface RunDetailsProps {
   batch: Batch
@@ -38,7 +39,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
   }, [batch.id, result.step])
 
   const onDownload = () => {
-    const buf = Buffer.from(batch.data.data)
+    const buf = toBuffer(batch.data)
     const url = window.URL.createObjectURL(new Blob([buf]))
     const link = document.createElement('a')
     link.href = url
