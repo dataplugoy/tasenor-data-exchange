@@ -66,7 +66,21 @@ You need to set DOCKER_USER and DOCKER_PASSWORD first.
   ```
   bin/docker-publish prod
   ```
-* Release
+* Release (production runs in the shared stack on `ssh dataplug`, in `/home/wigy/dataplug`)
   ```
   bin/update-prod
   ```
+  The API runs `prisma db push --accept-data-loss` at start, so check schema changes before a release.
+
+## Copying Production Locally
+
+```
+ssh dataplug 'docker exec tadex-db sh -c "pg_dump --clean --if-exists -U dev -p 7300 tadex"' > prod.sql
+docker exec -i tadex-db psql -q postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex < prod.sql
+```
+
+Configured outputs are live, so disable them before experimenting:
+```
+docker exec tadex-db psql postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex -c \
+  "update output_destinations set settings = settings || jsonb_build_object('_originalType', type::text), type='NO_ACTION' where type <> 'NO_ACTION'"
+```

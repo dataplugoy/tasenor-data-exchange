@@ -9,8 +9,7 @@ echo
 FILE=`dirname "${BASH_SOURCE[0]}"`/..
 ROOT=`readlink -f "$FILE"`
 
-REMOTE_USER=debian
-REMOTE_SERVER=data-exchange.tasenor.com
-REMOTE_DIR=/home/debian/tasenor-devops/data-exchange.tasenor.com
+REMOTE_HOST=dataplug
+REMOTE_DIR=/home/wigy/dataplug
 
-ssh "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_DIR && git reset --hard && git clean -f -d && git pull -q && ./bin/update"
+ssh "$REMOTE_HOST" "cd $REMOTE_DIR && ./prod.sh pull tadex-api tadex-app && ./prod.sh up -d --no-deps tadex-api tadex-app"
