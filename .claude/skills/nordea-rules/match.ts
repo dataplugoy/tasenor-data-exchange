@@ -19,6 +19,8 @@ import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import { parseTitoRecords, titoItems, isTito } from '../../../backend/src/lib/tito'
 import { RULE_HELPERS, compileFilter, compileResult } from '../../../backend/src/lib/mapping'
+import { ajv } from '../../../backend/src/lib/validate'
+import SaveRuleRequest from '../../../backend/src/types/API/flow-plans/SaveRuleRequest.json'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..')
 const require = createRequire(path.join(ROOT, 'backend', 'package.json'))
@@ -80,6 +82,10 @@ function main() {
   const candidatesPath = option('candidates')
   if (candidatesPath) {
     for (const c of JSON.parse(fs.readFileSync(candidatesPath).toString('utf-8'))) {
+      // The same validation as the API does for saving a rule.
+      if (!ajv.validate(SaveRuleRequest, c)) {
+        throw new Error(`Candidate '${c.name}' is not a valid SaveRuleRequest: ${ajv.errorsText(ajv.errors)}`)
+      }
       const filter = c.kind === 'MAPPING' ? compileFilter(c.filterView) : c.filter
       const result = c.kind === 'MAPPING' ? compileResult(c.resultView) : c.result
       rules.push({ name: `${c.name} (candidate)`, filter, result, origin: 'candidate' })
