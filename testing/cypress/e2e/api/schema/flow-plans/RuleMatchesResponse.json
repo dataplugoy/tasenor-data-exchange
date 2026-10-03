@@ -1,0 +1,5 @@
+{
+  "title": "RuleMatchesResponse",
+  "type": "array",
+  "items": { "$ref": "OutputItem.json" }
+}

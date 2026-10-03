@@ -69,6 +69,16 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
+   * Get the output items made from unified items matched by a rule, latest first.
+   * @param ruleId
+   * @param limit
+   */
+  static async findForRule(ruleId: number, limit: number): Promise<OutputItemModel[]> {
+    const items = await this.db.findMany({ where: { unified: { ruleId } }, orderBy: [{ unified: { time: 'desc' } }, { id: 'desc' }], take: limit })
+    return items.map(item => this.instantiate<prisma.OutputItem, OutputItemModel>(item))
+  }
+
+  /**
    * Get the output items for the batch.
    * @param flow
    * @returns

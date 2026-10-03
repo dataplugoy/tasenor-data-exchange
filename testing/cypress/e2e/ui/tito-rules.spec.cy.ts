@@ -55,5 +55,11 @@ describe('TITO import with mapping rules', () => {
     cy.get('[data-cy="RuleTable"]').should('contain', 'Saaja/Maksaja is "OVHcloud", money out')
     cy.get('[data-cy="RuleTable"]').should('contain', 'Expense, Software, VAT 25.5%')
     cy.get('[data-cy="Rule-Saaja/Maksaja is \\"OVHcloud\\", money out"] td').eq(4).should('have.text', '1')
+
+    // The match count opens the transaction created by the rule.
+    cy.get('[data-cy="RuleMatches-Saaja/Maksaja is \\"OVHcloud\\", money out"]').click()
+    cy.get('[role="dialog"] [data-cy="TransactionTable"]').should('contain', '100.80')
+    cy.get('[role="dialog"] [data-cy="TransactionTable"]').should('contain', 'Delivered successfully')
+    cy.get('[role="dialog"] button').contains('Close').click()
   })
 })

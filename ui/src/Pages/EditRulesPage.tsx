@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Chip, IconButton, Switch, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Chip, IconButton, Link, Switch, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Add, ArrowDownward, ArrowUpward, Clear, ContentCopy, Delete, Edit } from '@mui/icons-material'
@@ -10,6 +10,7 @@ import { MappingFilterView } from '../Types/API/MappingFilterView'
 import { MappingResultView } from '../Types/API/MappingResultView'
 import { MappingRuleDialog } from '../Components/MappingRuleDialog'
 import { Confirm } from '../Components/Confirm'
+import { RuleMatchesDialog } from '../Components/RuleMatchesDialog'
 import { describeAction, describeConditions } from '../Helpers/rules'
 
 /**
@@ -27,6 +28,7 @@ export const EditRulesPage = (): React.JSX.Element => {
   const [editing, setEditing] = useState<Rule | null>(null)
   const [creating, setCreating] = useState<{ filter?: MappingFilterView, result?: MappingResultView } | null>(null)
   const [deleting, setDeleting] = useState<Rule | null>(null)
+  const [showingMatches, setShowingMatches] = useState<Rule | null>(null)
 
   const load = () => {
     GET(`/flow-plans/${flowPlanId}/rules`).then(res => res && setRules(res as Rule[]))
@@ -116,7 +118,9 @@ export const EditRulesPage = (): React.JSX.Element => {
             </TableCell>
             <TableCell align="right">
               <Tooltip title={rule.lastMatched ? t('Last matched {{time}}', { time: rule.lastMatched.substring(0, 10) }) : ''}>
-                <span>{rule.matchCount || 0}</span>
+                {rule.matchCount
+                  ? <Link component="button" onClick={() => setShowingMatches(rule)} data-cy={`RuleMatches-${rule.name}`}>{rule.matchCount}</Link>
+                  : <span>0</span>}
               </Tooltip>
             </TableCell>
             <TableCell sx={{ whiteSpace: 'nowrap' }}>
@@ -138,6 +142,12 @@ export const EditRulesPage = (): React.JSX.Element => {
       initialResult={creating?.result}
       onClose={() => { setEditing(null); setCreating(null) }}
       onSaved={() => { setEditing(null); setCreating(null); load() }}
+    />
+
+    <RuleMatchesDialog
+      flowPlanId={flowPlanId}
+      rule={showingMatches}
+      onClose={() => setShowingMatches(null)}
     />
 
     <Confirm

@@ -27,6 +27,9 @@
     "inputId": {
       "type": "integer"
     },
+    "ruleId": {
+      "type": ["null", "integer"]
+    },
     "flowPlanId": {
       "type": "integer"
     },

@@ -276,6 +276,8 @@ model UnifiedItem{
 
   inputId     Int
   input       InputItem       @relation(fields: [inputId], references: [id])
+  ruleId      Int?
+  rule        Rule?           @relation(fields: [ruleId], references: [id], onDelete: SetNull)
   flowPlanId  Int
   flowPlan    FlowPlan        @relation(fields: [flowPlanId], references: [id])
   batchId     Int
@@ -285,6 +287,7 @@ model UnifiedItem{
 
   @@map(name: "unified_items")
   @@index([inputId])
+  @@index([ruleId])
 }
 
 model OutputItem{
@@ -347,6 +350,8 @@ model Rule{
   notes       String          @default("")
   matchCount  Int             @default(0)
   lastMatched DateTime?
+
+  unifiedItems UnifiedItem[]
 
   @@unique([flowPlanId, name])
 

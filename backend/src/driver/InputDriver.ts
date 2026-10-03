@@ -80,6 +80,7 @@ export class InputDriver extends Driver {
     const variables = this.ruleVariables(input)
 
     let data: UnifiedItemData
+    let ruleId: number | null = null
     if (answer) {
       data = clone(answer)
     } else {
@@ -89,7 +90,8 @@ export class InputDriver extends Driver {
       let matched: RuleModel | null = null
       data = applyRules(variables, rules, ruleKey, rule => { matched = rule })
       if (matched && (matched as RuleModel).id) {
-        await RuleModel.recordMatch((matched as RuleModel).id)
+        ruleId = (matched as RuleModel).id
+        await RuleModel.recordMatch(ruleId)
       }
     }
     this.completeUnified(input, data)
@@ -119,6 +121,7 @@ export class InputDriver extends Driver {
       batchId: input.data.batchId,
       runId: run.id,
       inputId: input.id,
+      ruleId,
     }
   }
 

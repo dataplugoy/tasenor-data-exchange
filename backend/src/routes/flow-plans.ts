@@ -24,6 +24,7 @@ import { error, log } from '@tasenor/common'
 import { AlertModel } from '../models/AlertModel'
 import { validate } from '../lib/validate'
 import { RuleModel } from '../models/RuleModel'
+import { OutputItemModel } from '../models/OutputItemModel'
 import { Notes } from '../types/API/Notes'
 import { t } from '../lib/i18n/t'
 
@@ -440,6 +441,19 @@ router.put('/:id/rules/:ruleId',
     } catch (err) {
       ruleError(res, err)
     }
+  }
+)
+
+router.get('/:id/rules/:ruleId/matches',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    const rule = await findRule(res.locals.id, req.params.ruleId)
+    if (!rule) {
+      return res.sendStatus(404)
+    }
+    const items = await OutputItemModel.findForRule(rule.id, 100)
+    res.send(items.map(item => item.data))
   }
 )
 

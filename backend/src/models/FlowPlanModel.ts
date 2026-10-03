@@ -527,6 +527,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               batchId: batch.id,
               runId: run.id,
               inputId: input.id,
+              ruleId: unified.ruleId ?? null,
             })
             done++
           }
@@ -559,7 +560,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           flowPlanId: this.id,
           batchId: batch.id,
           runId: run.id,
-          inputId: partialID[`${item.data.multipart}`]
+          inputId: partialID[`${item.data.multipart}`],
+          ruleId: item.ruleId ?? null,
         })
         done++
         total++

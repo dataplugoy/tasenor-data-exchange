@@ -438,6 +438,7 @@ export class Analyzer {
       updated: new Date(),
       flowPlanId: 0,
       inputId: 0,
+      ruleId: null,
       batchId: 0,
       runId: 0,
       skipped: false,

@@ -61,6 +61,7 @@ export interface UnifiedItem {
   processed: boolean;
   skipped: boolean;
   inputId: number;
+  ruleId?: null | number;
   flowPlanId?: number;
   batchId: number;
   runId: number;
