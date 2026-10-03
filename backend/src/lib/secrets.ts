@@ -62,12 +62,18 @@ export function encryptSecrets<T>(settings: T): T {
 
 /**
  * Copy of the settings with secret fields decrypted for use.
+ * @param owner Description of the settings owner for the error message.
+ * @throws Error if a secret was encrypted with a different server SECRET.
  */
-export function decryptSecrets<T>(settings: T): T {
+export function decryptSecrets<T>(settings: T, owner = 'settings'): T {
   const copy = { ...settings } as Record<string, unknown>
   for (const field of SECRET_FIELDS) {
     if (typeof copy[field] === 'string') {
-      copy[field] = decryptSecret(copy[field] as string)
+      try {
+        copy[field] = decryptSecret(copy[field] as string)
+      } catch {
+        throw new Error(`Cannot decrypt the ${field} of ${owner}. It was encrypted with a different server SECRET, so the ${field} needs to be entered again.`)
+      }
     }
   }
   return copy as T

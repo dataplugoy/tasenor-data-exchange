@@ -20,7 +20,7 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
    * Get the driver for this input source.
    */
   getDriver(settings: ProjectSettings, setup: Setup): Driver {
-    return getDriver(this.type, decryptSecrets(this.data.settings as DriverSettings), settings, setup)
+    return getDriver(this.type, decryptSecrets(this.data.settings as DriverSettings, `${this}`), settings, setup)
   }
 
   /**

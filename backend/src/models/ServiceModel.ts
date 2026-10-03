@@ -13,7 +13,7 @@ export class ServiceModel extends BaseModel<prisma.Service> {
   static construct = ServiceModel
 
   getService(): Service {
-    return getService(this.data.driver, decryptSecrets(this.data.settings as unknown as ServiceSettings))
+    return getService(this.data.driver, decryptSecrets(this.data.settings as unknown as ServiceSettings, `${this}`))
   }
 
   /**
