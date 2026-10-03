@@ -4,6 +4,7 @@ import { ResultInputItem } from '../Helpers/sorter'
 import clone from 'clone'
 import { InputItemData } from '../Types/API/InputItem'
 import { Trans } from 'react-i18next'
+import { jsonLines } from '../Helpers/json'
 
 interface ViewInputProps {
   item: ResultInputItem
@@ -18,7 +19,7 @@ export const ViewInput = (props: ViewInputProps): React.JSX.Element => {
     </Box>
     <Box>
       <pre>
-        {JSON.stringify(data.fields, null, 2)}
+        {jsonLines(data.fields)}
       </pre>
     </Box>
   </Box>
