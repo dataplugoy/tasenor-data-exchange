@@ -11,19 +11,25 @@ interface RulePreviewProps {
   flowPlanId: number
   rule: SaveRuleRequest | null
   ruleId?: number | null
+  // Called when the preview changes.
+  onPreview?: (preview: RulePreviewResponse | null) => void
 }
 
 /**
  * Show recent lines matching the rule being edited and the transactions they produce.
  */
 export const RulePreview = (props: RulePreviewProps): React.JSX.Element => {
-  const { flowPlanId, rule, ruleId } = props
+  const { flowPlanId, rule, ruleId, onPreview } = props
   const app = useApp()
   const { t } = useTranslation()
   const [preview, setPreview] = useState<RulePreviewResponse | null>(null)
   const [problem, setProblem] = useState('')
   const [loading, setLoading] = useState(false)
   const json = JSON.stringify(rule)
+
+  useEffect(() => {
+    onPreview && onPreview(preview)
+  }, [preview])
 
   useEffect(() => {
     if (!rule) {

@@ -5,6 +5,7 @@ import { MappingFilterView } from '../Types/API/MappingFilterView'
 import { MappingResultView } from '../Types/API/MappingResultView'
 import { SaveRuleRequest } from '../Types/API/flow-plans/SaveRuleRequest'
 import { RuleFieldsResponse } from '../Types/API/flow-plans/RuleFieldsResponse'
+import { RulePreviewResponse } from '../Types/API/flow-plans/RulePreviewResponse'
 import { Rule } from '../Types/API/Rule'
 import { useGET, usePOST, usePUT } from '../Hooks/useNet'
 import { RuleConditionsEditor } from './RuleConditionsEditor'
@@ -40,6 +41,7 @@ export const MappingRuleDialog = (props: MappingRuleDialogProps): React.JSX.Elem
   const [enabled, setEnabled] = useState(true)
   const [filter, setFilter] = useState<MappingFilterView>({ conditions: [] })
   const [result, setResult] = useState<MappingResultView>({ action: 'expense', text: DEFAULT_TEXT })
+  const [preview, setPreview] = useState<RulePreviewResponse | null>(null)
 
   useEffect(() => {
     if (!open) return
@@ -103,7 +105,7 @@ export const MappingRuleDialog = (props: MappingRuleDialogProps): React.JSX.Elem
       <RuleConditionsEditor value={filter} fields={fields} onChange={onFilterChange}/>
 
       <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}><Trans>Then</Trans></Typography>
-      <RuleActionEditor value={result} onChange={setResult} fieldNames={fields.map(f => f.name)}/>
+      <RuleActionEditor value={result} onChange={setResult} fieldNames={fields.map(f => f.name)} matches={preview ? preview.matches.map(m => m.fields) : null}/>
 
       <TextField
         fullWidth
@@ -117,7 +119,7 @@ export const MappingRuleDialog = (props: MappingRuleDialogProps): React.JSX.Elem
 
       <Divider sx={{ my: 2 }}/>
       <Typography variant="subtitle1" sx={{ mb: 1 }}><Trans>Preview</Trans></Typography>
-      <RulePreview flowPlanId={flowPlanId} rule={request} ruleId={rule ? rule.id : null}/>
+      <RulePreview flowPlanId={flowPlanId} rule={request} ruleId={rule ? rule.id : null} onPreview={setPreview}/>
     </DialogContent>
     <DialogActions>
       <Button variant="outlined" onClick={onClose}><Trans>Cancel</Trans></Button>

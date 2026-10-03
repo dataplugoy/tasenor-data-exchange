@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Autocomplete, Box, MenuItem, TextField } from '@mui/material'
-import { useTranslation } from 'react-i18next'
+import { Autocomplete, Box, Link, MenuItem, Popover, TextField, Typography } from '@mui/material'
+import { Trans, useTranslation } from 'react-i18next'
 import { MappingResultView } from '../Types/API/MappingResultView'
 import { ACTIONS, DEFAULT_TEXT, accountLabel, actionLabel } from '../Helpers/rules'
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, TAX_CATEGORIES } from '../Helpers/categories'
@@ -45,11 +45,60 @@ const VatField = (props: VatFieldProps): React.JSX.Element => {
   />
 }
 
+// Maximum number of distinct values listed for a field.
+const MAX_VALUES = 50
+
+interface FieldNamesProps {
+  names: string[]
+  // Fields of the lines matching the rule, or null if not known.
+  matches: Record<string, unknown>[] | null
+}
+
+/**
+ * List of field names. Clicking a name shows the values the field has in the matching lines.
+ */
+const FieldNames = (props: FieldNamesProps): React.JSX.Element => {
+  const { names, matches } = props
+  const { t } = useTranslation()
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  const [field, setField] = useState('')
+
+  const counts = new Map<string, number>()
+  for (const fields of matches || []) {
+    const value = fields[field]
+    const text = value === null || value === undefined ? '' : `${value}`
+    counts.set(text, (counts.get(text) || 0) + 1)
+  }
+  // Most common values first.
+  const values = [...counts.entries()].sort((a, b) => b[1] - a[1])
+
+  return <>
+    {t('Fields can be used like {{example}}. Available:', { example: '{Viesti}' })}{' '}
+    {names.map((name, idx) => <React.Fragment key={name}>
+      {idx > 0 && ', '}
+      <Link component="button" type="button" sx={{ verticalAlign: 'baseline', fontSize: 'inherit' }} onClick={(e) => { setField(name); setAnchor(e.currentTarget) }} data-cy={`FieldValues-${name}`}>{name}</Link>
+    </React.Fragment>)}
+    <Popover open={anchor !== null} anchorEl={anchor} onClose={() => setAnchor(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+      <Box sx={{ p: 2, maxWidth: 600, maxHeight: 400 }}>
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('Values of {{field}} in the matching lines', { field })}</Typography>
+        {values.length === 0 && <Typography variant="body2" color="text.secondary"><Trans>No matching lines in the preview.</Trans></Typography>}
+        {values.slice(0, MAX_VALUES).map(([value, count]) => <Box key={value} sx={{ display: 'flex', gap: 2, fontSize: '0.85em', py: 0.25, borderBottom: '1px solid', borderColor: 'divider' }}>
+          <Box sx={{ flex: 1, whiteSpace: 'pre-wrap', fontFamily: 'monospace', color: value === '' ? 'text.secondary' : undefined }}>{value === '' ? t('(empty)') : value}</Box>
+          <Box sx={{ color: 'text.secondary' }}>{count}</Box>
+        </Box>)}
+        {values.length > MAX_VALUES && <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{t('Showing first {{shown}}.', { shown: MAX_VALUES })}</Typography>}
+      </Box>
+    </Popover>
+  </>
+}
+
 interface RuleActionEditorProps {
   value: MappingResultView
   onChange: (value: MappingResultView) => void
   // Field names offered for the text template.
   fieldNames?: string[]
+  // Fields of the lines matching the rule, or null if not known.
+  matches?: Record<string, unknown>[] | null
 }
 
 /**
@@ -64,7 +113,7 @@ function toAccountCode(text: string): string {
 }
 
 export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Element => {
-  const { value, onChange, fieldNames } = props
+  const { value, onChange, fieldNames, matches } = props
   const { t } = useTranslation()
   const { action } = value
 
@@ -127,7 +176,7 @@ export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Elemen
         fullWidth
         size="small"
         label={t('Text')}
-        helperText={fieldNames && fieldNames.length ? t('Fields can be used like {{example}}. Available: {{fields}}', { example: '{Viesti}', fields: fieldNames.join(', ') }) : undefined}
+        helperText={fieldNames && fieldNames.length ? <FieldNames names={fieldNames} matches={matches || null}/> : undefined}
         value={value.text ?? DEFAULT_TEXT}
         onChange={(e) => onChange({ ...value, text: e.target.value })}
         sx={{ mb: 1.5 }}

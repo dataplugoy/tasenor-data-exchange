@@ -17,6 +17,10 @@ describe('TITO import with mapping rules', () => {
     cy.get('[data-cy="RuleName"] input').should('have.value', 'Saaja/Maksaja is "OVHcloud", money out')
     cy.get('label').contains('Category or account number').parent().find('input').type('Software{downArrow}{enter}')
     cy.get('body').should('contain', '1 of 6 recent lines match.')
+    // Field names show the values seen in the matching lines.
+    cy.get('[data-cy="FieldValues-Saaja/Maksaja"]').click()
+    cy.get('.MuiPopover-paper').should('contain', 'OVHcloud')
+    cy.get('body').type('{esc}')
     // Decimal VAT with a comma is kept as typed and 100.80 includes 20.48 VAT.
     cy.get('[data-cy="VatRate"] input').type('25,5')
     cy.get('[data-cy="VatRate"] input').should('have.value', '25,5')
