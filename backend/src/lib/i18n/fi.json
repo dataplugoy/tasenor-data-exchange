@@ -330,6 +330,8 @@
   "Last matched {{time}}": "Viimeksi täsmännyt {{time}}",
   "Line": "Rivi",
   "Matches": "Osumat",
+  "Trim new lines": "Poista rivinvaihdot",
+  "Ignore line breaks, repeated spaces and spaces around lines when comparing text.": "Ohita rivinvaihdot, toistuvat välilyönnit sekä rivien alun ja lopun välilyönnit tekstiä verrattaessa.",
   "No matching lines in the preview.": "Esikatselussa ei ole täsmääviä rivejä.",
   "Values of {{field}} in the matching lines": "Kentän {{field}} arvot täsmäävillä riveillä",
   "(empty)": "(tyhjä)",

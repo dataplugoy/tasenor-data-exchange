@@ -1,11 +1,11 @@
 import React from 'react'
-import { Autocomplete, Box, Button, IconButton, MenuItem, TextField } from '@mui/material'
+import { Autocomplete, Box, Button, Checkbox, FormControlLabel, IconButton, MenuItem, TextField } from '@mui/material'
 import { Add, Delete } from '@mui/icons-material'
 import { Trans, useTranslation } from 'react-i18next'
 import { MappingCondition } from '../Types/API/MappingCondition'
 import { MappingFilterView } from '../Types/API/MappingFilterView'
 import { RuleFieldsResponse } from '../Types/API/flow-plans/RuleFieldsResponse'
-import { AMOUNT_OPERATORS, TEXT_OPERATORS, operatorLabel, usesField } from '../Helpers/rules'
+import { AMOUNT_OPERATORS, TEXT_OPERATORS, cleanText, operatorLabel, usesField } from '../Helpers/rules'
 
 interface RuleConditionsEditorProps {
   value: MappingFilterView
@@ -23,11 +23,14 @@ interface ConditionEditorProps {
 const ConditionEditor = (props: ConditionEditorProps): React.JSX.Element => {
   const { condition, fields, onChange, onDelete } = props
   const { t } = useTranslation()
-  const { field, operator, value } = condition
-  const examples = fields.find(f => f.name === field)?.examples || []
+  const { field, operator, value, trimNewLines } = condition
+  const examples = (fields.find(f => f.name === field)?.examples || []).map(e => trimNewLines ? cleanText(e, '') : e)
 
   const setOperator = (op: MappingCondition['operator']) => {
     const next: MappingCondition = { field: usesField(op) ? field : '', operator: op }
+    if (usesField(op) && trimNewLines) {
+      next.trimNewLines = true
+    }
     if (op === 'oneOf') {
       next.value = typeof value === 'string' && value ? [value] : []
     } else if (op === 'between') {
@@ -104,6 +107,13 @@ const ConditionEditor = (props: ConditionEditorProps): React.JSX.Element => {
     </TextField>
     {valueEditor}
     {!valueEditor && <Box sx={{ flex: 2 }}/>}
+    {usesField(operator) && <FormControlLabel
+      control={<Checkbox size="small" checked={!!trimNewLines} onChange={(e) => onChange({ ...condition, trimNewLines: e.target.checked })}/>}
+      label={t('Trim new lines')}
+      title={t('Ignore line breaks, repeated spaces and spaces around lines when comparing text.')}
+      sx={{ mr: 0, whiteSpace: 'nowrap' }}
+      data-cy="TrimNewLines"
+    />}
     <IconButton onClick={onDelete} title={t('Remove condition')}><Delete/></IconButton>
   </Box>
 }

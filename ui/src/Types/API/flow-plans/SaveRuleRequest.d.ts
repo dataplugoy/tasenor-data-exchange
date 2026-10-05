@@ -38,6 +38,10 @@ export interface MappingCondition {
    * Text for equals, contains and regex, a list of texts for oneOf, a number for amountEquals and two numbers for between.
    */
   value?: string | number | (string | number)[];
+  /**
+   * Ignore line breaks, repeated spaces and spaces around lines when comparing text.
+   */
+  trimNewLines?: boolean;
 }
 /**
  * Action of a mapping rule as edited in the rule editor.

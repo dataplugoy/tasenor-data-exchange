@@ -22,6 +22,16 @@ export class MappingError extends Error {
 export const RULE_HELPERS = {
   // Case-insensitive regular expression test returning always a boolean.
   matches: (re: string, s: unknown): boolean => new RegExp(re, 'i').test(`${s ?? ''}`),
+  // Clean up text for comparison, see `cleanText()`.
+  clean: (s: unknown, separator: string): string => cleanText(`${s ?? ''}`, separator),
+}
+
+/**
+ * Trim spaces around each line, join the lines with the separator, squeeze repeated spaces to one and remove
+ * non-printable characters.
+ */
+export function cleanText(s: string, separator: string): string {
+  return s.split(/\r?\n/).map(line => line.trim()).join(separator).replace(/\s+/g, ' ').replace(/\p{C}/gu, '').trim()
 }
 
 /**
@@ -32,10 +42,18 @@ export function quote(s: string): string {
 }
 
 /**
+ * Expression for the value of a field as a string, cleaned with the line separator if given.
+ */
+function raw(field: string, separator: string | null = null): string {
+  const value = `str($(${quote(field)}, ''))`
+  return separator === null ? value : `clean(${value}, ${quote(separator)})`
+}
+
+/**
  * Expression for the value of a field as lower case string.
  */
-function text(field: string): string {
-  return `lower(str($(${quote(field)}, '')))`
+function text(field: string, separator: string | null = null): string {
+  return `lower(${raw(field, separator)})`
 }
 
 /**
@@ -59,21 +77,25 @@ function string(condition: MappingCondition, value: unknown): string {
   return value
 }
 
+// Operators comparing text.
+const TEXT_OPERATORS = ['equals', 'contains', 'oneOf', 'regex']
+
 /**
  * Compile one condition.
+ * @param separator If given, the field value is cleaned and line breaks replaced with it before comparing.
  */
-function compileCondition(condition: MappingCondition): string {
+function compileCondition(condition: MappingCondition, separator: string | null = null): string {
   const { field, operator, value } = condition
   switch (operator) {
     case 'equals':
-      return `${text(field)} == ${quote(string(condition, value).toLowerCase())}`
+      return `${text(field, separator)} == ${quote(string(condition, value).toLowerCase())}`
     case 'contains':
-      return `contains(${text(field)}, ${quote(string(condition, value).toLowerCase())})`
+      return `contains(${text(field, separator)}, ${quote(string(condition, value).toLowerCase())})`
     case 'oneOf':
       if (!(value instanceof Array) || value.length === 0) {
         throw new MappingError(`Condition 'oneOf' for field '${field}' needs a list of values.`)
       }
-      return `(${value.map(v => `${text(field)} == ${quote(string(condition, v).toLowerCase())}`).join(' or ')})`
+      return `(${value.map(v => `${text(field, separator)} == ${quote(string(condition, v).toLowerCase())}`).join(' or ')})`
     case 'regex': {
       const re = string(condition, value)
       try {
@@ -82,7 +104,7 @@ function compileCondition(condition: MappingCondition): string {
       } catch (err) {
         throw new MappingError(`Invalid regular expression ${JSON.stringify(re)} for field '${field}'.`)
       }
-      return `matches(${quote(re)}, $(${quote(field)}, ''))`
+      return `matches(${quote(re)}, ${separator === null ? `$(${quote(field)}, '')` : raw(field, separator)})`
     }
     case 'positive':
       return 'total > 0'
@@ -102,13 +124,22 @@ function compileCondition(condition: MappingCondition): string {
 }
 
 /**
+ * Compile a text condition ignoring line breaks and extra spaces in the field and in the value.
+ */
+function compileTrimmed(condition: MappingCondition): string {
+  const trim = (v: unknown) => typeof v === 'string' ? cleanText(v, '') : v
+  const trimmed = { ...condition, value: condition.value instanceof Array ? condition.value.map(trim) : trim(condition.value) } as MappingCondition
+  return compileCondition(trimmed, '')
+}
+
+/**
  * Compile the conditions of a mapping rule to a filter expression.
  */
 export function compileFilter(view: MappingFilterView): string {
   if (!view.conditions.length) {
     return 'true'
   }
-  return view.conditions.map(compileCondition).join(' and ')
+  return view.conditions.map(c => c.trimNewLines && TEXT_OPERATORS.includes(c.operator) ? compileTrimmed(c) : compileCondition(c)).join(' and ')
 }
 
 /**

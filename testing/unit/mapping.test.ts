@@ -60,6 +60,44 @@ describe('Mapping rule compiler', () => {
     )).toBe(false)
   })
 
+  test('trimming new lines', () => {
+    const vars = { ...variables, Viesti: 'R45739590, Tunnus 2842358-2, Arvonl\nisävero palautus 161,71 euroa, kork\no 0,00 euroa', Lisätieto: 'Lasku\n123' }
+    const trimmed = (...conditions: MappingCondition[]) => evaluate(compileFilter({ conditions: conditions.map(c => ({ ...c, trimNewLines: true })) }), vars)
+    const untrimmed = (...conditions: MappingCondition[]) => evaluate(compileFilter({ conditions }), vars)
+
+    expect(untrimmed({ field: 'Viesti', operator: 'contains', value: 'arvonlisävero palautus' })).toBe(false)
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: 'arvonlisävero palautus' })).toBe(true)
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: 'korko 0,00' })).toBe(true)
+    expect(untrimmed({ field: 'Viesti', operator: 'contains', value: 'arvonlisävero' })).toBe(false)
+    expect(trimmed({ field: 'Viesti', operator: 'regex', value: 'Arvonlisävero palautus [0-9,]+ euroa' })).toBe(true)
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: 'veronpalautus' })).toBe(false)
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: 'arvonlisävero' })).toBe(true)
+    expect(trimmed({ field: 'Lisätieto', operator: 'oneOf', value: ['Lasku123'] })).toBe(true)
+    // Values picked from examples may contain breaks too.
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: 'Arvonl\nisävero' })).toBe(true)
+    // Repeated spaces and spaces around lines are ignored.
+    const spaced = { ...vars, Viesti: '  Vero   palautus \n  2025  ' }
+    expect(evaluate(compileFilter({ conditions: [{ field: 'Viesti', operator: 'equals', value: 'vero palautus2025', trimNewLines: true }] }), spaced)).toBe(true)
+    expect(evaluate(compileFilter({ conditions: [{ field: 'Viesti', operator: 'regex', value: '^Vero palautus2025$', trimNewLines: true }] }), spaced)).toBe(true)
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: '  arvonlisävero   palautus ' })).toBe(true)
+    // Non-printable characters are removed and other white space is a single space.
+    const messy = { ...vars, Viesti: 'Arvon\u00ADlisä\u200Bvero\tpalautus\u0007\u00A0 161,71' }
+    expect(evaluate(compileFilter({ conditions: [{ field: 'Viesti', operator: 'equals', value: 'arvonlisävero palautus 161,71', trimNewLines: true }] }), messy)).toBe(true)
+    expect(evaluate(compileFilter({ conditions: [{ field: 'Viesti', operator: 'contains', value: 'arvonlisävero' }] }), messy)).toBe(false)
+    expect(evaluate(compileFilter({ conditions: [{ field: 'Viesti', operator: 'equals', value: 'vero palautus 2025' }] }), spaced)).toBe(false)
+    // The flag is per condition.
+    expect(evaluate(compileFilter({ conditions: [
+      { field: 'Viesti', operator: 'contains', value: 'arvonlisävero palautus', trimNewLines: true },
+      { field: 'Lisätieto', operator: 'equals', value: 'lasku123' },
+    ] }), vars)).toBe(false)
+    expect(evaluate(compileFilter({ conditions: [
+      { field: 'Viesti', operator: 'contains', value: 'arvonlisävero palautus', trimNewLines: true },
+      { field: 'Lisätieto', operator: 'equals', value: 'lasku\n123' },
+    ] }), vars)).toBe(true)
+    // Amount conditions are not affected.
+    expect(trimmed({ field: 'Viesti', operator: 'contains', value: 'arvonlisävero' }, { field: '', operator: 'negative' })).toBe(true)
+  })
+
   test('invalid conditions', () => {
     expect(() => compileFilter({ conditions: [{ field: 'Viesti', operator: 'regex', value: '(' }] })).toThrow(MappingError)
     expect(() => compileFilter({ conditions: [{ field: 'Viesti', operator: 'equals', value: '' }] })).toThrow(MappingError)

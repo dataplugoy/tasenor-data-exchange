@@ -20,6 +20,10 @@
       "items": {
         "type": ["string", "number"]
       }
+    },
+    "trimNewLines": {
+      "description": "Ignore line breaks, repeated spaces and spaces around lines when comparing text.",
+      "type": "boolean"
     }
   }
 }

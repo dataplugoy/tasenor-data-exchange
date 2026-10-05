@@ -97,6 +97,15 @@ export function describeConditions(t: TFunction, view: MappingFilterView | undef
 }
 
 /**
+ * Trim spaces around each line, join the lines with the separator, squeeze repeated spaces to one and remove
+ * non-printable characters.
+ * Same as in the backend mapping compiler.
+ */
+export function cleanText(s: string, separator: string): string {
+  return s.split(/\r?\n/).map(line => line.trim()).join(separator).replace(/\s+/g, ' ').replace(/\p{C}/gu, '').trim()
+}
+
+/**
  * Describe the action of a rule.
  */
 export function describeAction(t: TFunction, view: MappingResultView | undefined): string {
