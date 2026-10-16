@@ -17,12 +17,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_runId_fkey";
+ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_ruleId_fkey";
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_inputId_fkey";
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.unified_items DROP CONSTRAINT IF EXISTS "unified_items_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.services DROP CONSTRAINT IF EXISTS "services_userId_fkey";
 ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS "runs_batchId_fkey";
 ALTER TABLE IF EXISTS ONLY public.rules DROP CONSTRAINT IF EXISTS "rules_flowPlanId_fkey";
+ALTER TABLE IF EXISTS ONLY public.rule_questions DROP CONSTRAINT IF EXISTS "rule_questions_projectId_fkey";
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS "projects_userId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_unifiedId_fkey";
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS "output_items_runId_fkey";
@@ -38,9 +40,11 @@ ALTER TABLE IF EXISTS ONLY public.flow_plans DROP CONSTRAINT IF EXISTS "flow_pla
 ALTER TABLE IF EXISTS ONLY public.batches DROP CONSTRAINT IF EXISTS "batches_flowPlanId_fkey";
 ALTER TABLE IF EXISTS ONLY public.alerts DROP CONSTRAINT IF EXISTS "alerts_userId_fkey";
 DROP INDEX IF EXISTS public.users_email_key;
+DROP INDEX IF EXISTS public."unified_items_ruleId_idx";
 DROP INDEX IF EXISTS public."unified_items_inputId_idx";
 DROP INDEX IF EXISTS public.settings_type_key;
 DROP INDEX IF EXISTS public."rules_flowPlanId_name_key";
+DROP INDEX IF EXISTS public."rule_questions_projectId_name_key";
 DROP INDEX IF EXISTS public."output_items_unifiedId_key";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_hash_idx";
 DROP INDEX IF EXISTS public."output_items_flowPlanId_delivered_created_idx";
@@ -54,6 +58,7 @@ ALTER TABLE IF EXISTS ONLY public.settings DROP CONSTRAINT IF EXISTS settings_pk
 ALTER TABLE IF EXISTS ONLY public.services DROP CONSTRAINT IF EXISTS services_pkey;
 ALTER TABLE IF EXISTS ONLY public.runs DROP CONSTRAINT IF EXISTS runs_pkey;
 ALTER TABLE IF EXISTS ONLY public.rules DROP CONSTRAINT IF EXISTS rules_pkey;
+ALTER TABLE IF EXISTS ONLY public.rule_questions DROP CONSTRAINT IF EXISTS rule_questions_pkey;
 ALTER TABLE IF EXISTS ONLY public.projects DROP CONSTRAINT IF EXISTS projects_pkey;
 ALTER TABLE IF EXISTS ONLY public.output_items DROP CONSTRAINT IF EXISTS output_items_pkey;
 ALTER TABLE IF EXISTS ONLY public.output_destinations DROP CONSTRAINT IF EXISTS output_destinations_pkey;
@@ -69,6 +74,7 @@ ALTER TABLE IF EXISTS public.settings ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.services ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.runs ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.rules ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.rule_questions ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.projects ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.output_items ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.output_destinations ALTER COLUMN id DROP DEFAULT;
@@ -90,6 +96,8 @@ DROP SEQUENCE IF EXISTS public.runs_id_seq;
 DROP TABLE IF EXISTS public.runs;
 DROP SEQUENCE IF EXISTS public.rules_id_seq;
 DROP TABLE IF EXISTS public.rules;
+DROP SEQUENCE IF EXISTS public.rule_questions_id_seq;
+DROP TABLE IF EXISTS public.rule_questions;
 DROP SEQUENCE IF EXISTS public.projects_id_seq;
 DROP TABLE IF EXISTS public.projects;
 DROP SEQUENCE IF EXISTS public.output_items_id_seq;
@@ -112,6 +120,7 @@ DROP TYPE IF EXISTS public."SkipReason";
 DROP TYPE IF EXISTS public."ServiceType";
 DROP TYPE IF EXISTS public."ServiceDriver";
 DROP TYPE IF EXISTS public."RunResult";
+DROP TYPE IF EXISTS public."RuleQuestionKind";
 DROP TYPE IF EXISTS public."RuleOrigin";
 DROP TYPE IF EXISTS public."RuleKind";
 DROP TYPE IF EXISTS public."DriverType";
@@ -202,6 +211,19 @@ CREATE TYPE public."RuleOrigin" AS ENUM (
 
 
 ALTER TYPE public."RuleOrigin" OWNER TO dev;
+
+--
+-- Name: RuleQuestionKind; Type: TYPE; Schema: public; Owner: dev
+--
+
+CREATE TYPE public."RuleQuestionKind" AS ENUM (
+    'TAGS',
+    'ACCOUNT',
+    'TEXT'
+);
+
+
+ALTER TYPE public."RuleQuestionKind" OWNER TO dev;
 
 --
 -- Name: RunResult; Type: TYPE; Schema: public; Owner: dev
@@ -367,7 +389,9 @@ CREATE TABLE public.flow_plans (
     balance jsonb DEFAULT '{}'::jsonb NOT NULL,
     setup jsonb DEFAULT '{}'::jsonb NOT NULL,
     "firstDate" timestamp(3) without time zone NOT NULL,
-    "ruleSourceHash" text
+    "ruleSourceHash" text,
+    "rulesSaved" timestamp(3) without time zone,
+    "rulesVersion" integer DEFAULT 0 NOT NULL
 );
 
 
@@ -635,6 +659,46 @@ ALTER SEQUENCE public.projects_id_seq OWNED BY public.projects.id;
 
 
 --
+-- Name: rule_questions; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.rule_questions (
+    id integer NOT NULL,
+    created timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated timestamp(3) without time zone NOT NULL,
+    "projectId" integer NOT NULL,
+    name text NOT NULL,
+    kind public."RuleQuestionKind" NOT NULL,
+    label text NOT NULL,
+    options jsonb DEFAULT '[]'::jsonb NOT NULL
+);
+
+
+ALTER TABLE public.rule_questions OWNER TO dev;
+
+--
+-- Name: rule_questions_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.rule_questions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rule_questions_id_seq OWNER TO dev;
+
+--
+-- Name: rule_questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.rule_questions_id_seq OWNED BY public.rule_questions.id;
+
+
+--
 -- Name: rules; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -824,7 +888,8 @@ CREATE TABLE public.unified_items (
     "batchId" integer NOT NULL,
     "runId" integer NOT NULL,
     "stockChange" jsonb DEFAULT '{}'::jsonb NOT NULL,
-    "skipReason" public."SkipReason"
+    "skipReason" public."SkipReason",
+    "ruleId" integer
 );
 
 
@@ -961,6 +1026,13 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
+-- Name: rule_questions id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.rule_questions ALTER COLUMN id SET DEFAULT nextval('public.rule_questions_id_seq'::regclass);
+
+
+--
 -- Name: rules id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -1022,17 +1094,17 @@ COPY public.batches (id, created, updated, completed, number, state, "lastStamp"
 -- Data for Name: flow_plans; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock, balance, setup, "firstDate", "ruleSourceHash") FROM stdin;
-1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
-3	2024-05-02 08:46:22.081	2024-05-09 07:50:14.182	Nordnet	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00	\N
-4	2024-05-08 11:08:59.91	2024-05-13 13:35:02.12	Tasenor	{}	1	\N	{}	{}	{"accounts": {"FEE": "5325", "LOSS": "5335", "STOCK": "1100", "INCOME": "9290", "PROFIT": "5050", "EXPENSE": "9690", "CURRENCY_EUR": "3050", "CURRENCY_USD": "30505", "EXTERNAL_NORDNET_EUR": "3010"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00	\N
-6	2024-05-21 16:10:11.082	2024-05-21 16:10:11.082	S-Pankki Demo	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
-7	2024-05-31 10:39:01.974	2024-05-31 10:39:01.974	Unit Testing with Duplicates	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
-5	2024-05-09 08:52:41.007	2024-06-14 14:25:19.836	Nightly Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Always", "skipWithdrawals": false, "outputDuplicates": "Always", "allowShortSelling": true, "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N
-8	2024-06-16 09:35:30.012	2024-06-16 09:35:30.012	Nordnet to Procountor	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
-9	2026-09-29 11:26:53.25	2026-09-29 11:26:53.25	TITO Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N
-10	2026-09-30 11:34:06.682	2026-09-30 11:34:06.682	Lynx Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Never", "skipWithdrawals": false, "outputDuplicates": "Always", "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N
-11	2026-09-30 12:22:18.137	2026-09-30 12:22:18.137	Coinbase Testing	{}	1	\N	{}	{}	{"settings": {"inputDuplicates": "Never", "outputDuplicates": "Always", "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N
+COPY public.flow_plans (id, created, updated, title, state, "projectId", "lastStamp", stock, balance, setup, "firstDate", "ruleSourceHash", "rulesSaved", "rulesVersion") FROM stdin;
+1	2024-03-30 14:39:53.161	2024-04-09 08:48:44.034	Unit Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N	\N	0
+3	2024-05-02 08:46:22.081	2024-05-09 07:50:14.182	Nordnet	{}	1	\N	{}	{}	{"accounts": {"CURRENCY_EUR": "3050", "CURRENCY_USD": "30505"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00	\N	\N	0
+4	2024-05-08 11:08:59.91	2024-05-13 13:35:02.12	Tasenor	{}	1	\N	{}	{}	{"accounts": {"FEE": "5325", "LOSS": "5335", "STOCK": "1100", "INCOME": "9290", "PROFIT": "5050", "EXPENSE": "9690", "CURRENCY_EUR": "3050", "CURRENCY_USD": "30505", "EXTERNAL_NORDNET_EUR": "3010"}, "accountGrouping": {"singleFeeAccount": true, "singleTaxAccount": true, "singleLossAccount": true, "singleStockAccount": true, "singleCryptoAccount": true, "singleIncomeAccount": true, "singleProfitAccount": true, "singleExpenseAccount": true, "singleDividendAccount": true}}	1900-01-01 00:00:00	\N	\N	0
+6	2024-05-21 16:10:11.082	2024-05-21 16:10:11.082	S-Pankki Demo	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N	\N	0
+7	2024-05-31 10:39:01.974	2024-05-31 10:39:01.974	Unit Testing with Duplicates	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N	\N	0
+5	2024-05-09 08:52:41.007	2024-06-14 14:25:19.836	Nightly Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Always", "skipWithdrawals": false, "outputDuplicates": "Always", "allowShortSelling": true, "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N	\N	0
+8	2024-06-16 09:35:30.012	2024-06-16 09:35:30.012	Nordnet to Procountor	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N	\N	0
+9	2026-09-29 11:26:53.25	2026-09-29 11:26:53.25	TITO Testing	{}	1	\N	{}	{}	{}	1900-01-01 00:00:00	\N	\N	0
+10	2026-09-30 11:34:06.682	2026-09-30 11:34:06.682	Lynx Testing	{}	1	\N	{}	{}	{"settings": {"skipDeposits": false, "inputDuplicates": "Never", "skipWithdrawals": false, "outputDuplicates": "Always", "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N	\N	0
+11	2026-09-30 12:22:18.137	2026-09-30 12:22:18.137	Coinbase Testing	{}	1	\N	{}	{}	{"settings": {"inputDuplicates": "Never", "outputDuplicates": "Always", "allowInputFromPast": "Always"}}	1900-01-01 00:00:00	\N	\N	0
 \.
 
 
@@ -1106,6 +1178,14 @@ COPY public.projects (id, created, updated, name, settings, "userId") FROM stdin
 
 
 --
+-- Data for Name: rule_questions; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.rule_questions (id, created, updated, "projectId", name, kind, label, options) FROM stdin;
+\.
+
+
+--
 -- Data for Name: rules; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
@@ -1149,7 +1229,7 @@ COPY public.settings (id, type, url, certificate, apikey, "user", password, opti
 -- Data for Name: unified_items; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.unified_items (id, created, updated, "time", data, processed, skipped, "inputId", "flowPlanId", "batchId", "runId", "stockChange", "skipReason") FROM stdin;
+COPY public.unified_items (id, created, updated, "time", data, processed, skipped, "inputId", "flowPlanId", "batchId", "runId", "stockChange", "skipReason", "ruleId") FROM stdin;
 \.
 
 
@@ -1223,6 +1303,13 @@ SELECT pg_catalog.setval('public.output_items_id_seq', 10, true);
 --
 
 SELECT pg_catalog.setval('public.projects_id_seq', 2, false);
+
+
+--
+-- Name: rule_questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.rule_questions_id_seq', 1, false);
 
 
 --
@@ -1340,6 +1427,14 @@ ALTER TABLE ONLY public.projects
 
 
 --
+-- Name: rule_questions rule_questions_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.rule_questions
+    ADD CONSTRAINT rule_questions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: rules rules_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -1437,6 +1532,13 @@ CREATE UNIQUE INDEX "output_items_unifiedId_key" ON public.output_items USING bt
 
 
 --
+-- Name: rule_questions_projectId_name_key; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE UNIQUE INDEX "rule_questions_projectId_name_key" ON public.rule_questions USING btree ("projectId", name);
+
+
+--
 -- Name: rules_flowPlanId_name_key; Type: INDEX; Schema: public; Owner: dev
 --
 
@@ -1455,6 +1557,13 @@ CREATE UNIQUE INDEX settings_type_key ON public.settings USING btree (type);
 --
 
 CREATE INDEX "unified_items_inputId_idx" ON public.unified_items USING btree ("inputId");
+
+
+--
+-- Name: unified_items_ruleId_idx; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX "unified_items_ruleId_idx" ON public.unified_items USING btree ("ruleId");
 
 
 --
@@ -1577,6 +1686,14 @@ ALTER TABLE ONLY public.projects
 
 
 --
+-- Name: rule_questions rule_questions_projectId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.rule_questions
+    ADD CONSTRAINT "rule_questions_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES public.projects(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: rules rules_flowPlanId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -1622,6 +1739,14 @@ ALTER TABLE ONLY public.unified_items
 
 ALTER TABLE ONLY public.unified_items
     ADD CONSTRAINT "unified_items_inputId_fkey" FOREIGN KEY ("inputId") REFERENCES public.input_items(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: unified_items unified_items_ruleId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.unified_items
+    ADD CONSTRAINT "unified_items_ruleId_fkey" FOREIGN KEY ("ruleId") REFERENCES public.rules(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
