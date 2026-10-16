@@ -3,7 +3,7 @@ import { Box, Button, Chip, IconButton, Link, Switch, Table, TableBody, TableCel
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Add, ArrowDownward, ArrowUpward, Clear, ContentCopy, Delete, Edit } from '@mui/icons-material'
-import { useDELETE, useGET, usePATCH, usePUT } from '../Hooks/useNet'
+import { useDELETE, useGET, usePATCH, usePOST, usePUT } from '../Hooks/useNet'
 import { FlowPlanRulesResponse } from '../Types/API/flow-plans/FlowPlanRulesResponse'
 import { Rule } from '../Types/API/Rule'
 import { MappingFilterView } from '../Types/API/MappingFilterView'
@@ -20,14 +20,9 @@ import { DateTime } from 'luxon'
 import i18next from 'i18next'
 import { RulesVersionResponse } from '../Types/API/flow-plans/RulesVersionResponse'
 
-/**
- * Content of a downloaded rules file.
- */
-interface RulesFile {
-  version: number | null
-  saved: string | null
-  rules: unknown[]
-}
+import { RulesFile, QuestionChanges, makeRulesFile, parseRulesFile, questionChanges, remapQuestions } from '../Helpers/rulesFile'
+import { RuleQuestionsResponse } from '../Types/API/projects/RuleQuestionsResponse'
+import { RuleQuestion } from '../Types/API/RuleQuestion'
 
 /**
  * List of the rules of a flow plan in the order of evaluation.
@@ -39,6 +34,8 @@ export const EditRulesPage = (): React.JSX.Element => {
   const { t } = useTranslation()
   const GET = useGET<FlowPlanRulesResponse>()
   const GETVersion = useGET<RulesVersionResponse>()
+  const GETQuestions = useGET<RuleQuestionsResponse>()
+  const POSTQuestion = usePOST<RuleQuestion>()
   const PUT = usePUT()
   const PATCH = usePATCH()
   const DELETE = useDELETE()
@@ -48,9 +45,9 @@ export const EditRulesPage = (): React.JSX.Element => {
   const [deleting, setDeleting] = useState<Rule | null>(null)
   const [showingMatches, setShowingMatches] = useState<Rule | null>(null)
   const [upload, setUpload] = useState(false)
-  const [uploaded, setUploaded] = useState<{ file: RulesFile, current: RulesVersionResponse } | null>(null)
+  const [uploaded, setUploaded] = useState<{ file: RulesFile, current: RulesVersionResponse, changes: QuestionChanges } | null>(null)
   const app = useApp()
-  const [questions] = useRuleQuestions(app.project.id)
+  const [questions, loadQuestions] = useRuleQuestions(app.project.id)
 
   const load = () => {
     GET(`/flow-plans/${flowPlanId}/rules`).then(res => res && setRules(res as Rule[]))
@@ -93,14 +90,7 @@ export const EditRulesPage = (): React.JSX.Element => {
     if (!current) {
       return
     }
-    const json: RulesFile = {
-      version: current.version,
-      saved: current.saved,
-      rules: rules.map(rule => {
-        const { filter, name, key, result, kind, enabled, notes, filterView, resultView } = rule
-        return { filter, name, key, result, kind, enabled, notes, filterView, resultView }
-      })
-    }
+    const json = makeRulesFile(current.version, current.saved, rules, questions)
     const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json;charset=utf-8;' })
     const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
@@ -122,28 +112,44 @@ export const EditRulesPage = (): React.JSX.Element => {
       app.addError(t('Failed to parse JSON-file.'))
       return
     }
-    // Files downloaded before versioning are plain lists of rules.
-    const file: RulesFile | null = Array.isArray(json)
-      ? { version: null, saved: null, rules: json }
-      : json && Array.isArray(json.rules)
-        ? { version: typeof json.version === 'number' ? json.version : null, saved: json.saved || null, rules: json.rules }
-        : null
+    const file = parseRulesFile(json)
     if (!file) {
       app.addError(t('Failed to parse JSON-file.'))
       return
     }
     const current = await GETVersion(`/flow-plans/${flowPlanId}/rules/version`)
-    if (current) {
-      setUploaded({ file, current })
+    const existing = await GETQuestions(`/projects/${app.project.id}/questions`)
+    if (current && existing) {
+      setUploaded({ file, current, changes: questionChanges(file, existing) })
     }
   }
 
   const onReplaceRules = async () => {
-    if (uploaded && await PATCH(`/flow-plans/${flowPlanId}/rules`, uploaded.file.rules)) {
+    if (!uploaded) {
+      return
+    }
+    setUploaded(null)
+    const { file, changes } = uploaded
+    const ids = { ...changes.ids }
+    for (const { id, name, kind, label, options } of changes.create) {
+      const created = await POSTQuestion(`/projects/${app.project.id}/questions`, { name, kind, label, options })
+      if (!created) {
+        loadQuestions()
+        return
+      }
+      ids[id] = created.id
+    }
+    for (const { question: { name, kind, label, options }, id } of changes.update) {
+      if (!await PUT(`/projects/${app.project.id}/questions/${id}`, { name, kind, label, options })) {
+        loadQuestions()
+        return
+      }
+    }
+    loadQuestions()
+    if (await PATCH(`/flow-plans/${flowPlanId}/rules`, remapQuestions(file.rules, ids) as Record<string, unknown>[])) {
       app.addInfo(t('Rules saved succssfully.'))
       load()
     }
-    setUploaded(null)
   }
 
   const describeVersion = (version: number | null, saved: string | null): string => {
@@ -259,6 +265,13 @@ export const EditRulesPage = (): React.JSX.Element => {
         <Box component="span" sx={{ display: 'block' }}>{t('Replace all {{count}} current rules with {{uploaded}} rules from the file?', { count: rules.length, uploaded: uploaded.file.rules.length })}</Box>
         <Box component="span" sx={{ display: 'block', mt: 2 }}><Trans>Current rules</Trans>: {describeVersion(uploaded.current.version, uploaded.current.saved)}</Box>
         <Box component="span" sx={{ display: 'block' }}><Trans>Rules in the file</Trans>: {describeVersion(uploaded.file.version, uploaded.file.saved)}</Box>
+        {uploaded.changes.create.length > 0 && <Box component="span" sx={{ display: 'block', mt: 2 }}>
+          <Trans>New questions</Trans>: {uploaded.changes.create.map(q => q.label).join(', ')}
+        </Box>}
+        {uploaded.changes.update.length > 0 && <Box component="span" sx={{ display: 'block', mt: 2 }}>
+          <Trans>Changed questions</Trans>: {uploaded.changes.update.map(u => u.question.label).join(', ')}
+          <Box component="span" sx={{ display: 'block' }}><Trans>Changes to questions apply to all rules of the project using them.</Trans></Box>
+        </Box>}
       </>}
     </Confirm>
 
