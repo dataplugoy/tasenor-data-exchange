@@ -950,6 +950,13 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     return plans
   }
 
+  /**
+   * Increase the version of the rules of the plan and record the time of the change.
+   */
+  static async rulesChanged(id: number): Promise<void> {
+    await FlowPlanModel.db.update({ where: { id }, data: { rulesVersion: { increment: 1 }, rulesSaved: new Date() } })
+  }
+
   static async get(id: number): Promise<FlowPlanModel | null> {
     return this.findUnique<prisma.FlowPlan, FlowPlanModel>({ id })
   }

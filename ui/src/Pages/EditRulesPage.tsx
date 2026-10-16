@@ -16,6 +16,18 @@ import { useApp } from '../Hooks/useApp'
 import { useRuleQuestions } from '../Hooks/useRuleQuestions'
 import { FileUploadData, FileUploader } from '../Components/FileUploader'
 import { error } from '@tasenor/common'
+import { DateTime } from 'luxon'
+import i18next from 'i18next'
+import { RulesVersionResponse } from '../Types/API/flow-plans/RulesVersionResponse'
+
+/**
+ * Content of a downloaded rules file.
+ */
+interface RulesFile {
+  version: number | null
+  saved: string | null
+  rules: unknown[]
+}
 
 /**
  * List of the rules of a flow plan in the order of evaluation.
@@ -26,6 +38,7 @@ export const EditRulesPage = (): React.JSX.Element => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const GET = useGET<FlowPlanRulesResponse>()
+  const GETVersion = useGET<RulesVersionResponse>()
   const PUT = usePUT()
   const PATCH = usePATCH()
   const DELETE = useDELETE()
@@ -35,7 +48,7 @@ export const EditRulesPage = (): React.JSX.Element => {
   const [deleting, setDeleting] = useState<Rule | null>(null)
   const [showingMatches, setShowingMatches] = useState<Rule | null>(null)
   const [upload, setUpload] = useState(false)
-  const [uploaded, setUploaded] = useState<unknown[] | null>(null)
+  const [uploaded, setUploaded] = useState<{ file: RulesFile, current: RulesVersionResponse } | null>(null)
   const app = useApp()
   const [questions] = useRuleQuestions(app.project.id)
 
@@ -75,45 +88,67 @@ export const EditRulesPage = (): React.JSX.Element => {
     setCreating({ filter: rule.filterView as unknown as MappingFilterView, result: rule.resultView as unknown as MappingResultView })
   }
 
-  const onDownload = () => {
-    const json = rules.map(rule => {
-      const { filter, name, key, result, kind, enabled, notes, filterView, resultView } = rule
-      return { filter, name, key, result, kind, enabled, notes, filterView, resultView }
-    })
+  const onDownload = async () => {
+    const current = await GETVersion(`/flow-plans/${flowPlanId}/rules/version`)
+    if (!current) {
+      return
+    }
+    const json: RulesFile = {
+      version: current.version,
+      saved: current.saved,
+      rules: rules.map(rule => {
+        const { filter, name, key, result, kind, enabled, notes, filterView, resultView } = rule
+        return { filter, name, key, result, kind, enabled, notes, filterView, resultView }
+      })
+    }
     const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json;charset=utf-8;' })
     const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
     link.setAttribute('href', url)
-    link.setAttribute('download', 'rules.json')
+    link.setAttribute('download', `rules-v${current.version}.json`)
     link.style.visibility = 'hidden'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }
 
-  const onUpload = async (file: FileUploadData) => {
+  const onUpload = async (data: FileUploadData) => {
     setUpload(false)
     let json
     try {
-      json = JSON.parse(Buffer.from(file.data, 'hex').toString('utf-8'))
+      json = JSON.parse(Buffer.from(data.data, 'hex').toString('utf-8'))
     } catch (err) {
       error(err)
       app.addError(t('Failed to parse JSON-file.'))
       return
     }
-    if (!Array.isArray(json)) {
+    // Files downloaded before versioning are plain lists of rules.
+    const file: RulesFile | null = Array.isArray(json)
+      ? { version: null, saved: null, rules: json }
+      : json && Array.isArray(json.rules)
+        ? { version: typeof json.version === 'number' ? json.version : null, saved: json.saved || null, rules: json.rules }
+        : null
+    if (!file) {
       app.addError(t('Failed to parse JSON-file.'))
       return
     }
-    setUploaded(json)
+    const current = await GETVersion(`/flow-plans/${flowPlanId}/rules/version`)
+    if (current) {
+      setUploaded({ file, current })
+    }
   }
 
   const onReplaceRules = async () => {
-    if (uploaded && await PATCH(`/flow-plans/${flowPlanId}/rules`, uploaded)) {
+    if (uploaded && await PATCH(`/flow-plans/${flowPlanId}/rules`, uploaded.file.rules)) {
       app.addInfo(t('Rules saved succssfully.'))
       load()
     }
     setUploaded(null)
+  }
+
+  const describeVersion = (version: number | null, saved: string | null): string => {
+    const time = saved ? DateTime.fromISO(saved).toLocaleString(DateTime.DATETIME_SHORT, { locale: i18next.language }) : t('unknown')
+    return t('version {{version}}, saved {{time}}', { version: version ?? t('unknown'), time })
   }
 
   return <Box sx={{ pb: 8 }}>
@@ -220,7 +255,11 @@ export const EditRulesPage = (): React.JSX.Element => {
       onClose={() => setUploaded(null)}
       onSubmit={onReplaceRules}
     >
-      {uploaded && t('Replace all {{count}} current rules with {{uploaded}} rules from the file?', { count: rules.length, uploaded: uploaded.length })}
+      {uploaded && <>
+        <Box component="span" sx={{ display: 'block' }}>{t('Replace all {{count}} current rules with {{uploaded}} rules from the file?', { count: rules.length, uploaded: uploaded.file.rules.length })}</Box>
+        <Box component="span" sx={{ display: 'block', mt: 2 }}><Trans>Current rules</Trans>: {describeVersion(uploaded.current.version, uploaded.current.saved)}</Box>
+        <Box component="span" sx={{ display: 'block' }}><Trans>Rules in the file</Trans>: {describeVersion(uploaded.file.version, uploaded.file.saved)}</Box>
+      </>}
     </Confirm>
 
     <Confirm

@@ -40,7 +40,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
 
   const onDownload = () => {
     const buf = toBuffer(batch.data)
-    const url = window.URL.createObjectURL(new Blob([buf]))
+    const url = window.URL.createObjectURL(new Blob([new Uint8Array(buf)]))
     const link = document.createElement('a')
     link.href = url
     link.setAttribute(

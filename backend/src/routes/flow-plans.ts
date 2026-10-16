@@ -284,6 +284,15 @@ router.get('/:id/rules',
   }
 )
 
+router.get('/:id/rules/version',
+  authorize(),
+  param('flowPlanId'),
+  async (req, res) => {
+    const { rulesVersion, rulesSaved } = res.locals.flowPlan.data
+    res.send({ version: rulesVersion, saved: rulesSaved })
+  }
+)
+
 router.patch('/:id/rules',
   authorize(),
   param('flowPlanId'),
@@ -346,6 +355,7 @@ router.patch('/:id/rules',
       await rules[name].destroy()
     }
 
+    await FlowPlanModel.rulesChanged(res.locals.id)
     res.sendStatus(204)
   }
 )
@@ -390,6 +400,7 @@ router.post('/:id/rules',
       // New rule goes last.
       const priority = rules.length ? Math.min(...rules.map(rule => rule.data.priority)) : 50
       const rule = await RuleModel.save({ ...data, priority, flowPlanId: res.locals.id })
+      await FlowPlanModel.rulesChanged(res.locals.id)
       log(`Created ${rule} '${rule.name}' for flow plan #${res.locals.id}.`)
       res.send(rule.data)
     } catch (err) {
@@ -429,6 +440,7 @@ router.put('/:id/rules/order',
   async (req, res) => {
     try {
       await RuleModel.setOrder(res.locals.id, req.body.ids)
+      await FlowPlanModel.rulesChanged(res.locals.id)
       res.sendStatus(204)
     } catch (err) {
       ruleError(res, err)
@@ -449,6 +461,7 @@ router.put('/:id/rules/:ruleId',
       const data = RuleModel.fromRequest(req.body)
       await RuleQuestionModel.checkAsk(res.locals.id, req.body.resultView)
       await RuleModel.update<prisma.Rule, RuleModel>(rule, data)
+      await FlowPlanModel.rulesChanged(res.locals.id)
       log(`Updated ${rule} '${rule.name}' for flow plan #${res.locals.id}.`)
       res.send(rule.data)
     } catch (err) {
@@ -479,6 +492,7 @@ router.delete('/:id/rules/:ruleId',
       return res.sendStatus(404)
     }
     await rule.destroy()
+    await FlowPlanModel.rulesChanged(res.locals.id)
     log(`Deleted ${rule} '${rule.name}' from flow plan #${res.locals.id}.`)
     res.sendStatus(204)
   }

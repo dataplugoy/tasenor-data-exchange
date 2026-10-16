@@ -1,0 +1,17 @@
+{
+  "title": "RulesVersionResponse",
+  "description": "Version of the rules of a flow plan, increased every time the rules are changed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "saved"],
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "saved": {
+      "description": "Time of the latest change of the rules.",
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}

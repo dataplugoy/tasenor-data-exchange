@@ -106,6 +106,8 @@ model FlowPlan {
   balance     Json            @default("{}")
   setup       Json            @default("{}")
   ruleSourceHash String?
+  rulesVersion Int             @default(0)
+  rulesSaved  DateTime?
 
   source      InputSource?
   destination OutputDestination?
