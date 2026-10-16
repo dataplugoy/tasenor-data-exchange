@@ -55,11 +55,14 @@ export const RunList = (props: RunListProps): React.JSX.Element => {
 
   useEffect(() => {
     updateRunList()
-    whenBatchUpdates(() => updateRunList())
-    whenUploadUpdates(() => updateRunList())
-    whenRunUpdates(() => updateRunList())
+    const stops = [
+      whenBatchUpdates(() => updateRunList()),
+      whenUploadUpdates(() => updateRunList()),
+      whenRunUpdates(() => updateRunList()),
+    ]
     return () => {
-      // This is little bit nasty hack since signal watcher function stays active.
+      stops.forEach(stop => stop())
+      // Ignore responses of requests still running.
       deleted = true
     }
   }, [])

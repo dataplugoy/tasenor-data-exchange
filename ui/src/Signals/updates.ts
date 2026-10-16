@@ -36,9 +36,10 @@ export function signalRunUpdate() {
 /**
  * Run the function when the latest batch has been updated.
  * @param fn
+ * @returns A function to stop watching, to be called when the component unmounts.
  */
-export function whenBatchUpdates(fn: () => void) {
-  effect(() => {
+export function whenBatchUpdates(fn: () => void): () => void {
+  return effect(() => {
     // eslint-disable-next-line
     const dummy = batchUpdates.value
     fn()
@@ -49,8 +50,8 @@ export function whenBatchUpdates(fn: () => void) {
  * Run the function when the latest batch has been deleted.
  * @param fn
  */
-export function whenBatchDeleted(fn: () => void) {
-  effect(() => {
+export function whenBatchDeleted(fn: () => void): () => void {
+  return effect(() => {
     // eslint-disable-next-line
     const dummy = batchDeleted.value
     fn()
@@ -61,8 +62,8 @@ export function whenBatchDeleted(fn: () => void) {
  * Run the function when uploading is running.
  * @param fn
  */
-export function whenUploadUpdates(fn: () => void) {
-  effect(() => {
+export function whenUploadUpdates(fn: () => void): () => void {
+  return effect(() => {
     // eslint-disable-next-line
     const dummy = uploadUpdates.value
     fn()
@@ -73,8 +74,8 @@ export function whenUploadUpdates(fn: () => void) {
  * Run the function when execuring a run.
  * @param fn
  */
-export function whenRunUpdates(fn: () => void) {
-  effect(() => {
+export function whenRunUpdates(fn: () => void): () => void {
+  return effect(() => {
     // eslint-disable-next-line
     const dummy = runUpdates.value
     fn()

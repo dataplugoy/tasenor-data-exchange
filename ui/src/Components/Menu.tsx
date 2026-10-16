@@ -35,7 +35,8 @@ export const Menu = (): React.JSX.Element => {
   }
 
   const [,, id] = location.pathname.split('/')
-  const add = !id || id === 'new' ? '' : `/${id}`
+  // Only a flow plan ID is carried over to the other pages, not paths like `new` or `questions`.
+  const add = id && /^\d+$/.test(id) ? `/${id}` : ''
 
   return (
     <AppBar position="static">

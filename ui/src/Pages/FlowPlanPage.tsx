@@ -52,8 +52,12 @@ export const FlowPlanPage = (): React.JSX.Element => {
 
   useEffect(() => {
     updateFlowPlan()
-    whenBatchUpdates(updateFlowPlan)
-    whenBatchDeleted(updateFlowPlan)
+    const stopUpdates = whenBatchUpdates(updateFlowPlan)
+    const stopDeleted = whenBatchDeleted(updateFlowPlan)
+    return () => {
+      stopUpdates()
+      stopDeleted()
+    }
   }, [])
 
   return (
