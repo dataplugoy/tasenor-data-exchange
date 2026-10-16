@@ -100,7 +100,6 @@ export class InputDriver extends Driver {
       }
       if (matched && (matched as RuleModel).id) {
         ruleId = (matched as RuleModel).id
-        await RuleModel.recordMatch(ruleId)
       }
     }
     this.completeUnified(input, data)

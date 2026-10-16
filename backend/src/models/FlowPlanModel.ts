@@ -546,6 +546,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               inputId: input.id,
               ruleId: unified.ruleId ?? null,
             })
+            if (unified.ruleId) {
+              await RuleModel.recordMatch(unified.ruleId)
+            }
             done++
           }
           await input.success()
@@ -598,6 +601,10 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
           inputId: partialID[`${item.data.multipart}`],
           ruleId: item.ruleId ?? null,
         })
+        // Count multipart lines combined to one transaction only once.
+        if (item.ruleId) {
+          await RuleModel.recordMatch(item.ruleId)
+        }
         done++
         total++
       }
