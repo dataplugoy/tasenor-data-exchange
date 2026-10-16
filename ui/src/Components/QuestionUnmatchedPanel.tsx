@@ -13,10 +13,10 @@ interface QuestionUnmatchedPanelProps {
   onChange: (variable: string, value: unknown) => void
 }
 
-type Status = 'open' | 'rule' | 'once' | 'skip'
+type Status = 'open' | 'rule' | 'once' | 'skip' | 'manual'
 
 /**
- * Lines no rule matches: create a rule from a line, or handle or skip the line once.
+ * Lines no rule matches: create a rule from a line, or handle, skip or leave for manual inspection the line once.
  */
 export const QuestionUnmatchedPanel = (props: QuestionUnmatchedPanelProps): React.JSX.Element => {
   const { question, onChange } = props
@@ -49,12 +49,20 @@ export const QuestionUnmatchedPanel = (props: QuestionUnmatchedPanelProps): Reac
     setOnce(item.key)
   }
 
+  const manualInspection = (item: LineInfo & { key: string }) => {
+    const view = actionFromLine(item)
+    view.account = view.action === 'income' ? 'INCOME_NEEDS_MANUAL_INSPECTION' : 'EXPENSE_NEEDS_MANUAL_INSPECTION'
+    answer(item.key, actionToUnified(view, item), 'manual')
+  }
+
   const describeStatus = (item: LineInfo & { key: string }): React.JSX.Element | null => {
     switch (status[item.key]) {
       case 'rule':
         return <Chip size="small" color="success" label={t('Rule created')}/>
       case 'skip':
         return <Chip size="small" label={t('Skipped once')} onDelete={() => answer(item.key, null, 'open')}/>
+      case 'manual':
+        return <Chip size="small" color="warning" label={t('Manual inspection')} onDelete={() => answer(item.key, null, 'open')}/>
       case 'once':
         return <Chip size="small" color="info" label={`${t('Handled once')}: ${answers[item.key]?.text || ''}`} onDelete={() => answer(item.key, null, 'open')}/>
     }
@@ -92,6 +100,7 @@ export const QuestionUnmatchedPanel = (props: QuestionUnmatchedPanelProps): Reac
                 <Button size="small" onClick={() => setRuleFor(item)} data-cy="CreateRule"><Trans>Create rule</Trans></Button>
                 <Button size="small" onClick={() => startOnce(item)} data-cy="HandleOnce"><Trans>Handle once</Trans></Button>
                 <Button size="small" onClick={() => answer(item.key, { type: 'skip' }, 'skip')} data-cy="SkipOnce"><Trans>Skip once</Trans></Button>
+                <Button size="small" onClick={() => manualInspection(item)} data-cy="ManualInspection"><Trans>Manual inspection</Trans></Button>
               </>}
             </TableCell>
           </TableRow>
