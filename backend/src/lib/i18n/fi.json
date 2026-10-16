@@ -277,6 +277,7 @@
   "ACCOUNT_TAX_CORPORATE_TAX": "Tuloverot",
   "ACCOUNT_TAX_VAT_PAYABLE": "Arvonlisäverovelka",
   "ACCOUNT_TAX_VAT_RECEIVABLE": "Arvonlisäverosaaminen",
+  "ACCOUNT_TAX_VAT_REFUND": "Arvonlisäveron palautus",
   "ACCOUNT_TAX_TAX_AT_SOURCE": "Lähdevero",
   "ACCOUNT_TAX_WITHHOLDING_TAX": "Ennakonpidätys",
   "ACCOUNT_TAX_PENALTY_OF_DELAY": "Viivästysseuraamus",

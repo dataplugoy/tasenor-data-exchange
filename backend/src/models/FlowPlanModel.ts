@@ -19,7 +19,7 @@ import { ProjectModel } from './ProjectModel'
 import { OutputItemModel } from './OutputItemModel'
 import { toJSON } from '../lib/utils'
 import { OutputDestinationModel } from './OutputDestinationModel'
-import { AccountCode } from '../types/AccountCode'
+import { AccountCode, isAccountNumber } from '../types/AccountCode'
 import { Transaction } from '../types/API/Transaction'
 import { Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
@@ -858,7 +858,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     // Remove what we know from accounts.
     const configuredAccounts = this.setup.accounts || {}
     for (const account of accounts) {
-      if (account in configuredAccounts && configuredAccounts[account] !== null && configuredAccounts[account] !== undefined) {
+      if (isAccountNumber(account) || (account in configuredAccounts && configuredAccounts[account] !== null && configuredAccounts[account] !== undefined)) {
         accounts.delete(account)
       }
     }

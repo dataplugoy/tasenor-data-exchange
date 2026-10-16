@@ -45,6 +45,8 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
     text = t(`ACCOUNT_INCOME_${code.substring(7)}`)
   } else if (/^EXPENSE_/.test(code)) {
     text = t(`ACCOUNT_EXPENSE_${code.substring(8)}`)
+  } else if (/^\d+$/.test(code)) {
+    text = t('Account {{number}}', { number: code })
   } else if (!/_/.test(code)) {
     text = t(`ACCOUNT_GENERAL_${code}`)
   }

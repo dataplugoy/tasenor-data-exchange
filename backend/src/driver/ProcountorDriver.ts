@@ -13,6 +13,7 @@ import { RemoteId } from '../types/API/RemoteId'
 import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { TransactionLine } from '../types/API/TransactionLine'
 import { AccountException } from '../exceptions/AccountException'
+import { isAccountNumber } from '../types/AccountCode'
 
 const HINTS = {
   'Muu vaihto-omaisuus': ['CRYPTO', 'STOCK'],
@@ -166,6 +167,9 @@ export class ProcountorDriver extends OutputDriver {
     const accounts: Record<string, string> = this.setup.accounts as Record<string, string> || {}
     if (line.account in accounts) {
       return accounts[line.account]
+    }
+    if (isAccountNumber(line.account)) {
+      return line.account
     }
     throw new AccountException(line.account)
   }

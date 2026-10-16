@@ -66,6 +66,7 @@
   "ACCOUNT_TAX_VAT_FROM_SALES": "VAT from sales",
   "ACCOUNT_TAX_VAT_PAYABLE": "VAT payable",
   "ACCOUNT_TAX_VAT_RECEIVABLE": "VAT receivable",
+  "ACCOUNT_TAX_VAT_REFUND": "VAT refund",
   "ACCOUNT_TAX_WITHHOLDING": "Withholding tax",
   "ACCOUNT_TAX_WITHHOLDING_TAX": "Withholding tax",
   "ACCOUNT_TRANSFER_INTERNAL": "Clearing account for transfers between own bank accounts",

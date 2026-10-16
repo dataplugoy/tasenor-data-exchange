@@ -4,7 +4,7 @@ import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { RemoteAccount } from '../types/API/RemoteAccount'
 import { RemoteId } from '../types/API/RemoteId'
 import { Settings } from '../types/API/Settings'
-import { AccountCode } from '../types/AccountCode'
+import { AccountCode, isAccountNumber } from '../types/AccountCode'
 import { Driver } from './Driver'
 
 /**
@@ -22,6 +22,9 @@ export class OutputDriver extends Driver {
   configuredAccount<T = string>(code: AccountCode): T {
     const map: Record<AccountCode, T> = this.setup.accounts as Record<AccountCode, T> || {}
     if (!map[code]) {
+      if (isAccountNumber(code)) {
+        return code as T
+      }
       if (code.startsWith('DEBT_CURRENCY_')) {
         const currency = code.substring(14)
         const settings: Settings = this.setup.settings || {}
