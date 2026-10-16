@@ -42,6 +42,10 @@ export interface RuleQuestion {
   options: RuleQuestionOption[];
   created?: string;
   updated?: string;
+  /**
+   * Names of the rules using the question, when listing the questions of a project.
+   */
+  usedBy?: string[];
 }
 export interface RuleQuestionOption {
   label: string;

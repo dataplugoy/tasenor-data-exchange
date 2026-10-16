@@ -21,6 +21,15 @@
       "description": "Hash of the driver rule file last synchronized to the rules of this flow plan.",
       "type": ["null", "string"]
     },
+    "rulesVersion": {
+      "description": "Version of the rules, increased every time the rules are changed.",
+      "type": "integer"
+    },
+    "rulesSaved": {
+      "description": "Time of the latest change of the rules.",
+      "type": ["string", "null"],
+      "pattern": "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.?[0-9]*Z"
+    },
     "setup": {
       "$ref": "Setup.json"
     },

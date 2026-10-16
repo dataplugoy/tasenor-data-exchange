@@ -75,6 +75,14 @@ export interface FlowPlan {
    * Hash of the driver rule file last synchronized to the rules of this flow plan.
    */
   ruleSourceHash?: null | string;
+  /**
+   * Version of the rules, increased every time the rules are changed.
+   */
+  rulesVersion?: number;
+  /**
+   * Time of the latest change of the rules.
+   */
+  rulesSaved?: string | null;
   setup?: Setup;
   state: {
     [k: string]: unknown;

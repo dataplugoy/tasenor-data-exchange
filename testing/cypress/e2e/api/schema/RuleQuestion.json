@@ -35,6 +35,13 @@
     },
     "updated": {
       "type": "string"
+    },
+    "usedBy": {
+      "description": "Names of the rules using the question, when listing the questions of a project.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }

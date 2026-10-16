@@ -9,13 +9,7 @@
  * TAGS adds the tags of the chosen option, ACCOUNT replaces the account with the one of the chosen option and TEXT inserts the answer into the text.
  */
 export type RuleQuestionKind = "TAGS" | "ACCOUNT" | "TEXT";
-export type RuleQuestionsResponse = (RuleQuestion & {
-  /**
-   * Names of the rules using the question.
-   */
-  usedBy?: string[];
-  [k: string]: unknown;
-})[];
+export type RuleQuestionsResponse = RuleQuestion[];
 
 /**
  * A question of the project asked for each line matched by a mapping rule using it.
@@ -32,6 +26,10 @@ export interface RuleQuestion {
   options: RuleQuestionOption[];
   created?: string;
   updated?: string;
+  /**
+   * Names of the rules using the question, when listing the questions of a project.
+   */
+  usedBy?: string[];
 }
 export interface RuleQuestionOption {
   label: string;
