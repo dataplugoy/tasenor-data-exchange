@@ -1,0 +1,23 @@
+{
+  "title": "RuleQuestionsResponse",
+  "type": "array",
+  "items": {
+    "allOf": [
+      {
+        "$ref": "RuleQuestion.json"
+      },
+      {
+        "type": "object",
+        "properties": {
+          "usedBy": {
+            "description": "Names of the rules using the question.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

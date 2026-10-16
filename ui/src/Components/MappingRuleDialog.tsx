@@ -12,6 +12,8 @@ import { RuleConditionsEditor } from './RuleConditionsEditor'
 import { RuleActionEditor } from './RuleActionEditor'
 import { RulePreview } from './RulePreview'
 import { DEFAULT_TEXT, cleanAction, isActionComplete, suggestName } from '../Helpers/rules'
+import { useApp } from '../Hooks/useApp'
+import { useRuleQuestions } from '../Hooks/useRuleQuestions'
 
 interface MappingRuleDialogProps {
   open: boolean
@@ -42,10 +44,13 @@ export const MappingRuleDialog = (props: MappingRuleDialogProps): React.JSX.Elem
   const [filter, setFilter] = useState<MappingFilterView>({ conditions: [] })
   const [result, setResult] = useState<MappingResultView>({ action: 'expense', text: DEFAULT_TEXT })
   const [preview, setPreview] = useState<RulePreviewResponse | null>(null)
+  const app = useApp()
+  const [questions, loadQuestions] = useRuleQuestions(app.project.id)
 
   useEffect(() => {
     if (!open) return
     GET(`/flow-plans/${flowPlanId}/rules/fields`).then(res => res && setFields(res))
+    loadQuestions()
     if (rule) {
       setName(rule.name)
       setNameEdited(true)
@@ -71,8 +76,8 @@ export const MappingRuleDialog = (props: MappingRuleDialogProps): React.JSX.Elem
     }
   }
 
-  const complete = isActionComplete(result) && name.trim() !== ''
-  const request: SaveRuleRequest | null = isActionComplete(result)
+  const complete = isActionComplete(result, questions) && name.trim() !== ''
+  const request: SaveRuleRequest | null = isActionComplete(result, questions)
     ? { name: name.trim() || 'Preview', kind: 'MAPPING', filterView: filter, resultView: cleanAction(result), enabled, notes }
     : null
 
@@ -105,7 +110,7 @@ export const MappingRuleDialog = (props: MappingRuleDialogProps): React.JSX.Elem
       <RuleConditionsEditor value={filter} fields={fields} onChange={onFilterChange}/>
 
       <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}><Trans>Then</Trans></Typography>
-      <RuleActionEditor value={result} onChange={setResult} fieldNames={fields.map(f => f.name)} matches={preview ? preview.matches.map(m => m.fields) : null}/>
+      <RuleActionEditor value={result} onChange={setResult} fieldNames={fields.map(f => f.name)} matches={preview ? preview.matches.map(m => m.fields) : null} questions={questions}/>
 
       <TextField
         fullWidth

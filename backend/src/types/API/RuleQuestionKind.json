@@ -1,0 +1,7 @@
+{
+  "$id": "RuleQuestionKind.json",
+  "title": "RuleQuestionKind",
+  "description": "TAGS adds the tags of the chosen option, ACCOUNT replaces the account with the one of the chosen option and TEXT inserts the answer into the text.",
+  "type": "string",
+  "enum": ["TAGS", "ACCOUNT", "TEXT"]
+}

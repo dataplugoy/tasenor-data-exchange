@@ -8,8 +8,6 @@ import { useGET, usePATCH } from '../Hooks/useNet'
 import { FlowPlanRulesResponse } from '../Types/API/flow-plans/FlowPlanRulesResponse'
 import { EditableRule } from '../Types/EditableRule'
 import { useApp } from '../Hooks/useApp'
-import { FileUploadData, FileUploader } from '../Components/FileUploader'
-import { error } from '@tasenor/common'
 
 /**
  * Editing all rules of a flow plan as JSON.
@@ -21,7 +19,6 @@ export const AdvancedRulesPage = (): React.JSX.Element => {
   const PATCH = usePATCH()
   const [rules, setRules] = useState<EditableRule[]>([])
   const [changed, setChanged] = useState(false)
-  const [upload, setUpload] = useState(false)
   const app = useApp()
   const { t } = useTranslation()
 
@@ -50,31 +47,6 @@ export const AdvancedRulesPage = (): React.JSX.Element => {
     setRules(data)
   }
 
-  const onDownload = () => {
-    const blob = new Blob([JSON.stringify(rules, null, 2)], { type: 'application/json;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', 'rules.json')
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const onUpload = async (file: FileUploadData) => {
-    setUpload(false)
-    let json
-    try {
-      json = JSON.parse(Buffer.from(file.data, 'hex').toString('utf-8'))
-      setRules(json)
-      setChanged(true)
-    } catch (err) {
-      error(err)
-      app.addError(t('Failed to parse JSON-file.'))
-    }
-  }
-
   return <Box sx={{ pb: 8 }}>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
       <IconButton sx={{ mt: -0.8 }} onClick={() => navigate(`/rules/${params.id}`)}><Clear/></IconButton> <Trans>Edit Rules as JSON</Trans>
@@ -85,17 +57,6 @@ export const AdvancedRulesPage = (): React.JSX.Element => {
       <RulesEditor rules={rules} onUpdate={onUpdate}/>
     </Box>
 
-    <Button variant="outlined" onClick={onDownload}><Trans>Download</Trans></Button>
-    <Button sx={{ ml: 2 }} variant="outlined" onClick={() => setUpload(true)}><Trans>Upload</Trans></Button>
-    <Button sx={{ ml: 4 }} variant="contained" onClick={onSave}><Trans>Save</Trans></Button>
-
-    <FileUploader
-      visible={upload}
-      title={t('Rules Upload')}
-      text={t('Select a JSON-file to upload')}
-      onUpload={onUpload}
-      onCancel={() => setUpload(false)}
-      onSuccess={() => null}
-    />
+    <Button variant="contained" onClick={onSave}><Trans>Save</Trans></Button>
   </Box>
 }

@@ -30,7 +30,8 @@ const DEFAULT_CONFIG = '/home/wigy/projects/tasenor-backup/bookkeeper/staging/da
 const DEFAULT_DB = 'postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex'
 const PROJECT_SETTINGS = { currency: 'EUR', language: 'fi' }
 
-type Rule = { name: string, filter: string, result?: unknown, origin: string }
+type Rule = { name: string, filter: string, result?: unknown, origin: string, ask?: number[] }
+type Question = { id: number, name: string, label: string, kind: string, options: { label: string, tags?: string[], account?: string }[] }
 
 function option(name: string, def: string | null = null): string | null {
   const i = process.argv.indexOf(`--${name}`)
@@ -41,11 +42,21 @@ function option(name: string, def: string | null = null): string | null {
  * Read enabled rules of the flow plan in the order they are applied.
  */
 function tadexRules(flow: string, db: string): Rule[] {
-  const sql = `select coalesce(json_agg(r), '[]') from (select name, filter, result from rules
+  const sql = `select coalesce(json_agg(r), '[]') from (select name, filter, result, "resultView"->'ask' as ask from rules
     where enabled and "flowPlanId" = (select id from flow_plans where title = '${flow.replace(/'/g, "''")}' limit 1)
     order by priority desc, id) r`
   const out = execFileSync('docker', ['exec', 'tadex-db', 'psql', db, '-At', '-c', sql]).toString()
   return (JSON.parse(out) as Rule[]).map(r => ({ ...r, origin: 'tadex' }))
+}
+
+/**
+ * Read the rule questions of the project of the flow plan by ID.
+ */
+function tadexQuestions(flow: string, db: string): Record<number, Question> {
+  const sql = `select coalesce(json_agg(q), '[]') from (select id, name, label, kind, options from rule_questions
+    where "projectId" = (select "projectId" from flow_plans where title = '${flow.replace(/'/g, "''")}' limit 1)) q`
+  const out = execFileSync('docker', ['exec', 'tadex-db', 'psql', db, '-At', '-c', sql]).toString()
+  return (JSON.parse(out) as Question[]).reduce((prev, cur) => ({ ...prev, [cur.id]: cur }), {})
 }
 
 /**
@@ -79,6 +90,7 @@ function main() {
   const config = JSON.parse(fs.readFileSync(option('config', DEFAULT_CONFIG) as string).toString('utf-8'))
   const bookkeeperRules: Rule[] = config.rules.map(r => ({ name: r.name, filter: r.filter, result: r.result, origin: 'bookkeeper' }))
   const rules = tadexRules(option('flow', 'Nordea') as string, option('db', DEFAULT_DB) as string)
+  const questions = tadexQuestions(option('flow', 'Nordea') as string, option('db', DEFAULT_DB) as string)
   const candidatesPath = option('candidates')
   if (candidatesPath) {
     for (const c of JSON.parse(fs.readFileSync(candidatesPath).toString('utf-8'))) {
@@ -88,7 +100,14 @@ function main() {
       }
       const filter = c.kind === 'MAPPING' ? compileFilter(c.filterView) : c.filter
       const result = c.kind === 'MAPPING' ? compileResult(c.resultView) : c.result
-      rules.push({ name: `${c.name} (candidate)`, filter, result, origin: 'candidate' })
+      const ask: number[] = c.kind === 'MAPPING' ? c.resultView.ask || [] : []
+      // The same check as the API does for the questions asked.
+      for (const id of ask) {
+        if (!questions[id]) {
+          throw new Error(`Candidate '${c.name}' asks question #${id}, which does not exist in the project.`)
+        }
+      }
+      rules.push({ name: `${c.name} (candidate)`, filter, result, origin: 'candidate', ask })
     }
   }
 
@@ -120,6 +139,8 @@ function main() {
       bookkeeperRule: bk ? bk.name : null,
       tadexRule: tx ? tx.name : null,
       tadexResult: result,
+      // Questions asked for the line, answered in the TaDeX UI when importing.
+      tadexAsks: tx ? (tx.ask || []).map(id => questions[id] ? `${questions[id].label} (${questions[id].kind})` : `#${id}`) : [],
     }
   })
 
@@ -131,7 +152,7 @@ function main() {
   const pad = (s: unknown, n: number) => `${s ?? ''}`.substring(0, n).padEnd(n)
   console.log(`${pad('Line', 5)} ${pad('Date', 10)} ${pad('Amount', 10)} ${pad('Counterparty', 28)} ${pad('Ref', 8)} ${pad('Bookkeeper rule', 34)} TaDeX rule`)
   for (const l of lines) {
-    console.log(`${pad(l.line, 5)} ${pad(l.date, 10)} ${`${l.total}`.padStart(10)} ${pad(l.counterparty, 28)} ${pad(l.reference, 8)} ${pad(l.bookkeeperRule || '-- NONE --', 34)} ${l.tadexRule || '-- NONE --'}`)
+    console.log(`${pad(l.line, 5)} ${pad(l.date, 10)} ${`${l.total}`.padStart(10)} ${pad(l.counterparty, 28)} ${pad(l.reference, 8)} ${pad(l.bookkeeperRule || '-- NONE --', 34)} ${l.tadexRule || '-- NONE --'}${l.tadexAsks.length ? ` [asks: ${l.tadexAsks.join(', ')}]` : ''}`)
   }
   const missing = lines.filter(l => !l.tadexRule)
   console.log()

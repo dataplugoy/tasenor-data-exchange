@@ -19,6 +19,8 @@ import { Question } from '../types/API/Question'
 import { RulePreviewResponse, RulePreviewMatch } from '../types/API/flow-plans/RulePreviewResponse'
 import { RuleFieldsResponse } from '../types/API/flow-plans/RuleFieldsResponse'
 import { ProjectSettings } from '../types/API/Project'
+import { defaultAnswers, mergeAnswers } from './questions'
+import { RuleQuestionModel } from '../models/RuleQuestionModel'
 
 // Number of latest input items used.
 const RECENT = 500
@@ -88,6 +90,11 @@ export async function previewRule(flow: FlowPlanModel, driver: InputDriver, requ
   const matches: RulePreviewMatch[] = []
   let count = 0
 
+  // Questions are answered with the defaults.
+  const ask = request.resultView?.ask || []
+  const questions = ask.length ? await RuleQuestionModel.findForFlowPlan(flow.id) : {}
+  const defaults = defaultAnswers(setup, ruleId, ask)
+
   for (const input of inputs) {
     const variables = driver.ruleVariables(input)
     let result: UnifiedItemData | undefined
@@ -104,6 +111,9 @@ export async function previewRule(flow: FlowPlanModel, driver: InputDriver, requ
     count++
     if (matches.length >= MAX_MATCHES) {
       continue
+    }
+    if (ask.length) {
+      mergeAnswers(result, defaults)
     }
     driver.completeUnified(input, result)
 
@@ -128,7 +138,11 @@ export async function previewRule(flow: FlowPlanModel, driver: InputDriver, requ
     matches.push(describe(input, driver, result, lines, note, shadow ? shadow.name : null))
   }
 
-  return { checked: inputs.length, count, matches }
+  const response: RulePreviewResponse = { checked: inputs.length, count, matches }
+  if (ask.length) {
+    response.asked = ask.map(id => questions[id] ? questions[id].data.label : `#${id}`)
+  }
+  return response
 }
 
 /**

@@ -1,0 +1,25 @@
+{
+  "title": "SaveRuleQuestionRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "kind", "label"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9_]*$"
+    },
+    "kind": {
+      "$ref": "RuleQuestionKind.json"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "$ref": "RuleQuestionOption.json"
+      }
+    }
+  }
+}

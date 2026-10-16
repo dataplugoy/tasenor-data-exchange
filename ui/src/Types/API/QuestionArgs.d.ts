@@ -5,7 +5,52 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * TAGS adds the tags of the chosen option, ACCOUNT replaces the account with the one of the chosen option and TEXT inserts the answer into the text.
+ */
+export type RuleQuestionKind = "TAGS" | "ACCOUNT" | "TEXT";
+
 export interface QuestionArgs {
   currency?: string;
   options?: string[];
+  destinationId?: number;
+  flowPlanId?: number;
+  ticker?: string;
+  /**
+   * Lines of UNMATCHED_LINE and RULE_QUESTIONS.
+   */
+  items?: {
+    [k: string]: unknown;
+  }[];
+  /**
+   * Rule questions of RULE_QUESTIONS.
+   */
+  questions?: RuleQuestion[];
+}
+/**
+ * A question of the project asked for each line matched by a mapping rule using it.
+ */
+export interface RuleQuestion {
+  id: number;
+  projectId: number;
+  /**
+   * Identifier used in text templates as {?name}.
+   */
+  name: string;
+  kind: RuleQuestionKind;
+  label: string;
+  options: RuleQuestionOption[];
+  created?: string;
+  updated?: string;
+}
+export interface RuleQuestionOption {
+  label: string;
+  /**
+   * Tags of a TAGS option.
+   */
+  tags?: string[];
+  /**
+   * Account code of an ACCOUNT option, like EXPENSE_SOFTWARE or ACCOUNT_1234.
+   */
+  account?: string;
 }

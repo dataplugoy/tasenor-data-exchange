@@ -3,6 +3,7 @@ import { MappingCondition } from '../Types/API/MappingCondition'
 import { MappingFilterView } from '../Types/API/MappingFilterView'
 import { MappingResultView } from '../Types/API/MappingResultView'
 import { UnifiedItemData } from '../Types/API/UnifiedItemData'
+import { RuleQuestion } from '../Types/API/RuleQuestion'
 
 /**
  * An input line as presented to the rule editor.
@@ -108,7 +109,7 @@ export function cleanText(s: string, separator: string): string {
 /**
  * Describe the action of a rule.
  */
-export function describeAction(t: TFunction, view: MappingResultView | undefined): string {
+export function describeAction(t: TFunction, view: MappingResultView | undefined, questions: RuleQuestion[] = []): string {
   if (!view) {
     return ''
   }
@@ -117,6 +118,8 @@ export function describeAction(t: TFunction, view: MappingResultView | undefined
   if (view.service) parts.push(view.service)
   if (view.vat && view.vat.mode === 'rate') parts.push(t('VAT {{rate}}%', { rate: view.vat.rate }))
   if (view.tags && view.tags.length) parts.push(view.tags.map(tag => `[${tag}]`).join(''))
+  const asked = (view.ask || []).map(id => questions.find(q => q.id === id)?.label || `#${id}`)
+  if (asked.length) parts.push(t('asks {{questions}}', { questions: asked.join(', ') }))
   return parts.join(', ')
 }
 
@@ -228,11 +231,15 @@ export function actionToUnified(view: MappingResultView, line: LineInfo): Unifie
 /**
  * Check if the action has all the information it needs.
  */
-export function isActionComplete(view: MappingResultView): boolean {
+export function isActionComplete(view: MappingResultView, questions: RuleQuestion[] = []): boolean {
   switch (view.action) {
     case 'expense':
     case 'income':
     case 'tax':
+      // An account question gives the account, if the rule has none.
+      if (!view.account && questions.some(q => q.kind === 'ACCOUNT' && (view.ask || []).includes(q.id))) {
+        return true
+      }
       return !!view.account && /^(ACCOUNT|EXPENSE|INCOME|TAX)_[A-Z0-9_]+$/.test(view.account)
     case 'transfer':
       return !!view.service
@@ -254,5 +261,6 @@ export function cleanAction(view: MappingResultView): MappingResultView {
   ret.text = view.text || DEFAULT_TEXT
   if (view.tags && view.tags.length) ret.tags = view.tags
   if (view.vat && view.vat.mode === 'rate' && ['expense', 'income'].includes(view.action)) ret.vat = view.vat
+  if (view.ask && view.ask.length) ret.ask = view.ask
   return ret
 }

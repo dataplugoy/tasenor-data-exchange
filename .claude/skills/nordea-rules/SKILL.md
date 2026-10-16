@@ -100,15 +100,45 @@ Expense, income and tax follow the sign of the amount, so a refund is booked to 
 ### What cannot be converted directly
 
 - **Rules depending on questions.** Results using question variables (`gadget`, `buyer`, `trip`, `explanation`,
-  `accommodation`, `asset`, `taxType`, `taxTags`, `chosen(...)`) were answered per line in Bookkeeper. Find the
-  question in `config.questions` and look at the earlier answers with `history.py`. If they are consistent, use
-  them. Otherwise ask the user with AskUserQuestion, offering its `ask` options. Then either
-  make a narrower rule for this kind of line (e.g. a specific counterparty) or tell the user to use **Handle once**
-  in the TaDeX UI for that line. Tax types map to `TAX_<type>`, e.g. `Yhteisövero` → `TAX_CORPORATE_TAX`.
+  `asset`, ...) were answered per line in Bookkeeper. Convert them to a TaDeX rule that asks project questions
+  (see *Rule questions* below): fix what the history shows to be always the same (account, VAT, fixed tags) and
+  attach a question for each part that changes per line. Look at the earlier answers with `history.py`; if they are
+  all the same (e.g. VR tickets always `[KR]`), fix the value in the rule instead of asking. Tax types map to
+  `TAX_<type>`, e.g. `Yhteisövero` → `TAX_CORPORATE_TAX`.
 - **Account asked in Bookkeeper.** If the account value is an object with `ask` (e.g. `account.transfer.external.Nordnet`),
   ask the user which one applies.
 - **Lines without a Bookkeeper rule.** Look them up with `history.py`: repeated manual answers (the `transfers`
   answer) can become a rule. If there is no history, show the line with its fields (`--json`) and ask the user.
+
+### Rule questions
+
+A rule can ask questions of the project for each line it matches; the user answers them in the TaDeX UI when
+importing. Questions are shared by all rules of the project, so reuse existing ones. List them with:
+
+```bash
+docker exec tadex-db psql postgres://dev:02u3QD2e3wxssfdr3sxds@localhost:7300/tadex -Atc \
+  "select id, name, kind, label from rule_questions where \"projectId\" = (select \"projectId\" from flow_plans where title = 'Nordea')"
+```
+
+| Kind | Effect | Bookkeeper question |
+|---|---|---|
+| `TAGS` | chosen option's tags are added to the rule's tags | `Osakkaiden tägit` (`buyer`), `Nordnet rahastovaihtoehdot` |
+| `ACCOUNT` | chosen option's account replaces the rule's account (the rule's own account is then optional) | `Verkkokaupan ostoksen tyyppi` (`asset`), `Korttiostoksen tyyppi` |
+| `TEXT` | the answer replaces `{?name}` in the rule's text (or is appended) | `Matkareitti` (`trip`), `Verkkokaupan ostoksen tarkennus` (`gadget`), `Selitys` (`explanation`) |
+
+Attach questions with their IDs: `"resultView": {"action": "expense", "account": "ACCOUNT_7800", "text": "Junalippu: {?route}", "ask": [2, 3]}`.
+If a needed question does not exist, create it from `config.questions` (after telling the user), resolving
+`ask` options to tags (`"[TR][KR]"` → `["TR", "KR"]`) or account numbers (`config["account.expense.statement.<asset>"]`,
+skip options without an account):
+
+```bash
+curl -s -X POST $A/projects/<projectId>/questions -H "Authorization: Bearer $TOK" -H 'content-type: application/json' \
+  -d '{"name": "route", "kind": "TEXT", "label": "Matkareitti lyhenteinä"}'
+```
+
+`match.ts` shows the questions a rule asks (`[asks: ...]`, `tadexAsks` in JSON) and rejects candidates asking
+questions that do not exist. The result still contains the `{?name}` placeholders, since answers are given only
+when importing.
 
 ## 3. Verify before saving
 
@@ -122,8 +152,8 @@ Candidates are tried after the existing rules, as a new rule in TaDeX would be. 
 `tadexRule` and that `tadexResult` has the expected type, value, account, text and tags. `match.ts` validates candidates with the same
 schema as the API and reports compilation errors of mapping rules (bad account codes etc.) as exceptions.
 
-Show the user a short table: line, amount, counterparty, Bookkeeper rule → TaDeX rule and account. List open
-questions and the lines left for **Handle once**.
+Show the user a short table: line, amount, counterparty, Bookkeeper rule → TaDeX rule, account and the questions
+asked. List open questions and the lines left for **Handle once**.
 
 ## 4. Save to the local TaDeX
 

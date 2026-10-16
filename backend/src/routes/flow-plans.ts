@@ -25,6 +25,7 @@ import { AlertModel } from '../models/AlertModel'
 import { validate } from '../lib/validate'
 import { RuleModel } from '../models/RuleModel'
 import { OutputItemModel } from '../models/OutputItemModel'
+import { RuleQuestionModel } from '../models/RuleQuestionModel'
 import { Notes } from '../types/API/Notes'
 import { t } from '../lib/i18n/t'
 
@@ -292,6 +293,14 @@ router.patch('/:id/rules',
     const rules = await (await RuleModel.findForFlow(res.locals.id, `${name}.json`)).reduce((prev, cur) => ({ ...prev, [cur.name]: cur }), {})
     const oldRules = new Set(Object.keys(rules))
 
+    try {
+      for (const rule of req.body) {
+        await RuleQuestionModel.checkAsk(res.locals.id, rule.resultView)
+      }
+    } catch (err) {
+      return ruleError(res, err)
+    }
+
     for (const rule of req.body) {
       if (oldRules.has(rule.name)) {
         const old = rules[rule.name]
@@ -375,6 +384,7 @@ router.post('/:id/rules',
   async (req, res) => {
     try {
       const data = RuleModel.fromRequest(req.body)
+      await RuleQuestionModel.checkAsk(res.locals.id, req.body.resultView)
       const name = await res.locals.flowPlan.getInputDriverName()
       const rules = await RuleModel.findForFlow(res.locals.id, `${name}.json`)
       // New rule goes last.
@@ -403,6 +413,7 @@ router.post('/:id/rules/preview',
   async (req, res) => {
     const ruleId = req.query.ruleId ? parseInt(`${req.query.ruleId}`) : null
     try {
+      await RuleQuestionModel.checkAsk(res.locals.id, req.body.resultView)
       const driver = await res.locals.flowPlan.getInputDriver({ userId: res.locals.userId, flowPlanId: res.locals.id })
       res.send(await previewRule(res.locals.flowPlan, driver, req.body, ruleId !== null && !isNaN(ruleId) ? ruleId : null))
     } catch (err) {
@@ -435,7 +446,9 @@ router.put('/:id/rules/:ruleId',
       return res.sendStatus(404)
     }
     try {
-      await RuleModel.update<prisma.Rule, RuleModel>(rule, RuleModel.fromRequest(req.body))
+      const data = RuleModel.fromRequest(req.body)
+      await RuleQuestionModel.checkAsk(res.locals.id, req.body.resultView)
+      await RuleModel.update<prisma.Rule, RuleModel>(rule, data)
       log(`Updated ${rule} '${rule.name}' for flow plan #${res.locals.id}.`)
       res.send(rule.data)
     } catch (err) {

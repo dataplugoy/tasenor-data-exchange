@@ -43,6 +43,13 @@
           "type": "number"
         }
       }
+    },
+    "ask": {
+      "description": "IDs of the project questions asked for each matching line.",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
     }
   }
 }

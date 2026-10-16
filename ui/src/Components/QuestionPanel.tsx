@@ -11,6 +11,7 @@ import { QuestionDebtAccountPanel } from './QuestionDebtAccountPanel'
 import { QuestionTickerPanel } from './QuestionTickerPanel'
 import { QuestionExamplePanel } from './QuestionExamplePanel'
 import { QuestionUnmatchedPanel } from './QuestionUnmatchedPanel'
+import { QuestionRuleQuestionsPanel } from './QuestionRuleQuestionsPanel'
 
 interface QuestionPanelProps {
   question: Question
@@ -58,6 +59,10 @@ export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
     case 'UNMATCHED_LINE':
       return <Box sx={sx}>
         <QuestionUnmatchedPanel question={question} onChange={onChange}/>
+      </Box>
+    case 'RULE_QUESTIONS':
+      return <Box sx={sx}>
+        <QuestionRuleQuestionsPanel question={question} onChange={onChange}/>
       </Box>
     case 'DEBT_ACCOUNT':
       return <Box sx={sx}>

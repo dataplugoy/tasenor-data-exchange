@@ -85,6 +85,7 @@ model Project {
   userId      Int
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   flowPlans   FlowPlan[]
+  ruleQuestions RuleQuestion[]
 
   @@map(name: "projects")
 }
@@ -356,6 +357,29 @@ model Rule{
   @@unique([flowPlanId, name])
 
   @@map(name: "rules")
+}
+
+model RuleQuestion{
+  id          Int             @id @default(autoincrement())
+  created     DateTime        @default(now())
+  updated     DateTime        @updatedAt
+
+  projectId   Int
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  name        String
+  kind        RuleQuestionKind
+  label       String
+  options     Json            @default("[]")
+
+  @@unique([projectId, name])
+  @@map(name: "rule_questions")
+}
+
+enum RuleQuestionKind {
+  TAGS
+  ACCOUNT
+  TEXT
 }
 
 enum RuleOrigin {

@@ -12,6 +12,13 @@
         "$ref": "UnifiedItemData.json"
       }
     },
+    "lineAnswers": {
+      "description": "Answers to the questions of the rules, by the answer key of the input item.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "LineAnswers.json"
+      }
+    },
     "accounts": {
       "type": "object",
       "additionalProperties": true

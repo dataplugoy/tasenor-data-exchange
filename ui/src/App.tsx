@@ -13,6 +13,7 @@ import { ResultsPage } from './Pages/ResultsPage'
 import { SettingsPage } from './Pages/SettingsPage'
 import { EditSettingsPage } from './Pages/EditSettingsPage'
 import { RulesPage } from './Pages/RulesPage'
+import { RuleQuestionsPage } from './Pages/RuleQuestionsPage'
 import { ServicesPage } from './Pages/ServicesPage'
 import { EditRulesPage } from './Pages/EditRulesPage'
 import { AdvancedRulesPage } from './Pages/AdvancedRulesPage'
@@ -46,6 +47,7 @@ export const App = (): React.JSX.Element => {
               <Route path="/:lang/register" element={<RegisterPage/>}/>
               <Route path="/results/:id" element={<ResultsPage/>}/>
               <Route path="/results" element={<ResultsPage/>}/>
+              <Route path="/rules/questions" element={<RuleQuestionsPage/>}/>
               <Route path="/rules/:id/advanced" element={<AdvancedRulesPage/>}/>
               <Route path="/rules/:id" element={<EditRulesPage/>}/>
               <Route path="/rules" element={<RulesPage/>}/>

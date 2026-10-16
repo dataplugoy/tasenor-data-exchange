@@ -1,0 +1,25 @@
+{
+  "$id": "RuleQuestionOption.json",
+  "title": "RuleQuestionOption",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["label"],
+  "properties": {
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tags": {
+      "description": "Tags of a TAGS option.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "account": {
+      "description": "Account code of an ACCOUNT option, like EXPENSE_SOFTWARE or ACCOUNT_1234.",
+      "type": "string"
+    }
+  }
+}

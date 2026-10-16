@@ -9,6 +9,7 @@
     "ENUM",
     "STRINGS",
     "TICKER",
-    "UNMATCHED_LINE"
+    "UNMATCHED_LINE",
+    "RULE_QUESTIONS"
   ]
 }

@@ -56,6 +56,10 @@ export type Asset5 = string;
  */
 export interface RulePreviewResponse {
   /**
+   * Labels of the questions the rule asks for each line. The matches use the default answers.
+   */
+  asked?: string[];
+  /**
    * Number of input items checked.
    */
   checked: number;

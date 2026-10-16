@@ -1,6 +1,11 @@
 # Rules that ask questions
 
-Status: plan, not implemented.
+Status: steps 1–5 implemented. Step 6 (skill and Nordea rules) is open.
+
+Differences from the plan:
+- The batch view does not list the answers separately; they show in the unified item's tags, account and text.
+- No UI end-to-end test yet. Unit tests cover the merge, defaults, validation and unify; an API test covers the
+  question endpoints.
 
 ## Problem
 

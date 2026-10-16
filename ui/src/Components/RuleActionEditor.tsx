@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Autocomplete, Box, Link, MenuItem, Popover, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Chip, Link, MenuItem, Popover, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { MappingResultView } from '../Types/API/MappingResultView'
-import { ACTIONS, DEFAULT_TEXT, accountLabel, actionLabel } from '../Helpers/rules'
+import { ACTIONS, DEFAULT_TEXT, actionLabel } from '../Helpers/rules'
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, TAX_CATEGORIES } from '../Helpers/categories'
+import { RuleQuestion } from '../Types/API/RuleQuestion'
+import { AccountField } from './AccountField'
 
 interface VatFieldProps {
   rate: number | null
@@ -99,43 +101,20 @@ interface RuleActionEditorProps {
   fieldNames?: string[]
   // Fields of the lines matching the rule, or null if not known.
   matches?: Record<string, unknown>[] | null
-}
-
-/**
- * Convert typed account to a code. Plain numbers are direct account numbers.
- */
-function toAccountCode(text: string): string {
-  const s = text.trim()
-  if (/^\d+$/.test(s)) {
-    return `ACCOUNT_${s}`
-  }
-  return s.toUpperCase().replace(/[^A-Z0-9_]/g, '_')
+  // Questions of the project that can be asked for each line. Without them, asking is not offered.
+  questions?: RuleQuestion[]
 }
 
 export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Element => {
-  const { value, onChange, fieldNames, matches } = props
+  const { value, onChange, fieldNames, matches, questions } = props
   const { t } = useTranslation()
   const { action } = value
 
   const categories = action === 'income' ? INCOME_CATEGORIES : action === 'tax' ? TAX_CATEGORIES : [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES]
   const needsAccount = ['expense', 'income', 'tax'].includes(action)
-  const optionLabel = (code: string) => code ? `${accountLabel(t, code)}${/^ACCOUNT_/.test(code) ? '' : ` (${code})`}` : ''
-
-  // Committed text may be a code, a label of an option or an account number typed by the user.
-  const resolveAccount = (text: string): string => {
-    const code = /\(([A-Z0-9_]+)\)$/.exec(text)
-    if (code) {
-      return code[1]
-    }
-    const option = categories.find(c => c === text || optionLabel(c) === text || accountLabel(t, c) === text)
-    if (option) {
-      return option
-    }
-    if (/^ACCOUNT_\d+$/.test(text)) {
-      return text
-    }
-    return toAccountCode(text)
-  }
+  const asked = (questions || []).filter(q => (value.ask || []).includes(q.id))
+  const askedAccount = asked.some(q => q.kind === 'ACCOUNT')
+  const text = value.text ?? DEFAULT_TEXT
 
   return <Box>
     <Box sx={{ display: 'flex', gap: 1, mb: 1.5 }}>
@@ -150,14 +129,11 @@ export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Elemen
         {ACTIONS.map(a => <MenuItem key={a} value={a}>{actionLabel(t, a)}</MenuItem>)}
       </TextField>
 
-      {needsAccount && <Autocomplete
-        freeSolo
-        autoSelect
-        options={categories}
-        getOptionLabel={optionLabel}
+      {needsAccount && <AccountField
+        categories={categories}
         value={value.account || ''}
-        onChange={(_, v) => onChange({ ...value, account: v ? resolveAccount(v) : '' })}
-        renderInput={(params) => <TextField {...params} size="small" label={t('Category or account number')}/>}
+        onChange={(account) => onChange({ ...value, account })}
+        label={askedAccount ? t('Default category or account number') : t('Category or account number')}
         sx={{ flex: 2 }}
       />}
 
@@ -177,10 +153,21 @@ export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Elemen
         size="small"
         label={t('Text')}
         helperText={fieldNames && fieldNames.length ? <FieldNames names={fieldNames} matches={matches || null}/> : undefined}
-        value={value.text ?? DEFAULT_TEXT}
+        value={text}
         onChange={(e) => onChange({ ...value, text: e.target.value })}
-        sx={{ mb: 1.5 }}
+        sx={{ mb: asked.some(q => q.kind === 'TEXT') ? 0.5 : 1.5 }}
       />
+      {asked.filter(q => q.kind === 'TEXT').length > 0 && <Box sx={{ mb: 1.5, display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+        <Typography variant="caption" color="text.secondary"><Trans>Place the answer in the text:</Trans></Typography>
+        {asked.filter(q => q.kind === 'TEXT').map(q => <Chip
+          key={q.id}
+          size="small"
+          variant={text.includes(`{?${q.name}}`) ? 'filled' : 'outlined'}
+          label={`{?${q.name}}`}
+          title={q.label}
+          onClick={() => !text.includes(`{?${q.name}}`) && onChange({ ...value, text: `${text} {?${q.name}}`.trim() })}
+        />)}
+      </Box>}
 
       <Box sx={{ display: 'flex', gap: 1 }}>
         <Autocomplete
@@ -197,6 +184,18 @@ export const RuleActionEditor = (props: RuleActionEditorProps): React.JSX.Elemen
           onChange={(rate) => onChange({ ...value, vat: rate === null ? { mode: 'none' } : { mode: 'rate', rate } })}
         />}
       </Box>
+
+      {questions && <Autocomplete
+        multiple
+        options={questions}
+        getOptionLabel={(q) => q.label}
+        isOptionEqualToValue={(a, b) => a.id === b.id}
+        value={asked}
+        onChange={(_, v) => onChange({ ...value, ask: v.map(q => q.id) })}
+        renderInput={(params) => <TextField {...params} size="small" label={t('Ask for each line')} helperText={questions.length ? undefined : t('There are no questions yet. Create them in the questions of the rules.')}/>}
+        sx={{ mt: 1.5 }}
+        data-cy="AskQuestions"
+      />}
     </>}
   </Box>
 }

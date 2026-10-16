@@ -29,12 +29,15 @@ import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { BalanceData } from '../types/API/BalanceData'
 import { Setup } from '../types/API/Setup'
+import { RuleQuestion } from '../types/API/RuleQuestion'
 import { Account } from '../types/API/Account'
 import { AccountException } from '../exceptions/AccountException'
 import { getDriver } from '../driver'
 import { ProjectSettings } from '../types/API/Project'
 import { Notes } from '../types/API/Notes'
-import { AnswersRequired, UnmatchedItem } from '../exceptions/AnswersRequired'
+import { AnswersRequired, RuleQuestionsItem, UnmatchedItem } from '../exceptions/AnswersRequired'
+import { RuleQuestionsRequired, askedQuestions, defaultAnswers } from '../lib/questions'
+import { RuleQuestionModel } from './RuleQuestionModel'
 import { NoMatchingRuleError } from '../lib/rules'
 import { InputDriver } from '../driver/InputDriver'
 import { OutputDriver } from '../driver/OutputDriver'
@@ -166,8 +169,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   async updateSetup(patch: Partial<Setup>): Promise<void> {
     // One-off answers are keyed by input item keys, which may look like numbers. Keep them away from the dot notation
     // (numeric keys would become array indices) and replace each answer as a whole. Null removes an answer.
-    const { answers: oldAnswers, ...oldSetup } = (this.data?.setup as Setup) || {}
-    const { answers: newAnswers, ...setupPatch } = patch
+    const { answers: oldAnswers, lineAnswers: oldLineAnswers, ...oldSetup } = (this.data?.setup as Setup) || {}
+    const { answers: newAnswers, lineAnswers: newLineAnswers, ...setupPatch } = patch
 
     const setupDot = new dot('∰∰∰')
     const fullSetup = setupDot.dot(oldSetup)
@@ -182,6 +185,19 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
     if (Object.keys(answers).length) {
       setup.answers = answers
+    }
+
+    // Answers to the questions of the rules are merged the same way. Changed entries go last, since the latest
+    // entries give the default answers.
+    const lineAnswers = { ...(oldLineAnswers || {}) }
+    for (const [key, value] of Object.entries(newLineAnswers || {})) {
+      delete lineAnswers[key]
+      if (value !== null) {
+        lineAnswers[key] = value
+      }
+    }
+    if (Object.keys(lineAnswers).length) {
+      setup.lineAnswers = lineAnswers
     }
 
     this.data.setup = setup as JsonObject
@@ -469,6 +485,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       let done = 0
       let skipped = 0
       const unmatched: UnmatchedItem[] = []
+      const asking: RuleQuestionsItem[] = []
 
       // Unification is independent of time, so they can be processed in parallel, i.e. leave errors for further runs.
       for (const input of inputs) {
@@ -543,6 +560,24 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             unmatched.push({ key: driver.answerKey(input), line: data.line as number, time: data.time, text: data.text, total: data.total as number, fields: data.fields })
             continue
           }
+          if (err instanceof RuleQuestionsRequired) {
+            // Leave unprocessed and ask the questions for all of them at the end.
+            const data = input.data.data as unknown as InputItemData
+            const ask = askedQuestions(err.rule.data)
+            asking.push({
+              key: driver.answerKey(input),
+              line: data.line as number,
+              time: data.time,
+              text: data.text,
+              total: data.total as number,
+              fields: data.fields,
+              ruleId: err.rule.id,
+              ruleName: err.rule.name,
+              ask,
+              defaults: defaultAnswers(this.data.setup as Setup, err.rule.id, ask),
+            })
+            continue
+          }
           result = 'FAIL'
           error(`Handling of ${input} failed: ${err.stack}`)
           await input.fail(run, err)
@@ -585,10 +620,12 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       // Do not pass the state from the input driver to the output driver.
       await this.saveState({})
 
-      if (unmatched.length) {
+      if (unmatched.length || asking.length) {
         const project = await this.getProject()
-        log(`${this} has ${unmatched.length} input items not matching any rule in ${batch}.`)
-        AnswersRequired.forUnmatched(`/flow-plans/${this.id}/configure`, project?.settings.language as Language, options.userId, this.id, unmatched)
+        log(`${this} has ${unmatched.length} input items not matching any rule and ${asking.length} needing answers to the questions of the rules in ${batch}.`)
+        const questions = await RuleQuestionModel.findForFlowPlan(this.id)
+        const needed = [...new Set(asking.map(item => item.ask).flat())].filter(id => questions[id]).map(id => questions[id].data)
+        AnswersRequired.forLines(`/flow-plans/${this.id}/configure`, project?.settings.language as Language, options.userId, this.id, unmatched, asking, needed as unknown as RuleQuestion[])
       }
 
     } catch (err) {

@@ -93,6 +93,12 @@ export interface Setup {
   answers?: {
     [k: string]: UnifiedItemData;
   };
+  /**
+   * Answers to the questions of the rules, by the answer key of the input item.
+   */
+  lineAnswers?: {
+    [k: string]: LineAnswers;
+  };
   accounts?: {
     [k: string]: unknown;
   };
@@ -204,6 +210,37 @@ export interface UnifiedItemData {
  */
 export interface Rates {
   [k: string]: unknown;
+}
+/**
+ * Answers to the questions of the rule matching a line.
+ */
+export interface LineAnswers {
+  /**
+   * ID of the rule the answers were given for.
+   */
+  rule: number;
+  /**
+   * Answers by question ID.
+   */
+  answers: {
+    [k: string]: RuleQuestionAnswer;
+  };
+}
+/**
+ * Answer to a rule question for one line. The tags or account of the chosen option are copied, so that later edits of the options do not change it.
+ */
+export interface RuleQuestionAnswer {
+  /**
+   * Index of the chosen option.
+   */
+  option?: number;
+  tags?: string[];
+  account?: string;
+  text?: string;
+  /**
+   * Name of a TEXT question for placing the text.
+   */
+  name?: string;
 }
 export interface Settings {
   allowShortSelling?: boolean;

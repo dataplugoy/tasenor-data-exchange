@@ -33,4 +33,8 @@ export interface MappingResultView {
      */
     rate?: number;
   };
+  /**
+   * IDs of the project questions asked for each matching line.
+   */
+  ask?: number[];
 }

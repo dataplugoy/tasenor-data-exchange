@@ -60,6 +60,13 @@
     }
   },
   "properties": {
+    "asked": {
+      "description": "Labels of the questions the rule asks for each line. The matches use the default answers.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "checked": {
       "description": "Number of input items checked.",
       "type": "integer"

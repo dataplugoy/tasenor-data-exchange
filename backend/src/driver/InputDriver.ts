@@ -5,6 +5,7 @@ import { InputItemModel } from '../models/InputItemModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
 import { RuleModel } from '../models/RuleModel'
 import { NoMatchingRuleError, applyRules } from '../lib/rules'
+import { RuleQuestionsRequired, askedQuestions, mergeAnswers } from '../lib/questions'
 import clone from 'clone'
 import { RunModel } from '../models/RunModel'
 import { DateTime } from 'luxon'
@@ -89,6 +90,14 @@ export class InputDriver extends Driver {
       }
       let matched: RuleModel | null = null
       data = applyRules(variables, rules, ruleKey, rule => { matched = rule })
+      // Questions of the rule are answered for each line.
+      if (matched && askedQuestions((matched as RuleModel).data).length) {
+        const lineAnswers = this.setup.lineAnswers && this.setup.lineAnswers[this.answerKey(input)]
+        if (!lineAnswers) {
+          throw new RuleQuestionsRequired(matched)
+        }
+        mergeAnswers(data, lineAnswers.answers)
+      }
       if (matched && (matched as RuleModel).id) {
         ruleId = (matched as RuleModel).id
         await RuleModel.recordMatch(ruleId)

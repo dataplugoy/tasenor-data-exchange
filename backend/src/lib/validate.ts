@@ -14,6 +14,7 @@ import InputItem from '../../src/types/API/InputItem.json'
 import InputSource from '../../src/types/API/InputSource.json'
 import InputSourceSettings from '../../src/types/API/InputSourceSettings.json'
 import ItemError from '../../src/types/API/ItemError.json'
+import LineAnswers from '../../src/types/API/LineAnswers.json'
 import MappingCondition from '../../src/types/API/MappingCondition.json'
 import MappingFilterView from '../../src/types/API/MappingFilterView.json'
 import MappingResultView from '../../src/types/API/MappingResultView.json'
@@ -25,11 +26,16 @@ import Project from '../../src/types/API/Project.json'
 import ProjectSettings from '../../src/types/API/ProjectSettings.json'
 import QuestionArgs from '../../src/types/API/QuestionArgs.json'
 import Question from '../../src/types/API/Question.json'
+import QuestionExample from '../../src/types/API/QuestionExample.json'
 import QuestionType from '../../src/types/API/QuestionType.json'
 import Rates from '../../src/types/API/Rates.json'
 import RemoteAccount from '../../src/types/API/RemoteAccount.json'
 import RemoteId from '../../src/types/API/RemoteId.json'
 import Rule from '../../src/types/API/Rule.json'
+import RuleQuestion from '../../src/types/API/RuleQuestion.json'
+import RuleQuestionAnswer from '../../src/types/API/RuleQuestionAnswer.json'
+import RuleQuestionKind from '../../src/types/API/RuleQuestionKind.json'
+import RuleQuestionOption from '../../src/types/API/RuleQuestionOption.json'
 import Run from '../../src/types/API/Run.json'
 import RunResult from '../../src/types/API/RunResult.json'
 import Service from '../../src/types/API/Service.json'
@@ -66,6 +72,7 @@ ajv.addSchema(InputItem)
 ajv.addSchema(InputSource)
 ajv.addSchema(InputSourceSettings)
 ajv.addSchema(ItemError)
+ajv.addSchema(LineAnswers)
 ajv.addSchema(MappingCondition)
 ajv.addSchema(MappingFilterView)
 ajv.addSchema(MappingResultView)
@@ -77,11 +84,16 @@ ajv.addSchema(Project)
 ajv.addSchema(ProjectSettings)
 ajv.addSchema(QuestionArgs)
 ajv.addSchema(Question)
+ajv.addSchema(QuestionExample)
 ajv.addSchema(QuestionType)
 ajv.addSchema(Rates)
 ajv.addSchema(RemoteAccount)
 ajv.addSchema(RemoteId)
 ajv.addSchema(Rule)
+ajv.addSchema(RuleQuestion)
+ajv.addSchema(RuleQuestionAnswer)
+ajv.addSchema(RuleQuestionKind)
+ajv.addSchema(RuleQuestionOption)
 ajv.addSchema(Run)
 ajv.addSchema(RunResult)
 ajv.addSchema(Service)

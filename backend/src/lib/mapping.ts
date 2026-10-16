@@ -144,6 +144,8 @@ export function compileFilter(view: MappingFilterView): string {
 
 /**
  * Compile a text template like `{Saaja/Maksaja}: {Viesti}` to an expression.
+ *
+ * Placeholders of rule questions like `{?route}` are kept as they are and filled in with the answers later.
  */
 export function compileTemplate(template: string): string {
   const parts: string[] = []
@@ -157,13 +159,13 @@ export function compileTemplate(template: string): string {
     if (match.index > 0) {
       parts.push(quote(rest.substring(0, match.index)))
     }
-    parts.push(`str($(${quote(match[1])}, ''))`)
+    parts.push(match[1].startsWith('?') ? quote(match[0]) : `str($(${quote(match[1])}, ''))`)
     rest = rest.substring(match.index + match[0].length)
   }
   return parts.length ? parts.join(' + ') : "''"
 }
 
-const ACCOUNT_PATTERN = /^(ACCOUNT|EXPENSE|INCOME|TAX)_[A-Z0-9_]+$/
+export const ACCOUNT_PATTERN = /^(ACCOUNT|EXPENSE|INCOME|TAX)_[A-Z0-9_]+$/
 
 /**
  * Compile the action of a mapping rule to a result expression.
@@ -183,6 +185,11 @@ export function compileResult(view: MappingResultView): UnifiedItemRule {
     case 'income':
     case 'tax': {
       const account = view.account || ''
+      // An account question of the rule gives the account, when the rule has none.
+      if (account === '' && view.ask && view.ask.length) {
+        result.type = "total < 0 ? 'expense' : 'income'"
+        break
+      }
       if (!ACCOUNT_PATTERN.test(account)) {
         throw new MappingError(`Invalid account ${JSON.stringify(account)} for action '${view.action}'.`)
       }

@@ -16,7 +16,7 @@ describe('Rules as JSON', () => {
           cy.login()
           cy.get('[data-cy="FlowPlan-Coinbase Testing"]').click()
           cy.get('[data-cy="Menu-Rules"]').click()
-          cy.get('button').contains('Advanced (JSON)').click()
+          cy.get('button').contains('Edit JSON').click()
           cy.get('body').should('contain', 'Edit Rules as JSON')
           cy.get('body').should('contain', 'JSON test')
 

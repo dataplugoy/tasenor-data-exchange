@@ -13,6 +13,29 @@
       "items": {
         "type": "string"
       }
+    },
+    "destinationId": {
+      "type": "integer"
+    },
+    "flowPlanId": {
+      "type": "integer"
+    },
+    "ticker": {
+      "type": "string"
+    },
+    "items": {
+      "description": "Lines of UNMATCHED_LINE and RULE_QUESTIONS.",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "questions": {
+      "description": "Rule questions of RULE_QUESTIONS.",
+      "type": "array",
+      "items": {
+        "$ref": "RuleQuestion.json"
+      }
     }
   }
 }

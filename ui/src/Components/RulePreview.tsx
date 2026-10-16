@@ -78,6 +78,9 @@ export const RulePreview = (props: RulePreviewProps): React.JSX.Element => {
       {preview.count > preview.matches.length && ` ${t('Showing first {{shown}}.', { shown: preview.matches.length })}`}
       {loading && <CircularProgress size={14} sx={{ ml: 1 }}/>}
     </Typography>
+    {preview.asked && preview.asked.length > 0 && <Alert severity="info" sx={{ mb: 1 }} data-cy="PreviewAsked">
+      {t('Asked for each line: {{questions}}. The preview uses the latest answers.', { questions: preview.asked.join(', ') })}
+    </Alert>}
     {shadowed > 0 && <Alert severity="warning" sx={{ mb: 1 }}>
       {t('{{count}} of these lines are taken by earlier rules and this rule is not used for them.', { count: shadowed })}
     </Alert>}

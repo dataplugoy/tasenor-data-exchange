@@ -1,0 +1,21 @@
+{
+  "$id": "LineAnswers.json",
+  "title": "LineAnswers",
+  "description": "Answers to the questions of the rule matching a line.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rule", "answers"],
+  "properties": {
+    "rule": {
+      "description": "ID of the rule the answers were given for.",
+      "type": "integer"
+    },
+    "answers": {
+      "description": "Answers by question ID.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "RuleQuestionAnswer.json"
+      }
+    }
+  }
+}

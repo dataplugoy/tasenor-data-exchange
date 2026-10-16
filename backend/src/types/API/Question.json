@@ -9,7 +9,7 @@
       "$ref": "QuestionType.json"
     },
     "args": {
-      "$ret": "QuestionArgs.json"
+      "$ref": "QuestionArgs.json"
     },
     "help": {
       "type": "string"

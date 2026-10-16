@@ -6,6 +6,8 @@ import { Currency, Language } from '@tasenor/common'
 import { t } from '../lib/i18n/t'
 import { QuestionType } from '../types/API/QuestionType'
 import { QuestionExample } from '../types/API/QuestionExample'
+import { RuleQuestion } from '../types/API/RuleQuestion'
+import { RuleQuestionAnswer } from '../types/API/RuleQuestionAnswer'
 
 /**
  * Collection of variables.
@@ -74,6 +76,18 @@ export type UnmatchedItem = {
   text: string
   total: number
   fields: Record<string, unknown>
+}
+
+/**
+ * Description of an input item matched by a rule asking questions.
+ */
+export type RuleQuestionsItem = UnmatchedItem & {
+  ruleId: number
+  ruleName: string
+  // IDs of the questions to ask.
+  ask: number[]
+  // Default answers by question ID.
+  defaults: Record<string, RuleQuestionAnswer>
 }
 
 export class AnswersRequired extends AlertException<Question[]> {
@@ -159,22 +173,36 @@ export class AnswersRequired extends AlertException<Question[]> {
   }
 
   /**
-   * Ask how to handle input items that no rule matches.
+   * Ask how to handle input items that no rule matches and the questions of the rules matching input items.
    * @param url
    * @param language
    * @param userId
    * @param flowPlanId Flow plan, where rules can be added.
-   * @param items Unmatched items with the key to use for one-off answers.
+   * @param unmatched Unmatched items with the key to use for one-off answers.
+   * @param asking Items matched by rules asking questions.
+   * @param questions The questions asked.
    */
-  static forUnmatched(url: string, language: Language, userId: number, flowPlanId: number, items: UnmatchedItem[]): never {
-    const question = {
-      type: 'UNMATCHED_LINE' as QuestionType,
-      help: t(language, 'No rule matches {{count}} lines. Create a rule for them, or tell how to handle each line once.', { count: items.length }),
-      label: t(language, 'Unmatched lines'),
-      args: { flowPlanId, items },
-      variable: 'answers'
+  static forLines(url: string, language: Language, userId: number, flowPlanId: number, unmatched: UnmatchedItem[], asking: RuleQuestionsItem[], questions: RuleQuestion[]): never {
+    const list: Question[] = []
+    if (unmatched.length) {
+      list.push({
+        type: 'UNMATCHED_LINE' as QuestionType,
+        help: t(language, 'No rule matches {{count}} lines. Create a rule for them, or tell how to handle each line once.', { count: unmatched.length }),
+        label: t(language, 'Unmatched lines'),
+        args: { flowPlanId, items: unmatched },
+        variable: 'answers'
+      })
     }
-    const alert = new AnswersRequired(url, userId, question)
+    if (asking.length) {
+      list.push({
+        type: 'RULE_QUESTIONS' as QuestionType,
+        help: t(language, 'Rules matching {{count}} lines ask questions for each line.', { count: asking.length }),
+        label: t(language, 'Questions of the rules'),
+        args: { flowPlanId, items: asking, questions },
+        variable: 'lineAnswers'
+      })
+    }
+    const alert = new AnswersRequired(url, userId, list)
     throw alert
   }
 
