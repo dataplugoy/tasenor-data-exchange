@@ -38,10 +38,9 @@ function asked(rule: Partial<Rule>): number[] {
 }
 
 /**
- * Build a rules file from the rules and the project questions they ask.
+ * Build a rules file from the rules and all questions of the project.
  */
 export function makeRulesFile(version: number, saved: string | null, rules: Rule[], questions: RuleQuestion[]): RulesFile {
-  const used = new Set(rules.map(asked).flat())
   return {
     version,
     saved,
@@ -49,7 +48,7 @@ export function makeRulesFile(version: number, saved: string | null, rules: Rule
       const { filter, name, key, result, kind, enabled, notes, filterView, resultView } = rule
       return { filter, name, key, result, kind, enabled, notes, filterView, resultView }
     }),
-    questions: questions.filter(q => used.has(q.id)).map(({ id, name, kind, label, options }) => ({ id, name, kind, label, options })),
+    questions: questions.map(({ id, name, kind, label, options }) => ({ id, name, kind, label, options })),
   }
 }
 

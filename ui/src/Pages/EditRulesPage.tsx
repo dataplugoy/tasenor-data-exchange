@@ -87,10 +87,11 @@ export const EditRulesPage = (): React.JSX.Element => {
 
   const onDownload = async () => {
     const current = await GETVersion(`/flow-plans/${flowPlanId}/rules/version`)
-    if (!current) {
+    const allQuestions = await GETQuestions(`/projects/${app.project.id}/questions`)
+    if (!current || !allQuestions) {
       return
     }
-    const json = makeRulesFile(current.version, current.saved, rules, questions)
+    const json = makeRulesFile(current.version, current.saved, rules, allQuestions)
     const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json;charset=utf-8;' })
     const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
