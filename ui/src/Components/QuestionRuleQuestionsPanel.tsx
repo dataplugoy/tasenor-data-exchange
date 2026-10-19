@@ -21,10 +21,10 @@ interface QuestionRuleQuestionsPanelProps {
 }
 
 /**
- * Check if all questions of the line are answered.
+ * Check if all questions of the line are answered. An empty text is not an answer.
  */
 function isAnswered(item: Item, answers: Record<string, RuleQuestionAnswer>, questions: Record<number, RuleQuestion>): boolean {
-  return item.ask.every(id => !questions[id] || answers[id] !== undefined)
+  return item.ask.every(id => !questions[id] || (answers[id] !== undefined && (questions[id].kind !== 'TEXT' || !!answers[id].text?.trim())))
 }
 
 /**
@@ -37,22 +37,9 @@ export const QuestionRuleQuestionsPanel = (props: QuestionRuleQuestionsPanelProp
   const questions: Record<number, RuleQuestion> = ((question.args?.questions || []) as RuleQuestion[]).reduce((prev, cur) => ({ ...prev, [cur.id]: cur }), {})
   const [answers, setAnswers] = useState<Record<string, Record<string, RuleQuestionAnswer>>>({})
 
-  // Start from the defaults.
+  // Start with empty answers.
   useEffect(() => {
-    const start: Record<string, Record<string, RuleQuestionAnswer>> = {}
-    for (const item of items) {
-      start[item.key] = {}
-      for (const id of item.ask) {
-        const q = questions[id]
-        const def = item.defaults[id]
-        if (q?.kind === 'TEXT') {
-          start[item.key][id] = { name: q.name, text: def?.text ?? '' }
-        } else if (q && def && def.option !== undefined && q.options[def.option]) {
-          start[item.key][id] = answerFor(q, def.option)
-        }
-      }
-    }
-    setAnswers(start)
+    setAnswers({})
   }, [question])
 
   // Only fully answered lines are sent, the rest are asked again.
