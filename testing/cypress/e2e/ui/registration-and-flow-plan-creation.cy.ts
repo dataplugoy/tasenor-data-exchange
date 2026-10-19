@@ -5,6 +5,8 @@ describe('Users', () => {
 
       // Register uer.
       cy.get('button').contains('Register').click()
+      cy.url().should('include', '/register')
+      cy.contains('Register to Tasenor Data Exchange')
 
       cy.get('input[name="email"]').type(config.register.user)
       cy.get('input[name="password"]').type(config.register.password)
