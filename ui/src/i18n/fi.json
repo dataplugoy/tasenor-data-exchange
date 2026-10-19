@@ -222,6 +222,8 @@
   "Valid starting date is required.": "Alkupäivämäärä vaaditaan.",
   "Value": "Arvo",
   "We Need More Information": "Tarvitsemme lisää tietoja",
+  "The transactions use the following accounts that are not yet linked to the accounts of the bookkeeping. Select for each one the account where it is booked in the bookkeeping.": "Tapahtumissa käytetään seuraavia tilejä, joita ei ole vielä yhdistetty kirjanpidon tileihin. Valitse jokaiselle kirjanpidon tili, jolle se kirjataan.",
+  "Fetching the accounts from the bookkeeping...": "Haetaan tilejä kirjanpidosta...",
   "We encountered an item that has older time stamp than what we have processed earlier. Do we include them?": "Löytyi tapahtuma, jonka päivämäärä on vanhempi kuin mitä olemme jo käsitelleet. Otetaanko mukaan siitä huolimatta?",
   "We have found a ticker \"{{ticker}}\" which does not sound proper ticker name? Do you want to replace it with something else?": "Löytyi instrumentin koodi \"{{ticker}}\", mikä ei vaikuta normaalilta instrumentin koodilta. Haluatko korvata sen jollakin muulla koodilla?",
   "We have found out that you are trying to sell something you don't own. It may be a mistake, but it can also be possible with some service providers to loan an instrument for selling.": "Jouduimme tilanteeseen, missä yritämme myydä jotain sellaista, mitä emme omista. Se voi olla joko virhe tai sitten tällä palveluntarjoajalla on mahdollista lainata instrumenttia lyhyeksimyyntiin.",
