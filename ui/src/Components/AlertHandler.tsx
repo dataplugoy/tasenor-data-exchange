@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Question } from '../Types/API/Question'
 import { QuestionsPanel } from './QuestionsPanel'
 import { usePATCH } from '../Hooks/useNet'
+import { useApp } from '../Hooks/useApp'
 import { FlowPlanRunResponse } from '../Types/API/flow-plans/FlowPlanRunResponse'
 
 interface AlertHandlerProps {
@@ -22,6 +23,7 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
   const [questions, setQuestions] = useState<Question[]>([])
   const { t } = useTranslation()
   const PATCH = usePATCH<FlowPlanRunResponse>()
+  const app = useApp()
 
   useEffect(() => {
     switch (alert.type) {
@@ -62,7 +64,10 @@ export const AlertHandler = (props: AlertHandlerProps): React.JSX.Element => {
       dot.copy('this', k, { this: newValues }, answers)
     })
 
+    // Block the UI while the run continues so that no other run can be started meanwhile.
+    app.setDimming(true)
     PATCH(alert.url, answers as Record<string, unknown>).then((res) => {
+      app.setDimming(false)
       if (res) {
         setQuestions([])
         props.onSuccess(res)

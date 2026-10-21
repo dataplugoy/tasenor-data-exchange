@@ -154,9 +154,36 @@ router.get('/:id/output',
 )
 
 /**
+ * IDs of flow plans having a run in progress.
+ */
+const runningFlowPlans: Set<number> = new Set()
+
+/**
+ * A middleware refusing to start a run for a flow plan that is already running.
+ * The flow plan is reserved until the run finishes or the request ends without running.
+ */
+function exclusiveRun() {
+  return (req, res, next) => {
+    const id = res.locals.flowPlan.id
+    if (runningFlowPlans.has(id)) {
+      error(`${res.locals.flowPlan} is already running.`)
+      return res.status(409).send({ message: 'The flow plan is already running.' })
+    }
+    runningFlowPlans.add(id)
+    res.on('close', () => {
+      if (!res.locals.runStarted) {
+        runningFlowPlans.delete(id)
+      }
+    })
+    next()
+  }
+}
+
+/**
  * Helper to continue execution of the batch.
  */
 async function executeBatch(req, res, notes: Notes = {}) {
+  res.locals.runStarted = true
   try {
     const result = await res.locals.flowPlan.run(
       {
@@ -174,18 +201,22 @@ async function executeBatch(req, res, notes: Notes = {}) {
       const alert = await AlertModel.interactive(err)
       res.status(202).send(alert.data)
     }
+  } finally {
+    runningFlowPlans.delete(res.locals.flowPlan.id)
   }
 }
 
 router.get('/:id/run',
   authorize(),
   param('flowPlanId'),
+  exclusiveRun(),
   async (req, res) => await executeBatch(req, res)
 )
 
 router.post('/:id/upload',
   authorize(),
   param('flowPlanId'),
+  exclusiveRun(),
   validate(ContinueFlowPlanRequest),
   async (req, res) => {
     // Find the latest batch.
@@ -220,6 +251,7 @@ router.post('/:id/upload',
 router.patch('/:id/configure',
   authorize(),
   param('flowPlanId'),
+  exclusiveRun(),
   validate(ConfigureFlowPlanRequest),
   async (req, res) => {
     // Find the latest batch.
