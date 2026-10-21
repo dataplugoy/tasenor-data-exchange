@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "Dataplug Oy",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
     "@docusaurus/module-type-aliases": "^3.10.2",

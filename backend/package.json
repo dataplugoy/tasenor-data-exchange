@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "Dataplug Oy",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "^7.10.0",
