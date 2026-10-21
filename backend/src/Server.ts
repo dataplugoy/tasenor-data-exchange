@@ -42,7 +42,7 @@ class TasenorDataExchangeServer {
 
     // Log requests.
     this.app.use((req, res, next) => {
-      log(req.method, req.originalUrl)
+      log(req.method, req.originalUrl.replace(/token=[^&]*/, 'token=XXXXXXXXXXXXX'))
       next()
     })
 

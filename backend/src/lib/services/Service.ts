@@ -114,7 +114,7 @@ export class Service {
    * @param method
    */
   private async request<T>(method: HttpMethod, url: string, data: unknown = undefined): Promise<T> {
-    log(`Service ${this.constructor.name} requesting '${method} ${url.replace(/token=(.............)/, 'XXXXXXXXXXXXX')}'.`)
+    log(`Service ${this.constructor.name} requesting '${method} ${url.replace(/token=[^&]*/, 'token=XXXXXXXXXXXXX')}'.`)
 
     const conf: AxiosRequestConfig = {
       method,
