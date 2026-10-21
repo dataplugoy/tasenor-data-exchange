@@ -24,7 +24,7 @@ export const TransactionRemoteId = (props: TransactionRemoteIdProps): React.JSX.
       return <><Trans>Saved to file:</Trans> {id.path}</>
     case 'TASENOR':
       return <><Trans>Tasenor document API URL:</Trans>
-        <Box sx={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>{`${(output.settings as TasenorOutputSettings).host}/db/${(output.settings as TasenorOutputSettings).database}/document/${id.doc}`}</Box>
+        <Box sx={{ fontFamily: '"IBM Plex Mono", ui-monospace, monospace', fontSize: '0.8rem' }}>{`${(output.settings as TasenorOutputSettings).host}/db/${(output.settings as TasenorOutputSettings).database}/document/${id.doc}`}</Box>
       </>
     default:
       throw new Error(`Rendering remote ID ${JSON.stringify(id)} not implemented.`)

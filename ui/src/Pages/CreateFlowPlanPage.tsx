@@ -170,7 +170,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
             </>
           }
 
-          <Button sx={{ mt: 2 }}onClick={onCreate} variant="outlined"><Trans>Create</Trans></Button>
+          <Button sx={{ mt: 2 }} onClick={onCreate} variant="contained"><Trans>Create</Trans></Button>
 
         </Box>
 

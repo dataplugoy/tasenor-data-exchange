@@ -23,6 +23,7 @@ import { RulesVersionResponse } from '../Types/API/flow-plans/RulesVersionRespon
 import { RulesFile, QuestionChanges, makeRulesFile, parseRulesFile, questionChanges, remapQuestions } from '../Helpers/rulesFile'
 import { RuleQuestionsResponse } from '../Types/API/projects/RuleQuestionsResponse'
 import { RuleQuestion } from '../Types/API/RuleQuestion'
+import { fonts } from '../theme'
 
 /**
  * List of the rules of a flow plan in the order of evaluation.
@@ -158,6 +159,9 @@ export const EditRulesPage = (): React.JSX.Element => {
     return t('version {{version}}, saved {{time}}', { version: version ?? t('unknown'), time })
   }
 
+  // Expressions and JSON of advanced rules.
+  const code = { fontFamily: fonts.mono, fontSize: '0.8rem', wordBreak: 'break-word' as const }
+
   return <Box sx={{ pb: 8 }}>
     <Typography variant="h1" sx={{ display: 'inline-block' }}>
       <IconButton sx={{ mt: -0.8 }} onClick={() => navigate('/rules')}><Clear/></IconButton> <Trans>Rules</Trans>
@@ -179,7 +183,7 @@ export const EditRulesPage = (): React.JSX.Element => {
         <TableRow>
           <TableCell width="5%"><Trans>Order</Trans></TableCell>
           <TableCell width="5%"><Trans>In use</Trans></TableCell>
-          <TableCell><Trans>Rule</Trans></TableCell>
+          <TableCell width="30%"><Trans>Rule</Trans></TableCell>
           <TableCell><Trans>Action</Trans></TableCell>
           <TableCell width="10%" align="right"><Trans>Matches</Trans></TableCell>
           <TableCell width="12%"/>
@@ -207,9 +211,9 @@ export const EditRulesPage = (): React.JSX.Element => {
                 {!mapping && <Chip size="small" label={t('Advanced')} sx={{ ml: 1 }}/>}
                 {mapping && ((rule.resultView as unknown as MappingResultView)?.ask || []).length > 0 && <Chip size="small" color="info" label={t('Asks')} sx={{ ml: 1 }}/>}
               </Box>
-              {summary !== rule.name && <Box sx={{ color: 'text.secondary', fontSize: '0.85em' }}>{summary}</Box>}
+              {summary !== rule.name && <Box sx={{ color: 'text.secondary', fontSize: '0.85em', ...(mapping ? {} : code) }}>{summary}</Box>}
             </TableCell>
-            <TableCell sx={{ fontSize: '0.85em' }}>
+            <TableCell sx={{ fontSize: '0.85em', ...(mapping ? {} : code) }}>
               {mapping ? describeAction(t, rule.resultView as unknown as MappingResultView, questions) : JSON.stringify(rule.result)}
             </TableCell>
             <TableCell align="right">

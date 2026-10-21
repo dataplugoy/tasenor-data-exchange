@@ -85,7 +85,7 @@ const FieldNames = (props: FieldNamesProps): React.JSX.Element => {
         <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('Values of {{field}} in the matching lines', { field })}</Typography>
         {values.length === 0 && <Typography variant="body2" color="text.secondary"><Trans>No matching lines in the preview.</Trans></Typography>}
         {values.slice(0, MAX_VALUES).map(([value, count]) => <Box key={value} sx={{ display: 'flex', gap: 2, fontSize: '0.85em', py: 0.25, borderBottom: '1px solid', borderColor: 'divider' }}>
-          <Box sx={{ flex: 1, whiteSpace: 'pre-wrap', fontFamily: 'monospace', color: value === '' ? 'text.secondary' : undefined }}>{value === '' ? t('(empty)') : value}</Box>
+          <Box sx={{ flex: 1, whiteSpace: 'pre-wrap', fontFamily: '"IBM Plex Mono", ui-monospace, monospace', color: value === '' ? 'text.secondary' : undefined }}>{value === '' ? t('(empty)') : value}</Box>
           <Box sx={{ color: 'text.secondary' }}>{count}</Box>
         </Box>)}
         {values.length > MAX_VALUES && <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{t('Showing first {{shown}}.', { shown: MAX_VALUES })}</Typography>}

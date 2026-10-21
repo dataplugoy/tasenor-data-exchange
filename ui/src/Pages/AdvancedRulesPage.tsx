@@ -53,7 +53,7 @@ export const AdvancedRulesPage = (): React.JSX.Element => {
       {changed && <Box sx={{ display: 'inline-block', color: 'error.light' }}> *</Box>}
     </Typography>
 
-    <Box sx={{ my: 2, p: 1, border: '1px solid rgba(255,255,255,0.5)' }}>
+    <Box sx={{ my: 2, p: 1, border: '1px solid', borderColor: 'divider', borderRadius: 1, backgroundColor: '#FFFFFF' }}>
       <RulesEditor rules={rules} onUpdate={onUpdate}/>
     </Box>
 

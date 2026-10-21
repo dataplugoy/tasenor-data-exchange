@@ -1,15 +1,29 @@
-import { AppBar, Toolbar, Button, Box, IconButton, Menu as MuiMenu, MenuItem } from '@mui/material'
-import { AccountTree, Home, Language, Logout, MiscellaneousServices, Rule, Settings } from '@mui/icons-material'
+import { AppBar, Toolbar, Button, Box, IconButton, Menu as MuiMenu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Language, Logout } from '@mui/icons-material'
 import React, { useState } from 'react'
-import { Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_PROJECT, DEFAULT_USER, useApp } from '../Hooks/useApp'
 import { useLocation, useNavigate } from 'react-router-dom'
 import pck from '../../package.json'
+import { ledger } from '../theme'
+
+/**
+ * Sections of the application in the menu.
+ */
+const SECTIONS: { code: string, path: string, keepPlan: boolean }[] = [
+  { code: 'Dashboard', path: 'home', keepPlan: true },
+  { code: 'Executions', path: 'flow-plans', keepPlan: true },
+  { code: 'Rules', path: 'rules', keepPlan: true },
+  { code: 'Results', path: 'results', keepPlan: true },
+  { code: 'Services', path: 'services', keepPlan: false },
+  { code: 'Settings', path: 'settings', keepPlan: true },
+]
 
 export const Menu = (): React.JSX.Element => {
   const app = useApp()
   const navigate = useNavigate()
   const location = useLocation()
+  const { t, i18n } = useTranslation()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -34,24 +48,62 @@ export const Menu = (): React.JSX.Element => {
     return <></>
   }
 
-  const [,, id] = location.pathname.split('/')
+  const labels: Record<string, string> = {
+    Dashboard: t('Dashboard'),
+    Executions: t('Executions'),
+    Rules: t('Rules'),
+    Results: t('Results'),
+    Services: t('Services'),
+    Settings: t('Settings'),
+  }
+
+  const [, section, id] = location.pathname.split('/')
   // Only a flow plan ID is carried over to the other pages, not paths like `new` or `questions`.
   const add = id && /^\d+$/.test(id) ? `/${id}` : ''
 
   return (
-    <AppBar position="static">
-      <Box sx={{ float: 'left', ml: 1, mt: 0.5, height: 0, color: 'rgba(255,255,255,0.2)' }}>v{pck.version}</Box>
-      <Toolbar sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr auto' }}>
-        <Button data-cy="Menu-Dashboard" startIcon={<Home />} onClick={() => navigate(`/home${add}`)}><Trans>Dashboard</Trans></Button>
-        <Button data-cy="Menu-Executions" startIcon={<AccountTree />} onClick={() => navigate(`/flow-plans${add}`)}><Trans>Executions</Trans></Button>
-        <Button data-cy="Menu-Rules" startIcon={<AccountTree />} onClick={() => navigate(`/rules${add}`)}><Trans>Rules</Trans></Button>
-        <Button data-cy="Menu-Results" startIcon={<Rule />} onClick={() => navigate(`/results${add}`)}><Trans>Results</Trans></Button>
-        <Button data-cy="Menu-Services" startIcon={<MiscellaneousServices />} onClick={() => navigate('/services')}><Trans>Services</Trans></Button>
-        <Button data-cy="Menu-Settings" startIcon={<Settings />} onClick={() => navigate(`/settings${add}`)}><Trans>Settings</Trans></Button>
-        <Box sx={{ textAlign: 'right' }}>
-          <Button data-cy="Menu-Logout" startIcon={<Logout />} onClick={onLogout}><Trans>Logout</Trans></Button>
+    <AppBar position="static" color="inherit" elevation={0} sx={{ backgroundColor: '#FFFFFF', borderBottom: `1px solid ${ledger.rule}` }}>
+      <Toolbar sx={{ gap: 4, minHeight: '3.5rem !important' }}>
+        <Typography component="div" sx={{ fontWeight: 700, fontSize: '1.15rem', color: 'primary.main', letterSpacing: '-0.02em' }}>
+          TaDeX
+        </Typography>
+
+        <Box component="nav" sx={{ display: 'flex', gap: 0.5, flex: 1, alignSelf: 'stretch' }}>
+          {SECTIONS.map(item => {
+            const active = section === item.path
+            return (
+              <Button
+                key={item.code}
+                data-cy={`Menu-${item.code}`}
+                aria-current={active ? 'page' : undefined}
+                onClick={() => navigate(`/${item.path}${item.keepPlan ? add : ''}`)}
+                sx={{
+                  px: 1.5,
+                  borderRadius: 0,
+                  color: active ? 'text.primary' : 'text.secondary',
+                  borderBottom: '3px solid',
+                  borderBottomColor: active ? ledger.coin : 'transparent',
+                  borderTop: '3px solid transparent',
+                  '&:hover': { backgroundColor: 'transparent', color: 'text.primary' },
+                }}
+              >
+                {labels[item.code]}
+              </Button>
+            )
+          })}
         </Box>
-        <IconButton data-cy="Menu-Language" onClick={onOpen}><Language sx={{ color: 'primary.main' }}/></IconButton>
+
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>v{pck.version}</Typography>
+        <Tooltip title={t('Language')}>
+          <Button data-cy="Menu-Language" onClick={onOpen} startIcon={<Language fontSize="small"/>} sx={{ color: 'text.secondary', minWidth: 0 }}>
+            {i18n.language.toUpperCase()}
+          </Button>
+        </Tooltip>
+        <Tooltip title={t('Logout')}>
+          <IconButton data-cy="Menu-Logout" onClick={onLogout} aria-label={t('Logout')} sx={{ color: 'text.secondary', ml: -2 }}>
+            <Logout fontSize="small"/>
+          </IconButton>
+        </Tooltip>
       </Toolbar>
       <MuiMenu
         data-cy="language-menu"
@@ -68,21 +120,20 @@ export const Menu = (): React.JSX.Element => {
         }}
       >
         <MenuItem
-          sx={{ width: '5rem', color: '#f0f0f0' }}
+          sx={{ width: '8rem' }}
           data-cy="language-selector-EN"
           onClick={() => onSelect('en')}
         >
-          EN
+          English
         </MenuItem>
         <MenuItem
-          sx={{ width: '5rem', color: '#f0f0f0' }}
+          sx={{ width: '8rem' }}
           data-cy="language-selector-FI"
           onClick={() => onSelect('fi')}
         >
-          FI
+          Suomi
         </MenuItem>
       </MuiMenu>
-
     </AppBar>
   )
 }

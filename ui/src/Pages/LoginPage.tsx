@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
 import { useNavigate, Link, useParams } from 'react-router-dom'
@@ -56,23 +56,24 @@ export const LoginPage = (): React.JSX.Element => {
     docs += `/${i18next.language}`
   }
 
-  return <Box sx={{ p: 4, textAlign: 'center' }}>
-    <img src={logo}/>
-    <Box sx={{ mt: 2 }}>
-      <TextField onChange={e => setEmail(e.target.value)} value={email} name="email" label={t('Email')}/>
-      <TextField onChange={e => setPassword(e.target.value)} value={password} name="password" type="password" label={t('Password')}/>
-      <Box sx={{ mt: 2 }}>
-        <Button onClick={onLogin} variant="outlined"><Trans>Login</Trans></Button>
-      </Box>
-      <Box sx={{ mt: 2 }}>
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onLogin()
+  }
+
+  return <Box sx={{ display: 'flex', justifyContent: 'center', pt: { xs: 2, sm: 6 } }}>
+    <Card sx={{ width: '100%', maxWidth: '26rem' }}>
+      <Box component="img" src={logo} alt="Tasenor Data Exchange" sx={{ display: 'block', width: '100%', aspectRatio: '2 / 1', objectFit: 'cover' }}/>
+      <Box component="form" onSubmit={onSubmit} sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <TextField onChange={e => setEmail(e.target.value)} value={email} name="email" label={t('Email')} autoComplete="username" fullWidth/>
+        <TextField onChange={e => setPassword(e.target.value)} value={password} name="password" type="password" label={t('Password')} autoComplete="current-password" fullWidth/>
+        <Button type="submit" variant="contained" size="large"><Trans>Login</Trans></Button>
         <Button onClick={onRegister}><Trans>Register</Trans></Button>
       </Box>
-      <Box sx={{ mt: 2, userSelect: 'none', cursor: 'pointer' }}>
-        <Link to={docs}><Typography><Trans>Check out the documentation</Trans></Typography></Link>
+      <Box sx={{ px: 3, pb: 3, display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
+        <Typography variant="body2"><Link to={docs} style={{ color: 'inherit' }}><Trans>Check out the documentation</Trans></Link></Typography>
+        <Typography variant="body2"><Link to="https://www.tasenor.com/" target="_blank" style={{ color: 'inherit' }}><Trans>Check also our bookkeeping app of the choice!</Trans></Link></Typography>
       </Box>
-      <Box sx={{ mt: 3, userSelect: 'none', cursor: 'pointer' }}>
-        <Link to="https://www.tasenor.com/" target="_blank"><Typography><Trans>Check also our bookkeeping app of the choice!</Trans></Typography></Link>
-      </Box>
-    </Box>
+    </Card>
   </Box>
 }

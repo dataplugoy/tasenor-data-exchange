@@ -108,32 +108,35 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
           <Box sx={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
             <Box>
               <Button
-                sx={{ backgroundColor: 'secondary.main', color: 'secondary.contrastText' }}
-                variant="outlined"
+                variant="contained"
                 onClick={onRun}
                 disabled={running}
+                endIcon={running ? <CircularProgress color="inherit" size={'1rem'}/> : <PlayArrow/>}
               >
                 {isCompleted ? <Trans>Run</Trans> : <Trans>Retry</Trans>}
-                {running ? <CircularProgress sx={{ ml: '0.2rem' }}color="primary" size={'1rem'}/> : <PlayArrow/> }
               </Button>
 
               <Button
-                variant="contained"
+                variant="outlined"
+                color="error"
                 disabled={isCompleted || !batchId}
-                sx={{ ml: 2, backgroundColor: 'error.dark', color: 'error.contrastText' }}
+                sx={{ ml: 2 }}
                 onClick={onAbandon}
               >
                 <Trans>Abandon</Trans>
               </Button>
             </Box>
             <Box>
-              <Typography variant="subtitle1"><Trans>Project</Trans>: {project.name}</Typography>
+              <Typography variant="body2" color="text.secondary"><Trans>Project</Trans></Typography>
+              <Typography>{project.name}</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle1"><Trans>Currency</Trans>: {project.settings?.currency}</Typography>
+              <Typography variant="body2" color="text.secondary"><Trans>Currency</Trans></Typography>
+              <Typography>{project.settings?.currency}</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle1"><Trans>Language</Trans>: {project.settings?.language}</Typography>
+              <Typography variant="body2" color="text.secondary"><Trans>Language</Trans></Typography>
+              <Typography>{project.settings?.language}</Typography>
             </Box>
           </Box>
 

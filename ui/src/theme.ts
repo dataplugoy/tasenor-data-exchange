@@ -1,51 +1,230 @@
 import { createTheme } from '@mui/material'
 
+/**
+ * Colors of the ledger: pale columnar paper, ink and the Tasenor navy, with the coin yellow of the logo as a marker.
+ */
+export const ledger = {
+  canvas: '#EEF1EC',
+  paper: '#FBFCFA',
+  rule: '#D3DAD2',
+  ruleStrong: '#B9C3BA',
+  ink: '#1D2622',
+  muted: '#5D6A63',
+  navy: '#1F3F8F',
+  navyDark: '#152C66',
+  navyLight: '#E3E9F6',
+  navySoft: '#9FB0D8',
+  coin: '#E2C33A',
+  debit: '#2E6B4F',
+  credit: '#A43C30',
+  amber: '#8F6310',
+  plum: '#7E3A62',
+}
+
+export const fonts = {
+  sans: '"Public Sans", system-ui, sans-serif',
+  mono: '"IBM Plex Mono", ui-monospace, monospace',
+}
+
 export const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
 
-    // Yellow
     primary: {
-      light: '#fceb87',
-      main: '#ead140',
-      dark: '#ae9b2c',
-      contrastText: '#000'
+      light: '#4F6DB5',
+      main: ledger.navy,
+      dark: ledger.navyDark,
+      contrastText: '#FFFFFF'
     },
-    // Blue
     secondary: {
-      light: '#73a4e8',
-      main: '#0149ab',
-      dark: '#103f7e',
-      contrastText: '#FFF'
+      light: '#4F6DB5',
+      main: ledger.navy,
+      dark: ledger.navyDark,
+      contrastText: '#FFFFFF'
     },
-
+    success: {
+      main: ledger.debit,
+    },
+    error: {
+      main: ledger.credit,
+    },
+    warning: {
+      main: ledger.amber,
+    },
+    text: {
+      primary: ledger.ink,
+      secondary: ledger.muted,
+    },
+    divider: ledger.rule,
     background: {
-      default: '#111',
-      paper: '#222',
+      default: ledger.canvas,
+      paper: ledger.paper,
     },
+  },
+
+  shape: {
+    borderRadius: 6,
   },
 
   typography: {
+    fontFamily: fonts.sans,
+    fontSize: 14,
     h1: {
+      fontWeight: 650,
+      fontSize: '1.5rem',
+      lineHeight: '2rem',
+      letterSpacing: '-0.01em',
+    },
+    subtitle1: {
       fontWeight: 600,
-      fontSize: '1.25rem',
-      lineHeight: '1.5rem',
-      letterSpacing: '0.1em',
-      textTransform: 'uppercase',
+      fontSize: '1rem',
+    },
+    body1: {
+      fontSize: '0.95rem',
+      lineHeight: 1.5,
     },
     body2: {
-      fontFamily: 'monospace'
-    }
+      fontSize: '0.875rem',
+      lineHeight: 1.45,
+    },
+    button: {
+      textTransform: 'none',
+      fontWeight: 600,
+      letterSpacing: 0,
+    },
   },
 
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontVariantNumeric: 'tabular-nums',
+        },
+        'code, pre': {
+          fontFamily: fonts.mono,
+        },
+      }
+    },
+
+    MuiPaper: {
+      defaultProps: {
+        elevation: 0,
+      },
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+        },
+        outlined: {
+          borderColor: ledger.rule,
+        },
+      }
+    },
+
+    MuiCard: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          borderColor: ledger.rule,
+        }
+      }
+    },
+
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+          paddingBottom: 0,
+        },
+        avatar: {
+          // Card icons are plain navy glyphs instead of filled tiles.
+          '& .MuiSvgIcon-root': {
+            backgroundColor: 'transparent !important',
+            color: `${ledger.navy} !important`,
+          },
+        },
+      }
+    },
+
+    MuiAccordion: {
+      defaultProps: {
+        disableGutters: true,
+        elevation: 0,
+      },
+      styleOverrides: {
+        root: {
+          border: `1px solid ${ledger.rule}`,
+          borderBottomWidth: 0,
+          '&:last-of-type': {
+            borderBottomWidth: 1,
+          },
+          '&::before': {
+            display: 'none',
+          },
+          '&.Mui-expanded': {
+            backgroundColor: '#FFFFFF',
+          },
+        }
+      }
+    },
+
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 6,
+        },
+        outlined: {
+          borderColor: ledger.ruleStrong,
+        },
+      }
+    },
+
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 4,
+          fontWeight: 500,
+        }
+      }
+    },
+
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 10,
+          border: `1px solid ${ledger.rule}`,
+        }
+      }
+    },
+
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontWeight: 650,
+        }
+      }
+    },
+
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: ledger.navy,
+          textUnderlineOffset: '0.15em',
+        }
+      }
+    },
+
     MuiFormHelperText: {
       styleOverrides: {
         root: {
-          fontSize: '1rem',
-          lineHeight: '1.2rem',
-          color: '#A3A3A3',
-          marginTop: '0.5rem',
+          fontSize: '0.875rem',
+          lineHeight: '1.3rem',
+          color: ledger.muted,
+          marginTop: '0.4rem',
           marginBottom: '0.4rem',
           marginLeft: 0
         }
@@ -55,11 +234,27 @@ export const theme = createTheme({
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          fontSize: '1.1rem',
+          fontSize: '0.95rem',
+          fontWeight: 600,
           lineHeight: '1.2rem',
-          color: '#ead140',
+          color: ledger.ink,
           marginTop: '0.2rem',
           marginBottom: '0.2rem',
+        }
+      }
+    },
+
+    // Labels inside text fields stay quiet; the bold form label is for questions.
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          fontWeight: 400,
+          color: ledger.muted,
+          marginTop: 0,
+          marginBottom: 0,
+          '&.Mui-focused': {
+            color: ledger.navy,
+          },
         }
       }
     },
@@ -81,74 +276,24 @@ export const theme = createTheme({
       }
     },
 
-    // Unified items
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          textDecoration: 'none',
-          '&.unified.time': {
-            fontSize: '1.1rem',
-            color: 'white'
-          },
-          '&.unified.value': {
-            fontWeight: 'bold',
-            color: '#c6ff00'
-          },
-          '&.unified.fee': {
-            fontWeight: 'bold',
-            color: '#c62828'
-          },
-          '&.unified.tax': {
-            fontWeight: 'bold',
-            color: '#c62828'
-          },
-          '&.unified.account': {
-            color: '#ffc107'
-          },
-          '&.unified.asset-in': {
-            color: '#90caf9'
-          },
-          '&.unified.asset-out': {
-            color: '#f06292'
-          },
-          '&.unified.rates': {
-            color: '#ffc107'
-          },
-          '&.unified.text': {
-            fontSize: '0.8rem',
-            color: 'white'
-          },
-        }
-      }
-    },
-
-    // Transactin table.
-    MuiTable: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#333',
-        }
-      }
-    },
-
     MuiTableCell: {
       styleOverrides: {
         root: {
+          borderBottomColor: ledger.rule,
           '&.tx': {
             border: 'none',
-            fontFamily: '"PT Serif", serif',
-            fontSize: '1rem',
-            padding: '0.09rem',
-            color: '#eee'
+            fontSize: '0.9rem',
+            padding: '0.15rem 0.4rem',
+            color: ledger.ink,
           },
           '&.tx.delivered': {
-            color: '#4caf50'
+            color: ledger.debit
           },
           '&.tx.skipped': {
-            color: '#fff59d'
+            color: ledger.amber
           },
           '&.tx.pending': {
-            color: '#ef9a9a'
+            color: ledger.credit
           },
           ':first-of-type': {
             paddingLeft: '1rem'
@@ -156,31 +301,81 @@ export const theme = createTheme({
           ':last-child': {
             paddingRight: '1rem'
           },
-
           '&.tx.heading': {
-            fontWeight: 'bold',
+            fontWeight: 600,
           },
           '&.tx.first': {
-            borderTop: '1px solid rgba(255, 255, 255, 0.3)',
+            borderTop: `1px solid ${ledger.rule}`,
           },
           '&.tx.extras': {
             fontSize: '0.8rem',
-            color: '#9fa8da'
+            color: ledger.muted
           },
           '&.tx.debit': {
-            color: '#4caf50'
+            color: ledger.debit
           },
           '&.tx.debit.heading': {
             color: 'inherit'
           },
           '&.tx.credit': {
-            color: '#ff8a80'
+            color: ledger.credit
           },
           '&.tx.credit.heading': {
             color: 'inherit'
           },
+        },
+        head: {
+          fontWeight: 600,
+          color: ledger.muted,
+          fontSize: '0.8rem',
+          backgroundColor: 'transparent',
+        },
+      }
+    },
+
+    // Unified items
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          textDecoration: 'none',
+          '&.MuiTypography-h1': {
+            marginBottom: '1rem',
+          },
+          '&.unified.time': {
+            fontSize: '1rem',
+            fontWeight: 600,
+            color: ledger.ink
+          },
+          '&.unified.value': {
+            fontWeight: 600,
+            color: ledger.debit
+          },
+          '&.unified.fee': {
+            fontWeight: 600,
+            color: ledger.credit
+          },
+          '&.unified.tax': {
+            fontWeight: 600,
+            color: ledger.credit
+          },
+          '&.unified.account': {
+            color: ledger.amber
+          },
+          '&.unified.asset-in': {
+            color: ledger.navy
+          },
+          '&.unified.asset-out': {
+            color: ledger.plum
+          },
+          '&.unified.rates': {
+            color: ledger.amber
+          },
+          '&.unified.text': {
+            fontSize: '0.85rem',
+            color: ledger.muted
+          },
         }
       }
-    }
+    },
   }
 })

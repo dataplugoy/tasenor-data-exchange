@@ -76,15 +76,15 @@ export const FlowPlanPage = (): React.JSX.Element => {
         { batches.map((batch, idx) => (
           <Accordion data-cy={`Batch-#${batch.number}`} key={batch.id} slotProps={{ transition: { unmountOnExit: true } }}>
             <AccordionSummary expandIcon={<ExpandMore/>}>
-              <Box sx={{ width: '100%', display: 'grid', gridTemplateColumns: '5% 30% 60% 5%' }}>
-                <Box sx={{ display: 'inline-block', fontWeight: 'bold' }}>#{batch.number}</Box>
+              <Box sx={{ width: '100%', display: 'grid', gridTemplateColumns: '3.5rem 16rem 1fr 3rem', alignItems: 'center', columnGap: 2 }}>
+                <Box sx={{ display: 'inline-block', fontWeight: 600, color: 'text.secondary' }}>#{batch.number}</Box>
                 <Box sx={{ display: 'inline-block' }}>
                   {datetime2str(batch.updated as Timestring, language as Language)}
                 </Box>
                 <Box sx={{ display: 'inline-block' }}>
                   <BatchBrogressBar state={batch.state}/>
                 </Box>
-                <Box data-cy="output" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'secondary.light' }}>{batch.outputDeliveredCount || ''}</Box>
+                <Box data-cy="output" sx={{ textAlign: 'center', fontWeight: 600, color: 'primary.main' }}>{batch.outputDeliveredCount || ''}</Box>
               </Box>
             </AccordionSummary>
             <AccordionDetails>

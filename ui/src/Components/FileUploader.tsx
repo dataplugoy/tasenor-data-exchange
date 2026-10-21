@@ -143,7 +143,7 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
               <Trans>Select a File</Trans>
             </Button>
           </label>
-          <Box sx={{ mt: 2, color: upload ? 'white' : 'rgba(0,0,0,0.5)' }}>
+          <Box sx={{ mt: 2, color: upload ? 'text.primary' : 'text.secondary' }}>
             <Trans>File Selected:</Trans> {upload ? upload.name : t('No file seleced.')}
           </Box>
         </DialogContent>

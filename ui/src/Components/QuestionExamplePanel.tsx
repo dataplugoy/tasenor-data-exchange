@@ -16,7 +16,7 @@ export const QuestionExamplePanel = (props: QuestionExamplePanelProps): React.JS
   const { example } = props
   const { line, text } = example
 
-  return <Box sx={{ my: 1, p: 2, backgroundColor: 'rgba(0,0,0,0.1)' }}>
+  return <Box sx={{ my: 1, p: 2, backgroundColor: 'background.default', borderRadius: 1 }}>
     <Box sx={{ color: 'primary.main' }}>
       <Trans>Example:</Trans>
     </Box>

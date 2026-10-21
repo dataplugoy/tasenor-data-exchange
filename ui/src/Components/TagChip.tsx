@@ -15,10 +15,6 @@ export const TagChip = (props: TagChipProps): React.JSX.Element => {
     icon={<LabelTwoTone/>}
     label={tag}
     size="medium"
-    style={{
-      color: 'white',
-      backgroundColor: 'transparent',
-      border: '1px solid rgba(255,255,255,0.5)',
-    }}
+    variant="outlined"
   />
 }

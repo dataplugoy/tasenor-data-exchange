@@ -462,5 +462,14 @@
   "Asking {{source}} failed: {{message}}": "Kysely lähteeltä {{source}} epäonnistui: {{message}}",
   "{{what}}: kept {{kept}}, but {{source}} tells {{other}}.": "{{what}}: pidetty {{kept}}, mutta {{source}} kertoo {{other}}.",
   "Balances of the accounts before the first transactions.": "Tilien saldot ennen ensimmäisiä tapahtumia.",
-  "Assets of the accounts before the first transactions.": "Tilien omaisuuserät ennen ensimmäisiä tapahtumia."
+  "Assets of the accounts before the first transactions.": "Tilien omaisuuserät ennen ensimmäisiä tapahtumia.",
+  "Data fetched": "Tiedot haettu",
+  "Data parsed": "Tiedot luettu",
+  "Items unified": "Rivit yhtenäistetty",
+  "Output created": "Tulos luotu",
+  "Output delivered": "Tulos toimitettu",
+  "Processing steps": "Käsittelyvaiheet",
+  "done": "valmis",
+  "next": "seuraavana",
+  "not yet": "ei vielä"
 }

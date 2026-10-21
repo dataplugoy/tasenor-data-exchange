@@ -62,7 +62,7 @@ export const RunDetails = (props: RunDetailsProps): React.JSX.Element => {
 
       {
         // Show general error.
-        result.run.error && <Box sx={{ mb: 4, p: 2, border: '1px solid rgba(255,255,255,0.2)' }}> <ViewError error={result.run.error}/></Box>
+        result.run.error && <Box sx={{ mb: 4, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}> <ViewError error={result.run.error}/></Box>
       }
 
       {

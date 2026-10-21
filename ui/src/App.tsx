@@ -32,11 +32,11 @@ export const App = (): React.JSX.Element => {
 
   return <>
     <BrowserRouter basename="app">
-      <Container component="main" maxWidth="lg">
+      <Menu/>
+      <Container component="main" maxWidth="xl">
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Menu/>
           <Messages/>
-          <Box sx={{ pt: 2, pb: 5 }}>
+          <Box sx={{ pt: 3, pb: 6 }}>
             <Routes>
               <Route path="/" element={<IndexPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
@@ -62,7 +62,7 @@ export const App = (): React.JSX.Element => {
         </Box>
 
         <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1000 }}
+          sx={{ color: 'primary.main', backgroundColor: 'rgba(238, 241, 236, 0.7)', zIndex: (theme) => theme.zIndex.modal + 1000 }}
           open={app.dimming}
         >
           <CircularProgress color="inherit" />
