@@ -5,13 +5,13 @@ describe('Flow Plans', () => {
     cy.get('body').should('contain', 'Dashboard')
     cy.get('body').should('contain', 'Projects')
     cy.get('body').should('contain', 'Rules')
-    cy.get('body').should('contain', 'Logout')
+    cy.get('[data-cy="Menu-Logout"]').should('exist')
 
     cy.get('[data-cy="FlowPlan-Unit Testing"]').click()
 
-    cy.get('body').should('contain', 'Project: Testing')
-    cy.get('body').should('contain', 'Currency: EUR')
-    cy.get('body').should('contain', 'Language: en')
+    cy.get('body').should('contain', 'ProjectTesting')
+    cy.get('body').should('contain', 'CurrencyEUR')
+    cy.get('body').should('contain', 'Languageen')
 
     cy.get('button').contains('Run').click()
 
@@ -39,12 +39,12 @@ describe('Flow Plans', () => {
     cy.get('button').contains('Run').click()
     cy.get('[data-cy="Batch-#6"] [data-cy="output"]').should('have.text', '')
 
-    cy.get('button').contains('Logout').click()
+    cy.get('[data-cy="Menu-Logout"]').click()
 
     cy.get('body').should('not.contain', 'Dashboard')
     cy.get('body').should('not.contain', 'Projects')
     cy.get('body').should('not.contain', 'Rules')
-    cy.get('body').should('not.contain', 'Logout')
+    cy.get('[data-cy="Menu-Logout"]').should('not.exist')
     cy.get('body').should('contain', 'Login')
   })
 
