@@ -200,6 +200,9 @@ async function executeBatch(req, res, notes: Notes = {}) {
       log(`Delivering an immediate alert to User #${err.userId}: ${err}`)
       const alert = await AlertModel.interactive(err)
       res.status(202).send(alert.data)
+    } else {
+      // Let the unhandled error handler respond.
+      throw err
     }
   } finally {
     runningFlowPlans.delete(res.locals.flowPlan.id)
