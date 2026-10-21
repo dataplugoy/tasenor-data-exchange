@@ -117,6 +117,7 @@
   "RULE_OPERATOR_regex": "matches regular expression",
   "SELL": "Sell",
   "SERVICE_DRIVER_COINBASE_PRICES": "Coinbase Exchange prices",
+  "SERVICE_DRIVER_ECB_RATES": "European Central Bank rates",
   "SERVICE_DRIVER_JSON_FILE": "JSON files (testing)",
   "SERVICE_DRIVER_OPEN_FIGI": "OpenFIGI",
   "SERVICE_DRIVER_TASENOR": "Tasenor Bookkeeper",

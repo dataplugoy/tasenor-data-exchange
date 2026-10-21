@@ -250,7 +250,8 @@ CREATE TYPE public."ServiceDriver" AS ENUM (
     'TASENOR',
     'JSON_FILE',
     'OPEN_FIGI',
-    'COINBASE_PRICES'
+    'COINBASE_PRICES',
+    'ECB_RATES'
 );
 
 

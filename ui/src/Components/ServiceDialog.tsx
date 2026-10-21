@@ -7,12 +7,13 @@ import { ServiceType } from '../Types/API/ServiceType'
 import { SaveServiceRequest } from '../Types/API/services/SaveServiceRequest'
 import { usePATCH, usePOST } from '../Hooks/useNet'
 
-export const SERVICE_DRIVERS: ServiceDriver[] = ['TASENOR', 'COINBASE_PRICES', 'OPEN_FIGI', 'JSON_FILE']
+export const SERVICE_DRIVERS: ServiceDriver[] = ['TASENOR', 'ECB_RATES', 'COINBASE_PRICES', 'OPEN_FIGI', 'JSON_FILE']
 
 // Capabilities each driver provides.
 const DRIVER_CAPABILITIES: Record<ServiceDriver, ServiceType[]> = {
   TASENOR: ['CURRENCY_RATES', 'CRYPTO_RATES'],
   COINBASE_PRICES: ['CRYPTO_RATES'],
+  ECB_RATES: ['CURRENCY_RATES'],
   OPEN_FIGI: ['TICKERS'],
   JSON_FILE: ['CURRENCY_RATES', 'CRYPTO_RATES'],
 }
@@ -23,6 +24,7 @@ const DEFAULT_URL: Record<ServiceDriver, string> = {
   OPEN_FIGI: 'https://api.openfigi.com',
   JSON_FILE: 'file:///rates.json',
   COINBASE_PRICES: 'https://api.exchange.coinbase.com',
+  ECB_RATES: 'https://data-api.ecb.europa.eu',
 }
 
 interface ServiceDialogProps {

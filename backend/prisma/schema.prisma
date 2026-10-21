@@ -55,6 +55,7 @@ enum ServiceDriver {
   TASENOR
   OPEN_FIGI
   COINBASE_PRICES
+  ECB_RATES
 }
 
 model Service {

@@ -13,6 +13,7 @@ user.
 | Service | Provides | Settings |
 |---------|----------|----------|
 | Tasenor Bookkeeper | Currency and crypto rates | Address of the bookkeeper API, user and password |
+| European Central Bank rates | Currency rates from the euro reference rates of the ECB, no account needed | Address of the API |
 | Coinbase Exchange prices | Crypto rates from the public market data of Coinbase, no account needed | Address of the API |
 | OpenFIGI | Instruments by ISIN code | Address of the API and an optional API key |
 | JSON files | Currency and crypto rates from files | Only for testing |
@@ -30,5 +31,9 @@ When several services provide the same thing, they are asked in the order they w
 example, crypto rates can come from Coinbase Exchange prices when the bookkeeper cannot provide them. Coinbase
 Exchange prices are the prices of the trading minute at the time asked. Assets without a euro market are priced
 through BTC or USD.
+
+European Central Bank rates are the euro reference rates published on working days around 16:00 CET. For weekends,
+holidays and the current day before publishing, the rate of the latest earlier working day is used. Rates between
+two other currencies than euro are calculated through euro.
 
 A service marked **free** is also used by the command line tool.
