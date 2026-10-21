@@ -3,6 +3,9 @@ import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
 import { JsonFileService } from '../../backend/src/lib/services/JsonFileService'
 import { runAnalyzer } from '../lib/unit-testing'
+import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
+import { Stock } from '../../backend/src/lib/Stock'
+import { AccountCode } from '../../backend/src/types/AccountCode'
 
 describe('Analyzer', () => {
 
@@ -368,8 +371,8 @@ describe('Analyzer', () => {
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
         CURRENCY_USD: 1740.96,
-        LOSS_BIP: 231.8388,
-        STOCK_BIP: -1972.7988,
+        LOSS_BIP: 231.84,
+        STOCK_BIP: -1972.8,
       },
       stock: {
         STOCK_BIP: {
@@ -389,7 +392,7 @@ describe('Analyzer', () => {
           },
           {
             account: 'STOCK_BIP',
-            amount: '-1972.7988',
+            amount: '-1972.8',
             extras: {
               asset: 'BIP',
               assetChange: '-50',
@@ -398,7 +401,7 @@ describe('Analyzer', () => {
           },
           {
             account: 'LOSS_BIP',
-            amount: '231.8388',
+            amount: '231.84',
             extras: {},
             text: 'Sold -50 BIP',
           },
@@ -430,8 +433,8 @@ describe('Analyzer', () => {
     expect(analyzer.toJSON()).toStrictEqual({
       balances: {
         CURRENCY_USD: 1632.15,
-        LOSS_BIP: 340.6488,
-        STOCK_BIP: -1972.7988,
+        LOSS_BIP: 340.65,
+        STOCK_BIP: -1972.8,
       },
       stock: {
         STOCK_BIP: {
@@ -451,7 +454,7 @@ describe('Analyzer', () => {
           },
           {
             account: 'STOCK_BIP',
-            amount: '-1972.7988',
+            amount: '-1972.8',
             extras: {
               asset: 'BIP',
               assetChange: '-50',
@@ -460,7 +463,7 @@ describe('Analyzer', () => {
           },
           {
             account: 'LOSS_BIP',
-            amount: '340.6488',
+            amount: '340.65',
             extras: {},
             text: 'Sold -50 BIP',
           },
@@ -468,5 +471,39 @@ describe('Analyzer', () => {
         time: '2000-01-01T00:00:00.000Z',
       },
     })
+  })
+
+  it('sell rounds the cost to cents and leaves the remainder to profit', async () => {
+
+    const stock = {
+      CRYPTO_ETH: { ETH: { value: 0.01, amount: 2 } }
+    }
+    const input = {
+      type: 'sell' as UnifiedItemType,
+      value: 1,
+      assetOut: 'ETH' as Asset,
+      assetTypeOut: 'CRYPTO',
+      assetAmountOut: 1,
+    }
+
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input)
+    expect((analyzer.toJSON().tx as { lines: { account: string, amount: string }[] }).lines.map(line => `${line.account} ${line.amount}`)).toStrictEqual([
+      'CURRENCY_EUR 1',
+      'CRYPTO_ETH 0',
+      'PROFIT_ETH -1',
+    ])
+  })
+
+  it('refuses a transaction that does not balance after rounding to cents', () => {
+
+    const analyzer = new Analyzer(projectSettings, new Stock({}), {})
+    expect(() => analyzer.apply({
+      time: '2000-01-01T00:00:00.000Z' as Timestring,
+      lines: [
+        { account: 'CURRENCY_EUR' as AccountCode, amount: '1', text: 'Sold -1 ETH', extras: {} },
+        { account: 'CRYPTO_ETH' as AccountCode, amount: '-0.005', text: 'Sold -1 ETH', extras: {} },
+        { account: 'PROFIT_ETH' as AccountCode, amount: '-0.995', text: 'Sold -1 ETH', extras: {} },
+      ]
+    })).toThrow('rounded to cents is not zero')
   })
 })

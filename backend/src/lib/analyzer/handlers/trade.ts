@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
+import { chg, dec, stockCost } from '../../utils'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
@@ -36,7 +36,7 @@ export async function trade(this: Analyzer, time: DateTime, input: UnifiedItemDa
   if (old.amount.lt(dec(assetAmountOut))) {
     this.validateError(`Cannot give ${assetAmountOut} ${tickerOut} when having only ${old.amount}`)
   }
-  const cost = old.value.div(old.amount).mul(dec(assetAmountOut))
+  const cost = stockCost(old.value, old.amount, assetAmountOut)
 
   const text = this.validateText('Exchanged {{out}} {{outAsset}} to {{in}} {{inAsset}}', {
     out: chg(dec(assetAmountOut).negated()),

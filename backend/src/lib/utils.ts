@@ -56,6 +56,26 @@ export function chg(value: string | number | Decimal | undefined): string {
 }
 
 /**
+ * Round a monetary value to whole cents as it is booked. Halves are rounded towards positive infinity
+ * like `Math.round()` does in the bookkeeper.
+ * @param value
+ */
+export function cents(value: string | number | Decimal | undefined): Decimal {
+  return dec(value).toDecimalPlaces(2, Decimal.ROUND_HALF_CEIL)
+}
+
+/**
+ * Calculate the cost of taking some amount out of the stock at its average value.
+ * The cost is rounded to cents as a negative stock change like the bookkeeper does.
+ * @param stockValue
+ * @param stockAmount
+ * @param amount
+ */
+export function stockCost(stockValue: Decimal, stockAmount: Decimal, amount: string | number | Decimal | undefined): Decimal {
+  return cents(stockValue.div(stockAmount).mul(dec(amount)).negated()).negated()
+}
+
+/**
    * Convert chardet encoding to the supported buffer encoding
    * "ascii" | "utf8" | "utf-8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
    */

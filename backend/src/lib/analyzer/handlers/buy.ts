@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
+import { cents, chg, dec } from '../../utils'
 import { Asset, Timestring, isCurrency } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
@@ -34,7 +34,7 @@ export async function buy(this: Analyzer, time: DateTime, input: UnifiedItemData
       this.validateError('Buying more of short-sold instrument than negative amount is not implemented.')
     }
     // Reverting short selling.
-    const oldValue = this.stock.getValue(this.resolveAccount(account), tickerIn)?.mul(assetAmountIn as number)
+    const oldValue = cents(dec(this.stock.getValue(this.resolveAccount(account), tickerIn)?.mul(assetAmountIn as number) ?? 0))
 
     const text = this.validateText('Closing short position by buying {{amount}} {{asset}}', { asset: tickerIn, amount: chg(assetAmountIn) })
     // The value includes the fee like in normal buying, but the result is from the price.

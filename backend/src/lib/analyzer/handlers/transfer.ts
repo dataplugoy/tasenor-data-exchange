@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import Decimal from 'decimal.js'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
+import { chg, dec, stockCost } from '../../utils'
 import { Asset, Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction } from '../../../types/API/Transaction'
@@ -38,7 +38,7 @@ export async function transfer(this: Analyzer, time: DateTime, input: UnifiedIte
   const source = this.stock.getAsset(this.resolveAccount(sending ? account : wallet), ticker as Asset)
   let cost: Decimal
   if (source.amount.gte(amount)) {
-    cost = source.value.div(source.amount).mul(amount)
+    cost = stockCost(source.value, source.amount, amount)
   } else if (sending) {
     this.validateError(`Cannot send ${amount} ${ticker} when having only ${source.amount}`)
   } else {

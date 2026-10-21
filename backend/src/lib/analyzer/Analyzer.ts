@@ -12,7 +12,7 @@ import { Balance } from '../Balance'
 import { InitialStockData, Stock, StockDataRecord } from '../Stock'
 import { initI18N } from '../i18n/t'
 import { Service, ServiceAnswer, ServiceQuery } from '../services/Service'
-import { dec, toJSON } from '../utils'
+import { cents, dec, toJSON } from '../utils'
 import { buy } from './handlers/buy'
 import { deposit } from './handlers/deposit'
 import { expense } from './handlers/expense'
@@ -261,7 +261,9 @@ export class Analyzer {
         // Pay back if we have existing debt.
         if (amount.gt(0) && this.hasDebtAccount(currency)) {
           const oldDebt = this.balance.getBalance(`DEBT_${line.account}` as AccountCode).neg()
-          if (oldDebt.lt(amount)) {
+          if (oldDebt.lte(0)) {
+            // Nothing to pay back.
+          } else if (oldDebt.lt(amount)) {
             line.amount = amount.minus(oldDebt).toString()
             debtLine = {
               account: `DEBT_${line.account}`,
@@ -347,6 +349,13 @@ export class Analyzer {
     tx.lines.forEach((line) => (sum = sum.plus(line.amount)))
     if (!sum.isZero()) {
       throw new Error(`Total ${sum} of the transaction is not zero: ${JSON.stringify(tx)}`)
+    }
+
+    // Lines are booked rounded to cents, so they must balance also after rounding.
+    let rounded = new Decimal(0)
+    tx.lines.forEach((line) => (rounded = rounded.plus(cents(line.amount))))
+    if (!rounded.isZero()) {
+      throw new Error(`Total ${rounded} of the transaction rounded to cents is not zero: ${JSON.stringify(tx)}`)
     }
 
     // Apply balance changes.

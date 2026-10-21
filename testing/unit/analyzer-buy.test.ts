@@ -343,26 +343,26 @@ describe('Analyzer', () => {
         lines: [
           {
             account: 'CURRENCY_USD',
-            amount: '-1987.8222',
+            amount: '-1987.82',
             text: 'Bought +50 BIP',
             extras: {}
           },
           {
             account: 'STOCK_BIP',
-            amount: '1972.7988',
+            amount: '1972.8',
             text: 'Bought +50 BIP',
             extras: { asset: 'BIP', assetChange: '50' }
           },
           {
             account: 'FEE_USD',
-            amount: '15.0234',
+            amount: '15.02',
             text: 'Bought +50 BIP',
             extras: {}
           }
         ]
       },
-      balances: { CURRENCY_USD: -1987.8222, STOCK_BIP: 1972.7988, FEE_USD: 15.0234 },
-      stock: { STOCK_BIP: { BIP: { amount: 50, value: 1972.7988 } } }
+      balances: { CURRENCY_USD: -1987.82, STOCK_BIP: 1972.8, FEE_USD: 15.02 },
+      stock: { STOCK_BIP: { BIP: { amount: 50, value: 1972.8 } } }
     }
     )
   })

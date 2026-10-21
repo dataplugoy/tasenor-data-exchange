@@ -5,7 +5,7 @@ import { TasenorDriverSettings } from '../types/DriverSettings'
 import { TasenorFlowState } from '../types/FlowState'
 import { Transaction, TransactionLine } from '../types/API/Transaction'
 import { DateTime } from 'luxon'
-import { dec } from '../lib/utils'
+import { cents, dec } from '../lib/utils'
 import { AccountCode } from '../types/AccountCode'
 import { Setup } from '../types/API/Setup'
 import { jwtDecode } from 'jwt-decode'
@@ -223,7 +223,7 @@ export class TasenorDriver extends OutputDriver {
             change: {
               [`${extras.asset}`]: {
                 amount: dec(extras.assetChange).toNumber(),
-                value: dec(line.amount).toNumber() * 100,
+                value: cents(line.amount).mul(100).toNumber(),
               }
             }
           }
@@ -278,7 +278,7 @@ export class TasenorDriver extends OutputDriver {
    * @param line
    */
   getEntry(doc: DocumentModelData, line: TransactionLine, row: number): EntryModelData {
-    const amount = dec(line.amount).toNumber()
+    const amount = cents(line.amount)
     const data = this.resolveExtras(line)
 
     let prefix = ''
@@ -290,8 +290,8 @@ export class TasenorDriver extends OutputDriver {
     return {
       document_id: doc.id,
       account_id: this.findAccount(line.account as AccountCode).id,
-      debit: amount >= 0 ? 1 : 0,
-      amount: Math.abs(amount) * 100,
+      debit: amount.gte(0) ? 1 : 0,
+      amount: amount.abs().mul(100).toNumber(),
       description: `${prefix}${line.text}`,
       row_number: row,
       data
@@ -309,8 +309,13 @@ export class TasenorDriver extends OutputDriver {
     const tx: Transaction = output.data.data as unknown as Transaction
     const period = await this.getPeriod(tx)
     const doc = this.getDoc(period, tx)
+    let total = 0
     for (const line of tx.lines) {
-      this.getEntry(doc, line, 1)
+      const entry = this.getEntry(doc, line, 1)
+      total += entry.debit ? entry.amount : -entry.amount
+    }
+    if (total !== 0) {
+      throw new Error(`Entries of the transaction do not balance but leave ${total} cents: ${JSON.stringify(tx)}`)
     }
 
     // Do the actual saving.

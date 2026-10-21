@@ -1,8 +1,9 @@
 import { describe, expect, test } from 'vitest'
 import { getDriver } from '../../backend/src/driver'
-import { analyzeItems, createBatchFrom, unifyItems } from '../lib/unit-testing'
+import { analyzeItems, createBatchFrom, runAnalyzer, unifyItems } from '../lib/unit-testing'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
-import { UnifiedItemData } from '../../backend/src/types/API/UnifiedItemData'
+import { UnifiedItemData, UnifiedItemType } from '../../backend/src/types/API/UnifiedItemData'
+import { Asset, Timestring } from '@tasenor/common'
 
 describe('Analyzer', () => {
 
@@ -142,5 +143,23 @@ describe('Analyzer', () => {
         ]
       }
     ])
+  })
+
+  test('no debt line when there is no debt to pay back', async () => {
+
+    const stock = {
+      CRYPTO_ETH: { ETH: { value: 5000, amount: 5 } }
+    }
+    const input = {
+      type: 'sell' as UnifiedItemType,
+      value: 6000,
+      assetOut: 'ETH' as Asset,
+      assetTypeOut: 'CRYPTO',
+      assetAmountOut: 5,
+    }
+    const setup = { settings: { debtAccounts: { EUR: '999' } } }
+
+    const analyzer = await runAnalyzer(projectSettings, '2000-01-01T00:00:00Z' as Timestring, stock, input, { userId: 0 }, setup)
+    expect((analyzer.toJSON().tx as { lines: { account: string }[] }).lines.map(line => line.account)).toStrictEqual(['CURRENCY_EUR', 'CRYPTO_ETH', 'PROFIT_ETH'])
   })
 })

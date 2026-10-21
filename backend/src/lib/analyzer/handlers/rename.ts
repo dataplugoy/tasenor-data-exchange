@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import Decimal from 'decimal.js'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
+import { chg, dec, stockCost } from '../../utils'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction } from '../../../types/API/Transaction'
@@ -31,7 +31,7 @@ export async function rename(this: Analyzer, time: DateTime, input: UnifiedItemD
   let value: Decimal
   if (input.value === undefined || input.value === null) {
     const old = this.stock.getAsset(this.resolveAccount(`${assetTypeIn}_${tickerOut}`), tickerOut)
-    value = old.amount.isZero() ? new Decimal(0) : old.value.div(old.amount).mul(dec(assetAmountOut))
+    value = old.amount.isZero() ? new Decimal(0) : stockCost(old.value, old.amount, assetAmountOut)
   } else {
     value = await this.validateValue(true)
   }

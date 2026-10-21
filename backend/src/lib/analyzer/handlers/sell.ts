@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { chg, dec } from '../../utils'
+import { chg, dec, stockCost } from '../../utils'
 import { Asset, Timestring, isCurrency } from '@tasenor/common'
 import { AccountCode } from '../../../types/AccountCode'
 import { TransactionLine } from '../../../types/API/TransactionLine'
@@ -80,7 +80,7 @@ export async function sell(this: Analyzer, time: DateTime, input: UnifiedItemDat
   }
 
   const text = this.validateText('Sold {{amount}} {{asset}}', { asset: tickerOut, amount: chg(dec(assetAmountOut).negated()) })
-  const oldValue = old.amount.eq(0) ? dec(0) : oldStockValue.div(old.amount).mul(assetAmountOut as number)
+  const oldValue = old.amount.eq(0) ? dec(0) : stockCost(oldStockValue, old.amount, assetAmountOut)
 
   const lines: TransactionLine[] = [
     {

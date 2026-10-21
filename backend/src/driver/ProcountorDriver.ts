@@ -14,6 +14,7 @@ import { UnifiedItemModel } from '../models/UnifiedItemModel'
 import { TransactionLine } from '../types/API/TransactionLine'
 import { AccountException } from '../exceptions/AccountException'
 import { isAccountNumber } from '../types/AccountCode'
+import { cents } from '../lib/utils'
 
 const HINTS = {
   'Muu vaihto-omaisuus': ['CRYPTO', 'STOCK'],
@@ -215,7 +216,7 @@ export class ProcountorDriver extends OutputDriver {
   }
 
   accountingValue(amount: string | number): number {
-    return Math.round(parseFloat(`${amount}`) * 100) / 100
+    return cents(amount).toNumber()
   }
 
   async resolveDimensions(line: TransactionLine) {

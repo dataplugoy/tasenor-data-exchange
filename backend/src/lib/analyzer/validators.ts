@@ -1,6 +1,6 @@
 import { Asset, CryptoCurrency, Currency, Language, isCurrency } from '@tasenor/common'
 import { t } from '../i18n/t'
-import { dec } from '../utils'
+import { cents, dec } from '../utils'
 import { Analyzer } from './Analyzer'
 import Decimal from 'decimal.js'
 import { UnifiedItemData } from '../../types/API/UnifiedItem'
@@ -145,7 +145,7 @@ export async function validateAsset(this: Analyzer, asset: Asset | undefined, am
   }
 
   const rate = await this.validateRate(asset, canUseService)
-  return rate.mul(dec(amount))
+  return cents(rate.mul(dec(amount)))
 }
 
 /**
@@ -168,9 +168,9 @@ export async function validateValue(this: Analyzer, canUseService: boolean = fal
   if (input.value !== undefined && input.value !== null) {
     if (input.valueAsset && input.valueAsset !== this.currency) {
       const rate = await this.validateRate(input.valueAsset as Asset, canUseService)
-      return rate.mul(dec(input.value))
+      return cents(rate.mul(dec(input.value)))
     }
-    return dec(input.value)
+    return cents(input.value)
   }
   this.validateError('Value is missing')
 }
@@ -186,9 +186,9 @@ export async function validateFee(this: Analyzer, canUseService: boolean): Promi
   const fee = new Decimal(input.fee)
   if (input.feeAsset !== undefined && input.feeAsset !== this.currency) {
     const rate = await this.validateRate(input.feeAsset as Asset, canUseService)
-    return [rate.mul(fee), input.feeAsset as Asset, fee]
+    return [cents(rate.mul(fee)), input.feeAsset as Asset, fee]
   }
-  return [new Decimal(input.fee), null, null]
+  return [cents(input.fee), null, null]
 }
 
 /**

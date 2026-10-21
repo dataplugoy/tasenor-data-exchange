@@ -78,6 +78,10 @@ export class Stock {
 
     record.amount = record.amount.plus(amount)
     record.value = record.value.plus(value)
+    // Fractions of a cent cannot be booked, so they cannot remain when the stock runs out.
+    if (record.amount.isZero() && record.value.abs().lt(0.01)) {
+      record.value = new Decimal(0)
+    }
     debug('STOCK', `${asset}: Adding ${amount} of value ${value} to ${account}.`)
     debug('STOCK', `${asset}: Now totalling ${record.amount} of value ${record.value}.`)
   }

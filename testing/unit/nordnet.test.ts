@@ -246,13 +246,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '8.712298',
+              amount: '8.71',
               text: 'Dividend for IQQQ',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-8.712298',
+              amount: '-8.71',
               text: 'Dividend for IQQQ',
               extras: {}
             }
@@ -263,13 +263,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '9.152124',
+              amount: '9.15',
               text: 'Dividend for IQQH',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-9.152124',
+              amount: '-9.15',
               text: 'Dividend for IQQH',
               extras: {}
             }
@@ -280,13 +280,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '17.288052',
+              amount: '17.29',
               text: 'Dividend for IQQQ',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-17.288052',
+              amount: '-17.29',
               text: 'Dividend for IQQQ',
               extras: {}
             }
@@ -297,13 +297,13 @@ describe('Nordnet', () => {
           lines: [
             {
               account: 'CURRENCY_USD',
-              amount: '19.832574',
+              amount: '19.83',
               text: 'Dividend for IQQH',
               extras: {}
             },
             {
               account: 'INCOME_DIVIDEND',
-              amount: '-19.832574',
+              amount: '-19.83',
               text: 'Dividend for IQQH',
               extras: {}
             }
@@ -587,19 +587,19 @@ describe('Nordnet', () => {
         lines: [
           {
             account: 'CURRENCY_SEK',
-            amount: '105.92236',
+            amount: '105.92',
             text: 'Dividend for TELIA1',
             extras: {}
           },
           {
             account: 'INCOME_DIVIDEND',
-            amount: '-124.614',
+            amount: '-124.61',
             text: 'Dividend for TELIA1',
             extras: {}
           },
           {
             account: 'TAX_WITHHOLDING',
-            amount: '18.69164',
+            amount: '18.69',
             text: 'Dividend for TELIA1',
             extras: {}
           }
