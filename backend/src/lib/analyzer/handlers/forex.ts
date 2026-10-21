@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Analyzer } from '../Analyzer'
-import { dec } from '../../utils'
+import { cents, dec } from '../../utils'
 import { Timestring } from '@tasenor/common'
 import { UnifiedItemData } from '../../../types/API/UnifiedItemData'
 import { Transaction, TransactionLine } from '../../../types/API/Transaction'
@@ -41,7 +41,8 @@ export async function forex(this: Analyzer, time: DateTime, input: UnifiedItemDa
           extras: {},
         },
       ]
-  const profit = input.profit === undefined || input.profit === null ? new Decimal(0) : dec(input.profit)
+  // Only whole cents are booked, so a profit rounding to zero is left out.
+  const profit = input.profit === undefined || input.profit === null ? new Decimal(0) : cents(input.profit)
   const profitLines = (text: string): TransactionLine[] => profit.eq(0)
     ? []
     : [

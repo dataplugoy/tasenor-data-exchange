@@ -65,4 +65,39 @@ describe('Analyzer', () => {
       'CURRENCY_EUR -90',
     ])
   })
+
+  it('forex with profit or loss less than a cent', async () => {
+    for (const profit of ['-0.000052', '0.000536', 0.004]) {
+      const { lines: result } = await lines({
+        type: 'forex' as UnifiedItemType,
+        value: 100,
+        valueAsset: 'USD',
+        assetOut: 'EUR',
+        assetAmountOut: 90,
+        profit,
+        rates: { USD: 0.9 },
+      })
+      expect(result).toStrictEqual([
+        'CURRENCY_USD 90',
+        'CURRENCY_EUR -90',
+      ])
+    }
+  })
+
+  it('forex profit is rounded to cents', async () => {
+    const { lines: result } = await lines({
+      type: 'forex' as UnifiedItemType,
+      value: 100,
+      valueAsset: 'USD',
+      assetOut: 'EUR',
+      assetAmountOut: 90,
+      profit: '0.236',
+      rates: { USD: 0.9 },
+    })
+    expect(result).toStrictEqual([
+      'CURRENCY_USD 90.24',
+      'CURRENCY_EUR -90',
+      'FOREX_PROFIT -0.24',
+    ])
+  })
 })
