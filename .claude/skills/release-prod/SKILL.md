@@ -65,6 +65,16 @@ ssh dataplug 'docker logs --since 5m tadex-api 2>&1 | grep -iv "GET \|PATCH \|PO
 - The version should be the new one.
 - The log should show the schema in sync and `Server started on port 7302`, with no errors.
 
+The app itself must also answer from the outside. It is served at `tadex-app.tasenor.com`, not at
+`data-exchange.tasenor.com`, which is the documentation site.
+
+```bash
+curl -s -m 20 -o /dev/null -w "%{http_code}\n" https://tadex-app.tasenor.com/app/
+```
+
+It should answer 200. For a UI change, also check that the page has something only the new version has, for example
+with `curl -s https://tadex-app.tasenor.com/app/ | grep <text>`.
+
 ## 6. Report
 
 Give the version, the commits included since the previous release, and the result of the verification.
