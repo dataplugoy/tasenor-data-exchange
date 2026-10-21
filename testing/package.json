@@ -1,5 +1,5 @@
 {
-  "version": "1.8.5",
+  "version": "1.9.0",
   "name": "@tasenor/tadex-testing",
   "scripts": {
     "test": "pnpm prepare && pnpm test-unit && pnpm test-ui",
