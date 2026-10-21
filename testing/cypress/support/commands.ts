@@ -17,6 +17,7 @@ import InputSourceSettings from '../e2e/api/schema/InputSourceSettings.json'
 import ItemError from '../e2e/api/schema/ItemError.json'
 import LineAnswers from '../e2e/api/schema/LineAnswers.json'
 import Notes from '../e2e/api/schema/Notes.json'
+import OpeningState from '../e2e/api/schema/OpeningState.json'
 import OutputDestination from '../e2e/api/schema/OutputDestination.json'
 import OutputDestinationSettings from '../e2e/api/schema/OutputDestinationSettings.json'
 import OutputItem from '../e2e/api/schema/OutputItem.json'
@@ -116,6 +117,7 @@ chai.Assertion.addChainableMethod('validatesAs', function(json: Record<string, a
   ajv.addSchema(ItemError)
   ajv.addSchema(LineAnswers)
   ajv.addSchema(Notes)
+  ajv.addSchema(OpeningState)
   ajv.addSchema(OutputDestination)
   ajv.addSchema(OutputDestinationSettings)
   ajv.addSchema(OutputItem)

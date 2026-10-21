@@ -10,6 +10,7 @@
     "STRINGS",
     "TICKER",
     "UNMATCHED_LINE",
-    "RULE_QUESTIONS"
+    "RULE_QUESTIONS",
+    "OPENING_STATE"
   ]
 }

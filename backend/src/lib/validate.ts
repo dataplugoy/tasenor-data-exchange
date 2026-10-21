@@ -19,6 +19,7 @@ import MappingCondition from '../../src/types/API/MappingCondition.json'
 import MappingFilterView from '../../src/types/API/MappingFilterView.json'
 import MappingResultView from '../../src/types/API/MappingResultView.json'
 import Notes from '../../src/types/API/Notes.json'
+import OpeningState from '../../src/types/API/OpeningState.json'
 import OutputDestination from '../../src/types/API/OutputDestination.json'
 import OutputDestinationSettings from '../../src/types/API/OutputDestinationSettings.json'
 import OutputItem from '../../src/types/API/OutputItem.json'
@@ -77,6 +78,7 @@ ajv.addSchema(MappingCondition)
 ajv.addSchema(MappingFilterView)
 ajv.addSchema(MappingResultView)
 ajv.addSchema(Notes)
+ajv.addSchema(OpeningState)
 ajv.addSchema(OutputDestination)
 ajv.addSchema(OutputDestinationSettings)
 ajv.addSchema(OutputItem)

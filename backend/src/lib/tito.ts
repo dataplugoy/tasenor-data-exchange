@@ -330,3 +330,54 @@ export function titoItems(records: TitoRecord[]): InputItemData[] {
 
   return items
 }
+
+/**
+ * Opening balance of an account in the statements.
+ */
+export type TitoOpening = {
+  Tilinumero: string
+  Valuutta: string
+  balance: number
+}
+
+/**
+ * Find the balances of the accounts before the transactions dated on or after `firstDate`. The balance is taken
+ * from the first statement of the account and the transactions of the statements before `firstDate` are added.
+ * @param records
+ * @param firstDate
+ * @returns The date the balances hold at and the balances, or null if there are no statements.
+ */
+export function titoOpening(records: TitoRecord[], firstDate: string): { date: string, accounts: TitoOpening[] } | null {
+  const accounts: Record<string, TitoOpening> = {}
+  let start: string | null = null
+  let account: TitoOpening | null = null
+
+  for (const record of records) {
+    const f = record.fields
+    if (record.type === '00') {
+      if (!accounts[f.Tilinumero]) {
+        accounts[f.Tilinumero] = {
+          Tilinumero: f.Tilinumero,
+          Valuutta: f['Tilin valuutan tunnus'],
+          balance: Math.round(parseFloat(f['Tiliotteen alkusaldo'] || '0') * 100),
+        }
+        if (start === null || f['Alkusaldon pvm'] < start) {
+          start = f['Alkusaldon pvm']
+        }
+      }
+      account = accounts[f.Tilinumero]
+    }
+    if (record.type === '10' && f.Tasotunnus !== '1' && account && f.Kirjauspäivä < firstDate) {
+      account.balance += Math.round(parseFloat(f['Tapahtuman rahamäärä']) * 100)
+    }
+  }
+
+  if (start === null) {
+    return null
+  }
+
+  return {
+    date: start > firstDate ? start : firstDate,
+    accounts: Object.values(accounts).map(acc => ({ ...acc, balance: acc.balance / 100 })),
+  }
+}

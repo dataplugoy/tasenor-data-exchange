@@ -26,6 +26,7 @@ export interface QuestionArgs {
    * Rule questions of RULE_QUESTIONS.
    */
   questions?: RuleQuestion[];
+  openingState?: OpeningState;
 }
 /**
  * A question of the project asked for each line matched by a mapping rule using it.
@@ -57,4 +58,40 @@ export interface RuleQuestionOption {
    * Account code of an ACCOUNT option, like EXPENSE_SOFTWARE or ACCOUNT_1234.
    */
   account?: string;
+}
+/**
+ * Proposed opening state of OPENING_STATE.
+ */
+export interface OpeningState {
+  /**
+   * The date the values hold at, before any transaction of the day.
+   */
+  date: string;
+  /**
+   * Types of the drivers the values came from.
+   */
+  sources: string[];
+  /**
+   * Caveats about the values to show to the user.
+   */
+  notes: string[];
+  balance: BalanceData;
+  /**
+   * Assets by account and asset, with the total value of each.
+   */
+  stock: {
+    [k: string]: {
+      [k: string]: {
+        amount: number;
+        value: number;
+      };
+    };
+  };
+}
+export interface BalanceData {
+  /**
+   * This interface was referenced by `BalanceData`'s JSON-Schema definition
+   * via the `patternProperty` "^.*$".
+   */
+  [k: string]: number;
 }

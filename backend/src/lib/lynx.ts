@@ -73,10 +73,13 @@ export function lynxPeriod(text: string): { start: string, end: string } | null 
   return { start: dates[0], end: dates[dates.length - 1] }
 }
 
+// Sections telling the cash and the positions at the start of the statement.
+const OPENING_SECTIONS = new Set(['Cash Report', 'Statement of Funds', 'Positions and Mark-to-Market Profit and Loss', 'Open Positions', 'Trades', 'Corporate Actions'])
+
 /**
- * Split the statement to data rows of the used sections with their fields named by the section headers.
+ * Split the statement to data rows of the given sections with their fields named by the section headers.
  */
-export function parseLynxRows(text: string): LynxRow[] {
+export function parseLynxRows(text: string, sections: Set<string> = SECTIONS): LynxRow[] {
   const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/)
   const rows: LynxRow[] = []
   const headers: Record<string, string[]> = {}
@@ -91,7 +94,7 @@ export function parseLynxRows(text: string): LynxRow[] {
       blocks[section] = (blocks[section] || 0) + 1
       previous = section
     }
-    if (!SECTIONS.has(section)) return
+    if (!sections.has(section)) return
     if (FIRST_BLOCK_ONLY.has(section) && blocks[section] > 1) return
     const record: string[] = parse(line, { relax_column_count: true, relax_quotes: true })[0] || []
     const [, type, ...values] = record
@@ -366,4 +369,78 @@ export function lynxItems(rows: LynxRow[], periodStart: string | null = null): I
 
 function round(n: number): number {
   return Math.round(n * 1e8) / 1e8
+}
+
+/**
+ * Cash or a position in the statement, in its own currency.
+ */
+export type LynxHolding = {
+  currency: string
+  symbol?: string
+  amount: number
+  cost?: number
+}
+
+/**
+ * Find the cash and the stock positions before the transactions dated on or after `firstDate`.
+ * Cash and quantities at the start of the statement are reported in it. The cost at the start is worked back from
+ * the cost at the end and the cost basis of the trades of the statement. For a later date the cash is taken from
+ * the running balance of the funds and the trades before the date are added to the positions.
+ * @param text
+ * @param firstDate
+ * @returns The date of the values, the cash per currency, the positions and if there were corporate actions not
+ * taken into account.
+ */
+export function lynxOpening(text: string, firstDate: string): { date: string, cash: LynxHolding[], positions: LynxHolding[], corporateActions: boolean } | null {
+  const period = lynxPeriod(text)
+  if (!period) {
+    return null
+  }
+  const rows = parseLynxRows(text, OPENING_SECTIONS)
+  const date = firstDate > period.start ? firstDate : period.start
+  const key = (currency: string, symbol: string) => `${currency} ${symbol}`
+
+  // Positions at the start and the end of the statement and the trades.
+  const positions: Record<string, LynxHolding> = {}
+  const position = (currency: string, symbol: string): LynxHolding => {
+    positions[key(currency, symbol)] = positions[key(currency, symbol)] || { currency, symbol, amount: 0, cost: 0 }
+    return positions[key(currency, symbol)]
+  }
+  for (const row of rows.filter(row => row.section === 'Positions and Mark-to-Market Profit and Loss' && row.fields['Asset Class'] === 'Stocks')) {
+    position(row.fields.Currency, row.fields.Symbol).amount += lynxNumber(row.fields['Prior Quantity'])
+  }
+  for (const row of rows.filter(row => row.section === 'Open Positions' && row.fields['Asset Category'] === 'Stocks' && row.fields.DataDiscriminator === 'Summary')) {
+    const pos = position(row.fields.Currency, row.fields.Symbol)
+    pos.cost = (pos.cost || 0) + lynxNumber(row.fields['Cost Basis'])
+  }
+  const trades = rows.filter(row => row.section === 'Trades' && row.fields['Asset Category'] === 'Stocks')
+  for (const trade of trades) {
+    const pos = position(trade.fields.Currency, trade.fields.Symbol)
+    pos.cost = (pos.cost || 0) - lynxNumber(trade.fields.Basis)
+  }
+  // Move to the given date.
+  for (const trade of trades) {
+    if (lynxTime(trade.fields['Date/Time']).substring(0, 10) < date) {
+      const pos = position(trade.fields.Currency, trade.fields.Symbol)
+      pos.amount += lynxNumber(trade.fields.Quantity)
+      pos.cost = (pos.cost || 0) + lynxNumber(trade.fields.Basis)
+    }
+  }
+
+  // Cash at the start of the statement or the running balance before the date.
+  const cash: Record<string, number> = {}
+  if (date === period.start) {
+    rows.filter(row => row.section === 'Cash Report' && row.fields['Currency Summary'] === 'Starting Cash' && row.fields.Currency !== 'Base Currency Summary')
+      .forEach(row => (cash[row.fields.Currency] = lynxNumber(row.fields.Total)))
+  } else {
+    rows.filter(row => row.section === 'Statement of Funds' && row.fields.Currency !== 'Base Currency Summary' && row.fields['Report Date'] < date)
+      .forEach(row => (cash[row.fields.Currency] = lynxNumber(row.fields.Balance)))
+  }
+
+  return {
+    date,
+    cash: Object.entries(cash).map(([currency, amount]) => ({ currency, amount })),
+    positions: Object.values(positions).filter(pos => pos.amount !== 0),
+    corporateActions: rows.some(row => row.section === 'Corporate Actions'),
+  }
 }

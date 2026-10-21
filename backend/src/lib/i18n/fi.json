@@ -446,5 +446,20 @@
   "Use for": "Käytä",
   "SERVICE_TYPE_CURRENCY_RATES": "Valuuttakurssit",
   "SERVICE_TYPE_CRYPTO_RATES": "Kryptovaluuttojen kurssit",
-  "SERVICE_TYPE_TICKERS": "Arvopaperien tunnukset"
+  "SERVICE_TYPE_TICKERS": "Arvopaperien tunnukset",
+  "There is no rate for {{currency}} on {{date}}, so {{what}} is left out.": "Valuutalle {{currency}} ei ole kurssia päivälle {{date}}, joten {{what}} jätetään pois.",
+  "Values in {{currency}} are converted at the rate of {{date}}.": "Valuutan {{currency}} arvot on muunnettu päivän {{date}} kurssilla.",
+  "The statement tells the cost of assets in {{currency}} only in {{currency}}. Their value is converted at the rate of {{date}}, not at the rates of the purchases.": "Tiliote kertoo {{currency}}-määräisten omaisuuserien hankintahinnan vain valuutassa {{currency}}. Niiden arvo on muunnettu päivän {{date}} kurssilla eikä ostopäivien kursseilla.",
+  "The cost of assets is worked back from the trades. Corporate actions of the statement are not taken into account.": "Omaisuuserien hankintahinta on laskettu takaperin kaupoista. Tiliotteen yritystapahtumia ei ole otettu huomioon.",
+  "The holdings of {{security}} cannot be worked out from the first transaction {{type}}.": "Arvopaperin {{security}} omistusta ei voi päätellä ensimmäisestä tapahtumasta {{type}}.",
+  "Holdings are known only for the securities bought or sold in the file.": "Omistukset tiedetään vain niistä arvopapereista, joita tiedostossa ostetaan tai myydään.",
+  "There is no period for {{date}} in the bookkeeping.": "Kirjanpidossa ei ole tilikautta päivälle {{date}}.",
+  "The accounts {{codes}} are all booked to {{number}}, so their balances cannot be told apart.": "Tilit {{codes}} kirjataan kaikki tilille {{number}}, joten niiden saldoja ei voi erottaa toisistaan.",
+  "the values entered earlier": "aiemmin syötettyjen arvojen",
+  "Before the first transactions on {{date}} the accounts had the following balances and assets according to {{sources}}. Check and correct them, if needed.": "Ennen ensimmäisiä tapahtumia {{date}} tileillä oli lähteen {{sources}} mukaan seuraavat saldot ja omaisuuserät. Tarkista ja korjaa ne tarvittaessa.",
+  "Opening balances and assets": "Alkusaldot ja omaisuuserät",
+  "Asking {{source}} failed: {{message}}": "Kysely lähteeltä {{source}} epäonnistui: {{message}}",
+  "{{what}}: kept {{kept}}, but {{source}} tells {{other}}.": "{{what}}: pidetty {{kept}}, mutta {{source}} kertoo {{other}}.",
+  "Balances of the accounts before the first transactions.": "Tilien saldot ennen ensimmäisiä tapahtumia.",
+  "Assets of the accounts before the first transactions.": "Tilien omaisuuserät ennen ensimmäisiä tapahtumia."
 }

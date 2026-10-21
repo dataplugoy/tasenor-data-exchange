@@ -6,6 +6,7 @@ import { RemoteId } from '../types/API/RemoteId'
 import { Settings } from '../types/API/Settings'
 import { AccountCode, isAccountNumber } from '../types/AccountCode'
 import { Driver } from './Driver'
+import { OpeningState } from '../types/API/OpeningState'
 
 /**
  * A base class for drivers delivering output.
@@ -36,6 +37,15 @@ export class OutputDriver extends Driver {
       throw new AccountException(code)
     }
     return map[code]
+  }
+
+  /**
+   * Find the balances and assets of the configured accounts before the given date.
+   * @param date
+   * @returns The state, or null if the remote does not tell.
+   */
+  async openingState(date: string): Promise<OpeningState | null> {
+    throw new Error(`Output destination ${this.type} does not implement openingState().`)
   }
 
   /**

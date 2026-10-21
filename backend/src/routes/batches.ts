@@ -32,6 +32,10 @@ router.delete('/:id',
   param('batchId'),
   async (_req, res) => {
     await res.locals.batch.destroy()
+    // An abandoned first batch may have had a different file, so its opening state is proposed again.
+    if (res.locals.batch.data.number === 1) {
+      await res.locals.flowPlan.clearOpeningState()
+    }
     res.sendStatus(204)
   }
 )

@@ -69,7 +69,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   const askingAccounts = questions.some(q => q.type === 'ACCOUNT')
 
   return (
-    <Dialog open={questions.length > 0} fullWidth maxWidth={questions.some(q => q.type === 'UNMATCHED_LINE' || q.type === 'RULE_QUESTIONS') ? 'lg' : 'sm'}>
+    <Dialog open={questions.length > 0} fullWidth maxWidth={questions.some(q => q.type === 'UNMATCHED_LINE' || q.type === 'RULE_QUESTIONS' || q.type === 'OPENING_STATE') ? 'lg' : 'sm'}>
       <DialogTitle><Trans>We Need More Information</Trans></DialogTitle>
 
       <DialogContent>

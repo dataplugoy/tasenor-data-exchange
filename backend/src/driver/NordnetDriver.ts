@@ -11,6 +11,13 @@ import { RuleModel } from '../models/RuleModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { ProjectSettings } from '../types/API/Project'
 import { Setup } from '../types/API/Setup'
+import { OpeningState } from '../types/API/OpeningState'
+import { RateFunction, addOpeningAsset, addOpeningBalance, cleanOpeningState, emptyOpeningState, stockAccount } from '../lib/opening'
+import { nordnetOpening } from '../lib/nordnet'
+import { AccountCode } from '../types/AccountCode'
+import { Language } from '@tasenor/common'
+import { dec } from '../lib/utils'
+import { t } from '../lib/i18n/t'
 
 /**
  * A driver to upload Nordnet data.
@@ -226,6 +233,42 @@ export class NordnetDriver extends ManualUploadDriver {
       total: line.record.Summa,
       fields: line.record
     }))
+  }
+
+  canProvideOpeningState(): boolean {
+    return true
+  }
+
+  async openingState(batch: BatchModel, firstDate: string, rate: RateFunction): Promise<OpeningState | null> {
+    const items = await this.itemizeInput(batch)
+    const opening = nordnetOpening(items.map(item => item.fields), firstDate, this.projectSettings.currency)
+    if (!opening) {
+      return null
+    }
+    const language = this.projectSettings.language as Language
+    const state = emptyOpeningState(opening.date, this.type)
+
+    for (const cash of opening.cash) {
+      const value = await this.openingValue(state, cash.amount, cash.currency, rate, cash.currency)
+      if (value !== null) {
+        addOpeningBalance(state, `CURRENCY_${cash.currency}` as AccountCode, value)
+      }
+    }
+    for (const position of opening.positions) {
+      const [account, asset] = stockAccount(this.setup, 'STOCK', position.security as string)
+      const value = await this.openingValue(state, position.cost || 0, position.currency, rate, asset)
+      if (value !== null) {
+        addOpeningAsset(state, account, asset, dec(position.amount), value)
+        addOpeningBalance(state, account, value)
+      }
+    }
+    for (const unknown of opening.unknown) {
+      state.notes.push(t(language, 'The holdings of {{security}} cannot be worked out from the first transaction {{type}}.', unknown))
+    }
+    state.notes.push(t(language, 'Holdings are known only for the securities bought or sold in the file.'))
+
+    cleanOpeningState(state)
+    return state
   }
 
   async unifyItem(flow: FlowPlanModel, run: RunModel, input: InputItemModel, rules: Record<string, RuleModel[]>): Promise<UnifiedItem> {

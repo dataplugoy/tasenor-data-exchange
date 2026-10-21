@@ -116,6 +116,7 @@ export interface Setup {
   tickers?: {
     [k: string]: unknown;
   };
+  openingState?: OpeningState;
   accountGrouping?: {
     singleStockAccount?: boolean;
     singleCryptoAccount?: boolean;
@@ -253,6 +254,42 @@ export interface RuleQuestionAnswer {
    */
   name?: string;
 }
+/**
+ * Opening balances and assets confirmed by the user for the first batch.
+ */
+export interface OpeningState {
+  /**
+   * The date the values hold at, before any transaction of the day.
+   */
+  date: string;
+  /**
+   * Types of the drivers the values came from.
+   */
+  sources: string[];
+  /**
+   * Caveats about the values to show to the user.
+   */
+  notes: string[];
+  balance: BalanceData;
+  /**
+   * Assets by account and asset, with the total value of each.
+   */
+  stock: {
+    [k: string]: {
+      [k: string]: {
+        amount: number;
+        value: number;
+      };
+    };
+  };
+}
+export interface BalanceData {
+  /**
+   * This interface was referenced by `BalanceData`'s JSON-Schema definition
+   * via the `patternProperty` "^.*$".
+   */
+  [k: string]: number;
+}
 export interface Settings {
   allowShortSelling?: boolean;
   inputDuplicates?: "Always" | "Never" | "Ask";
@@ -274,11 +311,4 @@ export interface StockData {
     value?: number;
     amount?: number;
   };
-}
-export interface BalanceData {
-  /**
-   * This interface was referenced by `BalanceData`'s JSON-Schema definition
-   * via the `patternProperty` "^.*$".
-   */
-  [k: string]: number;
 }

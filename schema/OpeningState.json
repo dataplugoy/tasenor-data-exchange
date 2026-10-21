@@ -1,0 +1,61 @@
+{
+  "$id": "OpeningState.json",
+  "title": "OpeningState",
+  "description": "Balances and assets of a flow plan before its first batch, in the currency of the project.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "date",
+    "sources",
+    "notes",
+    "balance",
+    "stock"
+  ],
+  "properties": {
+    "date": {
+      "description": "The date the values hold at, before any transaction of the day.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "sources": {
+      "description": "Types of the drivers the values came from.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "description": "Caveats about the values to show to the user.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "balance": {
+      "$ref": "BalanceData.json"
+    },
+    "stock": {
+      "description": "Assets by account and asset, with the total value of each.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "amount",
+            "value"
+          ],
+          "properties": {
+            "amount": {
+              "type": "number"
+            },
+            "value": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}

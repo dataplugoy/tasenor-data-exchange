@@ -6,4 +6,12 @@
  */
 
 export type QuestionType =
-  "ACCOUNT" | "BOOLEAN" | "DEBT_ACCOUNT" | "ENUM" | "STRINGS" | "TICKER" | "UNMATCHED_LINE" | "RULE_QUESTIONS";
+  | "ACCOUNT"
+  | "BOOLEAN"
+  | "DEBT_ACCOUNT"
+  | "ENUM"
+  | "STRINGS"
+  | "TICKER"
+  | "UNMATCHED_LINE"
+  | "RULE_QUESTIONS"
+  | "OPENING_STATE";

@@ -1,5 +1,8 @@
 import hash from 'object-hash'
-import { isShortDate } from '@tasenor/common'
+import { Currency, Language, isShortDate } from '@tasenor/common'
+import Decimal from 'decimal.js'
+import { dec } from '../lib/utils'
+import { t } from '../lib/i18n/t'
 import { BatchModel } from '../models/BatchModel'
 import { InputItemModel } from '../models/InputItemModel'
 import { FlowPlanModel } from '../models/FlowPlanModel'
@@ -14,6 +17,8 @@ import { UnifiedItem } from '../types/API/UnifiedItem'
 import { UnifiedItemData } from '../types/API/UnifiedItemData'
 import { Driver } from './Driver'
 import { Transaction } from '../types/API/Transaction'
+import { OpeningState } from '../types/API/OpeningState'
+import { RateFunction } from '../lib/opening'
 
 /**
  * A base class for drivers fetching data from the remote.
@@ -37,6 +42,44 @@ export class InputDriver extends Driver {
    */
   async itemizeInput(batch: BatchModel): Promise<InputItemData[]> {
     throw new Error(`Input source ${this.type} does not implement itemizeInput().`)
+  }
+
+  /**
+   * Find the balances and assets before the first input item of the batch dated on or after `firstDate`.
+   * Values in other currencies than the currency of the project are converted with `rate`.
+   * @param batch The first batch of the flow plan.
+   * @param firstDate The first date of the flow plan.
+   * @param rate Currency rates.
+   * @returns The state with its date, or null if the data does not tell.
+   */
+  async openingState(batch: BatchModel, firstDate: string, rate: RateFunction): Promise<OpeningState | null> {
+    throw new Error(`Input source ${this.type} does not implement openingState().`)
+  }
+
+  /**
+   * Convert a value of the opening state to the currency of the project. Conversions and missing rates are noted.
+   * @param state
+   * @param value
+   * @param currency
+   * @param rate
+   * @param what Description of the value for the note, if it cannot be converted.
+   * @returns The converted value or null if the rate is not known.
+   */
+  protected async openingValue(state: OpeningState, value: number | Decimal, currency: string, rate: RateFunction, what: string): Promise<Decimal | null> {
+    if (currency === this.projectSettings.currency) {
+      return dec(value)
+    }
+    const language = this.projectSettings.language as Language
+    const r = await rate(currency as Currency, state.date)
+    if (r === null) {
+      state.notes.push(t(language, 'There is no rate for {{currency}} on {{date}}, so {{what}} is left out.', { currency, date: state.date, what }))
+      return null
+    }
+    const note = t(language, 'Values in {{currency}} are converted at the rate of {{date}}.', { currency, date: state.date })
+    if (!state.notes.includes(note)) {
+      state.notes.push(note)
+    }
+    return dec(value).mul(r)
   }
 
   /**

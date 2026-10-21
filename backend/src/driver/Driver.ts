@@ -65,6 +65,14 @@ export class Driver {
   }
 
   /**
+   * If true, driver is able to tell the balances and assets before the first batch.
+   * @returns
+   */
+  canProvideOpeningState(): boolean {
+    return false
+  }
+
+  /**
    * Ensure that `url` is defined in settings and return it.
    * @returns URL object.
    */

@@ -8,6 +8,7 @@ import { QuestionType } from '../types/API/QuestionType'
 import { QuestionExample } from '../types/API/QuestionExample'
 import { RuleQuestion } from '../types/API/RuleQuestion'
 import { RuleQuestionAnswer } from '../types/API/RuleQuestionAnswer'
+import { OpeningState } from '../types/API/OpeningState'
 
 /**
  * Collection of variables.
@@ -203,6 +204,27 @@ export class AnswersRequired extends AlertException<Question[]> {
       })
     }
     const alert = new AnswersRequired(url, userId, list)
+    throw alert
+  }
+
+  /**
+   * Ask to confirm the opening balances and assets of the first batch.
+   * @param url
+   * @param language
+   * @param userId
+   * @param openingState The proposed balances and assets.
+   * @param currency Currency of the project.
+   */
+  static forOpeningState(url: string, language: Language, userId: number, openingState: OpeningState, currency: Currency): never {
+    const sources = openingState.sources.length ? openingState.sources.join(', ') : t(language, 'the values entered earlier')
+    const question: Question = {
+      type: 'OPENING_STATE',
+      help: t(language, 'Before the first transactions on {{date}} the accounts had the following balances and assets according to {{sources}}. Check and correct them, if needed.', { date: openingState.date, sources }),
+      label: t(language, 'Opening balances and assets'),
+      args: { openingState, currency },
+      variable: 'openingState'
+    }
+    const alert = new AnswersRequired(url, userId, question)
     throw alert
   }
 

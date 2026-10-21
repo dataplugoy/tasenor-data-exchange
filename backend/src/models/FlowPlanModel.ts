@@ -21,7 +21,7 @@ import { toJSON } from '../lib/utils'
 import { OutputDestinationModel } from './OutputDestinationModel'
 import { AccountCode, isAccountNumber } from '../types/AccountCode'
 import { Transaction } from '../types/API/Transaction'
-import { Service } from '../lib/services/Service'
+import { CurrencyAnswer, Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
@@ -43,6 +43,11 @@ import { InputDriver } from '../driver/InputDriver'
 import { OutputDriver } from '../driver/OutputDriver'
 import { QuestionExample } from '../types/API/QuestionExample'
 import { StockData } from '../types/API/StockData'
+import { OpeningState } from '../types/API/OpeningState'
+import { RateFunction, hasOpeningValues, mergeOpeningStates, moveDebt } from '../lib/opening'
+import { t } from '../lib/i18n/t'
+import { Currency, Timestring } from '@tasenor/common'
+import Decimal from 'decimal.js'
 
 type StateHandler = (options: RuntimeOptions, batch: BatchModel, run: RunModel) => Promise<'OK' | 'FAIL'>
 
@@ -160,6 +165,22 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     const balance = latest ? latest.data.endBalance : {}
     const stock = latest ? latest.data.endStock : {}
     await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { lastStamp, stock, balance })
+
+    // Without batches the opening state is proposed again for the next one.
+    if (!latest) {
+      await this.clearOpeningState()
+    }
+  }
+
+  /**
+   * Forget the confirmed opening state, so that it is proposed again for the next first batch.
+   */
+  async clearOpeningState(): Promise<void> {
+    if (this.setup.openingState) {
+      const { openingState, ...setup } = this.setup
+      this.data.setup = setup as JsonObject
+      await FlowPlanModel.update<prisma.FlowPlan, FlowPlanModel>(this, { setup: this.data.setup })
+    }
   }
 
   /**
@@ -169,8 +190,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
   async updateSetup(patch: Partial<Setup>): Promise<void> {
     // One-off answers are keyed by input item keys, which may look like numbers. Keep them away from the dot notation
     // (numeric keys would become array indices) and replace each answer as a whole. Null removes an answer.
-    const { answers: oldAnswers, lineAnswers: oldLineAnswers, ...oldSetup } = (this.data?.setup as Setup) || {}
-    const { answers: newAnswers, lineAnswers: newLineAnswers, ...setupPatch } = patch
+    // The opening state has account numbers as keys too, so it is replaced as a whole as well.
+    const { answers: oldAnswers, lineAnswers: oldLineAnswers, openingState: oldOpeningState, ...oldSetup } = (this.data?.setup as Setup) || {}
+    const { answers: newAnswers, lineAnswers: newLineAnswers, openingState: newOpeningState, ...setupPatch } = patch
 
     const setupDot = new dot('∰∰∰')
     const fullSetup = setupDot.dot(oldSetup)
@@ -198,6 +220,11 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
     if (Object.keys(lineAnswers).length) {
       setup.lineAnswers = lineAnswers
+    }
+
+    const openingState = newOpeningState === undefined ? oldOpeningState : newOpeningState
+    if (openingState) {
+      setup.openingState = openingState
     }
 
     this.data.setup = setup as JsonObject
@@ -665,6 +692,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
 
       const project = await this.getProject()
 
+      // The first batch starts from the confirmed opening balances and assets.
+      await this.checkOpeningState(options, batch, unifieds)
+
       // Find out the balance and stock.
       const { initialStock, endStock, initialBalance, endBalance } = batch.data
       const latestStock = Object.keys(endStock as JsonObject).length ? endStock : initialStock
@@ -771,6 +801,134 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
 
     return result
+  }
+
+  /**
+   * Before analyzing the first batch, ask the drivers for the balances and assets before it and let the user confirm
+   * them. Once confirmed, they become the starting point of the batch.
+   * @param options
+   * @param batch
+   * @param unifieds The unified items of the batch.
+   */
+  private async checkOpeningState(options: RuntimeOptions, batch: BatchModel, unifieds: UnifiedItemModel[]): Promise<void> {
+    if (batch.data.number !== 1 || unifieds.length === 0 || unifieds.some(unified => unified.data.processed)) {
+      return
+    }
+
+    // The plan gets the balances and assets of the batch when it is completed.
+    if (this.setup.openingState) {
+      const { balance, stock } = this.setup.openingState
+      await BatchModel.update<prisma.Batch, BatchModel>(batch, {
+        initialBalance: balance,
+        initialStock: stock,
+        endBalance: balance,
+        endStock: stock,
+      })
+      return
+    }
+
+    const proposal = await this.proposeOpeningState(options, batch, unifieds)
+    if (proposal) {
+      const project = await this.getProject()
+      AnswersRequired.forOpeningState(`/flow-plans/${this.id}/configure`, project.settings.language as Language, options.userId, proposal, project.settings.currency as Currency)
+    }
+  }
+
+  /**
+   * Collect the opening balances and assets from the drivers able to tell them. The bookkeeping goes first, then the
+   * input source. Values entered by hand go before both.
+   * @returns The proposal or null if neither driver can tell.
+   */
+  private async proposeOpeningState(options: RuntimeOptions, batch: BatchModel, unifieds: UnifiedItemModel[]): Promise<OpeningState | null> {
+    const project = await this.getProject()
+    const language = project.settings.language as Language
+    const firstDate = DateTime.fromJSDate(this.data.firstDate).toISO()?.substring(0, 10) as string
+    const rate = this.rateFunction(await batch.getServices(), project.settings.currency as Currency)
+    const failed = (source: string, err: unknown) => t(language, 'Asking {{source}} failed: {{message}}', { source, message: err instanceof Error ? err.message : `${err}` })
+
+    let date = DateTime.fromJSDate(unifieds[0].data.time).toUTC().toISO()?.substring(0, 10) as string
+    const notes: string[] = []
+    let asked = false
+
+    let inputState: OpeningState | null = null
+    const input = await this.getInputDriver(options)
+    if (input.canProvideOpeningState()) {
+      asked = true
+      try {
+        inputState = await input.openingState(batch, firstDate, rate)
+        if (inputState) {
+          date = inputState.date
+        }
+      } catch (err) {
+        if (err instanceof AlertException) {
+          throw err
+        }
+        error(`Opening state from ${input.type} failed: ${err instanceof Error ? err.stack : err}`)
+        notes.push(failed(input.type, err))
+      }
+    }
+
+    let outputState: OpeningState | null = null
+    const output = await this.getOutputDriver(options)
+    if (output.canProvideOpeningState()) {
+      asked = true
+      try {
+        outputState = await output.openingState(date)
+      } catch (err) {
+        if (err instanceof AlertException) {
+          throw err
+        }
+        error(`Opening state from ${output.type} failed: ${err instanceof Error ? err.stack : err}`)
+        notes.push(failed(output.type, err))
+      }
+    }
+
+    if (!asked) {
+      return null
+    }
+
+    const states = [outputState, inputState].filter(state => state !== null) as OpeningState[]
+    const merged = mergeOpeningStates(
+      date,
+      states,
+      (this.data.balance || {}) as BalanceData,
+      (this.data.stock || {}) as OpeningState['stock'],
+      (what, kept, other, source) => t(language, '{{what}}: kept {{kept}}, but {{source}} tells {{other}}.', { what, kept, other, source })
+    )
+    merged.notes.unshift(...notes)
+
+    // Negative cash goes to the debt account, if one is used.
+    const unknownDebt = moveDebt(merged, this.setup)
+    if (unknownDebt.length) {
+      const destination = await this.getDestination()
+      AnswersRequired.forDebt(`/flow-plans/${this.id}/configure`, language, options.userId, destination.id, unknownDebt[0])
+    }
+
+    if (!hasOpeningValues(merged) && merged.notes.length === 0) {
+      return null
+    }
+    return merged
+  }
+
+  /**
+   * Create a function asking currency rates from the services.
+   * @param services
+   * @param currency The currency of the project.
+   */
+  private rateFunction(services: Service[], currency: Currency): RateFunction {
+    return async (from: Currency, date: string): Promise<Decimal | null> => {
+      for (const service of services.filter(service => service.getEnabledCapabilities().includes('CURRENCY_RATES'))) {
+        try {
+          const answer = await service.query({ query: 'CURRENCY_RATES', time: `${date}T12:00:00.000Z` as Timestring, currency: from, valueCurrency: currency })
+          if (answer) {
+            return new Decimal((answer as CurrencyAnswer).value)
+          }
+        } catch (err) {
+          warning(`Service ${service.constructor.name} failed to give rate of ${from} on ${date}: ${err instanceof Error ? err.message : err}`)
+        }
+      }
+      return null
+    }
   }
 
   /**

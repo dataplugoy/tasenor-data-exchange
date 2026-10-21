@@ -36,6 +36,10 @@
       "items": {
         "$ref": "RuleQuestion.json"
       }
+    },
+    "openingState": {
+      "description": "Proposed opening state of OPENING_STATE.",
+      "$ref": "OpeningState.json"
     }
   }
 }

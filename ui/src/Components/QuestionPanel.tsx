@@ -12,6 +12,7 @@ import { QuestionTickerPanel } from './QuestionTickerPanel'
 import { QuestionExamplePanel } from './QuestionExamplePanel'
 import { QuestionUnmatchedPanel } from './QuestionUnmatchedPanel'
 import { QuestionRuleQuestionsPanel } from './QuestionRuleQuestionsPanel'
+import { QuestionOpeningStatePanel } from './QuestionOpeningStatePanel'
 
 interface QuestionPanelProps {
   question: Question
@@ -63,6 +64,10 @@ export const QuestionPanel = (props: QuestionPanelProps): React.JSX.Element => {
     case 'RULE_QUESTIONS':
       return <Box sx={sx}>
         <QuestionRuleQuestionsPanel question={question} onChange={onChange}/>
+      </Box>
+    case 'OPENING_STATE':
+      return <Box sx={sx}>
+        <QuestionOpeningStatePanel question={question} onChange={onChange} noHelp={noHelp}/>
       </Box>
     case 'DEBT_ACCOUNT':
       return <Box sx={sx}>

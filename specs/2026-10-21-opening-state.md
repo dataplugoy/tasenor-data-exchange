@@ -1,6 +1,22 @@
 # Opening balances and stock from drivers
 
-Status: plan, not started.
+Status: steps 1–4 implemented for Nordea TITO, Tasenor, Nordnet and Lynx. Coinbase, Enable Banking and
+Procountor are not done.
+
+Differences from the plan:
+- The question is its own type `OPENING_STATE`. Its dialog shows the proposal in the same editable tables as the
+  plan details, since the question dialog is modal and the details could not be opened while it is shown. The
+  confirmed values are stored as `setup.openingState`.
+- Confirming does not write the plan's `balance` and `stock`; only the first batch starts from the confirmed
+  values, and the plan gets its values when the batch completes, as before. Rolling back the last batch and
+  abandoning a first batch both forget the confirmed state, so the next first batch gets a new proposal.
+- Input drivers get a rate function and give their values already in the currency of the project. Cash in other
+  currencies, and the cost of assets bought in them, are converted at the rate of the opening date.
+- Lynx: the cost of assets in another currency is the cost worked back from the statement converted at the
+  opening date rate, not the market value. A note says it is not the cost at the purchase rates.
+- The date is the first day of the input data, or the plan's first date if that is later. The bookkeeping is
+  asked for the same date.
+- Tasenor is tested only against recorded responses, not a live bookkeeper.
 
 ## Problem
 
