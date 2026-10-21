@@ -46,6 +46,12 @@ describe('TITO import with mapping rules', () => {
     cy.get('[data-cy="Unmatched-2301200006"] [data-cy="SkipOnce"]').click()
 
     cy.get('[data-cy="DialogButton-Delete"]').contains('Continue').click()
+
+    // The first batch asks to confirm the opening balances of the accounts from the statement.
+    cy.get('[role="dialog"]').should('contain', 'BANK_FI001234560000')
+    cy.get('[role="dialog"]').should('contain', 'BANK_FI006543210000')
+    cy.get('[data-cy="DialogButton-Delete"]').contains('Continue').click()
+
     // The rule and two one-off answers make three transactions.
     cy.get('[data-cy="Batch-#1"] [data-cy="output"]').should('have.text', '3')
     cy.get('[data-cy="Batch-#1"]').click()
