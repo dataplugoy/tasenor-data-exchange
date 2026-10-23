@@ -233,66 +233,67 @@ export class Analyzer {
     }
 
     // Final adustments.
-    let debtLine: TransactionLine | null = null
+    // Balances of the currency and debt accounts as changed by the lines handled so far in this transaction.
+    const running: Record<string, Decimal> = {}
+    const balanceOf = (account: string): Decimal => running[account] || this.balance.getBalance(account as AccountCode)
+    const debtLines: TransactionLine[] = []
     for (const line of this.lastResult?.lines || []) {
 
       // Handle debt.
       if (/^CURRENCY_/.test(line.account)) {
 
-        const balance = this.balance.getBalance(line.account as AccountCode)
+        const balance = balanceOf(line.account)
         const amount = dec(line.amount)
         const currency = line.account.substring(9) as Currency
+        const debtAccount = `DEBT_${line.account}`
+        let debtLine: TransactionLine | null = null
 
         // Handle additional debt in currency accounts.
-        if (amount.lt(0) && balance.add(amount).lt(0)) {
-          const debtAccount = await this.getDebtAccount(currency)
-          if (debtAccount === null) {
-            continue
-          }
-          // Already fully in debt.
+        if (amount.lt(0) && balance.add(amount).lt(0) && await this.getDebtAccount(currency) !== null) {
           if (balance.lte(0)) {
-            line.account = `DEBT_${line.account}`
-            continue
-          }
-          // Spend all and then take debt.
-          const debt = amount.plus(balance)
-          line.amount = balance.neg().toString()
-          debtLine = {
-            account: `DEBT_${line.account}`,
-            amount: debt.toString(),
-            text: line.text,
-            extras: {},
-          }
-          if (line.extras.tags) {
-            debtLine.extras.tags = clone(line.extras.tags)
+            // Already fully in debt.
+            line.account = debtAccount
+          } else {
+            // Spend all and then take debt.
+            line.amount = balance.neg().toString()
+            debtLine = {
+              account: debtAccount,
+              amount: amount.plus(balance).toString(),
+              text: line.text,
+              extras: {},
+            }
           }
         }
 
         // Pay back if we have existing debt.
         if (amount.gt(0) && this.hasDebtAccount(currency)) {
-          const oldDebt = this.balance.getBalance(`DEBT_${line.account}` as AccountCode).neg()
+          const oldDebt = balanceOf(debtAccount).neg()
           if (oldDebt.lte(0)) {
             // Nothing to pay back.
           } else if (oldDebt.lt(amount)) {
             line.amount = amount.minus(oldDebt).toString()
             debtLine = {
-              account: `DEBT_${line.account}`,
+              account: debtAccount,
               amount: oldDebt.toString(),
               text: line.text,
               extras: {},
             }
-            if (line.extras.tags) {
-              debtLine.extras.tags = clone(line.extras.tags)
-            }
           } else {
-            line.account = `DEBT_${line.account}`
+            line.account = debtAccount
           }
+        }
+
+        running[line.account] = balanceOf(line.account).plus(line.amount)
+        if (debtLine) {
+          if (line.extras.tags) {
+            debtLine.extras.tags = clone(line.extras.tags)
+          }
+          running[debtAccount] = balanceOf(debtAccount).plus(debtLine.amount)
+          debtLines.push(debtLine)
         }
       }
     }
-    if (debtLine) {
-      this.lastResult?.lines.push(debtLine)
-    }
+    this.lastResult?.lines.push(...debtLines)
 
     if (!this.lastResult) {
       throw new Error(`A function ${input.type} failed to produce the result.`)
