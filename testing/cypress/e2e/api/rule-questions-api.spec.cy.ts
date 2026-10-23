@@ -63,6 +63,12 @@ describe('Rule questions API', () => {
               expect(res.body.label).to.eq('Whose')
             })
 
+            // The kind of a question in use cannot be changed.
+            cy.apiCall('PUT', `${questionsUrl}/${questionId}`, { name: 'members', kind: 'TEXT', label: 'Whose' }).then((res) => {
+              expect(res.status).to.eq(400)
+              expect(res.body.message).to.eq('The kind of a question used by rules cannot be changed.')
+            })
+
             // Clean up.
             cy.apiCall('DELETE', `${rulesUrl}/${ruleId}`).then((res) => {
               expect(res.status).to.eq(204)

@@ -70,6 +70,11 @@ async function saveQuestion(res, projectId: number, body, question: RuleQuestion
     res.status(400).send({ message: err.message })
     return
   }
+  // The rules asking a question depend on its kind, for example an account question gives the account of a rule.
+  if (question && data.kind !== question.kind && (await RuleQuestionModel.usage(projectId))[question.id]) {
+    res.status(400).send({ message: 'The kind of a question used by rules cannot be changed.' })
+    return
+  }
   const same = await RuleQuestionModel.findUnique<prisma.RuleQuestion, RuleQuestionModel>({ projectId_name: { projectId, name: data.name } } as unknown as Partial<prisma.RuleQuestion>)
   if (same && (!question || same.id !== question.id)) {
     res.status(400).send({ message: `The name '${data.name}' is already used by another question.` })
