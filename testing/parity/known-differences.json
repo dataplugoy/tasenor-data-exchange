@@ -24,7 +24,9 @@
     "c0d2029c4624b080d7caefea6743326921c68b05": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
     "3a9089f3680c90b9d3517c2506ac03898ae33cb7": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
     "0cbf59c827d2289ef0c6601b08c571abb9967eb7": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
-    "737e303876414a1ad95ae2d0de69e5463e02369c": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column."
+    "737e303876414a1ad95ae2d0de69e5463e02369c": "Bookkeeper books deposit corrections twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "8b90f608b979b1459bd79bbc7f2c075ae68109df": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two.",
+    "Dividend:2022-12-30:US91325V1089": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two."
   },
   "Dataplug-2023-Lynx": {
     "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period.",
@@ -36,7 +38,13 @@
     "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period.",
     "46199837a689fe701f7758228acf5984b047e2be": "Bookkeeper books 4.03 of the EPRT dividend to manual inspection and rounds the tax differently. TaDeX books the dividend with its withholding tax.",
     "Dividend:2024-01-12:US29670E1073": "Bookkeeper books 4.03 of the EPRT dividend to manual inspection and rounds the tax differently. TaDeX books the dividend with its withholding tax.",
-    "4bbebf3c1a75cf0b6133bc3fb29f532f2bb4592c": "Bookkeeper books the deposit twice, also from the repeated Deposits & Withdrawals section with the Code column."
+    "4bbebf3c1a75cf0b6133bc3fb29f532f2bb4592c": "Bookkeeper books the deposit twice, also from the repeated Deposits & Withdrawals section with the Code column.",
+    "450c4f720b8b6e92d567a8a004a6201b5a1ff614": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two.",
+    "Dividend:2024-04-15:US31154R1095": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two.",
+    "43a1e7207cf7c5b919221025dadf69f97bce3c32": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two.",
+    "Dividend:2024-07-25:US60784B1017": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two.",
+    "7c49d16670bd15ba27addcc804aaace11d226074": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two.",
+    "Dividend:2024-11-27:US18885T3068": "Bookkeeper converts and rounds the cash dividend and the payment in lieu of dividend separately. TaDeX converts their sum once, so the totals differ by a cent or two."
   },
   "Dataplug-2025-Lynx": {
     "TaxAdjustment:*": "Bookkeeper books withholding tax adjustments without cash (both sides to the tax account). TaDeX books the refund or charge to the currency account, on the first day of the statement when the dividend is from an earlier period."
