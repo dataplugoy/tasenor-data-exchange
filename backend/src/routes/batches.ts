@@ -7,6 +7,7 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { param } from '../lib/param'
 import { ItemErrorModel } from '../models/ItemErrorModel'
 import { error } from '@tasenor/common'
+import { BatchModel } from '../models/BatchModel'
 
 const router: express.Router = express.Router()
 
@@ -44,8 +45,13 @@ router.put('/:id/rollback',
   authorize(),
   param('batchId'),
   async (_req, res) => {
+    // The balances and assets of the plan are restored from the batch before, so only the latest can be undone.
+    const latest = await BatchModel.getLatest(res.locals.flowPlan)
     if (res.locals.batch.state !== 'OUTPUT_DELIVERED') {
       error(`Cannot rollback ${res.locals.batch} which has wrong state ${res.locals.batch.state}.`)
+      res.sendStatus(400)
+    } else if (!latest || latest.id !== res.locals.batch.id) {
+      error(`Cannot rollback ${res.locals.batch} which is not the latest batch.`)
       res.sendStatus(400)
     } else {
       await res.locals.batch.rollback(res.locals.userId)
