@@ -1,7 +1,7 @@
 import { Setup } from '../../types/API/Setup'
 import { AccountCode } from '../../types/AccountCode'
 
-const VARIABLE_MAP = {
+export const VARIABLE_MAP = {
   FEE: 'singleFeeAccount',
   TAX: 'singleTaxAccount',
   LOSS: 'singleLossAccount',

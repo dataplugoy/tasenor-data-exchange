@@ -8,6 +8,8 @@
   "ACCOUNT_GENERAL_EXPENSE": "Yleinen kulutili",
   "ACCOUNT_GENERAL_FEE": "Yleinen tili tapahtumamaksuille",
   "ACCOUNT_GENERAL_INCOME": "Yleinen tulotili",
+  "ACCOUNT_GENERAL_CRYPTO": "Tili kryptovaluuttojen arvolle",
+  "ACCOUNT_GENERAL_DIVIDEND": "Yleinen osinkotili",
   "ACCOUNT_GENERAL_LOSS": "Tappiotili kaupankäynnille",
   "ACCOUNT_GENERAL_PROFIT": "Voittotili kaupankäynnille",
   "ACCOUNT_GENERAL_STOCK": "Tili instrumenttien arvolle",

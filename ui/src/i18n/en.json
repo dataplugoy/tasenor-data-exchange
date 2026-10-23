@@ -34,6 +34,8 @@
   "ACCOUNT_FEE": "Account for fees in {{currency}}",
   "ACCOUNT_FOREX_LOSS": "Losses from currency exchange",
   "ACCOUNT_FOREX_PROFIT": "Profits from currency exchange",
+  "ACCOUNT_GENERAL_CRYPTO": "An account to keep value of the crypto currencies bought",
+  "ACCOUNT_GENERAL_DIVIDEND": "An account recording dividends",
   "ACCOUNT_GENERAL_EXPENSE": "General purpose account for other expenses",
   "ACCOUNT_GENERAL_FEE": "General purpose account for fees charged",
   "ACCOUNT_GENERAL_INCOME": "General purpose account for any income",
