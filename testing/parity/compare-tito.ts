@@ -20,6 +20,7 @@ import { connect } from '../../backend/src/connect'
 import { RuleModel } from '../../backend/src/models/RuleModel'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
 import { BookkeeperRule, Knowledge, convert } from './tito-converter'
+import { confirmOpeningState } from './parity-lib'
 
 const ROOT = path.resolve(__dirname, '..', '..')
 const FLOW = 'TITO Testing'
@@ -102,6 +103,7 @@ async function main(testDir: string): Promise<number> {
     await RuleModel.save({ ...RuleModel.fromRequest(rule), flowPlanId: flow.id, priority: priority-- })
   }
   await flow.updateSetup({ answers: conversion.answers })
+  confirmOpeningState(FLOW)
 
   // Run.
   tadex('run', FLOW)

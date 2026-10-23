@@ -99,6 +99,14 @@ export function sql(query: string): string {
 }
 
 /**
+ * Confirm the balances and assets of the flow plan, given by hand before the run, as its opening state. The user does
+ * the same when asked before the first batch.
+ */
+export function confirmOpeningState(flow: string): void {
+  sql(`update flow_plans set setup = jsonb_set(setup, '{openingState}', jsonb_build_object('date', '1900-01-01', 'sources', '[]'::jsonb, 'notes', '[]'::jsonb, 'balance', balance, 'stock', stock)) where title = '${flow.replace(/'/g, "''")}'`)
+}
+
+/**
  * Map bookkeeper account numbers to categories comparable with TaDeX account codes.
  * @param statements Categories of bookkeeper statement accounts by their names.
  */
@@ -460,6 +468,7 @@ export function compareImport(test: BookkeeperTest, opts: ImportComparison): num
   }))
   tadex('init-stock', opts.flow, opts.stockAccount, path.join(work, 'stock.csv'))
   tadex('init-balance', opts.flow, path.join(work, 'balance.csv'))
+  confirmOpeningState(opts.flow)
   tadex('run', opts.flow)
   tadex('upload', opts.flow, opts.input)
   if (runFlow(opts.flow, work) === null) {

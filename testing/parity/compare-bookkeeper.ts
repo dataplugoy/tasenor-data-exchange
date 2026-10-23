@@ -16,7 +16,7 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import {
-  Category, bookkeeperCategories, bookkeeperSegments, collectItems, compareStock, debtAccounts, loadDatabase, matchSegments,
+  Category, bookkeeperCategories, bookkeeperSegments, collectItems, compareStock, confirmOpeningState, debtAccounts, loadDatabase, matchSegments,
   readTest, reportPairs, runFlow, tadex, tadexCategory, tadexSegments, writeBalances, writeStock
 } from './parity-lib'
 
@@ -121,6 +121,7 @@ async function main(testDir: string): Promise<number> {
   }))
   tadex('init-stock', FLOW, 'STOCK', path.join(work, 'stock.csv'))
   tadex('init-balance', FLOW, path.join(work, 'balance.csv'))
+  confirmOpeningState(FLOW)
   tadex('run', FLOW)
   tadex('upload', FLOW, path.join(work, 'input.csv'))
   if (runFlow(FLOW, work) === null) {
