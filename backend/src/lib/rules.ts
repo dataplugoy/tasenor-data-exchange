@@ -66,9 +66,8 @@ export function applyRules<T>(variables: Record<string, unknown>, rules: Record<
     }
   }
 
-  function applyRuleKey(key: string) {
-    unusedKeys.delete(key)
-    for (const rule of rules[key] || []) {
+  function applyRuleList(list: RuleModel[]) {
+    for (const rule of list) {
       if (evaluate(rule.filter)) {
         const result = evaluate(rule.result)
         if (onMatch) {
@@ -79,22 +78,18 @@ export function applyRules<T>(variables: Record<string, unknown>, rules: Record<
     }
   }
 
-  if (key) {
-    const result = applyRuleKey(key)
-    if (result !== undefined) {
-      return result as T
-    }
-  }
-
-  if (rules['']) {
-    const result = applyRuleKey('')
-    if (result !== undefined) {
-      return result as T
-    }
+  // The rules of the key and the rules without a key are tried together in the order of the rules, so that a rule
+  // without a key placed first overrides the rules of the key. Rules of other keys are the last resort.
+  const keys = key ? [key, ''] : ['']
+  keys.forEach(k => unusedKeys.delete(k))
+  const first = keys.flatMap(k => rules[k] || []).sort((a, b) => (b.data.priority ?? 0) - (a.data.priority ?? 0) || a.id - b.id)
+  const result = applyRuleList(first)
+  if (result !== undefined) {
+    return result as T
   }
 
   for (const k of unusedKeys) {
-    const result = applyRuleKey(k)
+    const result = applyRuleList(rules[k])
     if (result !== undefined) {
       return result as T
     }
