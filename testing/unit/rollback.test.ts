@@ -8,6 +8,7 @@ import { RollbackException } from '../../backend/src/exceptions/RollbackExceptio
 import { ProcountorDriver } from '../../backend/src/driver/ProcountorDriver'
 import { TasenorDriver } from '../../backend/src/driver/TasenorDriver'
 import { NoActionDriver } from '../../backend/src/driver/NoActionDriver'
+import { HTTPException } from '../../backend/src/exceptions/HTTPException'
 
 describe('Rolling back a batch', () => {
 
@@ -60,5 +61,34 @@ describe('Rolling back a batch', () => {
     expect(removed).toStrictEqual([1, 2])
     expect(batch.destroy).toHaveBeenCalledTimes(1)
     findForBatch.mockRestore()
+  })
+
+  test('entries already removed from Tasenor are skipped', async () => {
+    const driver = new TasenorDriver({ host: 'http://localhost', user: 'u', password: 'p', database: 'db' } as never, { currency: 'EUR', language: 'en' } as never)
+    const deleted: string[] = []
+    Object.assign(driver, {
+      autheticate: async () => ({}),
+      DELETE: async (url: string) => {
+        if (url.includes('/entry/')) {
+          throw new HTTPException('DELETE', url, 'Not found', 404)
+        }
+        deleted.push(url)
+      },
+    })
+    const item = new OutputItemModel({ id: 1, delivered: true, remoteId: { db: 'db', doc: 5, period: 1, entries: [7, 8] } } as unknown as prisma.OutputItem)
+    await driver.rollbackOuput(item)
+    expect(deleted).toStrictEqual(['/db/db/document/5'])
+  })
+
+  test('other errors from Tasenor stop the rollback', async () => {
+    const driver = new TasenorDriver({ host: 'http://localhost', user: 'u', password: 'p', database: 'db' } as never, { currency: 'EUR', language: 'en' } as never)
+    Object.assign(driver, {
+      autheticate: async () => ({}),
+      DELETE: async (url: string) => {
+        throw new HTTPException('DELETE', url, 'Server error', 500)
+      },
+    })
+    const item = new OutputItemModel({ id: 1, delivered: true, remoteId: { db: 'db', doc: 5, period: 1, entries: [7] } } as unknown as prisma.OutputItem)
+    await expect(driver.rollbackOuput(item)).rejects.toThrow('Server error')
   })
 })

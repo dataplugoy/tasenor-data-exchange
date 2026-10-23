@@ -178,7 +178,7 @@ export class Driver {
         msg = `HTTP ${err.response.status} ${JSON.stringify(err.response.data)}`
       }
       error(`Request ${method} ${url} failed:`, msg)
-      throw new HTTPException(method, url, err.toString())
+      throw new HTTPException(method, url, err.toString(), err.response ? err.response.status : null)
     })
 
     if (storeDir && savePath) {

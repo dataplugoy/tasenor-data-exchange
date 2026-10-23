@@ -16,6 +16,7 @@ import { OutputDriver } from './OutputDriver'
 import { OpeningState } from '../types/API/OpeningState'
 import { addOpeningAsset, cleanOpeningState, emptyOpeningState } from '../lib/opening'
 import { t } from '../lib/i18n/t'
+import { HTTPException } from '../exceptions/HTTPException'
 
 /**
  * A document of a period with its entries.
@@ -367,9 +368,19 @@ export class TasenorDriver extends OutputDriver {
       entries: number[]
     }
 
-    for (const id of entries) {
-      await this.DELETE(`/db/${db}/entry/${id}`)
+    // A retry of a rollback failed midway finds some of them removed already.
+    const remove = async (url: string) => {
+      try {
+        await this.DELETE(url)
+      } catch (err) {
+        if (!(err instanceof HTTPException && err.status === 404)) {
+          throw err
+        }
+      }
     }
-    await this.DELETE(`/db/${db}/document/${doc}`)
+    for (const id of entries) {
+      await remove(`/db/${db}/entry/${id}`)
+    }
+    await remove(`/db/${db}/document/${doc}`)
   }
 }
