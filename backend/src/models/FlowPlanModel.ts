@@ -135,7 +135,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     for (const rule of await RuleModel.findForFlow(this.id)) {
       await rule.destroy()
     }
-    FlowPlanModel.delete(this.id)
+    await FlowPlanModel.delete(this.id)
   }
 
   /**

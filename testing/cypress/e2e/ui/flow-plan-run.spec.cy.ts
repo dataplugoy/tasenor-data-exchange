@@ -64,5 +64,7 @@ describe('Flow Plans', () => {
     cy.get('button').contains('Delete This Flow Plan').click()
     cy.get('[data-cy="DialogButton-Delete"]').click()
 
+    cy.get('[data-cy="FlowPlan-TITO Testing"]').should('exist')
+    cy.get('body').should('not.contain', 'Testing Deletion')
   })
 })
