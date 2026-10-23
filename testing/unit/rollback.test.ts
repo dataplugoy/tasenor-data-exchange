@@ -29,4 +29,36 @@ describe('Rolling back a batch', () => {
     expect(batch.destroy).not.toHaveBeenCalled()
     findForBatch.mockRestore()
   })
+
+  test('a retry does not remove again the transactions removed before a failure', async () => {
+    const plan = new FlowPlanModel({ id: 1 } as prisma.FlowPlan)
+    const removed: number[] = []
+    let failing = true
+    const rollbackOuput = vi.fn(async (item: OutputItemModel) => {
+      if (item.id === 2 && failing) {
+        throw new Error('Connection lost.')
+      }
+      if (removed.includes(item.id)) {
+        throw new Error(`Item ${item.id} is already removed.`)
+      }
+      removed.push(item.id)
+    })
+    vi.spyOn(plan, 'getOutputDriver').mockResolvedValue({ canRollback: () => true, rollbackOuput } as unknown as OutputDriver)
+    const item = (id: number) => Object.assign(new OutputItemModel({ id, delivered: true } as prisma.OutputItem), {
+      rolledBack: vi.fn(async function (this: OutputItemModel) { this.data.delivered = false }),
+    })
+    const items = [item(1), item(2)]
+    const findForBatch = vi.spyOn(OutputItemModel, 'findForBatch').mockResolvedValue(items)
+    const batch = { id: 2, destroy: vi.fn() } as unknown as BatchModel
+    vi.spyOn(BatchModel, 'getLatest').mockResolvedValue(null)
+    vi.spyOn(FlowPlanModel, 'update').mockResolvedValue(undefined as never)
+    vi.spyOn(plan, 'clearOpeningState').mockResolvedValue()
+
+    await expect(plan.rollback(1, batch)).rejects.toThrow('Connection lost.')
+    failing = false
+    await plan.rollback(1, batch)
+    expect(removed).toStrictEqual([1, 2])
+    expect(batch.destroy).toHaveBeenCalledTimes(1)
+    findForBatch.mockRestore()
+  })
 })

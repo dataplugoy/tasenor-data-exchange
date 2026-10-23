@@ -157,6 +157,7 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       if (item.data.delivered) {
         log(`Rolling back output item ${item} with ID ${JSON.stringify(item.data.remoteId)} by user #${userId}.`)
         await driver.rollbackOuput(item)
+        await item.rolledBack()
       }
     }
 

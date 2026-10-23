@@ -44,10 +44,13 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
-   * Undo transaction created from this item.
+   * Mark the transaction of this item removed from the destination. If a later item of the rollback fails, the
+   * retry does not try to remove this one again.
    */
-  async rollback(): Promise<void> {
-    console.log(this.id)
+  async rolledBack(): Promise<void> {
+    this.data.delivered = false
+    this.data.remoteId = null
+    await OutputItemModel.update<prisma.OutputItem, OutputItemModel>(this, { delivered: false, remoteId: prisma.Prisma.DbNull as unknown as JsonValue })
   }
 
   /**
