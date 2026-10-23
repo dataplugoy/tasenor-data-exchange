@@ -71,7 +71,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
     </Box>
 
     <Box sx={{ mt: 3 }}>
-      <Button color="error" variant="text" onClick={() => setDeleting(true)} startIcon={<Delete/>}>Delete This Flow Plan</Button>
+      <Button color="error" variant="text" onClick={() => setDeleting(true)} startIcon={<Delete/>}><Trans>Delete This Flow Plan</Trans></Button>
     </Box>
 
     <Dialog open={deleting} fullWidth>
@@ -82,7 +82,7 @@ export const EditSettingsPage = (): React.JSX.Element => {
           <Trans>This does not delete possible transactions created on any remote site.</Trans><> </>
           <Trans>However, all data and history will be deleted from this site.</Trans><> </>
           <Box component="span" sx={{ fontWeight: 'bold' }}>
-            <Trans sx={{}}>Are You sure?</Trans>
+            <Trans>Are You sure?</Trans>
           </Box>
         </DialogContentText>
       </DialogContent>

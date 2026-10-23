@@ -482,5 +482,12 @@
   "Processing steps": "Käsittelyvaiheet",
   "done": "valmis",
   "next": "seuraavana",
-  "not yet": "ei vielä"
+  "not yet": "ei vielä",
+  "Also all transactions created will be removed.": "Myös kaikki luodut tapahtumat poistetaan.",
+  "Are You sure?": "Oletko varma?",
+  "Delete This Flow Plan": "Poista tämä tietovirtasuunnitelma",
+  "Example:": "Esimerkki:",
+  "Line:": "Rivi:",
+  "Removing a Batch": "Setin poistaminen",
+  "Rollback": "Peru"
 }
