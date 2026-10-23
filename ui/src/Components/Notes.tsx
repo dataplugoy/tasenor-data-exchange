@@ -23,10 +23,10 @@ export const Note = (props: NoteProps): React.JSX.Element => {
       </Box>
 
     case 'needSettings':
-      return <>
-        <Trans>Need to provide values for the following settings:</Trans><br/>
-        {(notes as string[]).map(s => `— ${s}`).join('\n')}
-      </>
+      return <Box sx={{ mb: 2 }}>
+        <Trans>Need to provide values for the following settings:</Trans>
+        {(notes as string[]).map(s => <Box key={s}>— {s}</Box>)}
+      </Box>
 
     case 'needUpload':
       return <>
