@@ -67,6 +67,26 @@ export const VARIABLES: Record<string, Question> = {
   },
 }
 
+export type GroupingVariable = 'singleProfitAccount' | 'singleLossAccount' | 'singleFeeAccount'
+
+/**
+ * Questions about recording accounts of one kind to a single account.
+ */
+const GROUPING_QUESTIONS: Record<GroupingVariable, { help: string, label: string }> = {
+  singleProfitAccount: {
+    help: 'Trading {{asset}} makes profit. Do we record profits of all assets to the same account, or to a separate account for each asset?',
+    label: 'Record profits of all assets to the same account',
+  },
+  singleLossAccount: {
+    help: 'Trading {{asset}} makes loss. Do we record losses of all assets to the same account, or to a separate account for each asset?',
+    label: 'Record losses of all assets to the same account',
+  },
+  singleFeeAccount: {
+    help: 'A fee is charged in {{asset}}. Do we record fees in all currencies to the same account, or to a separate account for each currency?',
+    label: 'Record fees in all currencies to the same account',
+  },
+}
+
 /**
  * Description of an input item no rule matches.
  */
@@ -146,6 +166,24 @@ export class AnswersRequired extends AlertException<Question[]> {
       })
     }
 
+    const alert = new AnswersRequired(url, userId, questions)
+    throw alert
+  }
+
+  /**
+   * Ask if profits, losses or fees are recorded to one account or to a separate account for each asset.
+   * @param url
+   * @param language
+   * @param userId
+   * @param asking Asset or currency seen first for each grouping variable to ask.
+   */
+  static forAccountGrouping(url: string, language: Language, userId: number, asking: Partial<Record<GroupingVariable, string>>): never {
+    const questions: Question[] = Object.entries(asking).map(([variable, asset]) => ({
+      type: 'BOOLEAN',
+      help: t(language, GROUPING_QUESTIONS[variable].help, { asset }),
+      label: t(language, GROUPING_QUESTIONS[variable].label),
+      variable: `accountGrouping.${variable}`
+    }))
     const alert = new AnswersRequired(url, userId, questions)
     throw alert
   }

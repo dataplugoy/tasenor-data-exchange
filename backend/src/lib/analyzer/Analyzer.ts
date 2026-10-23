@@ -29,7 +29,7 @@ import { validateAsset, validateAssetInAccount, validateAssetOutAccount, validat
 import { Setup } from '../../types/API/Setup'
 import { resolveAccount } from './resolver'
 import { RuntimeOptions } from '../../types/RuntimeOptions'
-import { AnswersRequired } from '../../exceptions/AnswersRequired'
+import { AnswersRequired, GroupingVariable } from '../../exceptions/AnswersRequired'
 import { FlowPlanModel } from '../../models/FlowPlanModel'
 import { DbException } from '../../exceptions/DbException'
 import { TransactionLine } from '../../types/API/TransactionLine'
@@ -40,6 +40,15 @@ import { InputItemModel } from '../../models/InputItemModel'
 /**
  * Core engine for tracking and calculating transactions from unified items.
  */
+/**
+ * Account groupings asked from the user, by the prefix of the account code.
+ */
+const GROUPING_ASKED: Record<string, GroupingVariable> = {
+  PROFIT: 'singleProfitAccount',
+  LOSS: 'singleLossAccount',
+  FEE: 'singleFeeAccount',
+}
+
 export class Analyzer {
 
   private services: Record<prisma.ServiceType, Service[]>
@@ -212,6 +221,7 @@ export class Analyzer {
 
     // Create the result.
     this.lastResult = await this[`${input.type}Handler`](time, input)
+    this.lastResult && this.checkAccountGrouping(this.lastResult)
     this.lastResult && this.resolveAccounts(this.lastResult)
     if (input.tags) {
       this.lastResult?.lines.forEach(line => {
@@ -289,6 +299,28 @@ export class Analyzer {
     }
 
     return this.lastResult
+  }
+
+  /**
+   * When profits, losses or fees are seen first time in an interactive run, ask if they are recorded to one account
+   * or to a separate account for each asset.
+   */
+  checkAccountGrouping(tx: Transaction): void {
+    if (!this.runtimeOptions.interactive) {
+      return
+    }
+    const grouping = this.setup.accountGrouping || {}
+    const asking: Partial<Record<GroupingVariable, string>> = {}
+    for (const line of tx.lines) {
+      const match = /^(PROFIT|LOSS|FEE)_(.+)$/.exec(line.account)
+      const variable = match && GROUPING_ASKED[match[1]]
+      if (variable && grouping[variable] === undefined && !asking[variable]) {
+        asking[variable] = match[2]
+      }
+    }
+    if (Object.keys(asking).length) {
+      AnswersRequired.forAccountGrouping(`/flow-plans/${this.runtimeOptions.flowPlanId}/configure`, this.config.language as Language, this.runtimeOptions.userId, asking)
+    }
   }
 
   /**
