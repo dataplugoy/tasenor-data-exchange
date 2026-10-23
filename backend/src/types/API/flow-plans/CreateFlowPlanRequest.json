@@ -2,7 +2,7 @@
   "title": "CreateFlowPlanRequest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["title", "projectId", "firstDate", "source", "destination", "setup"],
+  "required": ["title", "projectId", "firstDate", "source", "setup"],
   "properties": {
     "title": {
       "type": "string"
@@ -39,6 +39,10 @@
           "type": "object"
         }
       }
+    },
+    "copyOutputFrom": {
+      "description": "ID of a flow plan of the same user to copy the bookkeeping destination and its settings from instead of `destination`.",
+      "type": "integer"
     },
     "setup": {
       "$ref": "Setup.json"

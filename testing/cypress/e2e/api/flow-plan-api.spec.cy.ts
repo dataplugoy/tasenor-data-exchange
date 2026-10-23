@@ -30,6 +30,22 @@ describe('Flow Plan API', () => {
         // TODO: Something wrong with this validation.
         // cy.apiCall('GET', `/flow-plans/${uiTestPlan.id}`).should('validatesAs', FlowPlanResponse)
         cy.apiCall('GET', `/flow-plans/${uiTestPlan.id}/run`).should('validatesAs', FlowPlanRunResponse)
+
+        cy.apiCall('POST', '/flow-plans', {
+          title: 'UI Test Copy',
+          projectId: 1,
+          firstDate: '1900-01-01',
+          source: {
+            type: 'TEST_MOCK',
+            settings: {
+              url: 'file:////dev/null'
+            }
+          },
+          copyOutputFrom: uiTestPlan.id,
+          setup: {}
+        }).should('validatesAs', CreateFlowPlanResponse, 201).then((created) => {
+          cy.apiCall('GET', `/flow-plans/${created.body.id}/output`).its('body.type').should('equal', 'NO_ACTION')
+        })
       })
     })
   })

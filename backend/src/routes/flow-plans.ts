@@ -36,7 +36,8 @@ router.post('/',
   validate(CreateFlowPlanRequest),
   async (req, res) => {
     const userId = res.locals.userId
-    const { projectId, title, firstDate, source, destination, setup } = req.body
+    const { projectId, title, firstDate, source, copyOutputFrom, setup } = req.body
+    let { destination } = req.body
     const project = await ProjectModel.get(projectId)
 
     if (!project) {
@@ -45,6 +46,21 @@ router.post('/',
     }
     if (project.data.userId !== userId) {
       error('Project is for different user.')
+      return res.sendStatus(400)
+    }
+    if (copyOutputFrom !== undefined) {
+      const other = await FlowPlanModel.get(copyOutputFrom)
+      const otherProject = other && await ProjectModel.get(other.data.projectId)
+      const output = otherProject && otherProject.data.userId === userId && await OutputDestinationModel.findForFlow(copyOutputFrom)
+      if (!output) {
+        error('Flow plan to copy the output from not found.')
+        return res.sendStatus(400)
+      }
+      // Secrets are copied as encrypted.
+      destination = { type: output.data.type, settings: output.data.settings }
+    }
+    if (!destination) {
+      error('Destination or flow plan to copy it from is required.')
       return res.sendStatus(400)
     }
 

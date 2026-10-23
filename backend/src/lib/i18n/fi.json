@@ -74,6 +74,8 @@
   "Balance": "Saldo",
   "Bookkeeper settings saved": "Kirjanpitoasetukset tallennettu",
   "Bookkeeping Destination": "Kohde kirjanpito",
+  "Copy Bookkeeping Destination From": "Kopioi kirjanpidon kohde suunnitelmasta",
+  "Do not copy": "Älä kopioi",
   "Bookkeeping Output Settings": "Kirjanpidon vientiasetukset",
   "Bought {{amount}} {{asset}}": "Ostettu {{amount}} {{asset}}",
   "Bought {{amount}} {{in}} in exhcange to {{out}}": "Vaihdettu {{amount}} valuuttaa {{in}} valuuttaan {{out}}",

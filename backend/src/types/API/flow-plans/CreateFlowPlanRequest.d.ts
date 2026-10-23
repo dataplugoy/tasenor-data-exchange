@@ -73,12 +73,16 @@ export interface CreateFlowPlanRequest {
       [k: string]: unknown;
     };
   };
-  destination: {
+  destination?: {
     type: DriverType;
     settings: {
       [k: string]: unknown;
     };
   };
+  /**
+   * ID of a flow plan of the same user to copy the bookkeeping destination and its settings from instead of `destination`.
+   */
+  copyOutputFrom?: number;
   setup: Setup;
 }
 /**

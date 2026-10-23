@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, MenuItem, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '../Hooks/useApp'
-import { usePOST } from '../Hooks/useNet'
+import { useGET, usePOST } from '../Hooks/useNet'
 import { CreateFlowPlanResponse } from '../Types/API/flow-plans/CreateFlowPlanResponse'
+import { FlowPlansResponse } from '../Types/API/flow-plans/FlowPlansResponse'
+import { FlowPlan } from '../Types/API/FlowPlan'
 import { useNavigate } from 'react-router-dom'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
@@ -31,6 +33,8 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
   const [firstDate, setFirstDate] = useState<DateTime | null>(DateTime.fromISO('1970-01-01'))
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('NO_ACTION')
+  const [copyOutputFrom, setCopyOutputFrom] = useState<number | ''>('')
+  const [plans, setPlans] = useState<FlowPlan[]>([])
   const [fileUrl, setFileUrl] = useState('file:///')
   const [hostUrl, setHostUrl] = useState('https://')
   const [user, setUser] = useState('')
@@ -40,7 +44,14 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
 
   const app = useApp()
   const POST = usePOST<CreateFlowPlanResponse>()
+  const GET = useGET<FlowPlansResponse>()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    GET('/flow-plans').then(res => {
+      res && setPlans(res.filter(plan => plan.projectId === app.project.id))
+    })
+  }, [app.project.id])
 
   const validateSourceSettings = () => {
     if (input === 'TEST_MOCK') {
@@ -81,13 +92,13 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
     if (!input) return app.addError(t('Data source must be selected.'))
 
     const sourceSettings = validateSourceSettings()
-    const destinationSettings = validateDestinationSettings()
+    const destinationSettings = copyOutputFrom === '' ? validateDestinationSettings() : {}
 
     if (!sourceSettings || !destinationSettings) {
       return
     }
 
-    const data = {
+    const data: Record<string, unknown> & { setup: Record<string, unknown> } = {
       title,
       firstDate: firstDate.toISODate(),
       projectId: app.project.id,
@@ -95,18 +106,22 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
         type: input,
         settings: sourceSettings,
       },
-      destination: {
-        type: output,
-        settings: destinationSettings,
-      },
       setup: {
       }
+    }
+    if (copyOutputFrom === '') {
+      data.destination = {
+        type: output,
+        settings: destinationSettings,
+      }
+    } else {
+      data.copyOutputFrom = copyOutputFrom
     }
 
     if (DEFAULTS[input]) {
       Object.assign(data.setup, DEFAULTS[input])
     }
-    if (DEFAULTS[output]) {
+    if (copyOutputFrom === '' && DEFAULTS[output]) {
       Object.assign(data.setup, DEFAULTS[output])
     }
 
@@ -145,18 +160,29 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
             </>
           }
 
-          <TextField select label={t('Bookkeeping Destination')} value={output} onChange={e => setOutput(e.target.value)}>
-            {
-
-              NODE_ENV !== 'prod' && NODE_ENV !== 'stg' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>
-            }
-            <MenuItem value="NO_ACTION"><Trans>Keep results in TaDeX</Trans></MenuItem>
-            <MenuItem value="TASENOR"><Trans>Upload results to Tasenor</Trans></MenuItem>
-            <MenuItem value="PROCOUNTOR"><Trans>Upload results to Procountor</Trans></MenuItem>
-          </TextField>
+          {
+            plans.length > 0 &&
+            <TextField select label={t('Copy Bookkeeping Destination From')} value={copyOutputFrom} onChange={e => setCopyOutputFrom(e.target.value === '' ? '' : Number(e.target.value))}>
+              <MenuItem value=""><Trans>Do not copy</Trans></MenuItem>
+              {plans.map(plan => <MenuItem key={plan.id} value={plan.id}>{plan.title}</MenuItem>)}
+            </TextField>
+          }
 
           {
-            output === 'TASENOR' && <>
+            copyOutputFrom === '' &&
+            <TextField select label={t('Bookkeeping Destination')} value={output} onChange={e => setOutput(e.target.value)}>
+              {
+
+                NODE_ENV !== 'prod' && NODE_ENV !== 'stg' && <MenuItem value="TEST_MOCK">Fixed Test Files</MenuItem>
+              }
+              <MenuItem value="NO_ACTION"><Trans>Keep results in TaDeX</Trans></MenuItem>
+              <MenuItem value="TASENOR"><Trans>Upload results to Tasenor</Trans></MenuItem>
+              <MenuItem value="PROCOUNTOR"><Trans>Upload results to Procountor</Trans></MenuItem>
+            </TextField>
+          }
+
+          {
+            copyOutputFrom === '' && output === 'TASENOR' && <>
               <TextField autoComplete="off" required fullWidth onChange={e => setHostUrl(e.target.value)} value={hostUrl} name="url" label={t('Tasenor Server API URL')}/>
               <TextField autoComplete="off" required fullWidth onChange={e => setUser(e.target.value)} value={user} name="user" label={t('Login Email')}/>
               <TextField autoComplete="off" required fullWidth onChange={e => setPassword(e.target.value)} value={password} name="password" label={t('Password')} type="password"/>
@@ -165,7 +191,7 @@ export const CreateFlowPlanPage = (): React.JSX.Element => {
           }
 
           {
-            output === 'PROCOUNTOR' && <>
+            copyOutputFrom === '' && output === 'PROCOUNTOR' && <>
               <TextField autoComplete="off" required fullWidth onChange={e => setApiKey(e.target.value)} value={apiKey} name="apiKey" label={t('Procountor API key')}/>
             </>
           }
