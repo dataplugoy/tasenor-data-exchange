@@ -510,6 +510,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       const inputs = await InputItemModel.findForBatch(batch.id, false)
       const partial: Record<string, UnifiedItem[]> = {}
       const partialID: Record<string, number> = {}
+      // Inputs of the parts are marked processed only after the combined item is saved. Otherwise the parts collected
+      // so far would be lost, if the run stops for a question before the end.
+      const partialInputs: InputItemModel[] = []
 
       const rules = await RuleModel.findForFlowByKey(this.id, `${driver.constructor.name}.json`)
 
@@ -565,7 +568,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             // Track the last input used for multipart. To reconstruct, find the same multipart
             // fields from inputs with the same runID.
             partialID[unified.data.multipart] = input.id
+            partialInputs.push(input)
             total--
+            continue
           } else {
             await UnifiedItemModel.save({
               data: unified.data as unknown as JsonObject,
@@ -639,6 +644,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
         done++
         total++
+      }
+      for (const input of partialInputs) {
+        await input.success()
       }
 
       log(`${this} created ${done}/${total} (${skipped} skipped) unified items for ${batch}.`)
