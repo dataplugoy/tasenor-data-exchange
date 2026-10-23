@@ -83,4 +83,30 @@ describe('Batch API', () => {
       })
     })
   })
+
+  it('Skipped output duplicates do not change the stock', () => {
+    cy.apiCall('POST', '/auth', { email: 'test@localhost', password: 'pass' }).then(() => {
+      cy.apiCall('POST', '/flow-plans', {
+        title: 'Duplicate Stock Testing',
+        projectId: 1,
+        firstDate: '1900-01-01',
+        source: { type: 'TEST_MOCK', settings: { url: 'file:///duplicates-stock.csv' } },
+        destination: { type: 'NO_ACTION', settings: {} },
+        setup: {
+          settings: { inputDuplicates: 'Always', outputDuplicates: 'Never' },
+          accountGrouping: { singleFeeAccount: false, singleLossAccount: false, singleProfitAccount: false },
+        },
+      }).should('validatesAs', CreateFlowPlanResponse, 201).then((created) => {
+        const id = created.body.id
+        cy.apiCall('GET', `/flow-plans/${id}/run`).its('status').should('equal', 200)
+        cy.apiCall('GET', `/flow-plans/${id}`).then((res) => {
+          // Three identical purchases of 2 BTC, of which one is delivered, and a later transaction.
+          const btc = Object.values(res.body.stock as Record<string, Record<string, { amount: number }>>)
+            .map(assets => assets.BTC ? assets.BTC.amount : 0)
+            .reduce((a, b) => a + b, 0)
+          expect(btc).to.equal(2)
+        })
+      })
+    })
+  })
 })

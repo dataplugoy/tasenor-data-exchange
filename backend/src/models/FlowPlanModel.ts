@@ -727,42 +727,24 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         try {
           // Analyze unprocessed.
           const tx: Transaction = await analyzer.analyze(DateTime.fromJSDate(unified.data.time).toUTC(), unified)
-          analyzer.apply(tx)
 
           // Update stock change.
           await unified.setStockChange(toJSON(analyzer.getStockChange(tx), true))
 
           // Skip if nothing to output.
           if (tx.lines.length === 0) {
+            analyzer.apply(tx)
             await unified.skip('CONFIGURED')
             skipped++
             continue
           }
 
-          // Save the output canditate.
-          const output = await OutputItemModel.save({
-            data: toJSON(tx),
-            hash: driver.outputHash(tx),
-            skipped: false,
-            delivered: false,
-            unifiedId: unified.id,
-            flowPlanId: this.id,
-            batchId: batch.id,
-            runId: run.id,
-          })
-
-          // Verify duplicates first.
-          if (await OutputItemModel.isDuplicate(output)) {
-            let outputDuplicates
-            try {
-              const input = await InputItemModel.getData(unified.data.inputId)
-              outputDuplicates = await this.getSetting(options, 'outputDuplicates', input)
-            } catch (err) {
-              await output.destroy()
-              throw err
-            }
+          // Verify duplicates first. A skipped duplicate is not applied, since it was counted when delivered earlier.
+          const hash = driver.outputHash(tx)
+          if (await OutputItemModel.hashExists(this.id, hash)) {
+            const input = await InputItemModel.getData(unified.data.inputId)
+            const outputDuplicates = await this.getSetting(options, 'outputDuplicates', input)
             if (outputDuplicates === 'Never') {
-              await output.destroy()
               await unified.skip('DUPLICATE')
               skipped++
               continue
@@ -773,6 +755,20 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
             }
             // Pass through since value is 'Always'.
           }
+
+          analyzer.apply(tx)
+
+          // Save the output canditate.
+          await OutputItemModel.save({
+            data: toJSON(tx),
+            hash,
+            skipped: false,
+            delivered: false,
+            unifiedId: unified.id,
+            flowPlanId: this.id,
+            batchId: batch.id,
+            runId: run.id,
+          })
 
           // Mark success and update balance & stock for batch.
           await unified.success()

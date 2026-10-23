@@ -121,13 +121,10 @@ export class OutputItemModel extends BaseModel<prisma.OutputItem> {
   }
 
   /**
-   * Check if there is more than one output with the same hash in the same flow plan.
-   * @param output
-   * @returns
+   * Check if the flow plan has already an output with the hash.
    */
-  static async isDuplicate(output: OutputItemModel): Promise<boolean> {
-    const items = await OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>({ flowPlanId: output.data.flowPlanId, hash: output.data.hash })
-    return items.length > 1
+  static async hashExists(flowPlanId: number, hash: string): Promise<boolean> {
+    return (await OutputItemModel.findMany<prisma.OutputItem, OutputItemModel>({ flowPlanId, hash })).length > 0
   }
 
   /**
