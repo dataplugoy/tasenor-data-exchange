@@ -10,10 +10,10 @@ import { Setup } from '../types/API/Setup'
 import { InputDriver } from './InputDriver'
 
 /**
- * Helper to encode JSON as base64.
+ * Helper to encode JSON as base64url without padding, as used in JWT.
  */
-const jsonBase64 = (data: Record<string, any>) => {
-  return Buffer.from(JSON.stringify(data)).toString('base64').replace('=', '')
+export const jsonBase64 = (data: Record<string, any>) => {
+  return Buffer.from(JSON.stringify(data)).toString('base64url')
 }
 
 /**

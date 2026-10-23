@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { EnableBankingDriver } from '../../backend/src/driver/EnableBankingDriver'
+import { EnableBankingDriver, jsonBase64 } from '../../backend/src/driver/EnableBankingDriver'
 import { EnableBankingDriverSettings } from '../../backend/src/types/DriverSettings'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
 
@@ -20,5 +20,13 @@ describe('Enable Banking', () => {
 
     expect(JSON.parse(await driver.fetchData({} as FlowPlanModel))).toStrictEqual({ transactions: [1, 2, 3] })
     expect(urls).toStrictEqual(Object.keys(pages))
+  })
+})
+
+describe('Enable Banking token', () => {
+
+  it('encodes JSON as base64url without padding', () => {
+    expect(jsonBase64({ a: 1 })).toBe('eyJhIjoxfQ')
+    expect(jsonBase64({ kid: 'abc?>' })).toBe('eyJraWQiOiJhYmM_PiJ9')
   })
 })
