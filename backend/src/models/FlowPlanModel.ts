@@ -624,29 +624,32 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
         }
       }
 
-      // Top up with the multipart items.
-      for (const item of FlowPlanModel.combineMultipart(partial)) {
-        await UnifiedItemModel.save({
-          data: item.data as unknown as JsonObject,
-          time: new Date(item.time),
-          stockChange: {},
-          processed: false,
-          skipped: false,
-          flowPlanId: this.id,
-          batchId: batch.id,
-          runId: run.id,
-          inputId: partialID[`${item.data.multipart}`],
-          ruleId: item.ruleId ?? null,
-        })
-        // Count multipart lines combined to one transaction only once.
-        if (item.ruleId) {
-          await RuleModel.recordMatch(item.ruleId)
+      // Top up with the multipart items. If some line failed or is waiting for an answer, it may be a part of them,
+      // so the parts are left to be combined in the next run.
+      if (result === 'OK' && !unmatched.length && !asking.length) {
+        for (const item of FlowPlanModel.combineMultipart(partial)) {
+          await UnifiedItemModel.save({
+            data: item.data as unknown as JsonObject,
+            time: new Date(item.time),
+            stockChange: {},
+            processed: false,
+            skipped: false,
+            flowPlanId: this.id,
+            batchId: batch.id,
+            runId: run.id,
+            inputId: partialID[`${item.data.multipart}`],
+            ruleId: item.ruleId ?? null,
+          })
+          // Count multipart lines combined to one transaction only once.
+          if (item.ruleId) {
+            await RuleModel.recordMatch(item.ruleId)
+          }
+          done++
+          total++
         }
-        done++
-        total++
-      }
-      for (const input of partialInputs) {
-        await input.success()
+        for (const input of partialInputs) {
+          await input.success()
+        }
       }
 
       log(`${this} created ${done}/${total} (${skipped} skipped) unified items for ${batch}.`)
