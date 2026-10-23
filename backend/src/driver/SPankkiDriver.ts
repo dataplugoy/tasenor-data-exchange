@@ -50,7 +50,8 @@ export class SPankkiDriver extends ManualUploadDriver {
     this.preProcess(csv, {
       numericFields: ['Summa'],
       numericOrNullFields: [],
-      requiredFields: ['Maksupäivä', 'Saajan nimi', 'Viitenumero', 'Viesti', 'Tapahtumalaji'],
+      // Reference number and message are often empty, for example in card payments.
+      requiredFields: ['Maksupäivä', 'Saajan nimi', 'Tapahtumalaji'],
     })
 
     return csv.map((line, index) => {

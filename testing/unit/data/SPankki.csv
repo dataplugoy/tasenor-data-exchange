@@ -1,0 +1,3 @@
+Kirjauspäivä;Maksupäivä;Summa;Tapahtumalaji;Maksaja;Saajan nimi;Saajan tilinumero;Saajan BIC-tunnus;Viitenumero;Viesti;Arkistointitunnus
+02.01.2024;02.01.2024;-12,50;KORTTIOSTO;Testi Oy;K-Market Testi;;;;;20240102ABC1
+03.01.2024;03.01.2024;-100,00;TILISIIRTO;Testi Oy;Vuokranantaja Oy;FI1234567890123456;SBANFIHH;1232;Vuokra tammikuu;20240103ABC2
