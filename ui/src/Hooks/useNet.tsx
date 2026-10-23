@@ -32,9 +32,10 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
     })
     .catch(err => {
       if (method === 'GET') delete cache[url]
-      const msg = err.response && err.response.data && err.response.data.message ? t(err.response.data.message) : err.message
+      // Without a response the server could not be reached at all.
+      const msg = err.response?.data?.message ? t(err.response.data.message) : err.message
       app.addError(msg)
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         app.setAuth(DEFAULT_AUTH)
         document.location = '/'
       }
