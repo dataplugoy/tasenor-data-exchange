@@ -26,7 +26,7 @@ export const VARIABLES: Record<string, Question> = {
     help: 'There has been more than one copy of the identical items received. Do we want to include them nevertheless?',
     label: 'Include input duplicates',
     args: {
-      options: ['Always', 'Never', 'Ask']
+      options: ['Always', 'Never']
     }
   },
   outputDuplicates: {
@@ -35,7 +35,7 @@ export const VARIABLES: Record<string, Question> = {
     help: 'There has been more than one copy of the identical resulting transaction created. It is probably normal, but just in case you want it to behave otherwise...',
     label: 'Create transaction duplicates',
     args: {
-      options: ['Always', 'Never', 'Ask']
+      options: ['Always', 'Never']
     }
   },
   allowInputFromPast: {
@@ -44,7 +44,7 @@ export const VARIABLES: Record<string, Question> = {
     help: 'We encountered an item that has older time stamp than what we have processed earlier. Do we include them?',
     label: 'Include entries from past',
     args: {
-      options: ['Always', 'Never', 'Ask']
+      options: ['Always', 'Never']
     }
   },
   skipDeposits: {

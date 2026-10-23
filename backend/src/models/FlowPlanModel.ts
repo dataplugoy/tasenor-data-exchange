@@ -261,7 +261,8 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
    */
   async getSetting(options: RuntimeOptions, variable: string, input: InputItemData): Promise<unknown> {
     const settings = (this.data?.setup as Setup).settings || {}
-    if (variable in settings && settings[variable] !== undefined) {
+    // Asking separately for each item is not implemented, so an old 'Ask' is asked again as not set.
+    if (variable in settings && settings[variable] !== undefined && settings[variable] !== 'Ask') {
       return settings[variable]
     }
     const project = await ProjectModel.get(this.data.projectId)
@@ -535,10 +536,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               skipped++
               continue
             }
-            // TODO: Implement asking and storing of the individual answers per item.
-            if (inputDuplicates === 'Ask') {
-              throw new Error('Asking about individual input item duplicate is not yet implemented.')
-            }
             // Pass through since value is 'Always'.
           }
 
@@ -550,10 +547,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               await input.skip('IN_THE_PAST')
               skipped++
               continue
-            }
-            // TODO: Implement asking and storing of the individual answers per item.
-            if (allowInputFromPast === 'Ask') {
-              throw new Error('Asking about individual input item duplicate is not yet implemented.')
             }
             // Pass through since value is 'Always'.
           }
@@ -759,10 +752,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
               await unified.skip('DUPLICATE')
               skipped++
               continue
-            }
-            // TODO: Implement asking and storing of the individual answers per item.
-            if (outputDuplicates === 'Ask') {
-              throw new Error('Asking about individual output item duplicate is not yet implemented.')
             }
             // Pass through since value is 'Always'.
           }
