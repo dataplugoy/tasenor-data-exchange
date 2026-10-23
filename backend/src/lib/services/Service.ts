@@ -124,7 +124,8 @@ export class Service {
     }
 
     const result = await axios(conf).catch(err => {
-      error('Request failed: ' + JSON.stringify(err.response.data))
+      // Without a response the service could not be reached at all.
+      error(`Request failed: ${err.response ? JSON.stringify(err.response.data) : err.message}`)
       throw err
     })
 
