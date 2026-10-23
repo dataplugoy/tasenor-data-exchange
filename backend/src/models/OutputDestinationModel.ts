@@ -37,6 +37,8 @@ export class OutputDestinationModel extends BaseModel<prisma.OutputDestination> 
   async updateSettings(patch: Record<string, unknown>): Promise<void> {
     Object.assign(this.data.settings as object, encryptSecrets(patch))
     await OutputDestinationModel.update<prisma.OutputDestination, OutputDestinationModel>(this, { settings: this.data.settings })
+    // The state of the plan may have a login token of the old settings, like another user or host.
+    await BaseModel.prismaClient.flowPlan.update({ where: { id: this.data.flowPlanId }, data: { state: {} } })
   }
 
   /**

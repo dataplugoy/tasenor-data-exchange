@@ -4,6 +4,7 @@ import { param } from '../lib/param'
 import { error } from '@tasenor/common'
 import OutputDestinationSettingsRequest from '../../src/types/API/output-destinations/OutputDestinationSettingsRequest.json'
 import { validate } from '../lib/validate'
+import { notRunning } from '../lib/running'
 
 const router: express.Router = express.Router()
 
@@ -29,6 +30,7 @@ router.get('/:id/accounts',
 router.patch('/:id/settings',
   authorize(),
   param('outputDestinationId'),
+  notRunning(),
   validate(OutputDestinationSettingsRequest),
   async (req, res) => {
     await res.locals.outputDestination.updateSettings(req.body)
