@@ -32,7 +32,19 @@ router.delete('/:id',
   authorize(),
   param('batchId'),
   async (_req, res) => {
-    await res.locals.batch.destroy()
+    // Batches build on the one before, so only the latest can be abandoned.
+    const latest = await BatchModel.getLatest(res.locals.flowPlan)
+    if (!latest || latest.id !== res.locals.batch.id) {
+      error(`Cannot abandon ${res.locals.batch} which is not the latest batch.`)
+      return res.sendStatus(400)
+    }
+    // Output may have been delivered before the batch stopped. It is removed from the destination with the rollback,
+    // which also restores the balances and assets of the plan, so that the next run does not deliver it again.
+    if ((await OutputItemModel.findForBatch(res.locals.batch.id, true)).some(item => item.data.delivered)) {
+      await res.locals.batch.rollback(res.locals.userId)
+    } else {
+      await res.locals.batch.destroy()
+    }
     // An abandoned first batch may have had a different file, so its opening state is proposed again.
     if (res.locals.batch.data.number === 1) {
       await res.locals.flowPlan.clearOpeningState()
