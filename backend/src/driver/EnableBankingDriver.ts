@@ -83,13 +83,8 @@ export class EnableBankingDriver extends InputDriver {
 
       // TODO: Need to handle cleanly when using UI.
       const resp: EnableBankingStartAuthorizationResponse = await this.POST('/auth', startAuthorizationRequest)
-      console.log()
-      console.log('PLEASE SIGN IN TO THE FOLLOWING URL AND RETRY USING --auth <code>.')
-      console.log()
-      console.log(resp.url)
-      console.log()
-      // TODO: Throw instead? Need separate AborError to have special handling for this?
-      process.exit()
+      // The run fails with the address to sign in. Exiting would stop the whole server, when running from the UI.
+      throw new Error(`Sign in to the bank at ${resp.url} and run again from the command line using --auth <code>.`)
     }
 
     // Establish the session.

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { EnableBankingDriver, jsonBase64 } from '../../backend/src/driver/EnableBankingDriver'
 import { EnableBankingDriverSettings } from '../../backend/src/types/DriverSettings'
 import { FlowPlanModel } from '../../backend/src/models/FlowPlanModel'
@@ -20,6 +20,18 @@ describe('Enable Banking', () => {
 
     expect(JSON.parse(await driver.fetchData({} as FlowPlanModel))).toStrictEqual({ transactions: [1, 2, 3] })
     expect(urls).toStrictEqual(Object.keys(pages))
+  })
+
+  it('fails the run with the address to sign in instead of exiting the server', async () => {
+    const driver = new EnableBankingDriver({ sessionInDays: 90 } as EnableBankingDriverSettings, { currency: 'EUR', language: 'en' })
+    driver.state = {} as never
+    Object.assign(driver, { options: {} })
+    driver.POST = async <T>(): Promise<T> => ({ url: 'https://bank.example/sign-in' }) as T
+    const exit = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never)
+
+    await expect(driver.autheticate()).rejects.toThrow('https://bank.example/sign-in')
+    expect(exit).not.toHaveBeenCalled()
+    exit.mockRestore()
   })
 })
 
