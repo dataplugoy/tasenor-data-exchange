@@ -237,7 +237,7 @@ export class ProcountorDriver extends OutputDriver {
       }
       result[dim.id].push(item.id)
       if (result[dim.id].length > 1) {
-        throw new Error(`Splitting an accounting value between more than two dimensions ${line.extras.tags.join(', ')} is not implemented.`)
+        throw new Error(`The tags ${line.extras.tags.join(', ')} have more than one item of the dimension '${dim.name}'. Splitting an accounting value between items of one dimension is not implemented.`)
       }
     }
 

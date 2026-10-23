@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { ProcountorDriver } from '../../backend/src/driver/ProcountorDriver'
 import { ProcountorDriverSettings } from '../../backend/src/types/DriverSettings'
 import { SettingsModel } from '../../backend/src/models/SettingsModel'
+import { TransactionLine } from '../../backend/src/types/API/TransactionLine'
 
 describe('Procountor authentication', () => {
 
@@ -33,5 +34,26 @@ describe('Procountor authentication', () => {
   it('renews an expired token', async () => {
     const [procountor] = driver(-3)
     expect((await procountor.autheticate()).token).toBe('NEW')
+  })
+})
+
+describe('Procountor dimensions', () => {
+
+  const procountor = new ProcountorDriver({ apiKey: 'KEY' } as ProcountorDriverSettings, { currency: 'EUR', language: 'en' })
+  procountor.dimensions = [
+    { id: 1, name: 'Project', items: [{ id: 11, codeName: 'A' }, { id: 12, codeName: 'B' }] },
+    { id: 2, name: 'Person', items: [{ id: 21, codeName: 'X' }] },
+  ]
+  const line = (tags: string[]): TransactionLine => ({ account: '1910', amount: '-12.5', text: '', extras: { tags } })
+
+  it('gives the value to an item of each dimension', async () => {
+    expect(await procountor.resolveDimensions(line(['A', 'X']))).toStrictEqual([
+      { dimensionId: 1, itemId: 11, value: -12.5 },
+      { dimensionId: 2, itemId: 21, value: -12.5 },
+    ])
+  })
+
+  it('refuses two items of one dimension', async () => {
+    await expect(procountor.resolveDimensions(line(['A', 'B']))).rejects.toThrow("more than one item of the dimension 'Project'")
   })
 })
