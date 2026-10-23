@@ -490,5 +490,6 @@
   "Line:": "Rivi:",
   "Removing a Batch": "Setin poistaminen",
   "Rollback": "Peru",
-  "The delivered transactions cannot be removed from this bookkeeping automatically.": "Toimitettuja tapahtumia ei voi poistaa tästä kirjanpidosta automaattisesti."
+  "The delivered transactions cannot be removed from this bookkeeping automatically.": "Toimitettuja tapahtumia ei voi poistaa tästä kirjanpidosta automaattisesti.",
+  "The flow plan is already running.": "Tietovirtasuunnitelma on jo käynnissä."
 }

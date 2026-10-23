@@ -28,6 +28,7 @@ import { OutputItemModel } from '../models/OutputItemModel'
 import { RuleQuestionModel } from '../models/RuleQuestionModel'
 import { Notes } from '../types/API/Notes'
 import { t } from '../lib/i18n/t'
+import { exclusiveRun, notRunning, runningFlowPlans } from '../lib/running'
 
 const router: express.Router = express.Router()
 
@@ -170,32 +171,6 @@ router.get('/:id/output',
 )
 
 /**
- * IDs of flow plans having a run in progress.
- */
-const runningFlowPlans: Set<number> = new Set()
-
-/**
- * A middleware refusing to start a run for a flow plan that is already running.
- * The flow plan is reserved until the run finishes or the request ends without running.
- */
-function exclusiveRun() {
-  return (req, res, next) => {
-    const id = res.locals.flowPlan.id
-    if (runningFlowPlans.has(id)) {
-      error(`${res.locals.flowPlan} is already running.`)
-      return res.status(409).send({ message: 'The flow plan is already running.' })
-    }
-    runningFlowPlans.add(id)
-    res.on('close', () => {
-      if (!res.locals.runStarted) {
-        runningFlowPlans.delete(id)
-      }
-    })
-    next()
-  }
-}
-
-/**
  * Helper to continue execution of the batch.
  */
 async function executeBatch(req, res, notes: Notes = {}) {
@@ -319,6 +294,7 @@ router.patch('/:id/balance',
 router.delete('/:id',
   authorize(),
   param('flowPlanId'),
+  notRunning(),
   async (req, res) => {
     await res.locals.flowPlan.destroy()
     res.sendStatus(204)

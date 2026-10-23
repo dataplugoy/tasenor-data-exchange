@@ -9,6 +9,7 @@ import { ItemErrorModel } from '../models/ItemErrorModel'
 import { error } from '@tasenor/common'
 import { BatchModel } from '../models/BatchModel'
 import { RollbackException } from '../exceptions/RollbackException'
+import { notRunning } from '../lib/running'
 
 /**
  * Roll back a batch or send an error, if the output cannot be removed from the destination.
@@ -48,6 +49,7 @@ router.get('/:id',
 router.delete('/:id',
   authorize(),
   param('batchId'),
+  notRunning(),
   async (_req, res) => {
     // Batches build on the one before, so only the latest can be abandoned.
     const latest = await BatchModel.getLatest(res.locals.flowPlan)
@@ -75,6 +77,7 @@ router.delete('/:id',
 router.put('/:id/rollback',
   authorize(),
   param('batchId'),
+  notRunning(),
   async (_req, res) => {
     // The balances and assets of the plan are restored from the batch before, so only the latest can be undone.
     const latest = await BatchModel.getLatest(res.locals.flowPlan)

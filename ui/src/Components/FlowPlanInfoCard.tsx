@@ -119,7 +119,7 @@ export const FlowPlanInfo = (props: FlowPlanInfoProps): React.JSX.Element => {
               <Button
                 variant="outlined"
                 color="error"
-                disabled={isCompleted || !batchId}
+                disabled={running || isCompleted || !batchId}
                 sx={{ ml: 2 }}
                 onClick={onAbandon}
               >
