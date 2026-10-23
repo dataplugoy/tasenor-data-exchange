@@ -17,9 +17,9 @@ export const Note = (props: NoteProps): React.JSX.Element => {
     case 'configured':
       return <Box sx={{ mb: 2 }}>
         <Trans>Provided values for the following settings:</Trans><br/>
-        <pre>
+        <Box component="pre" sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
           {Object.keys(notes as Object).map(s => `— ${s} = ${JSON.stringify((notes as object)[s])}`).join('\n')}
-        </pre>
+        </Box>
       </Box>
 
     case 'needSettings':
