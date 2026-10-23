@@ -62,7 +62,8 @@ export function accountLabel(t: TFunction, code: string | undefined): string {
   if (bank) {
     return t('Bank account {{account}}', { account: bank[1] })
   }
-  const key = `ACCOUNT_${code}`
+  // A grouped account like FEE has the general description, since the per-asset one needs the asset.
+  const key = /^[A-Z]+$/.test(code) ? `ACCOUNT_GENERAL_${code}` : `ACCOUNT_${code}`
   const label = t(key)
   return label === key ? code : label
 }
