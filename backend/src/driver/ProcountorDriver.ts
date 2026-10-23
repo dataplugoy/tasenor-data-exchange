@@ -113,7 +113,7 @@ export class ProcountorDriver extends OutputDriver {
 
     // Check old and leave 5 second margin.
     if (this.state.token) {
-      if (DateTime.now().minus({ seconds: 5 }) < DateTime.fromISO(this.state.expires)) {
+      if (DateTime.now().plus({ seconds: 5 }) < DateTime.fromISO(this.state.expires)) {
         return this.state
       }
     }
