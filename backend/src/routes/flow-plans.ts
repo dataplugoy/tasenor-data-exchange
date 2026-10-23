@@ -329,6 +329,11 @@ router.patch('/:id/rules',
     const rules = await (await RuleModel.findForFlow(res.locals.id, `${name}.json`)).reduce((prev, cur) => ({ ...prev, [cur.name]: cur }), {})
     const oldRules = new Set(Object.keys(rules))
 
+    // Check everything before changing anything, since the rules are saved one by one.
+    const names = req.body.map(rule => rule.name)
+    if (new Set(names).size !== names.length) {
+      return res.status(400).send({ message: 'Each rule must have a different name.' })
+    }
     try {
       for (const rule of req.body) {
         await RuleQuestionModel.checkAsk(res.locals.id, rule.resultView)

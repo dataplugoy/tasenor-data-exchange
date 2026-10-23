@@ -103,6 +103,15 @@ describe('Rules API', () => {
           cy.apiCall('GET', url).then((res) => {
             expect(res.body.map((r: { name: string }) => r.name)).to.deep.eq(['First', ...[...driverRules].reverse().map((r: { name: string }) => r.name)])
           })
+
+          // Rules with the same name are refused before changing anything.
+          cy.apiCall('PATCH', url, [rule('Twice'), rule('Twice')]).then((res) => {
+            expect(res.status).to.eq(400)
+            expect(res.body.message).to.eq('Each rule must have a different name.')
+          })
+          cy.apiCall('GET', url).then((res) => {
+            expect(res.body.map((r: { name: string }) => r.name)).to.deep.eq(['First', ...[...driverRules].reverse().map((r: { name: string }) => r.name)])
+          })
         })
       })
     })

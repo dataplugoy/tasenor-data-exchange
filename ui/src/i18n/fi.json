@@ -491,5 +491,6 @@
   "Removing a Batch": "Setin poistaminen",
   "Rollback": "Peru",
   "The delivered transactions cannot be removed from this bookkeeping automatically.": "Toimitettuja tapahtumia ei voi poistaa tästä kirjanpidosta automaattisesti.",
-  "The flow plan is already running.": "Tietovirtasuunnitelma on jo käynnissä."
+  "The flow plan is already running.": "Tietovirtasuunnitelma on jo käynnissä.",
+  "Each rule must have a different name.": "Jokaisella säännöllä pitää olla eri nimi."
 }
