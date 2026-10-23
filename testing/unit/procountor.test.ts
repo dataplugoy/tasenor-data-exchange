@@ -57,3 +57,22 @@ describe('Procountor dimensions', () => {
     await expect(procountor.resolveDimensions(line(['A', 'B']))).rejects.toThrow("more than one item of the dimension 'Project'")
   })
 })
+
+describe('Procountor delivery', () => {
+
+  it('keeps the receipt delivered if approving it fails', async () => {
+    const driver = new ProcountorDriver({ apiKey: 'KEY', autoApprove: true } as ProcountorDriverSettings, { currency: 'EUR', language: 'en' }, { accounts: { EXPENSE: '4000', CURRENCY_EUR: '1910' } } as never)
+    driver.state = { token: 'T', expires: DateTime.now().plus({ hours: 1 }).toUTC().toISO() as string }
+    Object.assign(driver, {
+      vat: { vatStatuses: [{ description: 'No VAT reg.', vatStatus: 1 }] },
+      POST: async () => ({ id: 5 }),
+      PUT: async () => { throw new Error('Approval refused.') },
+    })
+    const output = { data: { data: { time: '2024-01-02T12:00:00.000Z', lines: [
+      { account: 'EXPENSE', amount: 10, text: 'Coffee', extras: {} },
+      { account: 'CURRENCY_EUR', amount: -10, text: 'Coffee', extras: {} },
+    ] } } }
+    const unified = { isSales: () => false }
+    expect(await driver.deliverOutput(output as never, unified as never)).toStrictEqual({ type: 'ID', id: 5 })
+  })
+})

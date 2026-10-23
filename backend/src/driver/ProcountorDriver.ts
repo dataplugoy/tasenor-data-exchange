@@ -1,5 +1,5 @@
 import qs from 'qs'
-import { AccountNumber, Timestring } from '@tasenor/common'
+import { AccountNumber, Timestring, warning } from '@tasenor/common'
 import { ProjectSettings } from '../types/API/Project'
 import { ProcountorDriverSettings } from '../types/DriverSettings'
 import { Setup } from '../types/API/Setup'
@@ -284,8 +284,13 @@ export class ProcountorDriver extends OutputDriver {
 
     const res = await this.POST('/api/ledgerreceipts', receipt) as { id: number }
 
+    // The receipt is delivered even if the approval fails, since delivering it again would create a duplicate.
     if (this.settings.autoApprove) {
-      await this.PUT(`/api/ledgerreceipts/${res.id}/approve`, undefined)
+      try {
+        await this.PUT(`/api/ledgerreceipts/${res.id}/approve`, undefined)
+      } catch (err) {
+        warning(`Approving the Procountor ledger receipt ${res.id} failed, so it needs to be approved by hand: ${err}`)
+      }
     }
 
     return {
