@@ -489,5 +489,6 @@
   "Example:": "Esimerkki:",
   "Line:": "Rivi:",
   "Removing a Batch": "Setin poistaminen",
-  "Rollback": "Peru"
+  "Rollback": "Peru",
+  "The delivered transactions cannot be removed from this bookkeeping automatically.": "Toimitettuja tapahtumia ei voi poistaa tästä kirjanpidosta automaattisesti."
 }

@@ -71,6 +71,13 @@ export class OutputDriver extends Driver {
   }
 
   /**
+   * Check if delivered transactions can be removed from the remote with `rollbackOuput()`.
+   */
+  canRollback(): boolean {
+    return false
+  }
+
+  /**
    * Remove delivered transaction from the remote.
    * @param output
    */

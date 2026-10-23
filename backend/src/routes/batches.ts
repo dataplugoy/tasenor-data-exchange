@@ -8,6 +8,23 @@ import { param } from '../lib/param'
 import { ItemErrorModel } from '../models/ItemErrorModel'
 import { error } from '@tasenor/common'
 import { BatchModel } from '../models/BatchModel'
+import { RollbackException } from '../exceptions/RollbackException'
+
+/**
+ * Roll back a batch or send an error, if the output cannot be removed from the destination.
+ */
+async function rollback(res, batch: BatchModel): Promise<boolean> {
+  try {
+    await batch.rollback(res.locals.userId)
+    return true
+  } catch (err) {
+    if (err instanceof RollbackException) {
+      res.status(400).send({ message: err.message })
+      return false
+    }
+    throw err
+  }
+}
 
 const router: express.Router = express.Router()
 
@@ -41,7 +58,9 @@ router.delete('/:id',
     // Output may have been delivered before the batch stopped. It is removed from the destination with the rollback,
     // which also restores the balances and assets of the plan, so that the next run does not deliver it again.
     if ((await OutputItemModel.findForBatch(res.locals.batch.id, true)).some(item => item.data.delivered)) {
-      await res.locals.batch.rollback(res.locals.userId)
+      if (!await rollback(res, res.locals.batch)) {
+        return
+      }
     } else {
       await res.locals.batch.destroy()
     }
@@ -65,8 +84,7 @@ router.put('/:id/rollback',
     } else if (!latest || latest.id !== res.locals.batch.id) {
       error(`Cannot rollback ${res.locals.batch} which is not the latest batch.`)
       res.sendStatus(400)
-    } else {
-      await res.locals.batch.rollback(res.locals.userId)
+    } else if (await rollback(res, res.locals.batch)) {
       res.sendStatus(204)
     }
   }

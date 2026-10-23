@@ -25,6 +25,7 @@ import { CurrencyAnswer, Service } from '../lib/services/Service'
 import { FlowPlanRunResponse } from '../types/API/flow-plans/FlowPlanRunResponse'
 import { InputItemData } from '../types/API/InputItemData'
 import { AlertException } from '../exceptions/AlertException'
+import { RollbackException } from '../exceptions/RollbackException'
 import { AlertModel } from './AlertModel'
 import { UnifiedItem } from '../types/API/UnifiedItem'
 import { BalanceData } from '../types/API/BalanceData'
@@ -149,6 +150,9 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       flowPlanId: this.id
     })
     const output = await OutputItemModel.findForBatch(batch.id, true)
+    if (output.some(item => item.data.delivered) && !driver.canRollback()) {
+      throw new RollbackException('The delivered transactions cannot be removed from this bookkeeping automatically.')
+    }
     for (const item of output) {
       if (item.data.delivered) {
         log(`Rolling back output item ${item} with ID ${JSON.stringify(item.data.remoteId)} by user #${userId}.`)

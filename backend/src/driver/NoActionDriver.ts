@@ -36,6 +36,10 @@ export class NoActionDriver extends OutputDriver {
     return false
   }
 
+  canRollback(): boolean {
+    return true
+  }
+
   async rollbackOuput(output: OutputItemModel): Promise<void> {
   }
 }

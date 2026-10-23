@@ -354,6 +354,10 @@ export class TasenorDriver extends OutputDriver {
     return true
   }
 
+  canRollback(): boolean {
+    return true
+  }
+
   async rollbackOuput(output: OutputItemModel): Promise<void> {
     this.state = await this.autheticate()
     const { db, doc, entries } = output.data.remoteId as {
