@@ -290,5 +290,17 @@ describe('Opening state', () => {
       expect(moveDebt(merged, { settings: { debtAccounts: { EUR: '2500', USD: null } } })).toStrictEqual(['SEK'])
       expect(merged.balance).toStrictEqual({ CURRENCY_USD: -10, CURRENCY_SEK: -5, CURRENCY_GBP: 3, DEBT_CURRENCY_EUR: -2000 })
     })
+
+    test('debt from the bookkeeping and negative cash from the input are the same balance', () => {
+      const setup = { settings: { debtAccounts: { EUR: '2500' } } }
+      const states = [
+        state('TASENOR', { DEBT_CURRENCY_EUR: -2000 }),
+        state('LYNX', { CURRENCY_EUR: -2000 }),
+      ]
+      states.forEach(state => moveDebt(state, setup))
+      const merged = mergeOpeningStates('2024-01-01', states, {}, {}, differs)
+      expect(merged.balance).toStrictEqual({ DEBT_CURRENCY_EUR: -2000 })
+      expect(merged.notes).toStrictEqual(['from TASENOR', 'from LYNX'])
+    })
   })
 })

@@ -888,6 +888,16 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
     }
 
     const states = [outputState, inputState].filter(state => state !== null) as OpeningState[]
+
+    // Negative cash goes to the debt account, if one is used. It is moved before merging, so that the debt from the
+    // bookkeeping and the negative cash from the input are the same balance and not added together.
+    const unknownDebt = new Set<Currency>()
+    states.forEach(state => moveDebt(state, this.setup).forEach(currency => unknownDebt.add(currency)))
+    if (unknownDebt.size) {
+      const destination = await this.getDestination()
+      AnswersRequired.forDebt(`/flow-plans/${this.id}/configure`, language, options.userId, destination.id, [...unknownDebt][0])
+    }
+
     const merged = mergeOpeningStates(
       date,
       states,
@@ -896,13 +906,6 @@ export class FlowPlanModel extends BaseModel<prisma.FlowPlan> {
       (what, kept, other, source) => t(language, '{{what}}: kept {{kept}}, but {{source}} tells {{other}}.', { what, kept, other, source })
     )
     merged.notes.unshift(...notes)
-
-    // Negative cash goes to the debt account, if one is used.
-    const unknownDebt = moveDebt(merged, this.setup)
-    if (unknownDebt.length) {
-      const destination = await this.getDestination()
-      AnswersRequired.forDebt(`/flow-plans/${this.id}/configure`, language, options.userId, destination.id, unknownDebt[0])
-    }
 
     if (!hasOpeningValues(merged) && merged.notes.length === 0) {
       return null
