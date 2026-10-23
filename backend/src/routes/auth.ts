@@ -63,7 +63,7 @@ router.post('/register',
       return res.status(400).send({ message: 'Name is required.' })
     }
     const user = await UserModel.save({
-      email,
+      email: email.trim(),
       password: await hash(password),
       name,
       address,

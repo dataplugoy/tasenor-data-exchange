@@ -30,12 +30,13 @@ export class UserModel extends BaseModel<prisma.User> {
   }
 
   /**
-   * Find a user.
+   * Find a user. The case of the letters and the spaces around the email do not matter.
    * @param email
    * @returns An user instance if found or `null` otherwie.
    */
   static async find(email: string): Promise<UserModel | null> {
-    return this.findUnique<prisma.User, UserModel>({ email })
+    const users = await this.findMany<prisma.User, UserModel>({ email: { equals: email.trim(), mode: 'insensitive' } } as unknown as Partial<prisma.User>)
+    return users.length ? users[0] : null
   }
 
   /***

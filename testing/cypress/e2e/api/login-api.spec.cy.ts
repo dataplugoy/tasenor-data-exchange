@@ -9,4 +9,10 @@ describe('Login API', () => {
 
     cy.apiCall('POST', '/auth', { email: 'test@localhost', password: 'pass' }).should('validatesAs', AuthResponse)
   })
+
+  it('Email does not depend on the case of the letters', () => {
+    cy.apiCall('POST', '/auth', { email: ' Test@LocalHost ', password: 'pass' }).should('validatesAs', AuthResponse)
+    cy.apiCall('POST', '/auth/register', { email: 'TEST@localhost', password: 'pass', name: 'Again', projectName: 'Again' })
+      .should('have.property', 'status', 400)
+  })
 })
