@@ -28,3 +28,11 @@ export interface EnableBankingAuthorizeSessionResponse {
     valid_until: Timestring
   }
 }
+
+/**
+ * One page of the transactions of an account. More pages follow while there is a continuation key.
+ */
+export interface EnableBankingTransactionsResponse {
+  transactions: unknown[]
+  continuation_key?: string | null
+}

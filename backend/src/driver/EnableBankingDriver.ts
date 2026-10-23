@@ -1,7 +1,7 @@
 import jwa from 'jwa'
 import { EnableBankingDriverSettings } from '../types/DriverSettings'
 import config from '../config'
-import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse } from '../types/EnableBanking'
+import { EnableBankingAuthorizeSessionResponse, EnableBankingStartAuthorizationResponse, EnableBankingTransactionsResponse } from '../types/EnableBanking'
 import { EnableBankingFlowState } from '../types/FlowState'
 import { DateTime } from 'luxon'
 import { FlowPlanModel } from '../models/FlowPlanModel'
@@ -109,10 +109,18 @@ export class EnableBankingDriver extends InputDriver {
     return this.state
   }
 
+  /**
+   * Fetch the transactions of all pages.
+   */
   async fetchData(_flowPlan: FlowPlanModel): Promise<string> {
-    const output = await this.GET(`/accounts/${this.state.accountId}/transactions`)
-    // TODO: Handle continuation_key.
-    // console.dir(out, {depth: null})
-    return JSON.stringify(output)
+    const transactions: unknown[] = []
+    let continuationKey: string | null = null
+    do {
+      const query = continuationKey ? `?continuation_key=${encodeURIComponent(continuationKey)}` : ''
+      const page: EnableBankingTransactionsResponse = await this.GET(`/accounts/${this.state.accountId}/transactions${query}`)
+      transactions.push(...(page.transactions || []))
+      continuationKey = page.continuation_key || null
+    } while (continuationKey)
+    return JSON.stringify({ transactions })
   }
 }
