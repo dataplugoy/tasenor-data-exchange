@@ -82,4 +82,29 @@ describe('Rules API', () => {
       })
     })
   })
+
+  it('Replacing the rules keeps the order of the list', () => {
+    cy.apiCall('POST', '/auth', { email: 'test@localhost', password: 'pass' }).then(() => {
+      cy.apiCall('POST', '/flow-plans', {
+        title: 'Rule Order Testing',
+        projectId: 1,
+        firstDate: '1900-01-01',
+        source: { type: 'TEST_MOCK', settings: { url: 'file:///test.csv' } },
+        destination: { type: 'NO_ACTION', settings: {} },
+        setup: {},
+      }).then((created) => {
+        const url = `/flow-plans/${created.body.id}/rules`
+        const rule = (name: string) => ({ name, key: '', filter: 'false', result: { type: "'deposit'" } })
+
+        cy.apiCall('GET', url).then((res) => {
+          const driverRules = res.body
+          // A new rule first, then the driver rules in reverse order.
+          cy.apiCall('PATCH', url, [rule('First'), ...[...driverRules].reverse()]).its('status').should('equal', 204)
+          cy.apiCall('GET', url).then((res) => {
+            expect(res.body.map((r: { name: string }) => r.name)).to.deep.eq(['First', ...[...driverRules].reverse().map((r: { name: string }) => r.name)])
+          })
+        })
+      })
+    })
+  })
 })

@@ -337,7 +337,9 @@ router.patch('/:id/rules',
       return ruleError(res, err)
     }
 
-    for (const rule of req.body) {
+    // The rules are tried in the order of the list, so the first one gets the highest priority like in reordering.
+    for (const [idx, rule] of req.body.entries()) {
+      const priority = req.body.length - idx
       if (oldRules.has(rule.name)) {
         const old = rules[rule.name]
         const { filter, key, result } = rule
@@ -351,6 +353,7 @@ router.patch('/:id/rules',
           old.data.origin = 'USER'
         }
         old.data.flowPlanId = res.locals.id
+        old.data.priority = priority
         for (const field of ['enabled', 'notes', 'kind', 'filterView', 'resultView']) {
           if (rule[field] !== undefined) {
             old.data[field] = rule[field]
@@ -364,7 +367,7 @@ router.patch('/:id/rules',
           flowPlanId: res.locals.id,
           name: rule.name,
           key: rule.key || null,
-          priority: 50,
+          priority,
           filter: rule.filter,
           result: rule.result,
           filterView: rule.filterView || {},
