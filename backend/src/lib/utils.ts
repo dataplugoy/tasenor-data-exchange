@@ -1,6 +1,7 @@
 import { Options, parse } from 'csv-parse'
 import { JsonValue } from '@prisma/client/runtime/client'
 import Decimal from 'decimal.js'
+import chardet from 'chardet'
 
 /**
  * Ensure number value is an Decimal instance.
@@ -76,21 +77,25 @@ export function stockCost(stockValue: Decimal, stockAmount: Decimal, amount: str
 }
 
 /**
-   * Convert chardet encoding to the supported buffer encoding
-   * "ascii" | "utf8" | "utf-8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
-   */
-export function parseEncoding(encoding: string): 'ascii' | 'utf8' | 'utf-8' | 'utf16le' | 'ucs2' | 'ucs-2' | 'base64' | 'latin1' | 'binary' | 'hex' {
-  switch (encoding.toUpperCase()) {
-    case 'ASCII':
-    case 'UTF-8':
-      return 'utf-8'
-    case 'ISO-8859-2':
-    case 'ISO-8859-1':
-      return 'latin1'
-    case 'UTF-16LE':
-      return 'utf16le'
-    default:
-      throw new Error(`Not able to map text encoding ${encoding}.`)
+ * Find the encoding of text data. UTF-16 is recognized first, since its ASCII text is valid UTF-8 too. Then valid
+ * UTF-8 is taken as such and everything else is read as Latin-1, since the guesses of the detector between the 8-bit
+ * encodings are unreliable for short Finnish texts: Latin-1 files are detected for example as `windows-1257` or even
+ * `ASCII`.
+ * @param data
+ */
+export function detectEncoding(data: Buffer): 'utf-8' | 'utf16le' | 'latin1' {
+  const encoding = (chardet.detect(data) || '').toUpperCase()
+  if (encoding === 'UTF-16LE') {
+    return 'utf16le'
+  }
+  if (/^(UTF-16|UTF-32|ISO-2022|SHIFT_JIS|BIG5|EUC|GB18030)/.test(encoding)) {
+    throw new Error(`Not able to map text encoding ${encoding}.`)
+  }
+  try {
+    new TextDecoder('utf-8', { fatal: true }).decode(data)
+    return 'utf-8'
+  } catch {
+    return 'latin1'
   }
 }
 

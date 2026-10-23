@@ -1,12 +1,11 @@
 import { JsonValue } from '@prisma/client/runtime/client'
-import chardet from 'chardet'
 import { Options } from 'csv-parse'
 import { BaseModel } from './BaseModel'
 import prisma from '@prisma/client'
 import { FlowPlanModel } from './FlowPlanModel'
 import { RunModel } from './RunModel'
 import { Service } from '../lib/services/Service'
-import { parseCsv, parseEncoding } from '../lib/utils'
+import { detectEncoding, parseCsv } from '../lib/utils'
 import { log } from '@tasenor/common'
 
 export type CsvOptions = Options & {
@@ -100,11 +99,7 @@ export class BatchModel extends BaseModel<prisma.Batch> {
     if (this.data.data === null) {
       return
     }
-    const encoding = chardet.detect(this.data.data as any)
-    if (!encoding) {
-      throw new Error(`Unable to detect encodin for data in ${this}.`)
-    }
-    this.data.encoding = parseEncoding(encoding)
+    this.data.encoding = detectEncoding(Buffer.from(this.data.data))
     log(`Encoding for ${this} seems to be ${JSON.stringify(this.data.encoding)}.`)
     await BatchModel.update<prisma.Batch, BatchModel>(this, { encoding: this.data.encoding })
   }

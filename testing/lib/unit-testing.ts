@@ -16,8 +16,7 @@ import { Transaction } from '../../backend/src/types/API/Transaction'
 import { InitialStockData, Stock } from '../../backend/src/lib/Stock'
 import { Analyzer } from '../../backend/src/lib/analyzer/Analyzer'
 import { DateTime } from 'luxon'
-import chardet from 'chardet'
-import { parseEncoding } from '../../backend/src/lib/utils'
+import { detectEncoding } from '../../backend/src/lib/utils'
 import { UnifiedItem } from '../../backend/src/types/API/UnifiedItem'
 import { ProjectSettings } from '../../backend/src/types/API/Project'
 import { InputDriver } from '../../backend/src/driver/InputDriver'
@@ -47,7 +46,6 @@ export async function beforeModelTesting(): Promise<void> {
  */
 export function createBatchFrom(filePath: string): BatchModel {
   const data = fs.readFileSync(path.join(__dirname, '..', 'unit', 'data', filePath))
-  const encoding = chardet.detect(data)
   return new BatchModel({
     id: 0,
     created: new Date(),
@@ -56,7 +54,7 @@ export function createBatchFrom(filePath: string): BatchModel {
     number: 1,
     state: 'DATA_FETCHED',
     data,
-    encoding: parseEncoding(encoding as string),
+    encoding: detectEncoding(data),
     lastStamp: null,
     initialStock: {},
     endStock: {},
