@@ -14,7 +14,8 @@ export interface OpenFigiItem {
   securityDescription: string
 }
 
-export type OpenFigiResponse = Array<{ data: OpenFigiItem[] }>
+// An identifier not found has a warning instead of data.
+export type OpenFigiResponse = Array<{ data?: OpenFigiItem[], warning?: string, error?: string }>
 
 export class OpenFigiService extends Service {
 
@@ -32,7 +33,7 @@ export class OpenFigiService extends Service {
 
   async queryTickers(query: TickerQuery): Promise<TickerAnswer | null> {
     const res = await this.POST<OpenFigiResponse>('/v3/mapping', [{ idType: 'ID_ISIN', idValue: query.isin }])
-    let items = res.map(r => r.data).reduce((prev, cur) => cur.concat(prev), [])
+    let items = res.flatMap(r => r.data || [])
 
     if (query.exchange) {
       switch (query.exchange) {
