@@ -115,7 +115,8 @@ export const FileUploader = (props: FileUploaderProps): React.ReactElement => {
       setUploading(false)
       app.setDimming(false)
       console.error(err)
-      app.addError(t('File uploading failed.'))
+      // Tell the reason given by the server, like the flow plan running already.
+      app.addError(err.response?.data?.message ? t(err.response.data.message) : t('File uploading failed.'))
     })
     clearInterval(interval)
   }
