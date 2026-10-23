@@ -63,7 +63,7 @@ export const QuestionsPanel = (props: QuestionsPanelProps): React.JSX.Element =>
   }
 
   const onChange = (variable: string, value: unknown) => {
-    setAnswers({ ...answers, [variable]: value })
+    setAnswers(answers => ({ ...answers, [variable]: value }))
   }
 
   const askingAccounts = questions.some(q => q.type === 'ACCOUNT')

@@ -41,7 +41,7 @@ export const SetupCard = (props: SetupCardProps): React.JSX.Element => {
   }
 
   const onChange = (variable: string, value: unknown) => {
-    setValues({ ...values, [variable]: value })
+    setValues(values => ({ ...values, [variable]: value }))
   }
 
   return <Card>

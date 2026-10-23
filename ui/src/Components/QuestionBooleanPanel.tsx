@@ -20,7 +20,7 @@ export const QuestionBooleanPanel = (props: QuestionBooleanPanelProps): React.JS
   const [checked, setChecked] = useState<boolean>(value || false)
 
   useEffect(() => {
-    onChange(variable, false)
+    onChange(variable, value || false)
   }, [])
 
   const onToggle = () => {
