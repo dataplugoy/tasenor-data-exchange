@@ -64,6 +64,19 @@ export async function sign(payload: TokenPayload, audience: TokenAudience, expir
 }
 
 /**
+ * Get a new token for the payload, if the token has less than half of its time left. A token in use is renewed this
+ * way, so that an active user is not logged out in the middle of the work.
+ * @returns A new token or null if not yet needed.
+ */
+export async function renewedToken(token: Token, payload: TokenPayload, audience: TokenAudience): Promise<Token | null> {
+  const decoded = jwt.decode(token) as jwt.JwtPayload | null
+  if (!decoded || !decoded.exp || decoded.exp * 1000 - Date.now() > TOKEN_DEFAULT_EXPIRY_TIME * 1000 / 2) {
+    return null
+  }
+  return sign(payload, audience)
+}
+
+/**
  * Check the token validity.
  * @param token
  * @param secret

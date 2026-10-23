@@ -27,6 +27,11 @@ async function request<T>(t, app: AppContextProps, method: HttpMethod, url: stri
   })
     .then(res => {
       if (method === 'GET') delete cache[url]
+      // The server renews the token in use before it expires.
+      const renewed = res.headers['x-renewed-token']
+      if (renewed && app.auth.token) {
+        app.setAuth({ ...app.auth, token: renewed })
+      }
       if (res.status === 204) return true
       return res.data
     })

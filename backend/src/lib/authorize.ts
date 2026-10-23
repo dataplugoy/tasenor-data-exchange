@@ -1,11 +1,11 @@
-import { getToken, verify } from './crypt'
+import { getToken, renewedToken, verify } from './crypt'
 
 /**
  * A middleware checking for signed token.
  * @returns Token checker middleware function.
  */
 export const authorize = () => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const token = getToken(req)
 
     if (!token) {
@@ -18,6 +18,11 @@ export const authorize = () => {
 
     res.locals.token = token
     res.locals.userId = payload.id
+
+    const renewed = await renewedToken(token, { id: payload.id }, 'tadex-api')
+    if (renewed) {
+      res.setHeader('X-Renewed-Token', renewed)
+    }
 
     next()
   }

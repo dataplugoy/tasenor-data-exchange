@@ -51,7 +51,8 @@ class TasenorDataExchangeServer {
     this.app.use(express.urlencoded({ limit: '500Mb', extended: true }))
 
     // Security.
-    this.app.use(cors())
+    // The renewed token is read by the UI also when it is on another origin.
+    this.app.use(cors({ exposedHeaders: ['X-Renewed-Token'] }))
     const contentSecurityPolicy = {
       useDefaults: true,
       crossOriginResourcePolicy: { policy: 'same-site' },
