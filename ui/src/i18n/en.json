@@ -56,6 +56,7 @@
   "ACCOUNT_INCOME_SHAREHOLDER_BORROWING": "Loan from shareholder",
   "ACCOUNT_INCOME_SHARE_ISSUED": "Share issue",
   "ACCOUNT_INCOME_STOCK_DIVIDEND": "Stock dividend income account",
+  "ACCOUNT_LOSS": "Account for losses from {{currency}}",
   "ACCOUNT_NORDNET": "Bank account used to transfer {{currency}} currency to/from Nordnet",
   "ACCOUNT_PROFIT": "Account for profits from {{currency}}",
   "ACCOUNT_STOCK": "Account for stocks with ticker {{ticker}}",

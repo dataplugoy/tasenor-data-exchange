@@ -29,6 +29,8 @@ const AccountDescription = (props: AccountDescriptionProps): React.JSX.Element =
     text = t(`ACCOUNT_${code}`)
   } else if (/^PROFIT_/.test(code)) {
     text = t('ACCOUNT_PROFIT', { currency: code.substring(7) })
+  } else if (/^LOSS_/.test(code)) {
+    text = t('ACCOUNT_LOSS', { currency: code.substring(5) })
   } else if (/^FEE_/.test(code)) {
     text = t('ACCOUNT_FEE', { currency: code.substring(4) })
   } else if (/^STOCK_/.test(code)) {
