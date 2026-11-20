@@ -15,6 +15,9 @@ RUN pnpm install --frozen-lockfile
 ADD tsconfig.json .
 ADD src src
 
-RUN pnpm build
+# Umami web analytics (see src/vite.config.ts): empty unless the build is given them.
+ARG UMAMI_WEBSITE_ID=
+ARG UMAMI_DOMAINS=
+RUN UMAMI_WEBSITE_ID="$UMAMI_WEBSITE_ID" UMAMI_DOMAINS="$UMAMI_DOMAINS" pnpm build
 
 CMD ["pnpm", "run", "docker"]

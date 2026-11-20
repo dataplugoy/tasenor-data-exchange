@@ -37,6 +37,10 @@ echo $DOCKER_PASSWORD | docker login -u ${DOCKER_USER} --password-stdin
 if [ "$1" == latest ]; then
   VERSION=`jq -r .version < package.json`
 
+  # The published images are the hosted instance: its Umami web analytics (stats.dataplug-oy.com).
+  export UMAMI_WEBSITE_ID=791a20e4-781d-40de-8e56-9dd23f0d58cf
+  export UMAMI_DOMAINS=tadex-app.tasenor.com
+
   echo docker compose build
   docker compose build
 

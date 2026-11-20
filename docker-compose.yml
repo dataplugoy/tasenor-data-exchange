@@ -42,6 +42,9 @@ services:
     container_name: tadex
     build:
       context: ui
+      args:
+        UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID:-}
+        UMAMI_DOMAINS: ${UMAMI_DOMAINS:-}
     ports:
       - 7301:7301
     environment:
